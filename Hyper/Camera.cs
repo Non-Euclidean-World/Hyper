@@ -23,7 +23,7 @@ namespace Hyper
 
         private float _fov = MathHelper.PiOver2;
 
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Camera(Vector3 position, float aspectRatio)
         {

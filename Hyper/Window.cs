@@ -19,17 +19,45 @@ namespace Hyper
         private readonly float[] _vertices =
         {
             // Position         Texture coordinates
-             0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
-            -0.7f,  0.7f, 0.0f, 0.0f, 1.0f  // top left
+            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, front
+            0.5f, -0.5f,  0.5f, 1.0f, 0.0f, // bottom right, front
+            -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, // bottom left, front
+            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, front
+
+            0.5f,  0.5f, -0.5f, 1.0f, 1.0f, // top right, back
+            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top left, back
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, back
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, back
+
+            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, top
+            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, top
+            -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, // bottom left, top
+            0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, top
+
+            0.5f, -0.5f,  0.5f, 1.0f, 1.0f, // top right, bottom
+            -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, bottom
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, bottom
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, bottom
+
+            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, right
+            0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, right
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, right
+            0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, right
+
+            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, left
+            -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, left
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, left
+            -0.5f,  0.5f, -0.5f, 1.0f, 0.0f  // bottom right, left
         };
 
         private readonly uint[] _indices =
         {
-            0, 1, 3,
-            1, 2, 3
+            0,  1,  3,  1,  2,  3,  // Front face
+            4,  5,  7,  5,  6,  7,  // Back face
+            8,  9, 11,  9, 10, 11,  // Top face
+            12, 13, 15, 13, 14, 15,  // Bottom face
+            16, 17, 19, 17, 18, 19,  // Right face
+            20, 21, 23, 21, 22, 23   // Left face
         };
 
         private int _elementBufferObject;
