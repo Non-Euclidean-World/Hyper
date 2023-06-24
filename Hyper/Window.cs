@@ -1,12 +1,9 @@
-﻿using System;
-using Hyper;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using NLog;
-using System.Threading;
 
 namespace Hyper
 {

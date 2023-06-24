@@ -2,8 +2,6 @@ using Hyper.Command;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Runtime.InteropServices;
 
 namespace Hyper
 {
@@ -135,6 +133,27 @@ namespace Hyper
             return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
         }
 
+        // Translation by vector q
+        // | 1 - (L* q_x * q_x) / (1 + q_w),   - (L* q_x * q_y) / (1 + q_w),      - (L* q_x * q_z) / (1 + q_w),      -L * q_x |
+        // | - (L* q_y * q_x) / (1 + q_w),     1 - (L* q_y * q_y) / (1 + q_w),    - (L* q_y * q_z) / (1 + q_w),      -L * q_y |
+        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
+        // | q_x,                              q_y,                               q_z,                                    q_w |
+
+        public void UpdatePosition(Vector3 move)
+        {
+            // float move_w = MathF.Sqrt(move.X * move.X + move.Y * move.Y + move.Z * move.Z + 1);
+
+            // var matrix = new Matrix4(
+            //     1 - (_curve * move.X * move.X) / (1 + move_w), - (_curve * move.X * move.Y) / (1 + move_w), - (_curve * move.X * move.Z) / (1 + move_w), -_curve * move.X,
+            //     - (_curve * move.Y * move.X) / (1 + move_w), 1 - (_curve * move.Y * move.Y) / (1 + move_w), - (_curve * move.Y * move.Z) / (1 + move_w), -_curve * move.Y,
+            //     - (_curve * move.Z * move.X) / (1 + move_w), - (_curve * move.Z * move.Y) / (1 + move_w), 1 - (_curve * move.Z * move.Z) / (1 + move_w), -_curve * move.Z,
+            //     move.X, move.Y, move.Z, move_w
+            // );
+            // Position = Position * matrix;
+            
+            Position += move;
+        }
+
         private void UpdateVectors()
         {
             _front.X = MathF.Cos(_pitch) * MathF.Cos(_yaw);
@@ -179,17 +198,6 @@ namespace Hyper
             }
 
             UpdatePosition(move);
-        }
-
-        // Translation by vector q
-        // | 1 - (L* q_x * q_x) / (1 + q_w),   - (L* q_x * q_y) / (1 + q_w),      - (L* q_x * q_z) / (1 + q_w),      -L * q_x |
-        // | - (L* q_y * q_x) / (1 + q_w),     1 - (L* q_y * q_y) / (1 + q_w),    - (L* q_y * q_z) / (1 + q_w),      -L * q_y |
-        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
-        // | q_x,                              q_y,                               q_z,                                    q_w |
-
-        private void UpdatePosition(Vector3 move)
-        {
-            Position += move;
         }
 
         protected override void SetComamnd(string[] args)

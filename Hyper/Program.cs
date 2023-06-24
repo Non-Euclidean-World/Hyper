@@ -2,8 +2,6 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using Hyper;
-using System.Diagnostics;
-using NLog;
 
 var nativeWindowSettings = new NativeWindowSettings()
 {
