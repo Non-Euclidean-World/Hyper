@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyper", "Hyper\Hyper.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6B9A8F10-1BCE-4EE6-B3DA-2A251C9F7DD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperTest", "HyperTest\HyperTest.csproj", "{8C7E6BB2-9314-450F-B7D6-828013820EDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HyperTest", "HyperTest\HyperTest.csproj", "{8C7E6BB2-9314-450F-B7D6-828013820EDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

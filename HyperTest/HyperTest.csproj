@@ -22,4 +22,10 @@
     <ProjectReference Include="..\Hyper\Hyper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="NLog.Test.Config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
