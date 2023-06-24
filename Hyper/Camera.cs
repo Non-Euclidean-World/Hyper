@@ -2,8 +2,6 @@ using Hyper.Command;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Runtime.InteropServices;
 
 namespace Hyper
 {
@@ -141,7 +139,7 @@ namespace Hyper
         // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
         // | q_x,                              q_y,                               q_z,                                    q_w |
 
-        private void UpdatePosition(Vector3 move)
+        public void UpdatePosition(Vector3 move)
         {
             // float move_w = MathF.Sqrt(move.X * move.X + move.Y * move.Y + move.Z * move.Z + 1);
 
