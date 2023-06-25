@@ -150,7 +150,7 @@ namespace Hyper
             //     move.X, move.Y, move.Z, move_w
             // );
             // Position = Position * matrix;
-            
+
             Position += move;
         }
 
