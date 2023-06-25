@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <None Update="NLog.Test.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
