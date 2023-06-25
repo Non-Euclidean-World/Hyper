@@ -79,7 +79,7 @@ namespace Hyper
 
         private bool _firstMove = true;
 
-        private Vector2 _lastPos;
+        private Vector2 _lastPos;   
 
         private double _time;
 
