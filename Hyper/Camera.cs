@@ -2,8 +2,6 @@ using Hyper.Command;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Runtime.InteropServices;
 
 namespace Hyper
 {
@@ -15,7 +13,9 @@ namespace Hyper
 
         private Vector3 _right = Vector3.UnitX;
 
-        private const float _curve = 1f;
+        private float _curve = 0f;
+
+        public float Curve { get => _curve; set => _curve = value; }
 
         private float _pitch;
 
@@ -82,14 +82,31 @@ namespace Hyper
         // | Li_w    Lj_w    Lk_w    e_w  |
         public Matrix4 GetViewMatrix()
         {
-            //return new Matrix4(
-            //    _right.X, _up.X, _front.X, _curve * Position.X,
-            //    _right.Y, _up.Y, _front.Y, _curve * Position.Y,
-            //    _right.Z, _up.Z, _front.Z, _curve * Position.Z,
-            //    _curve * _right.w, _curve * _up.w, _curve * _front.W, Position.W
-            //);
+            Matrix4 V = Matrix4.LookAt(Position, Position + _front, _up);
+            Vector4 ic = new Vector4(V.Column0.Xyz, 0);
+            Vector4 jc = new Vector4(V.Column1.Xyz, 0);
+            Vector4 kc = new Vector4(V.Column2.Xyz, 0);
 
-            return Matrix4.LookAt(Position, Position + _front, _up);
+            Vector4 geomEye = PortEucToCurved(Position);
+
+            Matrix4 eyeTranslate = TranslateMatrix(geomEye);
+            Vector4 icp = ic * eyeTranslate;
+            Vector4 jcp = jc * eyeTranslate;
+            Vector4 kcp = kc * eyeTranslate;
+
+            if (MathHelper.Abs(_curve) < 0.001)
+            {
+                return V;
+            }
+
+            Matrix4 nonEuclidView = new Matrix4(
+                icp.X, jcp.X, kcp.X, _curve * geomEye.X,
+                icp.Y, jcp.Y, kcp.Y, _curve * geomEye.Y,
+                icp.Z, jcp.Z, kcp.Z, _curve * geomEye.Z,
+                _curve * icp.W, _curve * jcp.W, _curve * kcp.W, geomEye.W);
+            nonEuclidView.Transpose();
+            return nonEuclidView;
+
         }
 
         // | 1/s_x  0      0    0 |
@@ -110,29 +127,38 @@ namespace Hyper
         // bS = -2 * Sin(dmin) * Sin(dmax) / Sin(dmax - dmin);
         public Matrix4 GetProjectionMatrix()
         {
-            //float dmin = 0.01f;
-            //float dmax = 100f;
+            Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+            float sFovX = P.Column0.X;
+            float sFovY = P.Column1.Y;
+            float fp = 1f; // scale front clipping plane according to the global scale factor of the scene
 
-            //// Euclidean geometry
-            //float a = -dmin + dmax / (dmax - dmin);
-            //float b = -2 * dmin * dmax / (dmax - dmin);
+            if (_curve <= 0.00001)
+            {
+                return P;
+            }
+            Matrix4 nonEuclidProj = new Matrix4(
+                sFovX, 0, 0, 0,
+                0, sFovY, 0, 0,
+                0, 0, 0, -1,
+                0, 0, -fp, 0
+                );
+            nonEuclidProj.Transpose();
+            return nonEuclidProj;
+        }
 
-            //// Hyperbolic geometry
-            //float a = -Math.Sinh(dmin + dmax) / Math.Sinh(dmax - dmin);
-            //float b = -2 * Math.Sinh(dmin) * Math.Sinh(dmax) / Math.Sinh(dmax - dmin);
+        public Vector4 PortEucToCurved(Vector3 eucPoint)
+        {
+            return PortEucToCurved(new Vector4(eucPoint, 1));
+        }
 
-            //// Elliptic geometry
-            //float a = -Math.Sin(dmin + dmax) / Math.Sin(dmax - dmin);
-            //float b = -2 * Math.Sin(dmin) * Math.Sin(dmax) / Math.Sin(dmax - dmin);
-
-            //return new Matrix4(
-            //    1f / AspectRatio, 0f, 0f, 0f,
-            //    0f, 1f / AspectRatio, 0f, 0f,
-            //    0f, 0f, a, -1f,
-            //    0f, 0f, 0f, b
-            //);
-
-            return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+        private Vector4 PortEucToCurved(Vector4 eucPoint)
+        {
+            Vector3 p = eucPoint.Xyz;
+            float dist = p.Length;
+            if (dist < 0.0001f) return eucPoint;
+            if (_curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
+            if (_curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
+            return eucPoint;
         }
 
         private void UpdateVectors()
@@ -145,6 +171,31 @@ namespace Hyper
 
             _right = Vector3.Normalize(Vector3.Cross(_front, Vector3.UnitY));
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
+        }
+
+        private Matrix4 TranslateMatrix(Vector4 to)
+        {
+            Matrix4 T;
+            if (_curve != 0)
+            {
+                float denom = 1 + to.W;
+                T = new Matrix4(
+                    1 - _curve * to.X * to.X / denom, -_curve * to.X * to.Y / denom, -_curve * to.X * to.Z / denom, -_curve * to.X,
+                    -_curve * to.Y * to.X / denom, 1 - _curve * to.Y * to.Y / denom, -_curve * to.Y * to.Z / denom, -_curve * to.Y,
+                    -_curve * to.Z * to.X / denom, -_curve * to.Z * to.Y / denom, 1 - _curve * to.Z * to.Z / denom, -_curve * to.Z,
+                    to.X, to.Y, to.Z, to.W);
+            }
+            else
+            {
+                T = new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                to.X, to.Y, to.Z, 1);
+            }
+
+            T.Transpose();
+            return T;
         }
 
         public void Move(KeyboardState input, float time)
@@ -211,6 +262,14 @@ namespace Hyper
                     break;
                 case "position":
                     Console.WriteLine(Position);
+                    break;
+                case "curve":
+                    if (args[1] == "h")
+                        _curve = -1f;
+                    if (args[1] == "s")
+                        _curve = 1f;
+                    if (args[1] == "e")
+                        _curve = 0f;
                     break;
             }
         }

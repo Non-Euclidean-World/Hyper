@@ -1,12 +1,9 @@
-﻿using System;
-using Hyper;
+﻿using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
-using NLog;
-using System.Threading;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper
 {
@@ -60,6 +57,8 @@ namespace Hyper
             20, 21, 23, 21, 22, 23   // Left face
         };
 
+        private readonly Vector3[] _cubePositions;
+
         private int _elementBufferObject;
 
         private int _vertexBufferObject;
@@ -90,6 +89,7 @@ namespace Hyper
             : base(gameWindowSettings, nativeWindowSettings)
         {
             StartDebugThreadAsync();
+            _cubePositions = GenerateCubePositions(4);
         }
 
         public override void Close()
@@ -103,7 +103,7 @@ namespace Hyper
         {
             base.OnLoad();
 
-            GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
             _vertexArrayObject = GL.GenVertexArray();
@@ -111,11 +111,11 @@ namespace Hyper
 
             _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.DynamicDraw);
 
             _elementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.DynamicDraw);
 
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
             _shader.Use();
@@ -136,7 +136,7 @@ namespace Hyper
 
             _shader.SetInt("texture0", 0);
             _shader.SetInt("texture1", 1);
-
+            //GL.PolygonMode(MaterialFace.Front, PolygonMode.Line);
             // We initialize the camera so that it is 3 units back from where the rectangle is.
             // We also give it the proper aspect ratio.
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
@@ -159,12 +159,19 @@ namespace Hyper
             _texture2.Use(TextureUnit.Texture1);
             _shader.Use();
 
-            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
-            _shader.SetMatrix4("model", model);
-            _shader.SetMatrix4("view", _camera.GetViewMatrix());
-            _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            for (int i = 0; i < _cubePositions.Length; i++)
+            {
+                var model = /*Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time) + 20.0f * i) * */ Matrix4.CreateTranslation(_cubePositions[i]);
 
-            GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+                _shader.SetMatrix4("model", model);
+                _shader.SetFloat("curv", _camera.Curve);
+                _shader.SetFloat("anti", 1.0f);
+                _shader.SetMatrix4("view", _camera.GetViewMatrix());
+                _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+
+                GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+            }
+
 
             SwapBuffers();
         }
@@ -183,6 +190,36 @@ namespace Hyper
             if (input.IsKeyDown(Keys.Escape))
             {
                 Close();
+            }
+
+            if (input.IsKeyDown(Keys.KeyPad1))
+            {
+                _camera.Curve = 0f;
+            }
+
+            if (input.IsKeyDown(Keys.KeyPad2))
+            {
+                _camera.Curve = 1f;
+            }
+
+            if (input.IsKeyDown(Keys.KeyPad3))
+            {
+                _camera.Curve = -1f;
+            }
+
+            if (input.IsKeyDown(Keys.Down))
+            {
+                _camera.Curve -= 0.0001f;
+            }
+
+            if (input.IsKeyDown(Keys.Up))
+            {
+                _camera.Curve += 0.0001f;
+            }
+
+            if (input.IsKeyDown(Keys.Tab))
+            {
+                Console.WriteLine(_camera.Curve);
             }
 
             const float sensitivity = 0.2f;
@@ -264,6 +301,22 @@ namespace Hyper
                     _logger.Error(ex);
                 }
             }
+        }
+
+        private Vector3[] GenerateCubePositions(int nInDim)
+        {
+            Vector3[] positions = new Vector3[nInDim * nInDim * nInDim];
+            for (int i = 0; i < nInDim; i++)
+                for (int j = 0; j < nInDim; j++)
+                    for (int k = 0; k < nInDim; k++)
+                    {
+                        float x = 2 * (i - nInDim / 2f);
+                        float y = 2 * (j - nInDim / 2f);
+                        float z = 2 * (k - nInDim / 2f);
+                        positions[i * nInDim * nInDim + j * nInDim + k] = new Vector3(x, y, z);
+                    }
+
+            return positions;
         }
     }
 }
