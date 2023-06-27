@@ -72,14 +72,6 @@ namespace Hyper
             }
         }
 
-        // The camera is defined by eye position e
-        // and three orthogonal unit vectors in the tangent space of the eye, right direction i
-        // , up direction j, and negative view direction k. L is the curvature
-        //
-        // | i_x     j_x     k_x     Le_x |
-        // | i_y     j_y     k_y     Le_y |
-        // | i_z     j_z     k_z     Le_z |
-        // | Li_w    Lj_w    Lk_w    e_w  |
         public Matrix4 GetViewMatrix()
         {
             Matrix4 V = Matrix4.LookAt(Position, Position + _front, _up);
@@ -104,33 +96,17 @@ namespace Hyper
                 icp.Y, jcp.Y, kcp.Y, _curve * geomEye.Y,
                 icp.Z, jcp.Z, kcp.Z, _curve * geomEye.Z,
                 _curve * icp.W, _curve * jcp.W, _curve * kcp.W, geomEye.W);
-            nonEuclidView.Transpose();
+            //nonEuclidView.Transpose();
             return nonEuclidView;
 
         }
 
-        // | 1/s_x  0      0    0 |
-        // | 0      1/s_y  0    0 |
-        // | 0      0      a   -1 |
-        // | 0      0      0    b |
-        //
-        // Euclidean geometry
-        // aE = -dmin + dmax / (dmax - dmin);
-        // bE = -2 * dmin * dmax / (dmax - dmin);
-
-        // Hyperbolic geometry
-        // aH = -Sinh(dmin + dmax) / Sinh(dmax - dmin);
-        // bH = -2 * Sinh(dmin) * Sinh(dmax) / Sinh(dmax - dmin);
-
-        // Elliptic geometry
-        // aS = -Sin(dmin + dmax) / Sin(dmax - dmin);
-        // bS = -2 * Sin(dmin) * Sin(dmax) / Sin(dmax - dmin);
         public Matrix4 GetProjectionMatrix()
         {
             Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
             float sFovX = P.Column0.X;
             float sFovY = P.Column1.Y;
-            float fp = 1f; // scale front clipping plane according to the global scale factor of the scene
+            float fp = 0.01f; // scale front clipping plane according to the global scale factor of the scene
 
             if (_curve <= 0.00001)
             {
@@ -142,7 +118,7 @@ namespace Hyper
                 0, 0, 0, -1,
                 0, 0, -fp, 0
                 );
-            nonEuclidProj.Transpose();
+            //nonEuclidProj.Transpose();
             return nonEuclidProj;
         }
 
@@ -194,7 +170,7 @@ namespace Hyper
                 to.X, to.Y, to.Z, 1);
             }
 
-            T.Transpose();
+            //T.Transpose();
             return T;
         }
 
@@ -231,12 +207,6 @@ namespace Hyper
 
             UpdatePosition(move);
         }
-
-        // Translation by vector q
-        // | 1 - (L* q_x * q_x) / (1 + q_w),   - (L* q_x * q_y) / (1 + q_w),      - (L* q_x * q_z) / (1 + q_w),      -L * q_x |
-        // | - (L* q_y * q_x) / (1 + q_w),     1 - (L* q_y * q_y) / (1 + q_w),    - (L* q_y * q_z) / (1 + q_w),      -L * q_y |
-        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
-        // | q_x,                              q_y,                               q_z,                                    q_w |
 
         private void UpdatePosition(Vector3 move)
         {

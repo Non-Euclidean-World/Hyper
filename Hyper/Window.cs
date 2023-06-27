@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Hyper.Meshes;
+using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -13,57 +14,51 @@ namespace Hyper
 
         private CancellationTokenSource _debugCancellationTokenSource;
 
-        private readonly float[] _vertices =
-        {
-            // Position         Texture coordinates
-            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, front
-            0.5f, -0.5f,  0.5f, 1.0f, 0.0f, // bottom right, front
-            -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, // bottom left, front
-            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, front
+        //private readonly float[] _vertices =
+        //{
+        //    // Position         Texture coordinates
+        //    0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, front
+        //    0.5f, -0.5f,  0.5f, 1.0f, 0.0f, // bottom right, front
+        //    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, // bottom left, front
+        //    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, front
 
-            0.5f,  0.5f, -0.5f, 1.0f, 1.0f, // top right, back
-            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top left, back
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, back
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, back
+        //    0.5f,  0.5f, -0.5f, 1.0f, 1.0f, // top right, back
+        //    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, // top left, back
+        //    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, back
+        //    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, back
 
-            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, top
-            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, top
-            -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, // bottom left, top
-            0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, top
+        //    0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, top
+        //    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, // top left, top
+        //    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, // bottom left, top
+        //    0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, top
 
-            0.5f, -0.5f,  0.5f, 1.0f, 1.0f, // top right, bottom
-            -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, bottom
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, bottom
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, bottom
+        //    0.5f, -0.5f,  0.5f, 1.0f, 1.0f, // top right, bottom
+        //    -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, bottom
+        //    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, bottom
+        //    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right, bottom
 
-            0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, right
-            0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, right
-            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, right
-            0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, right
+        //    0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, right
+        //    0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, right
+        //    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, right
+        //    0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // bottom right, right
 
-            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, left
-            -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, left
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, left
-            -0.5f,  0.5f, -0.5f, 1.0f, 0.0f  // bottom right, left
-        };
+        //    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, // top right, left
+        //    -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, // top left, left
+        //    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left, left
+        //    -0.5f,  0.5f, -0.5f, 1.0f, 0.0f  // bottom right, left
+        //};
 
-        private readonly uint[] _indices =
-        {
-            0,  1,  3,  1,  2,  3,  // Front face
-            4,  5,  7,  5,  6,  7,  // Back face
-            8,  9, 11,  9, 10, 11,  // Top face
-            12, 13, 15, 13, 14, 15,  // Bottom face
-            16, 17, 19, 17, 18, 19,  // Right face
-            20, 21, 23, 21, 22, 23   // Left face
-        };
+        //private readonly uint[] _indices =
+        //{
+        //    0,  1,  3,  1,  2,  3,  // Front face
+        //    4,  5,  7,  5,  6,  7,  // Back face
+        //    8,  9, 11,  9, 10, 11,  // Top face
+        //    12, 13, 15, 13, 14, 15,  // Bottom face
+        //    16, 17, 19, 17, 18, 19,  // Right face
+        //    20, 21, 23, 21, 22, 23   // Left face
+        //};
 
-        private readonly Vector3[] _cubePositions;
-
-        private int _elementBufferObject;
-
-        private int _vertexBufferObject;
-
-        private int _vertexArrayObject;
+        private List<Object3D> _objects;
 
         private Shader _shader;
 
@@ -89,7 +84,6 @@ namespace Hyper
             : base(gameWindowSettings, nativeWindowSettings)
         {
             StartDebugThreadAsync();
-            _cubePositions = GenerateCubePositions(4);
         }
 
         public override void Close()
@@ -106,24 +100,17 @@ namespace Hyper
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            _vertexArrayObject = GL.GenVertexArray();
-            GL.BindVertexArray(_vertexArrayObject);
-
-            _vertexBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.DynamicDraw);
-
-            _elementBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.DynamicDraw);
-
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
             _shader.Use();
 
+            _objects = GenerateObjects();
+
+            // Position attribute
             var vertexLocation = _shader.GetAttribLocation("aPosition");
             GL.EnableVertexAttribArray(vertexLocation);
             GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
 
+            // Texture coordinate attribute
             var texCoordLocation = _shader.GetAttribLocation("aTexCoord");
             GL.EnableVertexAttribArray(texCoordLocation);
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
@@ -153,23 +140,30 @@ namespace Hyper
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.BindVertexArray(_vertexArrayObject);
+            GL.BindVertexArray(_objects[0].Meshes[0].VaoId); // we only have 1 VAO but will have to change this
 
             _texture.Use(TextureUnit.Texture0);
             _texture2.Use(TextureUnit.Texture1);
             _shader.Use();
 
-            for (int i = 0; i < _cubePositions.Length; i++)
+            _shader.SetFloat("curv", _camera.Curve);
+            _shader.SetFloat("anti", 1.0f);
+            _shader.SetMatrix4("view", _camera.GetViewMatrix());
+            _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+
+            foreach (var obj in _objects)
             {
-                var model = /*Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time) + 20.0f * i) * */ Matrix4.CreateTranslation(_cubePositions[i]);
+                foreach (var mesh in obj.Meshes)
+                {
+                    //GL.BindVertexArray(mesh.VaoId); // we only have 1 VAO but will have to change this
 
-                _shader.SetMatrix4("model", model);
-                _shader.SetFloat("curv", _camera.Curve);
-                _shader.SetFloat("anti", 1.0f);
-                _shader.SetMatrix4("view", _camera.GetViewMatrix());
-                _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+                    var model = /*Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time) + 20.0f * i) * */ Matrix4.CreateTranslation(mesh.Position);
 
-                GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+                    var scale = Matrix4.CreateScale(0.1f); // will need to change scale
+                    _shader.SetMatrix4("model", scale * model);
+
+                    GL.DrawElements(PrimitiveType.Triangles, mesh.numberOfIndices, DrawElementsType.UnsignedInt, 0);
+                }
             }
 
 
@@ -192,17 +186,17 @@ namespace Hyper
                 Close();
             }
 
-            if (input.IsKeyDown(Keys.KeyPad1))
+            if (input.IsKeyDown(Keys.D8))
             {
                 _camera.Curve = 0f;
             }
 
-            if (input.IsKeyDown(Keys.KeyPad2))
+            if (input.IsKeyDown(Keys.D9))
             {
                 _camera.Curve = 1f;
             }
 
-            if (input.IsKeyDown(Keys.KeyPad3))
+            if (input.IsKeyDown(Keys.D0))
             {
                 _camera.Curve = -1f;
             }
@@ -305,18 +299,108 @@ namespace Hyper
 
         private Vector3[] GenerateCubePositions(int nInDim)
         {
+            float div = 5.0f;
+
+            return CreateSphereOfCubes(100);
+
             Vector3[] positions = new Vector3[nInDim * nInDim * nInDim];
             for (int i = 0; i < nInDim; i++)
                 for (int j = 0; j < nInDim; j++)
                     for (int k = 0; k < nInDim; k++)
                     {
-                        float x = 2 * (i - nInDim / 2f);
-                        float y = 2 * (j - nInDim / 2f);
-                        float z = 2 * (k - nInDim / 2f);
+                        float x = 2 * (i - nInDim / 2f) / div;
+                        float y = 2 * (j - nInDim / 2f) / div;
+                        float z = 2 * (k - nInDim / 2f) / div;
                         positions[i * nInDim * nInDim + j * nInDim + k] = new Vector3(x, y, z);
                     }
 
             return positions;
+        }
+
+        private Vector3[] CreateSphereOfCubes(int cubeCount)
+        {
+            Vector3[] cubes = new Vector3[cubeCount];
+            Random random = new Random();
+
+            for (int i = 0; i < cubeCount; i++)
+            {
+                // Create a new cube
+                cubes[i] = new Vector3();
+
+                // Generate random theta and phi angles
+                float theta = (float)(random.NextDouble() * 2 * Math.PI);
+                float phi = (float)(random.NextDouble() * Math.PI);
+
+                // Convert spherical coordinates to Cartesian coordinates
+                float x = (float)(Math.Sin(phi) * Math.Cos(theta));
+                float y = (float)(Math.Sin(phi) * Math.Sin(theta));
+                float z = (float)(Math.Cos(phi));
+
+                // Set the cube's position
+                cubes[i] = new Vector3(x, y, z) * 0.8f;
+            }
+
+            return cubes;
+        }
+
+        private static void CreateUVSphere(float radius, int numLongitudeLines, int numLatitudeLines, out Vector3[] vertices, out int[] indices)
+        {
+            List<Vector3> verticesList = new List<Vector3>();
+            List<int> indicesList = new List<int>();
+
+            // Generate vertices
+            for (int lat = 0; lat <= numLatitudeLines; ++lat)
+            {
+                float theta = lat * MathF.PI / numLatitudeLines;
+                float sinTheta = MathF.Sin(theta);
+                float cosTheta = MathF.Cos(theta);
+
+                for (int lon = 0; lon <= numLongitudeLines; ++lon)
+                {
+                    float phi = lon * 2 * MathF.PI / numLongitudeLines;
+                    float sinPhi = MathF.Sin(phi);
+                    float cosPhi = MathF.Cos(phi);
+
+                    float x = cosPhi * sinTheta;
+                    float y = cosTheta;
+                    float z = sinPhi * sinTheta;
+
+                    verticesList.Add(new Vector3(x * radius, y * radius, z * radius));
+                }
+            }
+
+            // Generate indices
+            for (int lat = 0; lat < numLatitudeLines; ++lat)
+            {
+                for (int lon = 0; lon < numLongitudeLines; ++lon)
+                {
+                    int first = (lat * (numLongitudeLines + 1)) + lon;
+                    int second = first + numLongitudeLines + 1;
+
+                    indicesList.Add(first);
+                    indicesList.Add(second);
+                    indicesList.Add(first + 1);
+
+                    indicesList.Add(second);
+                    indicesList.Add(second + 1);
+                    indicesList.Add(first + 1);
+                }
+            }
+
+            vertices = verticesList.ToArray();
+            indices = indicesList.ToArray();
+        }
+
+        private List<Object3D> GenerateObjects()
+        {
+            var positions = CreateSphereOfCubes(100);
+            var object3d = new Object3D();
+            foreach (var position in positions)
+            {
+                object3d.Meshes.Add(CubeMesh.Create(0.4f, position));
+            }
+            
+            return new List<Object3D> { object3d };
         }
     }
 }
