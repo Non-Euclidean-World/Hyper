@@ -64,7 +64,7 @@ namespace Hyper
 
         private Texture _texture;
 
-        private Texture _texture2;
+        //private Texture _texture2;
 
         // The view and projection matrices have been removed as we don't need them here anymore.
         // They can now be found in the new camera class.
@@ -79,6 +79,8 @@ namespace Hyper
         private Vector2 _lastPos;
 
         private double _time;
+
+        private Vector3 _cameraPosition = Vector3.Zero;
 
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
@@ -103,7 +105,7 @@ namespace Hyper
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
             _shader.Use();
 
-            _objects = GenerateObjects();
+            _objects = GenerateObjects(() => GenerateFlat(10));
 
             // Position attribute
             var vertexLocation = _shader.GetAttribLocation("aPosition");
@@ -118,15 +120,15 @@ namespace Hyper
             _texture = Texture.LoadFromFile("Resources/container.png");
             _texture.Use(TextureUnit.Texture0);
 
-            _texture2 = Texture.LoadFromFile("Resources/awesomeface.png");
-            _texture2.Use(TextureUnit.Texture1);
+            /*            _texture2 = Texture.LoadFromFile("Resources/awesomeface.png");
+                        _texture2.Use(TextureUnit.Texture1);*/
 
             _shader.SetInt("texture0", 0);
-            _shader.SetInt("texture1", 1);
+            //_shader.SetInt("texture1", 1);
             //GL.PolygonMode(MaterialFace.Front, PolygonMode.Line);
             // We initialize the camera so that it is 3 units back from where the rectangle is.
             // We also give it the proper aspect ratio.
-            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+            _camera = new Camera(Vector3.UnitY, Size.X / (float)Size.Y);
 
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             CursorState = CursorState.Grabbed;
@@ -143,7 +145,7 @@ namespace Hyper
             GL.BindVertexArray(_objects[0].Meshes[0].VaoId); // we only have 1 VAO but will have to change this
 
             _texture.Use(TextureUnit.Texture0);
-            _texture2.Use(TextureUnit.Texture1);
+            //_texture2.Use(TextureUnit.Texture1);
             _shader.Use();
 
             _shader.SetFloat("curv", _camera.Curve);
@@ -157,9 +159,9 @@ namespace Hyper
                 {
                     //GL.BindVertexArray(mesh.VaoId); // we only have 1 VAO but will have to change this
 
-                    var model = /*Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time) + 20.0f * i) * */ Matrix4.CreateTranslation(mesh.Position);
+                    var model = Matrix4.CreateTranslation(mesh.Position - _cameraPosition);
 
-                    var scale = Matrix4.CreateScale(0.1f); // will need to change scale
+                    var scale = Matrix4.CreateScale(1f); // will need to change scale
                     _shader.SetMatrix4("model", scale * model);
 
                     GL.DrawElements(PrimitiveType.Triangles, mesh.numberOfIndices, DrawElementsType.UnsignedInt, 0);
@@ -218,7 +220,7 @@ namespace Hyper
 
             const float sensitivity = 0.2f;
 
-            _camera.Move(input, (float)e.Time);
+            _cameraPosition += _camera.Move(input, (float)e.Time);
 
             // Get the mouse state
             var mouse = MouseState;
@@ -301,8 +303,6 @@ namespace Hyper
         {
             float div = 5.0f;
 
-            return CreateSphereOfCubes(100);
-
             Vector3[] positions = new Vector3[nInDim * nInDim * nInDim];
             for (int i = 0; i < nInDim; i++)
                 for (int j = 0; j < nInDim; j++)
@@ -315,6 +315,43 @@ namespace Hyper
                     }
 
             return positions;
+        }
+
+        private Vector3[] GenerateFlat(int n)
+        {
+            List<Vector3> positions = new List<Vector3>();
+            Random random = new Random(0);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    int maxHeight = random.Next(1, 4);
+                    for (int k = 0; k < maxHeight; k++)
+                    {
+                        float x = (i - n / 2f);
+                        float y = k;
+                        float z = (j - n / 2f);
+                        positions.Add(new Vector3(x, y, z));
+                    }
+                }
+            }
+
+            return positions.ToArray();
+        }
+
+        private Vector3[] GenerateColumn(int n)
+        {
+            List<Vector3> positions = new List<Vector3>();
+
+
+            for (int k = 0; k < n; k++)
+            {
+                float y = k;
+                positions.Add(new Vector3(0, y, 0));
+            }
+
+
+            return positions.ToArray();
         }
 
         private Vector3[] CreateSphereOfCubes(int cubeCount)
@@ -391,15 +428,15 @@ namespace Hyper
             indices = indicesList.ToArray();
         }
 
-        private List<Object3D> GenerateObjects()
+        private List<Object3D> GenerateObjects(Func<Vector3[]> generator)
         {
-            var positions = CreateSphereOfCubes(100);
+            var positions = generator();
             var object3d = new Object3D();
             foreach (var position in positions)
             {
-                object3d.Meshes.Add(CubeMesh.Create(0.4f, position));
+                object3d.Meshes.Add(CubeMesh.Create(1f, position));
             }
-            
+
             return new List<Object3D> { object3d };
         }
     }

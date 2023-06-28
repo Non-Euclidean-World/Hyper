@@ -1,9 +1,7 @@
-﻿using OpenTK.Mathematics;
+﻿using Hyper;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using Hyper;
-using System.Diagnostics;
-using NLog;
 
 var nativeWindowSettings = new NativeWindowSettings()
 {
@@ -15,6 +13,7 @@ var nativeWindowSettings = new NativeWindowSettings()
 
 using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
 {
+    window.RenderFrequency = 30.0f;
     window.Run();
 }
 

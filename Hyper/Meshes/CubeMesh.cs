@@ -1,9 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.Meshes
 {
@@ -15,7 +10,7 @@ namespace Hyper.Meshes
             var positions = CreateCubeIndices();
 
             return new Mesh(vertexes, positions, position);
-        }
+        }//
 
         // Method to create vertices for the cube based on size and position
         private static Vertex[] CreateCubeVertices(float size, Vector3 position)

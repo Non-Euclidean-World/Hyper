@@ -23,6 +23,8 @@ namespace Hyper
 
         private float _fov = MathHelper.PiOver2;
 
+        private float _cameraSpeed = 50f;
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Camera(Vector3 position, float aspectRatio)
@@ -31,7 +33,7 @@ namespace Hyper
             AspectRatio = aspectRatio;
         }
 
-        public Vector3 Position { get; set; }
+        public Vector3 Position { get; /*set;*/ }
 
         public float AspectRatio { private get; set; }
 
@@ -151,6 +153,11 @@ namespace Hyper
 
         private Matrix4 TranslateMatrix(Vector4 to)
         {
+            return TranslateMatrix(to, new Vector4(0, 0, 0, 1));
+        }
+
+        private Matrix4 TranslateMatrix(Vector4 to, Vector4 g)
+        {
             Matrix4 T;
             if (_curve != 0)
             {
@@ -174,9 +181,9 @@ namespace Hyper
             return T;
         }
 
-        public void Move(KeyboardState input, float time)
+        public Vector3 Move(KeyboardState input, float time)
         {
-            const float cameraSpeed = 1.5f;
+            float cameraSpeed = _cameraSpeed;
 
             Vector3 move = Vector3.Zero;
 
@@ -205,13 +212,14 @@ namespace Hyper
                 move -= Up * cameraSpeed * time; // Down
             }
 
-            UpdatePosition(move);
+            /*UpdatePosition(move);*/
+            return move;
         }
 
-        private void UpdatePosition(Vector3 move)
+        /*private void UpdatePosition(Vector3 move)
         {
             Position += move;
-        }
+        }*/
 
         protected override void SetComamnd(string[] args)
         {
@@ -219,6 +227,17 @@ namespace Hyper
             {
                 case "fov":
                     Fov = int.Parse(args[1]);
+                    break;
+                case "curve":
+                    if (args[1] == "h")
+                        _curve = -1f;
+                    if (args[1] == "s")
+                        _curve = 1f;
+                    if (args[1] == "e")
+                        _curve = 0f;
+                    break;
+                case "speed":
+                    _cameraSpeed = float.Parse(args[1]);
                     break;
             }
         }
@@ -233,14 +252,7 @@ namespace Hyper
                 case "position":
                     Console.WriteLine(Position);
                     break;
-                case "curve":
-                    if (args[1] == "h")
-                        _curve = -1f;
-                    if (args[1] == "s")
-                        _curve = 1f;
-                    if (args[1] == "e")
-                        _curve = 0f;
-                    break;
+
             }
         }
     }

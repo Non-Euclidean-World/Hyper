@@ -12,8 +12,8 @@ uniform mat4 projection;
 uniform float curv;
 uniform float anti;
 
-vec4 port(vec3 ePoint) {
-    vec3 p = ePoint;
+vec4 port(vec4 ePoint) {
+    vec3 p = ePoint.xyz;
     float d = length(p);
     if(d < 0.0001 || curv == 0) return vec4(p, 1);
     if(curv > 0) return vec4(p / d * sin(d), cos(d));
@@ -23,6 +23,7 @@ vec4 port(vec3 ePoint) {
 void main(void)
 {
     texCoord = aTexCoord;
+    vec4 eucPos = vec4(aPosition, 1);
 
-    gl_Position = anti * port(aPosition) * model * view * projection;
+    gl_Position = anti * port(eucPos * model) * view * projection;
 }
