@@ -12,6 +12,14 @@ uniform mat4 projection;
 uniform float curv;
 uniform float anti;
 
+
+// rotate for each vertex!
+uniform vec3 a;
+uniform vec3 b;
+uniform vec3 c;
+uniform vec3 d;
+
+
 vec4 port(vec4 ePoint) {
     vec3 p = ePoint.xyz;
     float d = length(p);
