@@ -185,23 +185,23 @@ namespace Hyper
             }
             if (input.IsKeyDown(Keys.S))
             {
-                move -= _front * cameraSpeed * time; 
+                move -= _front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.A))
             {
-                move -= _right * cameraSpeed * time; 
+                move -= _right * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.D))
             {
-                move += _right * cameraSpeed * time; 
+                move += _right * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.Space))
             {
-                move += _up * cameraSpeed * time; 
+                move += _up * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                move -= _up * cameraSpeed * time; 
+                move -= _up * cameraSpeed * time;
             }
 
             Position += move;
