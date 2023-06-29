@@ -13,9 +13,7 @@ namespace Hyper
 
         private Vector3 _right = Vector3.UnitX;
 
-        private float _curve = 0f;
-
-        public float Curve { get => _curve; set => _curve = value; }
+        public float Curve { get; set; } = 0f;
 
         private float _pitch;
 
@@ -25,15 +23,20 @@ namespace Hyper
 
         private float _cameraSpeed = 50f;
 
+        private float _near;
+
+        private float _far;
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Camera(Vector3 position, float aspectRatio)
+        public Camera(float aspectRatio, float near, float far)
         {
-            Position = position;
             AspectRatio = aspectRatio;
+            _near = near;
+            _far = far;
         }
 
-        public Vector3 Position { get; /*set;*/ }
+        private Vector3 _position = Vector3.UnitY;
 
         public float AspectRatio { private get; set; }
 
@@ -42,6 +45,10 @@ namespace Hyper
         public Vector3 Up => _up;
 
         public Vector3 Right => _right;
+
+        public float Near => _near;
+
+        public float Far => _far;
 
         public float Pitch
         {
@@ -76,41 +83,41 @@ namespace Hyper
 
         public Matrix4 GetViewMatrix()
         {
-            Matrix4 V = Matrix4.LookAt(Position, Position + _front, _up);
+            Matrix4 V = Matrix4.LookAt(_position, _position + _front, _up);
             Vector4 ic = new Vector4(V.Column0.Xyz, 0);
             Vector4 jc = new Vector4(V.Column1.Xyz, 0);
             Vector4 kc = new Vector4(V.Column2.Xyz, 0);
 
-            Vector4 geomEye = PortEucToCurved(Position);
+            Vector4 geomEye = PortEucToCurved(_position);
 
             Matrix4 eyeTranslate = TranslateMatrix(geomEye);
             Vector4 icp = ic * eyeTranslate;
             Vector4 jcp = jc * eyeTranslate;
             Vector4 kcp = kc * eyeTranslate;
 
-            if (MathHelper.Abs(_curve) < 0.001)
+            if (MathHelper.Abs(Curve) < 0.001)
             {
                 return V;
             }
 
             Matrix4 nonEuclidView = new Matrix4(
-                icp.X, jcp.X, kcp.X, _curve * geomEye.X,
-                icp.Y, jcp.Y, kcp.Y, _curve * geomEye.Y,
-                icp.Z, jcp.Z, kcp.Z, _curve * geomEye.Z,
-                _curve * icp.W, _curve * jcp.W, _curve * kcp.W, geomEye.W);
-            //nonEuclidView.Transpose();
+                icp.X, jcp.X, kcp.X, Curve * geomEye.X,
+                icp.Y, jcp.Y, kcp.Y, Curve * geomEye.Y,
+                icp.Z, jcp.Z, kcp.Z, Curve * geomEye.Z,
+                Curve * icp.W, Curve * jcp.W, Curve * kcp.W, geomEye.W);
+
             return nonEuclidView;
 
         }
 
         public Matrix4 GetProjectionMatrix()
         {
-            Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+            Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
             float sFovX = P.Column0.X;
             float sFovY = P.Column1.Y;
-            float fp = 0.01f; // scale front clipping plane according to the global scale factor of the scene
+            float fp = _near; // scale front clipping plane according to the global scale factor of the scene
 
-            if (_curve <= 0.00001)
+            if (Curve <= 0.00001)
             {
                 return P;
             }
@@ -120,7 +127,7 @@ namespace Hyper
                 0, 0, 0, -1,
                 0, 0, -fp, 0
                 );
-            //nonEuclidProj.Transpose();
+
             return nonEuclidProj;
         }
 
@@ -134,8 +141,8 @@ namespace Hyper
             Vector3 p = eucPoint.Xyz;
             float dist = p.Length;
             if (dist < 0.0001f) return eucPoint;
-            if (_curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
-            if (_curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
+            if (Curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
+            if (Curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
             return eucPoint;
         }
 
@@ -153,19 +160,14 @@ namespace Hyper
 
         private Matrix4 TranslateMatrix(Vector4 to)
         {
-            return TranslateMatrix(to, new Vector4(0, 0, 0, 1));
-        }
-
-        private Matrix4 TranslateMatrix(Vector4 to, Vector4 g)
-        {
             Matrix4 T;
-            if (_curve != 0)
+            if (Curve != 0)
             {
                 float denom = 1 + to.W;
                 T = new Matrix4(
-                    1 - _curve * to.X * to.X / denom, -_curve * to.X * to.Y / denom, -_curve * to.X * to.Z / denom, -_curve * to.X,
-                    -_curve * to.Y * to.X / denom, 1 - _curve * to.Y * to.Y / denom, -_curve * to.Y * to.Z / denom, -_curve * to.Y,
-                    -_curve * to.Z * to.X / denom, -_curve * to.Z * to.Y / denom, 1 - _curve * to.Z * to.Z / denom, -_curve * to.Z,
+                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
+                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
+                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
                     to.X, to.Y, to.Z, to.W);
             }
             else
@@ -177,7 +179,6 @@ namespace Hyper
                 to.X, to.Y, to.Z, 1);
             }
 
-            //T.Transpose();
             return T;
         }
 
@@ -212,14 +213,8 @@ namespace Hyper
                 move -= Up * cameraSpeed * time; // Down
             }
 
-            /*UpdatePosition(move);*/
             return move;
         }
-
-        /*private void UpdatePosition(Vector3 move)
-        {
-            Position += move;
-        }*/
 
         protected override void SetComamnd(string[] args)
         {
@@ -230,11 +225,13 @@ namespace Hyper
                     break;
                 case "curve":
                     if (args[1] == "h")
-                        _curve = -1f;
-                    if (args[1] == "s")
-                        _curve = 1f;
-                    if (args[1] == "e")
-                        _curve = 0f;
+                        Curve = -1f;
+                    else if (args[1] == "s")
+                        Curve = 1f;
+                    else if (args[1] == "e")
+                        Curve = 0f;
+                    else
+                        Curve = float.Parse(args[1]);
                     break;
                 case "speed":
                     _cameraSpeed = float.Parse(args[1]);
@@ -250,9 +247,8 @@ namespace Hyper
                     Console.WriteLine(Fov);
                     break;
                 case "position":
-                    Console.WriteLine(Position);
+                    Console.WriteLine(_position);
                     break;
-
             }
         }
     }

@@ -6,7 +6,7 @@ using OpenTK.Windowing.Desktop;
 var nativeWindowSettings = new NativeWindowSettings()
 {
     Size = new Vector2i(800, 600),
-    Title = "LearnOpenTK - Camera",
+    Title = "Hyper",
     // This is needed to run on macos
     Flags = ContextFlags.ForwardCompatible,
 };

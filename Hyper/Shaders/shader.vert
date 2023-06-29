@@ -1,7 +1,6 @@
 #version 330 core
 
 layout(location = 0) in vec3 aPosition;
-
 layout(location = 1) in vec2 aTexCoord;
 
 out vec2 texCoord;
@@ -11,13 +10,6 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float curv;
 uniform float anti;
-
-
-// rotate for each vertex!
-uniform vec3 a;
-uniform vec3 b;
-uniform vec3 c;
-uniform vec3 d;
 
 
 vec4 port(vec4 ePoint) {

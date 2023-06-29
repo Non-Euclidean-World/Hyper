@@ -10,7 +10,7 @@ namespace Hyper.Meshes
             var positions = CreateCubeIndices();
 
             return new Mesh(vertexes, positions, position);
-        }//
+        }
 
         // Method to create vertices for the cube based on size and position
         private static Vertex[] CreateCubeVertices(float size, Vector3 position)

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hyper.Command
+﻿namespace Hyper.Command
 {
     public abstract class Commandable
     {
-        public void Command(string[] argumants)
+        public void Command(string[] arguments)
         {
-            var key = argumants[0];
-            var args = argumants.Skip(1).ToArray();
+            var key = arguments[0];
+            var args = arguments.Skip(1).ToArray();
 
             switch (key)
             {
