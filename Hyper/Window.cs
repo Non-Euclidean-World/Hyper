@@ -28,8 +28,6 @@ namespace Hyper
 
         private Vector2 _lastPos;
 
-        private Vector3 _cameraPosition = Vector3.Zero;
-
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
@@ -50,7 +48,13 @@ namespace Hyper
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+            var shaders = new (string, ShaderType)[]
+            {
+                ("Shaders/shader.vert", ShaderType.VertexShader),
+                ("Shaders/shader.frag", ShaderType.FragmentShader)
+            };
+
+            _shader = new Shader(shaders);
             _shader.Use();
 
             _objects = GenerateObjects(() => SceneGenerators.GenerateFlat(20));
@@ -96,7 +100,7 @@ namespace Hyper
             {
                 foreach (var mesh in obj.Meshes)
                 {
-                    var model = Matrix4.CreateTranslation((mesh.Position - _cameraPosition) * _scale);
+                    var model = Matrix4.CreateTranslation((mesh.Position - _camera.Position) * _scale);
                     var scale = Matrix4.CreateScale(_scale);
                     _shader.SetMatrix4("model", scale * model);
 
@@ -156,7 +160,7 @@ namespace Hyper
 
             const float sensitivity = 0.2f;
 
-            _cameraPosition += _camera.Move(input, (float)e.Time);
+            _camera.Move(input, (float)e.Time);
 
             var mouse = MouseState;
 

@@ -7,13 +7,15 @@ namespace Hyper
 {
     public class Camera : Commandable
     {
+        public float Curve { get; set; } = 0f;
+
+        public Vector3 Position { get; set; } = Vector3.Zero;
+
         private Vector3 _front = -Vector3.UnitZ;
 
         private Vector3 _up = Vector3.UnitY;
 
         private Vector3 _right = Vector3.UnitX;
-
-        public float Curve { get; set; } = 0f;
 
         private float _pitch;
 
@@ -39,16 +41,6 @@ namespace Hyper
         private Vector3 _position = Vector3.UnitY;
 
         public float AspectRatio { private get; set; }
-
-        public Vector3 Front => _front;
-
-        public Vector3 Up => _up;
-
-        public Vector3 Right => _right;
-
-        public float Near => _near;
-
-        public float Far => _far;
 
         public float Pitch
         {
@@ -95,7 +87,7 @@ namespace Hyper
             Vector4 jcp = jc * eyeTranslate;
             Vector4 kcp = kc * eyeTranslate;
 
-            if (MathHelper.Abs(Curve) < 0.001)
+            if (MathHelper.Abs(Curve) < Constants.Eps)
             {
                 return V;
             }
@@ -107,7 +99,6 @@ namespace Hyper
                 Curve * icp.W, Curve * jcp.W, Curve * kcp.W, geomEye.W);
 
             return nonEuclidView;
-
         }
 
         public Matrix4 GetProjectionMatrix()
@@ -117,7 +108,7 @@ namespace Hyper
             float sFovY = P.Column1.Y;
             float fp = _near; // scale front clipping plane according to the global scale factor of the scene
 
-            if (Curve <= 0.00001)
+            if (Curve <= Constants.Eps)
             {
                 return P;
             }
@@ -161,7 +152,15 @@ namespace Hyper
         private Matrix4 TranslateMatrix(Vector4 to)
         {
             Matrix4 T;
-            if (Curve != 0)
+            if (MathHelper.Abs(Curve) < Constants.Eps)
+            {
+                T = new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                to.X, to.Y, to.Z, 1);
+            }
+            else
             {
                 float denom = 1 + to.W;
                 T = new Matrix4(
@@ -170,19 +169,11 @@ namespace Hyper
                     -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
                     to.X, to.Y, to.Z, to.W);
             }
-            else
-            {
-                T = new Matrix4(
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                to.X, to.Y, to.Z, 1);
-            }
 
             return T;
         }
 
-        public Vector3 Move(KeyboardState input, float time)
+        public void Move(KeyboardState input, float time)
         {
             float cameraSpeed = _cameraSpeed;
 
@@ -190,30 +181,30 @@ namespace Hyper
 
             if (input.IsKeyDown(Keys.W))
             {
-                move += Front * cameraSpeed * time; // Forward
+                move += _front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.S))
             {
-                move -= Front * cameraSpeed * time; // Backwards
+                move -= _front * cameraSpeed * time; 
             }
             if (input.IsKeyDown(Keys.A))
             {
-                move -= Right * cameraSpeed * time; // Left
+                move -= _right * cameraSpeed * time; 
             }
             if (input.IsKeyDown(Keys.D))
             {
-                move += Right * cameraSpeed * time; // Right
+                move += _right * cameraSpeed * time; 
             }
             if (input.IsKeyDown(Keys.Space))
             {
-                move += Up * cameraSpeed * time; // Up
+                move += _up * cameraSpeed * time; 
             }
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                move -= Up * cameraSpeed * time; // Down
+                move -= _up * cameraSpeed * time; 
             }
 
-            return move;
+            Position += move;
         }
 
         protected override void SetComamnd(string[] args)

@@ -9,29 +9,24 @@ namespace Hyper
 
         private readonly Dictionary<string, int> _uniformLocations;
 
-        public Shader(string vertPath, string fragPath)
+        public Shader((string path, ShaderType shaderType)[] shaders)
         {
-            var shaderSource = File.ReadAllText(vertPath);
-            var vertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertexShader, shaderSource);
-            CompileShader(vertexShader);
-
-            shaderSource = File.ReadAllText(fragPath);
-            var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, shaderSource);
-            CompileShader(fragmentShader);
-
             Handle = GL.CreateProgram();
 
-            GL.AttachShader(Handle, vertexShader);
-            GL.AttachShader(Handle, fragmentShader);
+            var shadersToDelete = new List<int>();
+            foreach (var shader in shaders)
+            {
+                var createdShader = CreateShader(shader.path, shader.shaderType);
+                shadersToDelete.Add(createdShader);
+            }
 
             LinkProgram(Handle);
 
-            GL.DetachShader(Handle, vertexShader);
-            GL.DetachShader(Handle, fragmentShader);
-            GL.DeleteShader(fragmentShader);
-            GL.DeleteShader(vertexShader);
+            foreach (var shader in shadersToDelete)
+            {
+                GL.DetachShader(Handle, shader);
+                GL.DeleteShader(shader);
+            }
 
             GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
@@ -44,6 +39,17 @@ namespace Hyper
 
                 _uniformLocations.Add(key, location);
             }
+        }
+
+        private int CreateShader(string shaderPath, ShaderType shaderType)
+        {
+            var shaderSource = File.ReadAllText(shaderPath);
+            var vertexShader = GL.CreateShader(shaderType);
+            GL.ShaderSource(vertexShader, shaderSource);
+            CompileShader(vertexShader);
+            GL.AttachShader(Handle, vertexShader);
+
+            return vertexShader;
         }
 
         private static void CompileShader(int shader)
