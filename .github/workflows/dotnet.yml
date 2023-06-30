@@ -37,5 +37,3 @@ jobs:
           echo "::warning::dotnet format found unformatted code. Consider formatting your code for consistency."
         fi
         set -e
-
-
