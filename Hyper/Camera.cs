@@ -122,6 +122,30 @@ namespace Hyper
             return nonEuclidProj;
         }
 
+        public Matrix4 TranslateMatrix(Vector4 to)
+        {
+            Matrix4 T;
+            if (MathHelper.Abs(Curve) < Constants.Eps)
+            {
+                T = new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                to.X, to.Y, to.Z, 1);
+            }
+            else
+            {
+                float denom = 1 + to.W;
+                T = new Matrix4(
+                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
+                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
+                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
+                    to.X, to.Y, to.Z, to.W);
+            }
+
+            return T;
+        }
+
         public Vector4 PortEucToCurved(Vector3 eucPoint)
         {
             return PortEucToCurved(new Vector4(eucPoint, 1));
@@ -147,30 +171,6 @@ namespace Hyper
 
             _right = Vector3.Normalize(Vector3.Cross(_front, Vector3.UnitY));
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
-        }
-
-        private Matrix4 TranslateMatrix(Vector4 to)
-        {
-            Matrix4 T;
-            if (MathHelper.Abs(Curve) < Constants.Eps)
-            {
-                T = new Matrix4(
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                to.X, to.Y, to.Z, 1);
-            }
-            else
-            {
-                float denom = 1 + to.W;
-                T = new Matrix4(
-                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
-                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
-                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
-                    to.X, to.Y, to.Z, to.W);
-            }
-
-            return T;
         }
 
         public void Move(KeyboardState input, float time)
@@ -204,14 +204,6 @@ namespace Hyper
                 move -= _up * cameraSpeed * time;
             }
 
-            Position += move;
-        }
-
-        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
-        // | q_x,                              q_y,                               q_z,                                    q_w |
-
-        private void UpdatePosition(Vector3 move)
-        {
             Position += move;
         }
 
