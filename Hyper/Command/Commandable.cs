@@ -2,10 +2,10 @@
 {
     public abstract class Commandable
     {
-        public void Command(string[] argumants)
+        public void Command(string[] arguments)
         {
-            var key = argumants[0];
-            var args = argumants.Skip(1).ToArray();
+            var key = arguments[0];
+            var args = arguments.Skip(1).ToArray();
 
             switch (key)
             {

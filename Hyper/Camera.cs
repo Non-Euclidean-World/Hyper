@@ -7,13 +7,15 @@ namespace Hyper
 {
     public class Camera : Commandable
     {
+        public float Curve { get; set; } = 0f;
+
+        public Vector3 Position { get; set; } = Vector3.Zero;
+
         private Vector3 _front = -Vector3.UnitZ;
 
         private Vector3 _up = Vector3.UnitY;
 
         private Vector3 _right = Vector3.UnitX;
-
-        private const float _curve = 1f;
 
         private float _pitch;
 
@@ -21,23 +23,24 @@ namespace Hyper
 
         private float _fov = MathHelper.PiOver2;
 
+        private float _cameraSpeed = 50f;
+
+        private float _near;
+
+        private float _far;
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Camera(Vector3 position, float aspectRatio)
+        public Camera(float aspectRatio, float near, float far)
         {
-            Position = position;
             AspectRatio = aspectRatio;
+            _near = near;
+            _far = far;
         }
 
-        public Vector3 Position { get; set; }
+        private Vector3 _position = Vector3.UnitY;
 
         public float AspectRatio { private get; set; }
-
-        public Vector3 Front => _front;
-
-        public Vector3 Up => _up;
-
-        public Vector3 Right => _right;
 
         public float Pitch
         {
@@ -70,88 +73,68 @@ namespace Hyper
             }
         }
 
-        // The camera is defined by eye position e
-        // and three orthogonal unit vectors in the tangent space of the eye, right direction i
-        // , up direction j, and negative view direction k. L is the curvature
-        //
-        // | i_x     j_x     k_x     Le_x |
-        // | i_y     j_y     k_y     Le_y |
-        // | i_z     j_z     k_z     Le_z |
-        // | Li_w    Lj_w    Lk_w    e_w  |
         public Matrix4 GetViewMatrix()
         {
-            //return new Matrix4(
-            //    _right.X, _up.X, _front.X, _curve * Position.X,
-            //    _right.Y, _up.Y, _front.Y, _curve * Position.Y,
-            //    _right.Z, _up.Z, _front.Z, _curve * Position.Z,
-            //    _curve * _right.w, _curve * _up.w, _curve * _front.W, Position.W
-            //);
+            Matrix4 V = Matrix4.LookAt(_position, _position + _front, _up);
+            Vector4 ic = new Vector4(V.Column0.Xyz, 0);
+            Vector4 jc = new Vector4(V.Column1.Xyz, 0);
+            Vector4 kc = new Vector4(V.Column2.Xyz, 0);
 
-            return Matrix4.LookAt(Position, Position + _front, _up);
+            Vector4 geomEye = PortEucToCurved(_position);
+
+            Matrix4 eyeTranslate = TranslateMatrix(geomEye);
+            Vector4 icp = ic * eyeTranslate;
+            Vector4 jcp = jc * eyeTranslate;
+            Vector4 kcp = kc * eyeTranslate;
+
+            if (MathHelper.Abs(Curve) < Constants.Eps)
+            {
+                return V;
+            }
+
+            Matrix4 nonEuclidView = new Matrix4(
+                icp.X, jcp.X, kcp.X, Curve * geomEye.X,
+                icp.Y, jcp.Y, kcp.Y, Curve * geomEye.Y,
+                icp.Z, jcp.Z, kcp.Z, Curve * geomEye.Z,
+                Curve * icp.W, Curve * jcp.W, Curve * kcp.W, geomEye.W);
+
+            return nonEuclidView;
         }
 
-        // | 1/s_x  0      0    0 |
-        // | 0      1/s_y  0    0 |
-        // | 0      0      a   -1 |
-        // | 0      0      0    b |
-        //
-        // Euclidean geometry
-        // aE = -dmin + dmax / (dmax - dmin);
-        // bE = -2 * dmin * dmax / (dmax - dmin);
-
-        // Hyperbolic geometry
-        // aH = -Sinh(dmin + dmax) / Sinh(dmax - dmin);
-        // bH = -2 * Sinh(dmin) * Sinh(dmax) / Sinh(dmax - dmin);
-
-        // Elliptic geometry
-        // aS = -Sin(dmin + dmax) / Sin(dmax - dmin);
-        // bS = -2 * Sin(dmin) * Sin(dmax) / Sin(dmax - dmin);
         public Matrix4 GetProjectionMatrix()
         {
-            //float dmin = 0.01f;
-            //float dmax = 100f;
+            Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
+            float sFovX = P.Column0.X;
+            float sFovY = P.Column1.Y;
+            float fp = _near; // scale front clipping plane according to the global scale factor of the scene
 
-            //// Euclidean geometry
-            //float a = -dmin + dmax / (dmax - dmin);
-            //float b = -2 * dmin * dmax / (dmax - dmin);
+            if (Curve <= Constants.Eps)
+            {
+                return P;
+            }
+            Matrix4 nonEuclidProj = new Matrix4(
+                sFovX, 0, 0, 0,
+                0, sFovY, 0, 0,
+                0, 0, 0, -1,
+                0, 0, -fp, 0
+                );
 
-            //// Hyperbolic geometry
-            //float a = -Math.Sinh(dmin + dmax) / Math.Sinh(dmax - dmin);
-            //float b = -2 * Math.Sinh(dmin) * Math.Sinh(dmax) / Math.Sinh(dmax - dmin);
-
-            //// Elliptic geometry
-            //float a = -Math.Sin(dmin + dmax) / Math.Sin(dmax - dmin);
-            //float b = -2 * Math.Sin(dmin) * Math.Sin(dmax) / Math.Sin(dmax - dmin);
-
-            //return new Matrix4(
-            //    1f / AspectRatio, 0f, 0f, 0f,
-            //    0f, 1f / AspectRatio, 0f, 0f,
-            //    0f, 0f, a, -1f,
-            //    0f, 0f, 0f, b
-            //);
-
-            return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+            return nonEuclidProj;
         }
 
-        // Translation by vector q
-        // | 1 - (L* q_x * q_x) / (1 + q_w),   - (L* q_x * q_y) / (1 + q_w),      - (L* q_x * q_z) / (1 + q_w),      -L * q_x |
-        // | - (L* q_y * q_x) / (1 + q_w),     1 - (L* q_y * q_y) / (1 + q_w),    - (L* q_y * q_z) / (1 + q_w),      -L * q_y |
-        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
-        // | q_x,                              q_y,                               q_z,                                    q_w |
-
-        public void UpdatePosition(Vector3 move)
+        public Vector4 PortEucToCurved(Vector3 eucPoint)
         {
-            // float move_w = MathF.Sqrt(move.X * move.X + move.Y * move.Y + move.Z * move.Z + 1);
+            return PortEucToCurved(new Vector4(eucPoint, 1));
+        }
 
-            // var matrix = new Matrix4(
-            //     1 - (_curve * move.X * move.X) / (1 + move_w), - (_curve * move.X * move.Y) / (1 + move_w), - (_curve * move.X * move.Z) / (1 + move_w), -_curve * move.X,
-            //     - (_curve * move.Y * move.X) / (1 + move_w), 1 - (_curve * move.Y * move.Y) / (1 + move_w), - (_curve * move.Y * move.Z) / (1 + move_w), -_curve * move.Y,
-            //     - (_curve * move.Z * move.X) / (1 + move_w), - (_curve * move.Z * move.Y) / (1 + move_w), 1 - (_curve * move.Z * move.Z) / (1 + move_w), -_curve * move.Z,
-            //     move.X, move.Y, move.Z, move_w
-            // );
-            // Position = Position * matrix;
-
-            Position += move;
+        private Vector4 PortEucToCurved(Vector4 eucPoint)
+        {
+            Vector3 p = eucPoint.Xyz;
+            float dist = p.Length;
+            if (dist < 0.0001f) return eucPoint;
+            if (Curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
+            if (Curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
+            return eucPoint;
         }
 
         private void UpdateVectors()
@@ -166,38 +149,70 @@ namespace Hyper
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
         }
 
+        private Matrix4 TranslateMatrix(Vector4 to)
+        {
+            Matrix4 T;
+            if (MathHelper.Abs(Curve) < Constants.Eps)
+            {
+                T = new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                to.X, to.Y, to.Z, 1);
+            }
+            else
+            {
+                float denom = 1 + to.W;
+                T = new Matrix4(
+                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
+                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
+                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
+                    to.X, to.Y, to.Z, to.W);
+            }
+
+            return T;
+        }
+
         public void Move(KeyboardState input, float time)
         {
-            const float cameraSpeed = 1.5f;
+            float cameraSpeed = _cameraSpeed;
 
             Vector3 move = Vector3.Zero;
 
             if (input.IsKeyDown(Keys.W))
             {
-                move += Front * cameraSpeed * time; // Forward
+                move += _front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.S))
             {
-                move -= Front * cameraSpeed * time; // Backwards
+                move -= _front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.A))
             {
-                move -= Right * cameraSpeed * time; // Left
+                move -= _right * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.D))
             {
-                move += Right * cameraSpeed * time; // Right
+                move += _right * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.Space))
             {
-                move += Up * cameraSpeed * time; // Up
+                move += _up * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                move -= Up * cameraSpeed * time; // Down
+                move -= _up * cameraSpeed * time;
             }
 
-            UpdatePosition(move);
+            Position += move;
+        }
+
+        // | - (L* q_z * q_x) / (1 + q_w),     - (L* q_z * q_y) / (1 + q_w),      1 - (L* q_z * q_z) / (1 + q_w),    -L * q_z |
+        // | q_x,                              q_y,                               q_z,                                    q_w |
+
+        private void UpdatePosition(Vector3 move)
+        {
+            Position += move;
         }
 
         protected override void SetComamnd(string[] args)
@@ -206,6 +221,19 @@ namespace Hyper
             {
                 case "fov":
                     Fov = int.Parse(args[1]);
+                    break;
+                case "curve":
+                    if (args[1] == "h")
+                        Curve = -1f;
+                    else if (args[1] == "s")
+                        Curve = 1f;
+                    else if (args[1] == "e")
+                        Curve = 0f;
+                    else
+                        Curve = float.Parse(args[1]);
+                    break;
+                case "speed":
+                    _cameraSpeed = float.Parse(args[1]);
                     break;
             }
         }
@@ -218,7 +246,7 @@ namespace Hyper
                     Console.WriteLine(Fov);
                     break;
                 case "position":
-                    Console.WriteLine(Position);
+                    Console.WriteLine(_position);
                     break;
             }
         }
