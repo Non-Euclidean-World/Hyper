@@ -47,11 +47,14 @@ namespace Hyper
 
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
+            GL.PatchParameter(PatchParameterInt.PatchVertices, 4);
 
             var shaders = new (string, ShaderType)[]
             {
                 ("Shaders/shader.vert", ShaderType.VertexShader),
-                ("Shaders/shader.frag", ShaderType.FragmentShader)
+                ("Shaders/shader.frag", ShaderType.FragmentShader),
+                ("Shaders/shader.tesc", ShaderType.TessControlShader),
+                ("Shaders/shader.tese", ShaderType.TessEvaluationShader)
             };
 
             _shader = new Shader(shaders);
@@ -104,7 +107,7 @@ namespace Hyper
                     var scale = Matrix4.CreateScale(_scale);
                     _shader.SetMatrix4("model", scale * model);
 
-                    GL.DrawElements(PrimitiveType.Triangles, mesh.numberOfIndices, DrawElementsType.UnsignedInt, 0);
+                    GL.DrawElements(PrimitiveType.Patches, mesh.numberOfIndices, DrawElementsType.UnsignedInt, 0);
                 }
             }
 
