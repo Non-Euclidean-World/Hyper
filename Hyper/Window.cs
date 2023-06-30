@@ -16,9 +16,11 @@ namespace Hyper
 
         private List<Object3D> _objects = null!;
 
-        private Shader _shader = null!;
+        private Mesh _lightSource = null!;
 
-        private Texture _texture = null!;
+        private Shader _objectShader = null!;
+
+        private Shader _lightSourceShader = null!;
 
         private float _scale = 0.1f;
 
@@ -48,31 +50,22 @@ namespace Hyper
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            var shaders = new (string, ShaderType)[]
+            var objectShaders = new (string, ShaderType)[]
             {
-                ("Shaders/shader.vert", ShaderType.VertexShader),
-                ("Shaders/shader.frag", ShaderType.FragmentShader)
+                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+                ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
             };
-
-            _shader = new Shader(shaders);
-            _shader.Use();
+            _objectShader = new Shader(objectShaders);
 
             _objects = GenerateObjects(() => SceneGenerators.GenerateFlat(20));
 
-            // Position attribute
-            var vertexLocation = _shader.GetAttribLocation("aPosition");
-            GL.EnableVertexAttribArray(vertexLocation);
-            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-
-            // Texture coordinate attribute
-            var texCoordLocation = _shader.GetAttribLocation("aTexCoord");
-            GL.EnableVertexAttribArray(texCoordLocation);
-            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-
-            _texture = Texture.LoadFromFile("Resources/container.png");
-            _texture.Use(TextureUnit.Texture0);
-
-            _shader.SetInt("texture0", 0);
+            var lightSourceShaders = new (string, ShaderType)[]
+            {
+                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+                ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
+            };
+            _lightSourceShader = new Shader(lightSourceShaders);
+            _lightSource = GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0];
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
 
@@ -85,16 +78,15 @@ namespace Hyper
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.BindVertexArray(_objects[0].Meshes[0].VaoId); // we only have 1 VAO but will have to change this
-
-            _texture.Use(TextureUnit.Texture0);
-
-            _shader.Use();
-
-            _shader.SetFloat("curv", _camera.Curve);
-            _shader.SetFloat("anti", 1.0f);
-            _shader.SetMatrix4("view", _camera.GetViewMatrix());
-            _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            _objectShader.Use();
+            _objectShader.SetFloat("curv", _camera.Curve);
+            _objectShader.SetFloat("anti", 1.0f);
+            _objectShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _objectShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
+            _objectShader.SetVector3("lightColor", new Vector3(1f, 1f, 1f));
+            _objectShader.SetVector3("lightPos", (_lightSource.Position - _camera.Position) * _scale);
+            _objectShader.SetVector3("viewPos", Vector3.UnitY);
 
             foreach (var obj in _objects)
             {
@@ -102,12 +94,27 @@ namespace Hyper
                 {
                     var model = Matrix4.CreateTranslation((mesh.Position - _camera.Position) * _scale);
                     var scale = Matrix4.CreateScale(_scale);
-                    _shader.SetMatrix4("model", scale * model);
+                    _objectShader.SetMatrix4("model", scale * model);
 
-                    GL.DrawElements(PrimitiveType.Triangles, mesh.numberOfIndices, DrawElementsType.UnsignedInt, 0);
+                    GL.BindVertexArray(mesh.VaoId);
+                    GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
                 }
             }
 
+
+            _lightSourceShader.Use();
+            _lightSourceShader.SetFloat("curv", _camera.Curve);
+            _lightSourceShader.SetFloat("anti", 1.0f);
+            _lightSourceShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _lightSourceShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+
+            GL.BindVertexArray(_lightSource.VaoId);
+            var modelLS = Matrix4.CreateTranslation((_lightSource.Position - _camera.Position) * _scale);
+            var scaleLS = Matrix4.CreateScale(_scale);
+            _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
+
+            GL.BindVertexArray(_lightSource.VaoId);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
 
             SwapBuffers();
         }
@@ -238,11 +245,15 @@ namespace Hyper
 
         private static List<Object3D> GenerateObjects(Func<Vector3[]> positionsGenerator)
         {
-            var positions = positionsGenerator();
+            return GenerateObjects(positionsGenerator());
+        }
+
+        private static List<Object3D> GenerateObjects(Vector3[] positions)
+        {
             var object3d = new Object3D();
             foreach (var position in positions)
             {
-                object3d.Meshes.Add(CubeMesh.Create(1f, position));
+                object3d.Meshes.Add(CubeMesh.Create(position));
             }
 
             return new List<Object3D> { object3d };

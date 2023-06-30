@@ -28,6 +28,20 @@ namespace Hyper.Meshes
             Position = position;
         }
 
+        /*public Mesh(Vector3[] vertices, int[] indices, Vector3 position)
+        {
+            VaoId = CreateVertexArrayObject(vertices, indices);
+            numberOfIndices = indices.Length;
+            Position = position;
+        }*/
+
+        public Mesh(float[] vertices, Vector3 position)
+        {
+            VaoId = CreateVertexArrayObject(vertices);
+            numberOfIndices = 0;
+            Position = position;
+        }
+
         private int CreateVertexArrayObject(Vertex[] vertices, int[] indices)
         {
             int vaoId = GL.GenVertexArray();
@@ -45,6 +59,30 @@ namespace Hyper.Meshes
             int eboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboId);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(int), indices, BufferUsageHint.StaticDraw);
+
+            GL.BindVertexArray(0);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
+            return vaoId;
+        }
+
+        // vertices & normals
+        private int CreateVertexArrayObject(float[] vertices)
+        {
+            int vaoId = GL.GenVertexArray();
+            GL.BindVertexArray(vaoId);
+
+            int vboId = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
 
             GL.BindVertexArray(0);
 
