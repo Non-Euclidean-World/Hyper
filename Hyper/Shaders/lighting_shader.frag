@@ -4,25 +4,47 @@ out vec4 FragColor;
 
 uniform vec3 objectColor;
 uniform vec3 lightColor;
-uniform vec3 lightPos;
-uniform vec3 viewPos;
+uniform vec4 lightPos;
+uniform vec4 viewPos;
 
-in vec3 Normal;
-in vec3 FragPos;
+uniform float curv;
+
+in vec4 Normal;
+in vec4 FragPos;
+
+float dotProduct(vec4 u, vec4 v)
+{
+	return dot(u, v) - ((curv < 0) ? 2 * u.w * v.w : 0);
+}
+
+vec4 direction(vec4 from, vec4 to)
+{
+	if (curv > 0) {
+		float cosd = dotProduct(from, to);
+		float sind = sqrt(1 - cosd * cosd);
+		return (to - from * cosd) / sind;
+	}
+	if (curv < 0) {
+		float coshd = -dotProduct(from, to);
+		float sinhd = sqrt(coshd * coshd - 1);
+		return (to - from * coshd) / sinhd;
+	}
+	return normalize(to - from);
+}
 
 void main()
 {
 	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * lightColor;
 
-	vec3 norm = normalize(Normal);
-	vec3 lightDir = normalize(lightPos - FragPos);
-	vec3 diffuse = max(dot(norm, lightDir), 0.0) * lightColor;
-
+	vec4 norm = normalize(Normal);
+	vec4 lightDir = normalize(direction(FragPos, lightPos));
+	vec3 diffuse = max(dotProduct(norm, lightDir), 0.0) * lightColor;
+	
 	float specularStrength = 0.5;
-	vec3 viewDir = normalize(viewPos - FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec4 viewDir = normalize(direction(FragPos, viewPos));
+	vec4 reflectDir = 2 * dotProduct(lightDir, norm) * norm - lightDir;
+	float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * lightColor;
 
 	vec3 result = (ambient + diffuse + specular) * objectColor;

@@ -149,7 +149,7 @@ namespace Hyper
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
         }
 
-        private Matrix4 TranslateMatrix(Vector4 to)
+        public Matrix4 TranslateMatrix(Vector4 to)
         {
             Matrix4 T;
             if (MathHelper.Abs(Curve) < Constants.Eps)

@@ -85,8 +85,8 @@ namespace Hyper
             _objectShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
             _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
             _objectShader.SetVector3("lightColor", new Vector3(1f, 1f, 1f));
-            _objectShader.SetVector3("lightPos", (_lightSource.Position - _camera.Position) * _scale);
-            _objectShader.SetVector3("viewPos", Vector3.UnitY);
+            _objectShader.SetVector4("lightPos", _camera.PortEucToCurved((_lightSource.Position - _camera.Position) * _scale));
+            _objectShader.SetVector4("viewPos", _camera.PortEucToCurved(Vector3.UnitY));
 
             foreach (var obj in _objects)
             {
