@@ -16,7 +16,7 @@ namespace Hyper
 
         private List<Object3D> _objects = null!;
 
-        private Mesh _lightSource = null!;
+        private (Mesh Mesh, Vector3 Color) [] _lightSources = null!;
 
         private Shader _objectShader = null!;
 
@@ -65,7 +65,10 @@ namespace Hyper
                 ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
             };
             _lightSourceShader = new Shader(lightSourceShaders);
-            _lightSource = GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0];
+            _lightSources = new [] {
+                (GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
+                (GenerateObjects(new Vector3[] { new(-4f, 4f, -4f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
+            };
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
 
@@ -84,9 +87,14 @@ namespace Hyper
             _objectShader.SetMatrix4("view", _camera.GetViewMatrix());
             _objectShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
             _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
-            _objectShader.SetVector3("lightColor", new Vector3(1f, 1f, 1f));
-            _objectShader.SetVector4("lightPos", _camera.PortEucToCurved((_lightSource.Position - _camera.Position) * _scale));
+            _objectShader.SetInt("numLights", _lightSources.Length);
             _objectShader.SetVector4("viewPos", _camera.PortEucToCurved(Vector3.UnitY));
+
+            for (int i = 0; i < _lightSources.Length; i++)
+            {
+                _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
+                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Mesh.Position - _camera.Position) * _scale));
+            }
 
             foreach (var obj in _objects)
             {
@@ -108,13 +116,18 @@ namespace Hyper
             _lightSourceShader.SetMatrix4("view", _camera.GetViewMatrix());
             _lightSourceShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
 
-            GL.BindVertexArray(_lightSource.VaoId);
-            var modelLS = Matrix4.CreateTranslation((_lightSource.Position - _camera.Position) * _scale);
-            var scaleLS = Matrix4.CreateScale(_scale);
-            _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
+            foreach (var light in _lightSources)
+            {
+                GL.BindVertexArray(light.Mesh.VaoId);
+                var modelLS = Matrix4.CreateTranslation((light.Mesh.Position - _camera.Position) * _scale);
+                var scaleLS = Matrix4.CreateScale(_scale);
+                _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
+                _lightSourceShader.SetVector3("color", light.Color);
 
-            GL.BindVertexArray(_lightSource.VaoId);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+                GL.BindVertexArray(light.Mesh.VaoId);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            }
+            
 
             SwapBuffers();
         }
