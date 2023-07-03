@@ -38,7 +38,7 @@ vec4 direction(vec4 from, vec4 to)
 void main()
 {
     float ambientStrength = 0.1;
-    vec3 ambient = vec3(0.0);
+    vec3 ambient = ambientStrength * vec3(0.0);
     vec3 diffuse = vec3(0.0);
     vec3 specular = vec3(0.0);
 
@@ -46,8 +46,6 @@ void main()
     vec4 viewDir = normalize(direction(FragPos, viewPos));
 
     for (int i = 0; i < numLights; ++i) {
-        ambient += ambientStrength * lightColor[i];
-        
         vec4 lightDir = normalize(direction(FragPos, lightPos[i]));
         diffuse += max(dotProduct(norm, lightDir), 0.0) * lightColor[i];
         
