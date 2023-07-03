@@ -38,7 +38,7 @@ vec4 direction(vec4 from, vec4 to)
 void main()
 {
     float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * vec3(0.0);
+    vec3 ambient = ambientStrength * vec3(1.0);
     vec3 diffuse = vec3(0.0);
     vec3 specular = vec3(0.0);
 
