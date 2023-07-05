@@ -16,7 +16,7 @@ namespace Hyper
 
         private List<Object3D> _objects = null!;
 
-        private (Mesh Mesh, Vector3 Color) [] _lightSources = null!;
+        private (Mesh Mesh, Vector3 Color)[] _lightSources = null!;
 
         private Shader _objectShader = null!;
 
@@ -65,7 +65,7 @@ namespace Hyper
                 ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
             };
             _lightSourceShader = new Shader(lightSourceShaders);
-            _lightSources = new [] {
+            _lightSources = new[] {
                 (GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
                 (GenerateObjects(new Vector3[] { new(-4f, 4f, -4f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
             };
@@ -127,7 +127,7 @@ namespace Hyper
                 GL.BindVertexArray(light.Mesh.VaoId);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
             }
-            
+
 
             SwapBuffers();
         }
