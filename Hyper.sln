@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyper", "Hyper\Hyper.csproj", "{1D22F8D8-A1FE-4F9B-9744-D9944D8C800B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyper", "Hyper\Hyper.csproj", "{1D22F8D8-A1FE-4F9B-9744-D9944D8C800B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6B9A8F10-1BCE-4EE6-B3DA-2A251C9F7DD4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HyperTest", "HyperTest\HyperTest.csproj", "{8C7E6BB2-9314-450F-B7D6-828013820EDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{1D22F8D8-A1FE-4F9B-9744-D9944D8C800B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D22F8D8-A1FE-4F9B-9744-D9944D8C800B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D22F8D8-A1FE-4F9B-9744-D9944D8C800B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C7E6BB2-9314-450F-B7D6-828013820EDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C7E6BB2-9314-450F-B7D6-828013820EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C7E6BB2-9314-450F-B7D6-828013820EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C7E6BB2-9314-450F-B7D6-828013820EDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8C7E6BB2-9314-450F-B7D6-828013820EDF} = {6B9A8F10-1BCE-4EE6-B3DA-2A251C9F7DD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29B3FFBA-ED9E-48A2-A6F0-730647031DB8}

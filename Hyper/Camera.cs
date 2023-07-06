@@ -122,6 +122,30 @@ namespace Hyper
             return nonEuclidProj;
         }
 
+        public Matrix4 TranslateMatrix(Vector4 to)
+        {
+            Matrix4 T;
+            if (MathHelper.Abs(Curve) < Constants.Eps)
+            {
+                T = new Matrix4(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                to.X, to.Y, to.Z, 1);
+            }
+            else
+            {
+                float denom = 1 + to.W;
+                T = new Matrix4(
+                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
+                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
+                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
+                    to.X, to.Y, to.Z, to.W);
+            }
+
+            return T;
+        }
+
         public Vector4 PortEucToCurved(Vector3 eucPoint)
         {
             return PortEucToCurved(new Vector4(eucPoint, 1));
@@ -149,7 +173,7 @@ namespace Hyper
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
         }
 
-        public Matrix4 TranslateMatrix(Vector4 to)
+        private Matrix4 TranslateMatrix(Vector4 to)
         {
             Matrix4 T;
             if (MathHelper.Abs(Curve) < Constants.Eps)
