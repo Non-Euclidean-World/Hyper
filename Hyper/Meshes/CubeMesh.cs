@@ -4,13 +4,13 @@ namespace Hyper.Meshes
 {
     public static class CubeMesh
     {
-        /*public static Mesh Create(float size, Vector3 position)
+        public static Mesh Create(float size, Vector3 position)
         {
             var vertexes = CreateCubeVertices(size);
             var positions = CreateCubeIndices();
 
             return new Mesh(vertexes, positions, position);
-        }*/
+        }
 
         public static Mesh Create(Vector3 position)
         {

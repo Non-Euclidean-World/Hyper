@@ -252,6 +252,7 @@ namespace Hyper
                 catch (Exception ex)
                 {
                     _logger.Error(ex);
+                    Console.WriteLine(ex.Message);
                 }
             }
         }

@@ -1,7 +1,11 @@
-﻿namespace Hyper.Command
+﻿using NLog;
+
+namespace Hyper.Command
 {
     public abstract class Commandable
     {
+        private const string _commandNotFound = "Command does not exist";
+
         public void Command(string[] arguments)
         {
             var key = arguments[0];
@@ -15,17 +19,24 @@
                 case "set":
                     SetComamnd(args);
                     break;
+                default: CommandNotFound();
+                    break;
             }
         }
 
         protected virtual void SetComamnd(string[] args)
         {
-            throw new CommandException("Command does not exist");
+            CommandNotFound();
         }
 
         protected virtual void GetComamnd(string[] args)
         {
-            throw new CommandException("Command does not exist");
+            CommandNotFound();
+        }
+
+        private void CommandNotFound()
+        {
+            throw new CommandException(_commandNotFound);
         }
     }
 }

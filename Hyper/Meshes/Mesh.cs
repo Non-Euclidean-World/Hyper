@@ -28,13 +28,6 @@ namespace Hyper.Meshes
             Position = position;
         }
 
-        /*public Mesh(Vector3[] vertices, int[] indices, Vector3 position)
-        {
-            VaoId = CreateVertexArrayObject(vertices, indices);
-            numberOfIndices = indices.Length;
-            Position = position;
-        }*/
-
         public Mesh(float[] vertices, Vector3 position)
         {
             VaoId = CreateVertexArrayObject(vertices);
