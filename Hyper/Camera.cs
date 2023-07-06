@@ -227,6 +227,14 @@ namespace Hyper
                 case "speed":
                     _cameraSpeed = float.Parse(args[1]);
                     break;
+                case "position":
+                    if (args.Length != 4)
+                        return;
+                    float x = float.Parse(args[1]);
+                    float y = float.Parse(args[2]);
+                    float z = float.Parse(args[3]);
+                    Position = new Vector3(x, y, z);
+                    break;
             }
         }
 
@@ -238,8 +246,9 @@ namespace Hyper
                     Console.WriteLine(Fov);
                     break;
                 case "position":
-                    Console.WriteLine(_position);
+                    Console.WriteLine(Position);
                     break;
+
             }
         }
     }
