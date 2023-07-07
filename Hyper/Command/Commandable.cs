@@ -1,6 +1,4 @@
-﻿using NLog;
-
-namespace Hyper.Command
+﻿namespace Hyper.Command
 {
     public abstract class Commandable
     {
@@ -19,7 +17,8 @@ namespace Hyper.Command
                 case "set":
                     SetComamnd(args);
                     break;
-                default: CommandNotFound();
+                default:
+                    CommandNotFound();
                     break;
             }
         }
@@ -34,7 +33,7 @@ namespace Hyper.Command
             CommandNotFound();
         }
 
-        private void CommandNotFound()
+        private static void CommandNotFound()
         {
             throw new CommandException(_commandNotFound);
         }

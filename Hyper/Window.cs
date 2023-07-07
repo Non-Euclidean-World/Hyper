@@ -93,14 +93,14 @@ namespace Hyper
             for (int i = 0; i < _lightSources.Length; i++)
             {
                 _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Mesh.Position - _camera.Position) * _scale));
+                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Mesh.Position - _camera.ReferencePointPosition) * _scale));
             }
 
             foreach (var obj in _objects)
             {
                 foreach (var mesh in obj.Meshes)
                 {
-                    var model = Matrix4.CreateTranslation((mesh.Position - _camera.Position) * _scale);
+                    var model = Matrix4.CreateTranslation((mesh.Position - _camera.ReferencePointPosition) * _scale);
                     var scale = Matrix4.CreateScale(_scale);
                     _objectShader.SetMatrix4("model", scale * model);
 
@@ -119,7 +119,7 @@ namespace Hyper
             foreach (var light in _lightSources)
             {
                 GL.BindVertexArray(light.Mesh.VaoId);
-                var modelLS = Matrix4.CreateTranslation((light.Mesh.Position - _camera.Position) * _scale);
+                var modelLS = Matrix4.CreateTranslation((light.Mesh.Position - _camera.ReferencePointPosition) * _scale);
                 var scaleLS = Matrix4.CreateScale(_scale);
                 _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
                 _lightSourceShader.SetVector3("color", light.Color);
