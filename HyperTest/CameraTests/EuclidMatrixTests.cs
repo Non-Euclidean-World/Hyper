@@ -19,7 +19,7 @@ namespace HyperTest.CameraTests
             // Arrange
             var camera = new Camera(1f, 0.1f, 100f);
             camera.Curve = 0f;
-            camera.Position = new Vector3(0f, 0f, 0f);
+            camera.ReferencePointPosition = new Vector3(0f, 0f, 0f);
             camera.Pitch = 0f;
             camera.Yaw = 0f;
             camera.Curve = 0f;

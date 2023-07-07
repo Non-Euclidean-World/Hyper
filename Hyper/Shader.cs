@@ -34,10 +34,23 @@ namespace Hyper
 
             for (var i = 0; i < numberOfUniforms; i++)
             {
-                var key = GL.GetActiveUniform(Handle, i, out _, out _);
-                var location = GL.GetUniformLocation(Handle, key);
+                var key = GL.GetActiveUniform(Handle, i, out int size, out ActiveUniformType type);
 
-                _uniformLocations.Add(key, location);
+                if (size > 1)
+                {
+                    string baseName = key.Split('[')[0];
+                    for (int j = 0; j < size; j++)
+                    {
+                        var arrayKey = baseName + "[" + j + "]";
+                        var location = GL.GetUniformLocation(Handle, arrayKey);
+                        _uniformLocations.Add(arrayKey, location);
+                    }
+                }
+                else
+                {
+                    var location = GL.GetUniformLocation(Handle, key);
+                    _uniformLocations.Add(key, location);
+                }
             }
         }
 
@@ -70,7 +83,8 @@ namespace Hyper
             GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
             if (code != (int)All.True)
             {
-                throw new Exception($"Error occurred whilst linking Program({program})");
+                var infoLog = GL.GetProgramInfoLog(program);
+                throw new Exception($"Error occurred whilst linking Program({program}).\n\n{infoLog}");
             }
         }
 
@@ -131,6 +145,12 @@ namespace Hyper
         {
             GL.UseProgram(Handle);
             GL.Uniform3(_uniformLocations[name], data);
+        }
+
+        public void SetVector4(string name, Vector4 data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform4(_uniformLocations[name], data);
         }
     }
 }

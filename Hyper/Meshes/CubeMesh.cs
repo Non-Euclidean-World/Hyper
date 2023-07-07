@@ -6,53 +6,58 @@ namespace Hyper.Meshes
     {
         public static Mesh Create(float size, Vector3 position)
         {
-            var vertexes = CreateCubeVertices(size, position);
+            var vertexes = CreateCubeVertices(size);
             var positions = CreateCubeIndices();
 
             return new Mesh(vertexes, positions, position);
         }
 
+        public static Mesh Create(Vector3 position)
+        {
+            return new Mesh(_vertices, position);
+        }
+
         // Method to create vertices for the cube based on size and position
-        private static Vertex[] CreateCubeVertices(float size, Vector3 position)
+        private static Vertex[] CreateCubeVertices(float size)
         {
             float halfSize = size / 2f;
             return new Vertex[]
             {
                 // Front face
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize), TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize), TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize), TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize), TexCoords = new Vector2(0.0f, 1.0f) },
         
                 // Back face
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize), TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize), TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize), TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 1.0f) },
 
                 // Left face
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize) , TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize) , TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 1.0f) },
 
                 // Right face
-                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize) , TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize) , TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 1.0f) },
 
                 // Top face
-                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, -halfSize) , TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, halfSize, halfSize) , TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, halfSize, halfSize) , TexCoords = new Vector2(0.0f, 1.0f) },
 
                 // Bottom face
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(0.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize) + position, TexCoords = new Vector2(1.0f, 0.0f) },
-                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(1.0f, 1.0f) },
-                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize) + position, TexCoords = new Vector2(0.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, -halfSize) , TexCoords = new Vector2(0.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, -halfSize) , TexCoords = new Vector2(1.0f, 0.0f) },
+                new Vertex { Position = new Vector3(halfSize, -halfSize, halfSize) , TexCoords = new Vector2(1.0f, 1.0f) },
+                new Vertex { Position = new Vector3(-halfSize, -halfSize, halfSize) , TexCoords = new Vector2(0.0f, 1.0f) },
             };
         }
 
@@ -76,5 +81,50 @@ namespace Hyper.Meshes
             };
         }
 
+        // vertices & normals
+        private static readonly float[] _vertices =
+        {
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        };
     }
 }
