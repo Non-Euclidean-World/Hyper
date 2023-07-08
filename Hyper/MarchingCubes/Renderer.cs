@@ -84,8 +84,8 @@ namespace Hyper.MarchingCubes
             float[] cubeValues = new float[8];
             for (int i = 0; i < 8; i++)
             {
-                var offset = MarchingCubesTables.CubeOffsets[i];
-                cubeValues[i] = _voxels[x + offset[0], y + offset[1], z + offset[2]];
+                var offset = MarchingCubesTables.CubeCorners[i];
+                cubeValues[i] = _voxels[x + offset.X, y + offset.Y, z + offset.Z];
             }
 
             return cubeValues;

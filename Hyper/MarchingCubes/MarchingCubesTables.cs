@@ -19,26 +19,15 @@ namespace Hyper.MarchingCubes
             new int[] {3,7}
         };
 
-        public static Vector3[] CubeCorners = new Vector3[] {
-            new Vector3(0, 0, 1),
-            new Vector3(1, 0, 1),
-            new Vector3(1, 0, 0),
-            new Vector3(0, 0, 0),
-            new Vector3(0, 1, 1),
-            new Vector3(1, 1, 1),
-            new Vector3(1, 1, 0),
-            new Vector3(0, 1, 0)
-        };
-
-        public static int[][] CubeOffsets = new int[][] {
-            new int[] {0, 0, 1 },
-            new int[] {1, 0, 1 },
-            new int[] {1, 0, 0 },
-            new int[] {0, 0, 0 },
-            new int[] {0, 1, 1 },
-            new int[] {1, 1, 1 },
-            new int[] {1, 1, 0 },
-            new int[] {0, 1, 0 }
+        public static Vector3i[] CubeCorners = new Vector3i[] {
+            new Vector3i(0, 0, 1),
+            new Vector3i(1, 0, 1),
+            new Vector3i(1, 0, 0),
+            new Vector3i(0, 0, 0),
+            new Vector3i(0, 1, 1),
+            new Vector3i(1, 1, 1),
+            new Vector3i(1, 1, 0),
+            new Vector3i(0, 1, 0)
         };
 
         public static int[][] TriTable = {
