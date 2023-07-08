@@ -1,4 +1,5 @@
 ﻿using Hyper;
+using Hyper.MarchingCubes;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -11,7 +12,7 @@ var nativeWindowSettings = new NativeWindowSettings()
     Flags = ContextFlags.ForwardCompatible,
 };
 
-using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
+using (var window = new MarchingCubesWindow(GameWindowSettings.Default, nativeWindowSettings))
 {
     window.RenderFrequency = 30.0f;
     window.Run();
