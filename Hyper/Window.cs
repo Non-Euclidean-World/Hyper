@@ -230,17 +230,6 @@ namespace Hyper
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
         }
 
-        private static List<Object3D> GenerateObjects(Vector3[] positions)
-        {
-            var object3d = new Object3D();
-            foreach (var position in positions)
-            {
-                object3d.Meshes.Add(CubeMesh.Create(position));
-            }
-
-            return new List<Object3D> { object3d };
-        }
-
         private void UpdateCamera(KeyboardState input, float time)
         {
             if (input.IsKeyDown(Keys.D8))
