@@ -1,12 +1,6 @@
 ﻿using FluentAssertions;
 using Hyper;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace HyperTest.CameraTests
 {
@@ -23,7 +17,7 @@ namespace HyperTest.CameraTests
             camera.Pitch = 0f;
             camera.Yaw = 0f;
             camera.Curve = 0f;
-            
+
             var expected = new Matrix4(
                 0f, 0f, -1f, 0f,
                 0f, 1f, 0f, 0f,
@@ -54,7 +48,7 @@ namespace HyperTest.CameraTests
             var projection = camera.GetProjectionMatrix();
 
             // Assert
-            AreMatricesEqual(projection, expected).Should().Be(true); 
+            AreMatricesEqual(projection, expected).Should().Be(true);
         }
 
         [Test]

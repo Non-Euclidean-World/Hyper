@@ -1,4 +1,5 @@
-﻿using Hyper.Meshes;
+﻿using Hyper.MarchingCubes;
+using Hyper.Meshes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -33,7 +34,9 @@ namespace Hyper
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             StartDebugThreadAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public override void Close()
@@ -57,7 +60,9 @@ namespace Hyper
             };
             _objectShader = new Shader(objectShaders);
 
-            _objects = GenerateObjects(() => SceneGenerators.GenerateFlat(20));
+            //_objects = GenerateObjects(() => SceneGenerators.GenerateFlat(20));
+            Generator generator = new Generator(0, 16);
+            _objects = generator.GenerateWrold();
 
             var lightSourceShaders = new (string, ShaderType)[]
             {
@@ -65,7 +70,7 @@ namespace Hyper
                 ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
             };
             _lightSourceShader = new Shader(lightSourceShaders);
-            _lightSources = new[] {
+            _lightSources = new (Mesh Mesh, Vector3 Color)[] {
                 (GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
                 (GenerateObjects(new Vector3[] { new(-4f, 4f, -4f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
             };
@@ -105,7 +110,7 @@ namespace Hyper
                     _objectShader.SetMatrix4("model", scale * model);
 
                     GL.BindVertexArray(mesh.VaoId);
-                    GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+                    GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.numberOfVertices);
                 }
             }
 
