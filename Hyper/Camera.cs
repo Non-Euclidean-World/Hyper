@@ -11,7 +11,7 @@ namespace Hyper
 
         public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
 
-        private Vector3 _front = -Vector3.UnitZ;
+        public Vector3 Front = -Vector3.UnitZ;
 
         private Vector3 _up = Vector3.UnitY;
 
@@ -75,7 +75,7 @@ namespace Hyper
 
         public Matrix4 GetViewMatrix()
         {
-            Matrix4 V = Matrix4.LookAt(_position, _position + _front, _up);
+            Matrix4 V = Matrix4.LookAt(_position, _position + Front, _up);
             Vector4 ic = new Vector4(V.Column0.Xyz, 0);
             Vector4 jc = new Vector4(V.Column1.Xyz, 0);
             Vector4 kc = new Vector4(V.Column2.Xyz, 0);
@@ -163,14 +163,14 @@ namespace Hyper
 
         private void UpdateVectors()
         {
-            _front.X = MathF.Cos(_pitch) * MathF.Cos(_yaw);
-            _front.Y = MathF.Sin(_pitch);
-            _front.Z = MathF.Cos(_pitch) * MathF.Sin(_yaw);
+            Front.X = MathF.Cos(_pitch) * MathF.Cos(_yaw);
+            Front.Y = MathF.Sin(_pitch);
+            Front.Z = MathF.Cos(_pitch) * MathF.Sin(_yaw);
 
-            _front = Vector3.Normalize(_front);
+            Front = Vector3.Normalize(Front);
 
-            _right = Vector3.Normalize(Vector3.Cross(_front, Vector3.UnitY));
-            _up = Vector3.Normalize(Vector3.Cross(_right, _front));
+            _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
+            _up = Vector3.Normalize(Vector3.Cross(_right, Front));
         }
 
         public void Move(KeyboardState input, float time)
@@ -181,11 +181,11 @@ namespace Hyper
 
             if (input.IsKeyDown(Keys.W))
             {
-                move += _front * cameraSpeed * time;
+                move += Front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.S))
             {
-                move -= _front * cameraSpeed * time;
+                move -= Front * cameraSpeed * time;
             }
             if (input.IsKeyDown(Keys.A))
             {

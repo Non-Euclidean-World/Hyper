@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyper.Meshes
 {
-    public class Mesh
+    public class Mesh : IDisposable
     {
         public int VaoId { get; set; }
 
@@ -13,91 +13,25 @@ namespace Hyper.Meshes
         public Vector3 Position { get; set; } = Vector3.Zero;
         //Will also have to add rotation and scale
 
-        public int numberOfIndices { get; set; }
-
-        public int numberOfVertices { get; set; } = 0;
-
-        public Mesh(Vertex[] vertices, int[] indices)
-        {
-            VaoId = CreateVertexArrayObject(vertices, indices);
-            numberOfIndices = indices.Length;
-        }
-
-        public Mesh(Vertex[] vertices, int[] indices, Vector3 position)
-        {
-            VaoId = CreateVertexArrayObject(vertices, indices);
-            numberOfIndices = indices.Length;
-            Position = position;
-        }
-
-        public Mesh(float[] vertices, int[] indices)
-        {
-            VaoId = CreateVertexArrayObject(vertices, indices);
-            numberOfIndices = indices.Length;
-        }
+        public int NumberOfVertices { get; set; } = 0;
 
         public Mesh(float[] vertices, Vector3 position)
         {
             VaoId = CreateVertexArrayObject(vertices);
-            numberOfIndices = 0;
             Position = position;
-            numberOfVertices = vertices.Length / 6;
+            NumberOfVertices = vertices.Length / 6;
         }
 
-        private int CreateVertexArrayObject(Vertex[] vertices, int[] indices)
+        public void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
-            int vaoId = GL.GenVertexArray();
-            GL.BindVertexArray(vaoId);
+            var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
+            var scaleMatrix = Matrix4.CreateScale(scale);
+            shader.SetMatrix4("model", scaleMatrix * model);
 
-            int vboId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Vector3.SizeInBytes);
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-
-            int eboId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(int), indices, BufferUsageHint.StaticDraw);
-
-            GL.BindVertexArray(0);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-
-            return vaoId;
+            GL.BindVertexArray(VaoId);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
         }
 
-        private int CreateVertexArrayObject(float[] vertices, int[] indices)
-        {
-            int vaoId = GL.GenVertexArray();
-            GL.BindVertexArray(vaoId);
-
-            int vboId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-
-            int eboId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(int), indices, BufferUsageHint.StaticDraw);
-
-            GL.BindVertexArray(0);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-
-            return vaoId;
-        }
-
-        // vertices & normals
         private int CreateVertexArrayObject(float[] vertices)
         {
             int vaoId = GL.GenVertexArray();
@@ -119,6 +53,11 @@ namespace Hyper.Meshes
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
             return vaoId;
+        }
+
+        public void Dispose()
+        {
+            GL.DeleteVertexArray(VaoId);
         }
     }
 }
