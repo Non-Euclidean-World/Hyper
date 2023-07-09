@@ -1,10 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.MarchingCubes
 {
@@ -36,7 +30,7 @@ namespace Hyper.MarchingCubes
             return triangles.ToArray();
         }
 
-        private void GetTriangles(List<Triangle> triangles, int x, int y, int z)
+        internal void GetTriangles(List<Triangle> triangles, int x, int y, int z)
         {
             var cubeValues = GetCubeValues(x, y, z);
             var edges = GetEdges(cubeValues);
@@ -60,7 +54,7 @@ namespace Hyper.MarchingCubes
             }
         }
 
-        private int[] GetEdges(float[] cubeValues)
+        internal int[] GetEdges(float[] cubeValues)
         {
             int cubeIndex = 0;
             if (cubeValues[0] < _isolevel) cubeIndex |= 1;
@@ -74,12 +68,12 @@ namespace Hyper.MarchingCubes
 
             return MarchingCubesTables.TriTable[cubeIndex];
         }
-        private Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
+        internal Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
         {
             return edgeVertex1 + (_isolevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
         }
 
-        private float[] GetCubeValues(int x, int y, int z)
+        internal float[] GetCubeValues(int x, int y, int z)
         {
             float[] cubeValues = new float[8];
             for (int i = 0; i < 8; i++)

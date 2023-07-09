@@ -5,17 +5,17 @@ namespace Hyper.MarchingCubes
     public static class MarchingCubesTables
     {
         public static int[][] EdgeConnections = {
-            new int[] {0,1}, 
-            new int[] {1,2}, 
-            new int[] {2,3}, 
+            new int[] {0,1},
+            new int[] {1,2},
+            new int[] {2,3},
             new int[] {3,0},
-            new int[] {4,5}, 
-            new int[] {5,6}, 
-            new int[] {6,7}, 
+            new int[] {4,5},
+            new int[] {5,6},
+            new int[] {6,7},
             new int[] {7,4},
-            new int[] {0,4}, 
-            new int[] {1,5}, 
-            new int[] {2,6}, 
+            new int[] {0,4},
+            new int[] {1,5},
+            new int[] {2,6},
             new int[] {3,7}
         };
 

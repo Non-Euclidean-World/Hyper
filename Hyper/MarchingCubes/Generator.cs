@@ -1,11 +1,5 @@
 ﻿using Hyper.Meshes;
-using OpenTK.Audio.OpenAL.Extensions.Creative.EnumerateAll;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.MarchingCubes
 {
@@ -38,7 +32,7 @@ namespace Hyper.MarchingCubes
             return new Mesh(data, position);
         }
 
-        public float[,,] GenerateScalarField(int width, int height, int depth)
+        internal float[,,] GenerateScalarField(int width, int height, int depth)
         {
             float[,,] scalarField = new float[width, height, depth];
 
@@ -48,7 +42,7 @@ namespace Hyper.MarchingCubes
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        scalarField[x, y, z] = PerlinNoise3D(x, y, z);
+                        scalarField[x, y, z] = _perlin.GetNoise3D(x, y, z);
                     }
                 }
             }
@@ -56,40 +50,21 @@ namespace Hyper.MarchingCubes
             return scalarField;
         }
 
-        public float[,,] GenerateScalarField(int size) => GenerateScalarField(size, size, size);
+        internal float[,,] GenerateScalarField(int size) => GenerateScalarField(size, size, size);
 
-        private float PerlinNoise3D(float x, float y, float z)
+        internal Vector3 GetNormal(Triangle triangle)
         {
-            float px = x * 0.1553f;
-            float py = y * 0.1271f;
-            float pz = z * 0.0916f;
-
-            float noise = (_perlin.GetNoise(px, py, pz) + 1) / 2.0f;
-
-            return noise;
-        }
-
-        public Vector3 GetNormal(Triangle triangle)
-        {
-            // Calculate two vectors from the three points
             Vector3 edge1 = triangle.B - triangle.A;
             Vector3 edge2 = triangle.C - triangle.A;
 
-            // Use the cross product to get the normal
             Vector3 normal = Vector3.Cross(edge1, edge2);
 
-            if (normal.Y < 0)
-            {
-                normal = -normal;
-            }
-
-            // Normalize the normal
             normal.Normalize();
 
             return normal;
         }
 
-        public Vector3[] GetNormals(Triangle[] triangles)
+        internal Vector3[] GetNormals(Triangle[] triangles)
         {
             Vector3[] normals = new Vector3[triangles.Length];
 
@@ -101,16 +76,14 @@ namespace Hyper.MarchingCubes
             return normals;
         }
 
-        public float[] GetTriangleAndNormalData(Triangle[] triangles, Vector3[] normals)
+        internal float[] GetTriangleAndNormalData(Triangle[] triangles, Vector3[] normals)
         {
             if (triangles.Length != normals.Length)
             {
                 throw new ArgumentException("Triangles and normals arrays must be the same length");
             }
 
-            // Each triangle contributes 9 float values (3 vertices * 3 dimensions) and 
-            // each normal contributes 3 float values (1 normal * 3 dimensions) 
-            float[] data = new float[triangles.Length * 18]; // increased from 12 to 18
+            float[] data = new float[triangles.Length * 18];
 
             for (int i = 0; i < triangles.Length; i++)
             {
@@ -137,9 +110,6 @@ namespace Hyper.MarchingCubes
                 data[i * 18 + 15] = normals[i].X;
                 data[i * 18 + 16] = normals[i].Y;
                 data[i * 18 + 17] = normals[i].Z;
-
-                // Note: This function assumes the same normal for A, B and C.
-                // If you have per-vertex normals, you would need to adjust this function accordingly.
             }
 
             return data;

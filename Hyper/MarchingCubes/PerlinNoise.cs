@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hyper.MarchingCubes
+﻿namespace Hyper.MarchingCubes
 {
     public class PerlinNoise
     {
@@ -14,6 +8,17 @@ namespace Hyper.MarchingCubes
         {
             var random = new Random(seed);
             permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
+        }
+
+        public float GetNoise3D(float x, float y, float z)
+        {
+            float px = x * 0.1553f;
+            float py = y * 0.1271f;
+            float pz = z * 0.0916f;
+
+            float noise = (GetNoise(px, py, pz) + 1) / 2.0f;
+
+            return noise;
         }
 
         public float GetNoise(float x, float y, float z)
