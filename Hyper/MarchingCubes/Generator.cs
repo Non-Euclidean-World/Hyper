@@ -41,18 +41,20 @@ namespace Hyper.MarchingCubes
                 {
                     for (int z = 0; z < depth; z++)
                     {
-                        float density = y - 3;
+                        float density = y;
                         float offset = -0.5f;
                         int octaves = 3;
                         float freq = 0.25f;
                         float amp = 16f;
+                        float maxAmp = 0f;
                         for (int i = 0; i < octaves; i++)
                         {
                             density += (_perlin.GetNoise3D(x * freq, y * freq, z * freq) + offset) * amp;
                             freq *= 2;
                             amp /= 2;
+                            maxAmp += amp * 0.5f;
                         }
-                        scalarField[x, y, z] = density;
+                        scalarField[x, y, z] = density - maxAmp;
                     }
                 }
             }

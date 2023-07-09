@@ -71,8 +71,8 @@ namespace Hyper
             };
             _lightSourceShader = new Shader(lightSourceShaders);
             _lightSources = new (Mesh Mesh, Vector3 Color)[] {
-                (GenerateObjects(new Vector3[] { new(20f, 10f, 20f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
-                (GenerateObjects(new Vector3[] { new(40f, 10f, 40f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
+                (GenerateObjects(new Vector3[] { new(20f, 20f, 20f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
+                (GenerateObjects(new Vector3[] { new(40f, 20f, 40f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
             };
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
