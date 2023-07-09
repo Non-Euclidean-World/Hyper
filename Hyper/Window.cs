@@ -25,7 +25,7 @@ namespace Hyper
 
         private Shader _lightSourceShader = null!;
 
-        private float _scale = 0.1f;
+        private float _scale = 1f;
 
         private Camera _camera = null!;
 
@@ -138,7 +138,7 @@ namespace Hyper
 
             if (e.Key == Keys.J)
             {
-                var projectile = new Projectile(CubeMesh.Vertices, _camera.ReferencePointPosition + 10 * Vector3.UnitY, _camera.Front, 20f, 5f);
+                var projectile = new Projectile(CubeMesh.Vertices, _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY, _camera.Front, 20f, 5f);
                 _projectiles.Add(projectile);
             }
         }
