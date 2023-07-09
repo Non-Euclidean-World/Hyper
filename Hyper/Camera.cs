@@ -23,7 +23,7 @@ namespace Hyper
 
         private float _fov = MathHelper.PiOver2;
 
-        private float _cameraSpeed = 50f;
+        private float _cameraSpeed = 500f;
 
         private float _near;
 
