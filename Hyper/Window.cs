@@ -17,7 +17,7 @@ namespace Hyper
 
         private List<Object3D> _objects = null!;
 
-        private (Mesh Mesh, Vector3 Color)[] _lightSources = null!;
+        private LightSource[] _lightSources = null!;
 
         private List<Projectile> _projectiles = new List<Projectile>();
 
@@ -80,7 +80,7 @@ namespace Hyper
             for (int i = 0; i < _lightSources.Length; i++)
             {
                 _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Mesh.Position - _camera.ReferencePointPosition) * _scale));
+                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Position - _camera.ReferencePointPosition) * _scale));
             }
 
             foreach (var obj in _objects)
@@ -104,14 +104,7 @@ namespace Hyper
 
             foreach (var light in _lightSources)
             {
-                GL.BindVertexArray(light.Mesh.VaoId);
-                var modelLS = Matrix4.CreateTranslation((light.Mesh.Position - _camera.ReferencePointPosition) * _scale);
-                var scaleLS = Matrix4.CreateScale(_scale);
-                _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
-                _lightSourceShader.SetVector3("color", light.Color);
-
-                GL.BindVertexArray(light.Mesh.VaoId);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+                light.Render(_lightSourceShader, _scale, _camera.ReferencePointPosition);
             }
 
             SwapBuffers();
@@ -229,9 +222,9 @@ namespace Hyper
             Generator generator = new Generator(0, 16);
             _objects = generator.GenerateWrold();
 
-            _lightSources = new (Mesh Mesh, Vector3 Color)[] {
-                (GenerateObjects(new Vector3[] { new(2f, 4f, 2f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
-                (GenerateObjects(new Vector3[] { new(-4f, 4f, -4f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
+            _lightSources = new LightSource[] {
+                new LightSource(CubeMesh.Vertices, new Vector3(2f, 4f, 2f), new Vector3(1f, 1f, 1f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(-4f, 4f, -4f), new Vector3(0f, 1f, 0.5f)),
             };
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);

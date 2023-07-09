@@ -22,7 +22,7 @@ namespace Hyper.Meshes
             NumberOfVertices = vertices.Length / 6;
         }
 
-        public void Render(Shader shader, float scale, Vector3 cameraPosition)
+        public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
             var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
             var scaleMatrix = Matrix4.CreateScale(scale);

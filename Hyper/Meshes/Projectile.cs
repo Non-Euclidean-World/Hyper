@@ -1,7 +1,6 @@
-﻿using Hyper.Meshes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
-namespace Hyper
+namespace Hyper.Meshes
 {
     internal class Projectile : Mesh
     {
