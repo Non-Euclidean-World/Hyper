@@ -25,7 +25,7 @@ namespace Hyper
 
         private Shader _lightSourceShader = null!;
 
-        private float _scale = 1f;
+        private float _scale = 0.1f;
 
         private Camera _camera = null!;
 
@@ -219,12 +219,12 @@ namespace Hyper
 
         private void SetUpScene()
         {
-            Generator generator = new Generator(0, 16);
+            Generator generator = new Generator(0, 64);
             _objects = generator.GenerateWrold();
 
             _lightSources = new LightSource[] {
-                new LightSource(CubeMesh.Vertices, new Vector3(2f, 4f, 2f), new Vector3(1f, 1f, 1f)),
-                new LightSource(CubeMesh.Vertices, new Vector3(-4f, 4f, -4f), new Vector3(0f, 1f, 0.5f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(20f, 10f, 20f), new Vector3(1f, 1f, 1f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(40f, 10f, 40f), new Vector3(0f, 1f, 0.5f)),
             };
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);

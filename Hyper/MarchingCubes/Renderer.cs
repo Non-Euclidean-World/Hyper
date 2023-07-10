@@ -7,7 +7,7 @@ namespace Hyper.MarchingCubes
         private float _isolevel;
         private float[,,] _voxels;
 
-        public Renderer(float[,,] voxels, float isolevel = 0.5f)
+        public Renderer(float[,,] voxels, float isolevel = 0f)
         {
             _voxels = voxels;
             _isolevel = isolevel;
@@ -32,7 +32,7 @@ namespace Hyper.MarchingCubes
 
         internal void GetTriangles(List<Triangle> triangles, int x, int y, int z)
         {
-            var cubeValues = GetCubeValues(x, y, z);
+            var (cubeValues, normals) = GetCubeValues(x, y, z);
             var edges = GetEdges(cubeValues);
             var position = new Vector3(x, y, z);
 
@@ -50,7 +50,12 @@ namespace Hyper.MarchingCubes
                 var a = Interpolate(MarchingCubesTables.CubeCorners[e00], cubeValues[e00], MarchingCubesTables.CubeCorners[e01], cubeValues[e01]) + position;
                 var b = Interpolate(MarchingCubesTables.CubeCorners[e10], cubeValues[e10], MarchingCubesTables.CubeCorners[e11], cubeValues[e11]) + position;
                 var c = Interpolate(MarchingCubesTables.CubeCorners[e20], cubeValues[e20], MarchingCubesTables.CubeCorners[e21], cubeValues[e21]) + position;
-                triangles.Add(new Triangle(a, b, c));
+
+                var na = Interpolate(normals[e00], cubeValues[e00], normals[e01], cubeValues[e01]);
+                var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
+                var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
+
+                triangles.Add(new Triangle(a, b, c, na, nb, nc));
             }
         }
 
@@ -68,21 +73,36 @@ namespace Hyper.MarchingCubes
 
             return MarchingCubesTables.TriTable[cubeIndex];
         }
+
         internal Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
         {
             return edgeVertex1 + (_isolevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
         }
 
-        internal float[] GetCubeValues(int x, int y, int z)
+        internal (float[], Vector3[]) GetCubeValues(int x, int y, int z)
         {
             float[] cubeValues = new float[8];
+            Vector3[] normals = new Vector3[8];
             for (int i = 0; i < 8; i++)
             {
                 var offset = MarchingCubesTables.CubeCorners[i];
-                cubeValues[i] = _voxels[x + offset.X, y + offset.Y, z + offset.Z];
+                Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
+                cubeValues[i] = _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z];
+
+                if (cubeVertexPos.X == 0 || cubeVertexPos.Y == 0 || cubeVertexPos.Z == 0
+                    || cubeVertexPos.X == _voxels.GetLength(0) - 1 || cubeVertexPos.Y == _voxels.GetLength(1) - 1 || cubeVertexPos.Z == _voxels.GetLength(2) - 1)
+                {
+                    normals[i] = new Vector3(1, 1, 1); // TODO fix this
+                    continue;
+                }
+
+                normals[i].X = _voxels[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z] - _voxels[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z];
+                normals[i].Y = _voxels[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z] - _voxels[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z];
+                normals[i].Z = _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1] - _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1];
+
             }
 
-            return cubeValues;
+            return (cubeValues, normals);
         }
     }
 }
