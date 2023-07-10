@@ -11,7 +11,7 @@ namespace Hyper
 
         public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
 
-        public Vector3 Front = -Vector3.UnitZ;
+        public Vector3 Front { get; private set; } = -Vector3.UnitZ;
 
         private Vector3 _up = Vector3.UnitY;
 
@@ -163,9 +163,7 @@ namespace Hyper
 
         private void UpdateVectors()
         {
-            Front.X = MathF.Cos(_pitch) * MathF.Cos(_yaw);
-            Front.Y = MathF.Sin(_pitch);
-            Front.Z = MathF.Cos(_pitch) * MathF.Sin(_yaw);
+            Front = new Vector3(MathF.Cos(_pitch) * MathF.Cos(_yaw), MathF.Sin(_pitch), MathF.Cos(_pitch) * MathF.Sin(_yaw));
 
             Front = Vector3.Normalize(Front);
 
