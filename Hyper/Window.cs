@@ -25,7 +25,7 @@ namespace Hyper
 
         private Shader _lightSourceShader = null!;
 
-        private float _scale = 1f;
+        private float _scale = 0.1f;
 
         private Camera _camera = null!;
 

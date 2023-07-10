@@ -66,30 +66,6 @@ namespace Hyper.MarchingCubes
 
         internal float[,,] GenerateScalarField(int size) => GenerateScalarField(size, size, size);
 
-        internal Vector3 GetNormal(Triangle triangle)
-        {
-            Vector3 edge1 = triangle.B - triangle.A;
-            Vector3 edge2 = triangle.C - triangle.A;
-
-            Vector3 normal = -Vector3.Cross(edge1, edge2);
-
-            normal.Normalize();
-
-            return normal;
-        }
-
-        internal Vector3[] GetNormals(Triangle[] triangles)
-        {
-            Vector3[] normals = new Vector3[triangles.Length];
-
-            for (int i = 0; i < triangles.Length; i++)
-            {
-                normals[i] = GetNormal(triangles[i]);
-            }
-
-            return normals;
-        }
-
         internal float[] GetTriangleAndNormalData(Triangle[] triangles)
         {
             float[] data = new float[triangles.Length * 18];
