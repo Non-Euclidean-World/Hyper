@@ -7,6 +7,7 @@ namespace Hyper.MarchingCubes
     {
         private PerlinNoise _perlin;
         private int _chunkSize;
+        private float _offsetY = 0f;
 
         public Generator(int seed = 0, int chunkSize = 16)
         {
@@ -28,7 +29,7 @@ namespace Hyper.MarchingCubes
             Triangle[] triangles = renderer.GetMesh();
             float[] data = GetTriangleAndNormalData(triangles);
 
-            return new Mesh(data, position);
+            return new Mesh(data, position - Vector3.UnitY * _offsetY);
         }
 
         internal float[,,] GenerateScalarField(int width, int height, int depth)
@@ -55,6 +56,7 @@ namespace Hyper.MarchingCubes
                             maxAmp += amp * 0.5f;
                         }
                         scalarField[x, y, z] = density - maxAmp;
+                        _offsetY = maxAmp;
                     }
                 }
             }

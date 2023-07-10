@@ -17,13 +17,15 @@ namespace Hyper
 
         private List<Object3D> _objects = null!;
 
-        private (Mesh Mesh, Vector3 Color)[] _lightSources = null!;
+        private LightSource[] _lightSources = null!;
+
+        private List<Projectile> _projectiles = new List<Projectile>();
 
         private Shader _objectShader = null!;
 
         private Shader _lightSourceShader = null!;
 
-        private float _scale = 0.1f;
+        private float _scale = 1f;
 
         private Camera _camera = null!;
 
@@ -53,29 +55,9 @@ namespace Hyper
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
 
-            var objectShaders = new (string, ShaderType)[]
-            {
-                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-                ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
-            };
-            _objectShader = new Shader(objectShaders);
+            SetUpShaders();
 
-            //_objects = GenerateObjects(() => SceneGenerators.GenerateFlat(20));
-            Generator generator = new Generator(0, 64);
-            _objects = generator.GenerateWrold();
-
-            var lightSourceShaders = new (string, ShaderType)[]
-            {
-                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-                ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
-            };
-            _lightSourceShader = new Shader(lightSourceShaders);
-            _lightSources = new (Mesh Mesh, Vector3 Color)[] {
-                (GenerateObjects(new Vector3[] { new(20f, 20f, 20f) })[0].Meshes[0], new Vector3(1f, 1f, 1f)),
-                (GenerateObjects(new Vector3[] { new(40f, 20f, 40f) })[0].Meshes[0], new Vector3(0f, 1f, 0.5f))
-            };
-
-            _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
+            SetUpScene();
 
             CursorState = CursorState.Grabbed;
         }
@@ -98,22 +80,21 @@ namespace Hyper
             for (int i = 0; i < _lightSources.Length; i++)
             {
                 _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Mesh.Position - _camera.ReferencePointPosition) * _scale));
+                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Position - _camera.ReferencePointPosition) * _scale));
             }
 
             foreach (var obj in _objects)
             {
                 foreach (var mesh in obj.Meshes)
                 {
-                    var model = Matrix4.CreateTranslation((mesh.Position - _camera.ReferencePointPosition) * _scale);
-                    var scale = Matrix4.CreateScale(_scale);
-                    _objectShader.SetMatrix4("model", scale * model);
-
-                    GL.BindVertexArray(mesh.VaoId);
-                    GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.numberOfVertices);
+                    mesh.Render(_objectShader, _scale, _camera.ReferencePointPosition);
                 }
             }
 
+            foreach (var projectile in _projectiles)
+            {
+                projectile.Render(_objectShader, _scale, _camera.ReferencePointPosition);
+            }
 
             _lightSourceShader.Use();
             _lightSourceShader.SetFloat("curv", _camera.Curve);
@@ -123,16 +104,8 @@ namespace Hyper
 
             foreach (var light in _lightSources)
             {
-                GL.BindVertexArray(light.Mesh.VaoId);
-                var modelLS = Matrix4.CreateTranslation((light.Mesh.Position - _camera.ReferencePointPosition) * _scale);
-                var scaleLS = Matrix4.CreateScale(_scale);
-                _lightSourceShader.SetMatrix4("model", scaleLS * modelLS);
-                _lightSourceShader.SetVector3("color", light.Color);
-
-                GL.BindVertexArray(light.Mesh.VaoId);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+                light.Render(_lightSourceShader, _scale, _camera.ReferencePointPosition);
             }
-
 
             SwapBuffers();
         }
@@ -147,61 +120,26 @@ namespace Hyper
             }
 
             var input = KeyboardState;
+            var time = (float)e.Time;
 
             if (input.IsKeyDown(Keys.Escape))
             {
                 Close();
             }
 
-            if (input.IsKeyDown(Keys.D8))
+            UpdateCamera(input, time);
+
+            UpdateProjectiles(time);
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.Key == Keys.J)
             {
-                _camera.Curve = 0f;
-            }
-
-            if (input.IsKeyDown(Keys.D9))
-            {
-                _camera.Curve = 1f;
-            }
-
-            if (input.IsKeyDown(Keys.D0))
-            {
-                _camera.Curve = -1f;
-            }
-
-            if (input.IsKeyDown(Keys.Down))
-            {
-                _camera.Curve -= 0.0001f;
-            }
-
-            if (input.IsKeyDown(Keys.Up))
-            {
-                _camera.Curve += 0.0001f;
-            }
-
-            if (input.IsKeyDown(Keys.Tab))
-            {
-                Console.WriteLine(_camera.Curve);
-            }
-
-            const float sensitivity = 0.2f;
-
-            _camera.Move(input, (float)e.Time);
-
-            var mouse = MouseState;
-
-            if (_firstMove)
-            {
-                _lastPos = new Vector2(mouse.X, mouse.Y);
-                _firstMove = false;
-            }
-            else
-            {
-                var deltaX = mouse.X - _lastPos.X;
-                var deltaY = mouse.Y - _lastPos.Y;
-                _lastPos = new Vector2(mouse.X, mouse.Y);
-
-                _camera.Yaw += deltaX * sensitivity;
-                _camera.Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
+                var projectile = new Projectile(CubeMesh.Vertices, _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY, _camera.Front, 20f, 5f);
+                _projectiles.Add(projectile);
             }
         }
 
@@ -262,20 +200,98 @@ namespace Hyper
             }
         }
 
-        private static List<Object3D> GenerateObjects(Func<Vector3[]> positionsGenerator)
+        private void SetUpShaders()
         {
-            return GenerateObjects(positionsGenerator());
+            var objectShaders = new (string, ShaderType)[]
+            {
+                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+                ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
+            };
+            _objectShader = new Shader(objectShaders);
+
+            var lightSourceShaders = new (string, ShaderType)[]
+            {
+                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+                ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
+            };
+            _lightSourceShader = new Shader(lightSourceShaders);
         }
 
-        private static List<Object3D> GenerateObjects(Vector3[] positions)
+        private void SetUpScene()
         {
-            var object3d = new Object3D();
-            foreach (var position in positions)
+            Generator generator = new Generator(0, 64);
+            _objects = generator.GenerateWrold();
+
+            _lightSources = new LightSource[] {
+                new LightSource(CubeMesh.Vertices, new Vector3(20f, 10f, 20f), new Vector3(1f, 1f, 1f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(40f, 10f, 40f), new Vector3(0f, 1f, 0.5f)),
+            };
+
+            _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
+        }
+
+        private void UpdateCamera(KeyboardState input, float time)
+        {
+            if (input.IsKeyDown(Keys.D8))
             {
-                object3d.Meshes.Add(CubeMesh.Create(position));
+                _camera.Curve = 0f;
             }
 
-            return new List<Object3D> { object3d };
+            if (input.IsKeyDown(Keys.D9))
+            {
+                _camera.Curve = 1f;
+            }
+
+            if (input.IsKeyDown(Keys.D0))
+            {
+                _camera.Curve = -1f;
+            }
+
+            if (input.IsKeyDown(Keys.Down))
+            {
+                _camera.Curve -= 0.0001f;
+            }
+
+            if (input.IsKeyDown(Keys.Up))
+            {
+                _camera.Curve += 0.0001f;
+            }
+
+            if (input.IsKeyDown(Keys.Tab))
+            {
+                Console.WriteLine(_camera.Curve);
+            }
+
+            const float sensitivity = 0.2f;
+
+            _camera.Move(input, time);
+
+            var mouse = MouseState;
+
+            if (_firstMove)
+            {
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+                _firstMove = false;
+            }
+            else
+            {
+                var deltaX = mouse.X - _lastPos.X;
+                var deltaY = mouse.Y - _lastPos.Y;
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+
+                _camera.Yaw += deltaX * sensitivity;
+                _camera.Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
+            }
+        }
+
+        private void UpdateProjectiles(float time)
+        {
+            foreach (var projectile in _projectiles)
+            {
+                projectile.Update(time);
+            }
+
+            _projectiles.RemoveAll(x => x.IsDead);
         }
     }
 }
