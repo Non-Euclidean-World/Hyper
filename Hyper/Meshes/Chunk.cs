@@ -1,18 +1,17 @@
 ﻿using Hyper.MarchingCubes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.Meshes
 {
     internal class Chunk : Mesh
     {
-        public const int Size = 16;
+        public const int Size = 32;
+
         public new Vector3i Position;
+
+        public Vector3i Middle => Position + Vector3i.One * Size / 2;
+
         private float[,,] _voxels;
 
         public Chunk(float[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
@@ -28,10 +27,30 @@ namespace Hyper.Meshes
             var y = (int)location.Y - Position.Y;
             var z = (int)location.Z - Position.Z;
 
-            if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] == 1f) return false;
+            if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] <= 0f) return false;
+
+            _voxels[x, y, z] -= val;
+            if (_voxels[x, y, z] < 0f) _voxels[x, y, z] = 0f;
+            Console.WriteLine($"Mined block at {x},{y},{z}");
+
+            UpdateMesh();
+
+            var error = GL.GetError();
+            if (error != ErrorCode.NoError) Console.WriteLine(error);
+            return true;
+        }
+
+        public bool Build(Vector3 location, float val)
+        {
+            var x = (int)location.X - Position.X;
+            var y = (int)location.Y - Position.Y;
+            var z = (int)location.Z - Position.Z;
+
+            if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] >= 1f) return false;
 
             _voxels[x, y, z] += val;
-            if (_voxels[x, y, z] > 1) _voxels[x, y, z] = 1;
+            if (_voxels[x, y, z] > 1f) _voxels[x, y, z] = 1f;
+            Console.WriteLine($"Built block at {x},{y},{z}");
 
             UpdateMesh();
 

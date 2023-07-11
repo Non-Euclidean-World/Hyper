@@ -46,7 +46,7 @@ namespace Hyper.MarchingCubes
                             amp /= 2;
                             maxAmp += amp * 0.5f;
                         }
-                        scalarField[x, y, z] = density - maxAmp;
+                        scalarField[x, y, z] = (maxAmp - density + 10) / 20;
                         _offsetY = maxAmp;
                     }
                 }

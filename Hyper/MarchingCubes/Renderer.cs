@@ -7,7 +7,7 @@ namespace Hyper.MarchingCubes
         private float _isolevel;
         private float[,,] _voxels;
 
-        public Renderer(float[,,] voxels, float isolevel = 0f)
+        public Renderer(float[,,] voxels, float isolevel = 0.5f)
         {
             _voxels = voxels;
             _isolevel = isolevel;
@@ -51,9 +51,9 @@ namespace Hyper.MarchingCubes
                 var b = Interpolate(MarchingCubesTables.CubeCorners[e10], cubeValues[e10], MarchingCubesTables.CubeCorners[e11], cubeValues[e11]) + position;
                 var c = Interpolate(MarchingCubesTables.CubeCorners[e20], cubeValues[e20], MarchingCubesTables.CubeCorners[e21], cubeValues[e21]) + position;
 
-                var na = Interpolate(normals[e00], cubeValues[e00], normals[e01], cubeValues[e01]);
-                var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
-                var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
+                var na = -Interpolate(normals[e00], cubeValues[e00], normals[e01], cubeValues[e01]);
+                var nb = -Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
+                var nc = -Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
 
                 triangles.Add(new Triangle(a, b, c, na, nb, nc));
             }

@@ -133,7 +133,7 @@ namespace Hyper
         {
             base.OnMouseDown(e);
 
-            if (e.Button == MouseButton.Right)
+            if (e.Button == MouseButton.Middle)
             {
                 var projectile = new Projectile(CubeMesh.Vertices, _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY, _camera.Front, 20f, 5f);
                 _projectiles.Add(projectile);
@@ -147,7 +147,22 @@ namespace Hyper
                 {
                     foreach (var chunk in _chunks)
                     {
-                        if (chunk.Mine(position, 1f)) return;
+                        if (chunk.Mine(position, 0.1f)) return;
+                    }
+
+                    position += 0.1f * _camera.Front;
+                }
+            }
+
+            if (e.Button == MouseButton.Right)
+            {
+                var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
+
+                for (int i = 0; i < 10; i++)
+                {
+                    foreach (var chunk in _chunks)
+                    {
+                        if (chunk.Build(position, 0.1f)) return;
                     }
 
                     position += 0.1f * _camera.Front;
@@ -235,8 +250,8 @@ namespace Hyper
             _chunks.Add(generator.GenerateChunk(new Vector3i(0, 0, 0)));
 
             _lightSources = new LightSource[] {
-                new LightSource(CubeMesh.Vertices, new Vector3(20f, 10f, 20f), new Vector3(1f, 1f, 1f)),
-                new LightSource(CubeMesh.Vertices, new Vector3(40f, 10f, 40f), new Vector3(0f, 1f, 0.5f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(2f, 10f, 2f), new Vector3(1f, 1f, 1f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(4f, 10f, 4f), new Vector3(0f, 1f, 0.5f)),
             };
 
             _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
