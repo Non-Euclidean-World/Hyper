@@ -6,30 +6,21 @@ namespace Hyper.MarchingCubes
     internal class Generator
     {
         private PerlinNoise _perlin;
-        private int _chunkSize;
         private float _offsetY = 0f;
 
-        public Generator(int seed = 0, int chunkSize = 16)
+        public Generator(int seed = 0)
         {
             _perlin = new PerlinNoise(seed);
-            _chunkSize = chunkSize;
         }
 
-        public List<Object3D> GenerateWrold()
+        public Chunk GenerateChunk(Vector3i position)
         {
-            var object3d = new Object3D();
-            object3d.Meshes.Add(GenerateChunk(new Vector3(0, 0, 0)));
-
-            return new List<Object3D> { object3d };
-        }
-
-        public Mesh GenerateChunk(Vector3 position)
-        {
-            var renderer = new Renderer(GenerateScalarField(_chunkSize));
+            var voxels = GenerateScalarField(Chunk.Size);
+            var renderer = new Renderer(voxels);
             Triangle[] triangles = renderer.GetMesh();
             float[] data = GetTriangleAndNormalData(triangles);
 
-            return new Mesh(data, position - Vector3.UnitY * _offsetY);
+            return new Chunk(data, position - Vector3i.UnitY * (int)_offsetY, voxels);
         }
 
         internal float[,,] GenerateScalarField(int width, int height, int depth)
@@ -66,7 +57,7 @@ namespace Hyper.MarchingCubes
 
         internal float[,,] GenerateScalarField(int size) => GenerateScalarField(size, size, size);
 
-        internal float[] GetTriangleAndNormalData(Triangle[] triangles)
+        internal static float[] GetTriangleAndNormalData(Triangle[] triangles)
         {
             float[] data = new float[triangles.Length * 18];
 

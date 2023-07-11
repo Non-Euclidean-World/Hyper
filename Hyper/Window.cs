@@ -15,7 +15,7 @@ namespace Hyper
 
         private CancellationTokenSource _debugCancellationTokenSource = null!;
 
-        private List<Object3D> _objects = null!;
+        private List<Chunk> _chunks = new List<Chunk>();
 
         private LightSource[] _lightSources = null!;
 
@@ -83,12 +83,9 @@ namespace Hyper
                 _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Position - _camera.ReferencePointPosition) * _scale));
             }
 
-            foreach (var obj in _objects)
+            foreach (var chunk in _chunks)
             {
-                foreach (var mesh in obj.Meshes)
-                {
-                    mesh.Render(_objectShader, _scale, _camera.ReferencePointPosition);
-                }
+                chunk.Render(_objectShader, _scale, _camera.ReferencePointPosition);
             }
 
             foreach (var projectile in _projectiles)
@@ -132,14 +129,29 @@ namespace Hyper
             UpdateProjectiles(time);
         }
 
-        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            base.OnKeyDown(e);
+            base.OnMouseDown(e);
 
-            if (e.Key == Keys.J)
+            if (e.Button == MouseButton.Right)
             {
                 var projectile = new Projectile(CubeMesh.Vertices, _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY, _camera.Front, 20f, 5f);
                 _projectiles.Add(projectile);
+            }
+
+            if (e.Button == MouseButton.Left)
+            {
+                var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
+
+                for (int i = 0; i < 10; i++)
+                {
+                    foreach (var chunk in _chunks)
+                    {
+                        if (chunk.Mine(position, 1f)) return;
+                    }
+
+                    position += 0.1f * _camera.Front;
+                }
             }
         }
 
@@ -219,8 +231,8 @@ namespace Hyper
 
         private void SetUpScene()
         {
-            Generator generator = new Generator(0, 64);
-            _objects = generator.GenerateWrold();
+            Generator generator = new Generator(0);
+            _chunks.Add(generator.GenerateChunk(new Vector3i(0, 0, 0)));
 
             _lightSources = new LightSource[] {
                 new LightSource(CubeMesh.Vertices, new Vector3(20f, 10f, 20f), new Vector3(1f, 1f, 1f)),
