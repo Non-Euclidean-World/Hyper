@@ -23,8 +23,18 @@ namespace Hyper.Meshes
             Position = position;
         }
 
+        private float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
+        {
+            return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+        }
+
+        private float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
+        {
+            return (float)MathHelper.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
+        }
+
         // This method returns flase if it did not mine anything. True if it did.
-        public bool Mine(Vector3 location, float val)
+        public bool Mine(Vector3 location, float deltaTime, int radius = 4)
         {
             var x = (int)location.X - Position.X;
             var y = (int)location.Y - Position.Y;
@@ -32,8 +42,21 @@ namespace Hyper.Meshes
 
             if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] <= 0f) return false;
 
-            _voxels[x, y, z] -= val;
-            if (_voxels[x, y, z] < 0f) _voxels[x, y, z] = 0f;
+            float brushWeight = 0.1f;
+            for (int xi = x - radius; xi <= x + radius; xi++)
+            {
+                for (int yi = y - radius; yi <= y + radius; yi++)
+                {
+                    for (int zi = z - radius; zi <= z + radius; zi++)
+                    {
+                        if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
+                        {
+                            _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z);
+                        }
+                    }
+                }
+            }
+
             _logger.Info($"Mined block at {x},{y},{z}");
 
             UpdateMesh();
@@ -43,7 +66,7 @@ namespace Hyper.Meshes
             return true;
         }
 
-        public bool Build(Vector3 location, float val)
+        public bool Build(Vector3 location, float deltaTime, int radius = 5)
         {
             var x = (int)location.X - Position.X;
             var y = (int)location.Y - Position.Y;
@@ -51,8 +74,20 @@ namespace Hyper.Meshes
 
             if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] >= 1f) return false;
 
-            _voxels[x, y, z] += val;
-            if (_voxels[x, y, z] > 1f) _voxels[x, y, z] = 1f;
+            float brushWeight = 0.1f;
+            for (int xi = x - radius; xi <= x + radius; xi++)
+            {
+                for (int yi = y - radius; yi <= y + radius; yi++)
+                {
+                    for (int zi = z - radius; zi <= z + radius; zi++)
+                    {
+                        if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
+                        {
+                            _voxels[xi, yi, zi] += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        }
+                    }
+                }
+            }
             _logger.Info($"Built block at {x},{y},{z}");
 
             UpdateMesh();

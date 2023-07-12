@@ -7,7 +7,7 @@ namespace Hyper.MarchingCubes
         private float _isolevel;
         private float[,,] _voxels;
 
-        public Renderer(float[,,] voxels, float isolevel = 0.5f)
+        public Renderer(float[,,] voxels, float isolevel = 0f)
         {
             _voxels = voxels;
             _isolevel = isolevel;

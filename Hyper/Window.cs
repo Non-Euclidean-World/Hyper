@@ -127,30 +127,30 @@ namespace Hyper
             {
                 var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
 
-                for (int i = 0; i < 10; i++)
+                //for (int i = 0; i < 10; i++)
+                //{
+                foreach (var chunk in _chunks)
                 {
-                    foreach (var chunk in _chunks)
-                    {
-                        if (chunk.Mine(position, 3f)) return;
-                    }
-
-                    position += 0.1f * _camera.Front;
+                    if (chunk.Mine(position, 1f)) return;
                 }
+
+                position += 0.1f * _camera.Front;
+                //}
             }
 
             if (e.Button == MouseButton.Right)
             {
                 var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
 
-                for (int i = 0; i < 10; i++)
+                //for (int i = 0; i < 10; i++)
+                //{
+                foreach (var chunk in _chunks)
                 {
-                    foreach (var chunk in _chunks)
-                    {
-                        if (chunk.Build(position, 3f)) return;
-                    }
-
-                    position += 0.1f * _camera.Front;
+                    if (chunk.Build(position, 1f)) return;
                 }
+
+                position += 0.1f * _camera.Front;
+                //}
             }
         }
 

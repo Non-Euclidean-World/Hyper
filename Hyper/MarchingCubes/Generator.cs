@@ -23,7 +23,7 @@ namespace Hyper.MarchingCubes
 
         internal float[,,] GenerateScalarField(int width, int height, int depth, Vector3i position)
         {
-            var perlin = new PerlinNoise(3 * position.X + 5 * position.Y + 7 * position.Z + _seed);
+            var perlin = new PerlinNoise(_seed);
             float[,,] scalarField = new float[width, height, depth];
 
             for (int x = 0; x < width; x++)
