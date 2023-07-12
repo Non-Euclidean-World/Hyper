@@ -68,20 +68,7 @@ namespace Hyper
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            _objectShader.Use();
-            _objectShader.SetFloat("curv", _camera.Curve);
-            _objectShader.SetFloat("anti", 1.0f);
-            _objectShader.SetMatrix4("view", _camera.GetViewMatrix());
-            _objectShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
-            _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
-            _objectShader.SetInt("numLights", _lightSources.Length);
-            _objectShader.SetVector4("viewPos", _camera.PortEucToCurved(Vector3.UnitY));
-
-            for (int i = 0; i < _lightSources.Length; i++)
-            {
-                _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Position - _camera.ReferencePointPosition) * _scale));
-            }
+            SetUpObjectShaderParams();
 
             foreach (var chunk in _chunks)
             {
@@ -93,11 +80,7 @@ namespace Hyper
                 projectile.Render(_objectShader, _scale, _camera.ReferencePointPosition);
             }
 
-            _lightSourceShader.Use();
-            _lightSourceShader.SetFloat("curv", _camera.Curve);
-            _lightSourceShader.SetFloat("anti", 1.0f);
-            _lightSourceShader.SetMatrix4("view", _camera.GetViewMatrix());
-            _lightSourceShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            SetUpLightingShaderParams();
 
             foreach (var light in _lightSources)
             {
@@ -139,6 +122,7 @@ namespace Hyper
                 _projectiles.Add(projectile);
             }
 
+            // These 2 do not work on chunk borders.
             if (e.Button == MouseButton.Left)
             {
                 var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
@@ -147,7 +131,7 @@ namespace Hyper
                 {
                     foreach (var chunk in _chunks)
                     {
-                        if (chunk.Mine(position, 0.1f)) return;
+                        if (chunk.Mine(position, 3f)) return;
                     }
 
                     position += 0.1f * _camera.Front;
@@ -162,7 +146,7 @@ namespace Hyper
                 {
                     foreach (var chunk in _chunks)
                     {
-                        if (chunk.Build(position, 0.1f)) return;
+                        if (chunk.Build(position, 3f)) return;
                     }
 
                     position += 0.1f * _camera.Front;
@@ -246,8 +230,9 @@ namespace Hyper
 
         private void SetUpScene()
         {
-            Generator generator = new Generator(0);
+            Generator generator = new Generator(1);
             _chunks.Add(generator.GenerateChunk(new Vector3i(0, 0, 0)));
+            _chunks.Add(generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)));
 
             _lightSources = new LightSource[] {
                 new LightSource(CubeMesh.Vertices, new Vector3(2f, 10f, 2f), new Vector3(1f, 1f, 1f)),
@@ -319,6 +304,33 @@ namespace Hyper
             }
 
             _projectiles.RemoveAll(x => x.IsDead);
+        }
+
+        private void SetUpObjectShaderParams()
+        {
+            _objectShader.Use();
+            _objectShader.SetFloat("curv", _camera.Curve);
+            _objectShader.SetFloat("anti", 1.0f);
+            _objectShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _objectShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
+            _objectShader.SetInt("numLights", _lightSources.Length);
+            _objectShader.SetVector4("viewPos", _camera.PortEucToCurved(Vector3.UnitY));
+
+            for (int i = 0; i < _lightSources.Length; i++)
+            {
+                _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
+                _objectShader.SetVector4($"lightPos[{i}]", _camera.PortEucToCurved((_lightSources[i].Position - _camera.ReferencePointPosition) * _scale));
+            }
+        }
+
+        private void SetUpLightingShaderParams()
+        {
+            _lightSourceShader.Use();
+            _lightSourceShader.SetFloat("curv", _camera.Curve);
+            _lightSourceShader.SetFloat("anti", 1.0f);
+            _lightSourceShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _lightSourceShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
         }
     }
 }

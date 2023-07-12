@@ -1,4 +1,5 @@
 ﻿using Hyper.MarchingCubes;
+using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -13,6 +14,8 @@ namespace Hyper.Meshes
         public Vector3i Middle => Position + Vector3i.One * Size / 2;
 
         private float[,,] _voxels;
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Chunk(float[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
         {
@@ -31,12 +34,12 @@ namespace Hyper.Meshes
 
             _voxels[x, y, z] -= val;
             if (_voxels[x, y, z] < 0f) _voxels[x, y, z] = 0f;
-            Console.WriteLine($"Mined block at {x},{y},{z}");
+            _logger.Info($"Mined block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) Console.WriteLine(error);
+            if (error != ErrorCode.NoError) _logger.Error(error);
             return true;
         }
 
@@ -50,12 +53,12 @@ namespace Hyper.Meshes
 
             _voxels[x, y, z] += val;
             if (_voxels[x, y, z] > 1f) _voxels[x, y, z] = 1f;
-            Console.WriteLine($"Built block at {x},{y},{z}");
+            _logger.Info($"Built block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) Console.WriteLine(error);
+            if (error != ErrorCode.NoError) _logger.Error(error);
             return true;
         }
 
