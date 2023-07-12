@@ -34,7 +34,7 @@ namespace Hyper.Meshes
         }
 
         // This method returns flase if it did not mine anything. True if it did.
-        public bool Mine(Vector3 location, float deltaTime, int radius = 4)
+        public bool Mine(Vector3 location, float deltaTime, int radius = 5)
         {
             var x = (int)location.X - Position.X;
             var y = (int)location.Y - Position.Y;
@@ -51,7 +51,7 @@ namespace Hyper.Meshes
                     {
                         if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                         {
-                            _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z);
+                            _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                         }
                     }
                 }
