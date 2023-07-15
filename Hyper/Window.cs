@@ -199,6 +199,9 @@ namespace Hyper
                         case "camera":
                             _camera.Command(args);
                             break;
+                        case "hud":
+                            _hud.Command(args);
+                            break;
                     }
                 }
                 catch (Exception ex)

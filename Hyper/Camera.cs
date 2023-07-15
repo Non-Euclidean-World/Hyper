@@ -205,7 +205,7 @@ namespace Hyper
             ReferencePointPosition += move;
         }
 
-        protected override void SetComamnd(string[] args)
+        protected override void SetCommand(string[] args)
         {
             switch (args[0])
             {
@@ -234,11 +234,12 @@ namespace Hyper
                     ReferencePointPosition = new Vector3(x, y, z);
                     break;
                 default:
-                    throw new CommandException($"Property '{args[0]}' not found");
+                    CommandNotFound();
+                    break;
             }
         }
 
-        protected override void GetComamnd(string[] args)
+        protected override void GetCommand(string[] args)
         {
             switch (args[0])
             {
@@ -249,7 +250,8 @@ namespace Hyper
                     Console.WriteLine(ReferencePointPosition);
                     break;
                 default:
-                    throw new CommandException($"Property '{args[0]}' not found");
+                    CommandNotFound();
+                    break;
             }
         }
     }

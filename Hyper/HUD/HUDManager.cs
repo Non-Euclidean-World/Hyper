@@ -1,23 +1,24 @@
-﻿using Hyper.HUD.HUDElements;
+﻿using Hyper.Command;
+using Hyper.HUD.HUDElements;
 using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper.HUD
 {
-    internal class HUDManager
+    internal class HUDManager : Commandable
     {
         private Shader _shader;
 
-        private List<HUDElement> _elements;
+        private Dictionary<HUDElementTypes, HUDElement> _elements;
 
         public HUDManager()
         {
             _shader = CreateShader();
-            _elements = new List<HUDElement>()
+            _elements = new Dictionary<HUDElementTypes, HUDElement>()
             {
-                new Crosshair(new Vector2(0, 0), 0.02f),
-                new FPSCounter(new Vector2(0.64f, 0.48f), 0.02f)
+                { HUDElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), 0.02f) },
+                { HUDElementTypes.FPSCounter, new FPSCounter(new Vector2(0.64f, 0.48f), 0.02f) },
             };
         }
 
@@ -31,7 +32,7 @@ namespace Hyper.HUD
 
             foreach (var element in _elements)
             {
-                element.Render(_shader);
+                if (element.Value.Visible) element.Value.Render(_shader);
             }
         }
 
@@ -44,6 +45,43 @@ namespace Hyper.HUD
             };
 
             return new Shader(shader);
+        }
+
+        protected override void SetCommand(string[] args)
+        {
+            switch (args[0])
+            {
+                case "crosshair":
+                    SetVisibility(args[1], HUDElementTypes.Crosshair);
+                    break;
+                case "fps":
+                    SetVisibility(args[1], HUDElementTypes.FPSCounter);
+                    break;
+                default:
+                    throw new CommandException($"Property '{args[0]}' not found");
+            }
+        }
+
+        protected override void GetCommand(string[] args)
+        {
+            switch (args[0])
+            {
+                case "crosshair":
+                    if (args[1] == "visibility") Console.WriteLine(_elements[HUDElementTypes.Crosshair].Visible);
+                    break;
+                case "fps":
+                    if (args[1] == "visibility") Console.WriteLine(_elements[HUDElementTypes.FPSCounter].Visible);
+                    break;
+                default:
+                    throw new CommandException($"Property '{args[0]}' not found");
+            }
+        }
+
+        private void SetVisibility(string argument, HUDElementTypes elementType)
+        {
+            if (argument == "visible") _elements[elementType].Visible = true;
+            else if (argument == "invisible") _elements[elementType].Visible = false;
+            else CommandNotFound();
         }
     }
 }
