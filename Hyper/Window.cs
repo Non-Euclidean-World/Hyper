@@ -57,6 +57,8 @@ namespace Hyper
 
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             SetUpShaders();
 

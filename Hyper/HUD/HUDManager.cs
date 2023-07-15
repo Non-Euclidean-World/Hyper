@@ -16,23 +16,18 @@ namespace Hyper.HUD
             _shader = CreateShader();
             _elements = new List<HUDElement>()
             {
-                new Crosshair(new Vector2(0, 0), 0.03f)
+                new Crosshair(new Vector2(0, 0), 0.02f),
+                new FPSCounter(new Vector2(0.64f, 0.48f), 0.02f)
             };
         }
 
         public void Render(float aspectRatio)
         {
-            Matrix4 projection;
-            if (aspectRatio > 1.0f) projection = Matrix4.CreateOrthographicOffCenter(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
-            else projection = Matrix4.CreateOrthographicOffCenter(-1.0f, 1.0f, -1 / aspectRatio, 1 / aspectRatio, -1.0f, 1.0f);
-
-            Matrix4 view = Matrix4.Identity;
-            Matrix4 model = Matrix4.Identity;
+            var projection = Matrix4.CreateOrthographic(aspectRatio, 1, -1.0f, 1.0f);
 
             _shader.Use();
 
             _shader.SetMatrix4("projection", projection);
-            _shader.SetMatrix4("view", view);
 
             foreach (var element in _elements)
             {
