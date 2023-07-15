@@ -125,7 +125,7 @@ namespace Hyper
             // These 2 do not work on chunk borders.
             if (e.Button == MouseButton.Left)
             {
-                var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
+                var position = _camera.ReferencePointPosition;
 
                 //for (int i = 0; i < 10; i++)
                 //{
@@ -140,7 +140,7 @@ namespace Hyper
 
             if (e.Button == MouseButton.Right)
             {
-                var position = _camera.ReferencePointPosition + 1 / _scale * Vector3.UnitY;
+                var position = _camera.ReferencePointPosition;
 
                 //for (int i = 0; i < 10; i++)
                 //{
@@ -233,13 +233,15 @@ namespace Hyper
             Generator generator = new Generator(1);
             _chunks.Add(generator.GenerateChunk(new Vector3i(0, 0, 0)));
             _chunks.Add(generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)));
+            _chunks.Add(generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)));
 
             _lightSources = new LightSource[] {
-                new LightSource(CubeMesh.Vertices, new Vector3(2f, 10f, 2f), new Vector3(1f, 1f, 1f)),
-                new LightSource(CubeMesh.Vertices, new Vector3(4f, 10f, 4f), new Vector3(0f, 1f, 0.5f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(10f, 7f + generator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
+                new LightSource(CubeMesh.Vertices, new Vector3(4f, 7f + generator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
             };
 
-            _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f);
+            _camera = new Camera(Size.X / (float)Size.Y, 0.01f, 100f, _scale);
+            _camera.ReferencePointPosition = (5f + generator.AvgElevation) * Vector3.UnitY;
         }
 
         private void UpdateCamera(KeyboardState input, float time)

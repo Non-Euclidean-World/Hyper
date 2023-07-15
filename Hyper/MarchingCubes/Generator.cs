@@ -6,15 +6,50 @@ namespace Hyper.MarchingCubes
     internal class Generator
     {
         private readonly int _seed;
-        public Generator(int seed)
+
+        private readonly int _octaves;
+
+        private readonly float _initialFreq;
+
+        private readonly float _freqMul;
+
+        private readonly float _initialAmp;
+
+        private readonly float _ampMul;
+
+        private readonly float _maxAmp;
+
+        public float AvgElevation { get; private set; } = 0f;
+
+        public Generator(int seed, int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
         {
             _seed = seed;
+            _octaves = octaves;
+            _initialFreq = initialFreq;
+            _freqMul = freqMul;
+            _initialAmp = initialAmp;
+            _ampMul = ampMul;
+
+            _maxAmp = AvgElevation = GetMaxAmp();
         }
 
+
+        private float GetMaxAmp()
+        {
+            float maxAmp = 0f;
+            float amp = _initialAmp;
+            for (int i = 0; i < _octaves; i++)
+            {
+                maxAmp += amp * 0.5f;
+                amp *= _ampMul;
+            }
+
+            return maxAmp;
+        }
         public Chunk GenerateChunk(Vector3i position)
         {
             var voxels = GenerateScalarField(Chunk.Size, position);
-            var renderer = new Renderer(voxels);
+            var renderer = new Renderer(voxels, position);
             Triangle[] triangles = renderer.GetMesh();
             float[] data = GetTriangleAndNormalData(triangles);
 
@@ -26,26 +61,24 @@ namespace Hyper.MarchingCubes
             var perlin = new PerlinNoise(_seed);
             float[,,] scalarField = new float[width, height, depth];
 
-            for (int x = 0; x < width; x++)
+            for (int x = position.X; x < width + position.X; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = position.Y; y < height + position.Y; y++)
                 {
-                    for (int z = 0; z < depth; z++)
+                    for (int z = position.Z; z < depth + position.Z; z++)
                     {
                         float density = y;
-                        float offset = -0.5f;
-                        int octaves = 3;
-                        float freq = 0.25f;
-                        float amp = 16f;
-                        float maxAmp = 0f;
+                        const float offset = -0.5f;
+                        int octaves = _octaves;
+                        float freq = _initialFreq;
+                        float amp = _initialAmp;
                         for (int i = 0; i < octaves; i++)
                         {
                             density += (perlin.GetNoise3D(x * freq, y * freq, z * freq) + offset) * amp;
-                            freq *= 2;
-                            amp /= 2;
-                            maxAmp += amp * 0.5f;
+                            freq *= _freqMul;
+                            amp *= _ampMul;
                         }
-                        scalarField[x, y, z] = maxAmp - density;
+                        scalarField[x - position.X, y - position.Y, z - position.Z] = density - _maxAmp;
                     }
                 }
             }

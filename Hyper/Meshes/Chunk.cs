@@ -21,14 +21,15 @@ namespace Hyper.Meshes
         {
             _voxels = voxels;
             Position = position;
+            base.Position = position; // TODO ugly as hell
         }
 
-        private float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
+        private static float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
         {
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
         }
 
-        private float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
+        private static float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
         {
             return (float)MathHelper.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
         }
@@ -40,7 +41,10 @@ namespace Hyper.Meshes
             var y = (int)location.Y - Position.Y;
             var z = (int)location.Z - Position.Z;
 
-            if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] <= 0f) return false;
+            if (x < 0 || y < 0 || z < 0
+                | x > Size - 1 || y > Size - 1 || z > Size - 1
+                || _voxels[x, y, z] <= 0f)
+                return false;
 
             float brushWeight = 0.1f;
             for (int xi = x - radius; xi <= x + radius; xi++)
@@ -51,7 +55,7 @@ namespace Hyper.Meshes
                     {
                         if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                         {
-                            _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                            _voxels[xi, yi, zi] += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                         }
                     }
                 }
@@ -72,7 +76,10 @@ namespace Hyper.Meshes
             var y = (int)location.Y - Position.Y;
             var z = (int)location.Z - Position.Z;
 
-            if (x < 0 || y < 0 || z < 0 || x > Size - 1 || y > Size - 1 || z > Size - 1 || _voxels[x, y, z] >= 1f) return false;
+            if (x < 0 || y < 0 || z < 0
+                || x > Size - 1 || y > Size - 1 || z > Size - 1
+                || _voxels[x, y, z] >= 1f)
+                return false;
 
             float brushWeight = 0.1f;
             for (int xi = x - radius; xi <= x + radius; xi++)
@@ -83,7 +90,7 @@ namespace Hyper.Meshes
                     {
                         if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                         {
-                            _voxels[xi, yi, zi] += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                            _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                         }
                     }
                 }
@@ -100,7 +107,7 @@ namespace Hyper.Meshes
         // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
         private void UpdateMesh()
         {
-            var renderer = new Renderer(_voxels);
+            var renderer = new Renderer(_voxels, Position);
             Triangle[] triangles = renderer.GetMesh();
             float[] vertices = Generator.GetTriangleAndNormalData(triangles);
 
