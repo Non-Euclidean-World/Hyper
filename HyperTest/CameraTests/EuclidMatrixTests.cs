@@ -11,7 +11,7 @@ namespace HyperTest.CameraTests
         public void ViewMatrixShouldWorkForEuclid()
         {
             // Arrange
-            var camera = new Camera(1f, 0.1f, 100f);
+            var camera = new Camera(1f, 0.1f, 100f, 1f);
             camera.Curve = 0f;
             camera.ReferencePointPosition = new Vector3(0f, 0f, 0f);
             camera.Pitch = 0f;
@@ -35,7 +35,7 @@ namespace HyperTest.CameraTests
         public void ProjMatrixShouldWorkForEuclid()
         {
             // Arrange
-            var camera = new Camera(1f, 0.1f, 100f);
+            var camera = new Camera(1f, 0.1f, 100f, 1f);
             camera.Curve = 0f;
             camera.Fov = 80;
             var aspectRatio = 1f;
@@ -55,7 +55,7 @@ namespace HyperTest.CameraTests
         public void TranslateMatrixShouldWorkForEuclid()
         {
             // Arrange
-            var camera = new Camera(1f, 0.1f, 100f);
+            var camera = new Camera(1f, 0.1f, 100f, 1f);
             camera.Curve = 0f;
             var to = new Vector3(0.5f, 1f, -0.5f);
             var expected = Matrix4.CreateTranslation(to);

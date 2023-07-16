@@ -2,7 +2,7 @@
 {
     public class PerlinNoise
     {
-        private int[] permutation;
+        private readonly int[] permutation;
 
         public PerlinNoise(int seed)
         {
@@ -72,18 +72,18 @@
             return permutation[x & 255];
         }
 
-        private float Fade(float t)
+        private static float Fade(float t)
         {
             // Fade function as defined by Ken Perlin
             return t * t * t * (t * (t * 6 - 15) + 10);
         }
 
-        private float Lerp(float a, float b, float t)
+        private static float Lerp(float a, float b, float t)
         {
             return a + t * (b - a);
         }
 
-        private float Gradient(int hash, float x, float y, float z)
+        private static float Gradient(int hash, float x, float y, float z)
         {
             // Convert the lower 4 bits of the hash into 12 gradient directions
             int h = hash & 15;

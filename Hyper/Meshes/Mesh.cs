@@ -1,12 +1,13 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System.Runtime.InteropServices;
 
 namespace Hyper.Meshes
 {
     public class Mesh : IDisposable
     {
         public int VaoId { get; set; }
+
+        public int VboId { get; set; }
 
         public Texture? Texture { get; set; }
 
@@ -17,7 +18,7 @@ namespace Hyper.Meshes
 
         public Mesh(float[] vertices, Vector3 position)
         {
-            VaoId = CreateVertexArrayObject(vertices);
+            CreateVertexArrayObject(vertices);
             Position = position;
             NumberOfVertices = vertices.Length / 6;
         }
@@ -32,7 +33,7 @@ namespace Hyper.Meshes
             GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
         }
 
-        private int CreateVertexArrayObject(float[] vertices)
+        private void CreateVertexArrayObject(float[] vertices)
         {
             int vaoId = GL.GenVertexArray();
             GL.BindVertexArray(vaoId);
@@ -52,7 +53,8 @@ namespace Hyper.Meshes
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
-            return vaoId;
+            VaoId = vaoId;
+            VboId = vboId;
         }
 
         public void Dispose()
