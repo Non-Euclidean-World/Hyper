@@ -6,13 +6,11 @@ namespace Hyper.MarchingCubes
     {
         private float _isolevel;
         private float[,,] _voxels;
-        private Vector3i _position;
 
-        public Renderer(float[,,] voxels, Vector3i postion, float isolevel = 0f)
+        public Renderer(float[,,] voxels, float isolevel = 0f)
         {
             _voxels = voxels;
             _isolevel = isolevel;
-            _position = postion;
         }
 
         public Triangle[] GetMesh()

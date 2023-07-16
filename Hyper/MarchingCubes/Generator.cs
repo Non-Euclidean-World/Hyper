@@ -49,7 +49,7 @@ namespace Hyper.MarchingCubes
         public Chunk GenerateChunk(Vector3i position)
         {
             var voxels = GenerateScalarField(Chunk.Size, position);
-            var renderer = new Renderer(voxels, position);
+            var renderer = new Renderer(voxels);
             Triangle[] triangles = renderer.GetMesh();
             float[] data = GetTriangleAndNormalData(triangles);
 

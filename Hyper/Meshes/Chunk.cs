@@ -21,7 +21,6 @@ namespace Hyper.Meshes
         {
             _voxels = voxels;
             Position = position;
-            base.Position = position; // TODO ugly as hell
         }
 
         private static float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
@@ -47,11 +46,11 @@ namespace Hyper.Meshes
                 return false;
 
             float brushWeight = 0.1f;
-            for (int xi = x - radius; xi <= x + radius; xi++)
+            for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
             {
-                for (int yi = y - radius; yi <= y + radius; yi++)
+                for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
                 {
-                    for (int zi = z - radius; zi <= z + radius; zi++)
+                    for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
                     {
                         if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                         {
@@ -82,11 +81,11 @@ namespace Hyper.Meshes
                 return false;
 
             float brushWeight = 0.1f;
-            for (int xi = x - radius; xi <= x + radius; xi++)
+            for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
             {
-                for (int yi = y - radius; yi <= y + radius; yi++)
+                for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
                 {
-                    for (int zi = z - radius; zi <= z + radius; zi++)
+                    for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
                     {
                         if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                         {
@@ -107,7 +106,7 @@ namespace Hyper.Meshes
         // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
         private void UpdateMesh()
         {
-            var renderer = new Renderer(_voxels, Position);
+            var renderer = new Renderer(_voxels);
             Triangle[] triangles = renderer.GetMesh();
             float[] vertices = Generator.GetTriangleAndNormalData(triangles);
 
