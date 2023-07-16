@@ -23,7 +23,7 @@ namespace Hyper
 
         private float _fov = MathHelper.PiOver2;
 
-        private float _cameraSpeed = 500f;
+        private float _cameraSpeed = 100f;
 
         private float _near;
 
@@ -31,14 +31,15 @@ namespace Hyper
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Camera(float aspectRatio, float near, float far)
+        public Camera(float aspectRatio, float near, float far, float scale)
         {
             AspectRatio = aspectRatio;
             _near = near;
             _far = far;
+            _position = Vector3.UnitY * scale;
         }
 
-        private Vector3 _position = Vector3.UnitY;
+        private readonly Vector3 _position;
 
         public float AspectRatio { private get; set; }
 
