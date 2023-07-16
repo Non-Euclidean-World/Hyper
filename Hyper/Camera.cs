@@ -173,6 +173,7 @@ namespace Hyper
 
         // There is a problem with this moving the camera (not necessarily with this method).
         // When the fps is very high (above 1000) the camera moves very fast. Because of that the refresh rate is capped in program.cs
+        // Also right now moving diagonally is faster (holding W and A) will move faster than just holding W.
         public void Move(KeyboardState input, float time)
         {
             float cameraSpeed = _cameraSpeed;
