@@ -55,7 +55,7 @@ namespace Hyper.HUD.HUDElements
         {
             shader.SetBool("useTexture", true);
             GL.BindVertexArray(_vaoId);
-            
+
             UpdateFPS();
             RenderNumber(shader, fps);
         }
@@ -87,7 +87,7 @@ namespace Hyper.HUD.HUDElements
             elapsedTime = stopwatch.Elapsed.TotalSeconds;
             if (elapsedTime >= 0.1)
             {
-                fps = (int) (frameCount / elapsedTime);
+                fps = (int)(frameCount / elapsedTime);
                 frameCount = 0;
                 stopwatch.Restart();
             }
