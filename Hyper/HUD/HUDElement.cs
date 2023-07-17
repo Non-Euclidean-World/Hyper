@@ -13,6 +13,12 @@ namespace Hyper.HUD
 
         protected float _size;
 
+        /// <summary>
+        /// This constructor is used for HUD elements that don't use textures.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <param name="vertices">vertices should be a 1d array of the form: 2 floats for position, 3 floats for color, 2 floats for texture coordinates.</param>
         public HUDElement(Vector2 position, float size, float[] vertices)
         {
             _position = position;
@@ -31,7 +37,7 @@ namespace Hyper.HUD
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 2 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
-            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 5 * sizeof(float));
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 7 * sizeof(float), 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

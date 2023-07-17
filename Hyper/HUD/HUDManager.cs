@@ -1,6 +1,5 @@
 ﻿using Hyper.Command;
 using Hyper.HUD.HUDElements;
-using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -17,8 +16,8 @@ namespace Hyper.HUD
             _shader = CreateShader();
             _elements = new Dictionary<HUDElementTypes, HUDElement>()
             {
-                { HUDElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), 0.02f) },
-                { HUDElementTypes.FPSCounter, new FPSCounter(new Vector2(0.64f, 0.48f), 0.02f) },
+                { HUDElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), HUDConstants.DefaultCrosshairSize) },
+                { HUDElementTypes.FPSCounter, new FPSCounter(HUDConstants.DefaultFPSCounterPosition, HUDConstants.DefaultFPSCounterSize) },
             };
         }
 

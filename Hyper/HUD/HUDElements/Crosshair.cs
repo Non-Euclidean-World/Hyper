@@ -1,10 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.HUD.HUDElements
 {
@@ -12,10 +7,10 @@ namespace Hyper.HUD.HUDElements
     {
         private static float[] vertices = {
             // Position // Color // Texture Coords
-             -1f, 0f, 1.0f, 0.0f, 0.0f, 0f, 0f,
-             1f, 0f, 1.0f, 0.0f, 0.0f, 0f, 0f,
-             0.0f, 1f, 1.0f, 0.0f, 0.0f, 0f, 0f,
-             0.0f, -1f, 1.0f, 0.0f, 0.0f, 0f, 0f
+             -1f, 0f, 1f, 0f, 0f, 0f, 0f,
+             1f,  0f, 1f, 0f, 0f, 0f, 0f,
+             0f,  1f, 1f, 0f, 0f, 0f, 0f,
+             0f, -1f, 1f, 0f, 0f, 0f, 0f
         };
 
         public Crosshair(Vector2 position, float size) : base(position, size, vertices) { }

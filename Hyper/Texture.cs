@@ -1,13 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using SkiaSharp;
 using StbImageSharp;
-using System.IO;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace Hyper
 {
     public class Texture
     {
+        private const int _fontSize = 50;
+
         public readonly int Handle;
 
         public static Texture LoadFromFile(string path)
@@ -46,7 +47,7 @@ namespace Hyper
 
             StbImage.stbi_set_flip_vertically_on_load(1);
 
-            using (var bitmap = new SKBitmap(text.Length * 30, 50))
+            using (var bitmap = new SKBitmap(_fontSize * 3 / 5, _fontSize))
             {
                 using (SKCanvas canvas = new SKCanvas(bitmap))
                 {
@@ -55,13 +56,12 @@ namespace Hyper
                     {
                         paint.Color = SKColors.White;
                         paint.IsAntialias = true;
-                        paint.TextSize = 50.0f;
+                        paint.TextSize = _fontSize;
                         paint.TextAlign = SKTextAlign.Center;
 
                         float x = bitmap.Width / 2;
-                        float y = (bitmap.Height + paint.TextSize) / 2;
 
-                        canvas.DrawText(text, x, 45, paint);
+                        canvas.DrawText(text, x, _fontSize - 5, paint);
                     }
                 }
 

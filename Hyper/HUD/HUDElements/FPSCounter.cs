@@ -1,13 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using SkiaSharp;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hyper.HUD.HUDElements
 {
@@ -15,12 +8,12 @@ namespace Hyper.HUD.HUDElements
     {
         private static float[] _vertices = {
             // Position    Color             Texcoords
-            -1f,  1f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // Top-left
-             1f,  1f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // Top-right
-             1f, -1f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // Bottom-right
-             1f, -1f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // Bottom-right
-            -1f, -1f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,  // Bottom-left
-            -1f,  1f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // Top-left
+            -1f,  1f,  0f, 0f, 1f, 0f, 0f,  // Top-left
+             1f,  1f,  0f, 0f, 1f, 1f, 0f,  // Top-right
+             1f, -1f,  0f, 0f, 1f, 1f, 1f,  // Bottom-right
+             1f, -1f,  0f, 0f, 1f, 1f, 1f,  // Bottom-right
+            -1f, -1f,  0f, 0f, 1f, 0f, 1f,  // Bottom-left
+            -1f,  1f,  0f, 0f, 1f, 0f, 0f,  // Top-left
         };
 
         private Texture[] _numberTextures;
@@ -65,7 +58,7 @@ namespace Hyper.HUD.HUDElements
             float offset = 0;
             while (number > 0)
             {
-                var digit = number % 10;
+                int digit = number % 10;
                 RenderSingleDigit(shader, digit, offset);
                 offset -= _size * 2;
                 number /= 10;
@@ -85,7 +78,7 @@ namespace Hyper.HUD.HUDElements
         {
             frameCount++;
             elapsedTime = stopwatch.Elapsed.TotalSeconds;
-            if (elapsedTime >= 0.1)
+            if (elapsedTime >= HUDConstants.FPSTimeFrame)
             {
                 fps = (int)(frameCount / elapsedTime);
                 frameCount = 0;
