@@ -29,6 +29,12 @@ namespace Hyper
 
         private float _far;
 
+        private bool _firstMove = true;
+
+        private Vector2 _lastPos;
+
+        private const float sensitivity = 0.2f;
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Camera(float aspectRatio, float near, float far, float scale)
@@ -204,6 +210,24 @@ namespace Hyper
             }
 
             ReferencePointPosition += move;
+        }
+
+        internal void Turn(Vector2 position)
+        {
+            if (_firstMove)
+            {
+                _lastPos = position;
+                _firstMove = false;
+            }
+            else
+            {
+                var deltaX = position.X - _lastPos.X;
+                var deltaY = position.Y - _lastPos.Y;
+                _lastPos = position;
+
+                Yaw += deltaX * sensitivity;
+                Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
+            }
         }
 
         protected override void SetCommand(string[] args)

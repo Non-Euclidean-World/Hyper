@@ -7,12 +7,15 @@ namespace Hyper.HUD
 {
     internal class HUDManager : Commandable
     {
+        internal float AspectRatio;
+
         private Shader _shader;
 
         private Dictionary<HUDElementTypes, HUDElement> _elements;
 
-        public HUDManager()
+        public HUDManager(float aspectRatio)
         {
+            AspectRatio = aspectRatio;
             _shader = CreateShader();
             _elements = new Dictionary<HUDElementTypes, HUDElement>()
             {
@@ -21,9 +24,9 @@ namespace Hyper.HUD
             };
         }
 
-        public void Render(float aspectRatio)
+        public void Render()
         {
-            var projection = Matrix4.CreateOrthographic(aspectRatio, 1, -1.0f, 1.0f);
+            var projection = Matrix4.CreateOrthographic(AspectRatio, 1, -1.0f, 1.0f);
 
             _shader.Use();
 
