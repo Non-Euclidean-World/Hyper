@@ -12,7 +12,7 @@ namespace Hyper.Meshes
 
         internal bool IsDead = false;
 
-        internal Projectile(float[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
+        internal Projectile(Vertex[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
         {
             _direction = direction;
             _speed = speed;

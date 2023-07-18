@@ -7,7 +7,7 @@ namespace Hyper.Meshes
     {
         internal Vector3 Color;
 
-        internal LightSource(float[] vertices, Vector3 position, Vector3 color) : base(vertices, position)
+        internal LightSource(Vertex[] vertices, Vector3 position, Vector3 color) : base(vertices, position)
         {
             Color = color;
         }

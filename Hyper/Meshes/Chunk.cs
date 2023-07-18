@@ -1,4 +1,5 @@
-﻿using Hyper.MarchingCubes;
+﻿using System.Runtime.InteropServices;
+using Hyper.MarchingCubes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -15,7 +16,7 @@ namespace Hyper.Meshes
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal Chunk(float[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
+        internal Chunk(Vertex[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
         {
             _voxels = voxels;
             Position = position;
@@ -97,20 +98,20 @@ namespace Hyper.Meshes
         private void UpdateMesh()
         {
             var renderer = new Renderer(_voxels);
-            Triangle[] triangles = renderer.GetMesh();
-            float[] vertices = Generator.GetTriangleAndNormalData(triangles);
+            Vertex[] vertices = renderer.GetMesh();
+            NumberOfVertices = vertices.Length;
 
             GL.BindVertexArray(VaoId);
             GL.DeleteBuffer(VboId);
             VboId = GL.GenBuffer();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.EnableVertexAttribArray(0);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
             GL.BindVertexArray(0);

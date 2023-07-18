@@ -1,24 +1,25 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper.Meshes
 {
     internal class Mesh : IDisposable
     {
-        internal Vector3 Position { get; set; } = Vector3.Zero;
+        internal Vector3 Position;
         //Will also have to add rotation and scale
 
         protected int VaoId;
 
         protected int VboId;
 
-        private readonly int _numberOfVertices;
+        protected int NumberOfVertices;
 
-        internal Mesh(float[] vertices, Vector3 position)
+        internal Mesh(Vertex[] vertices, Vector3 position)
         {
             CreateVertexArrayObject(vertices);
             Position = position;
-            _numberOfVertices = vertices.Length / 6;
+            NumberOfVertices = vertices.Length;
         }
 
         internal virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
@@ -28,22 +29,22 @@ namespace Hyper.Meshes
             shader.SetMatrix4("model", scaleMatrix * model);
 
             GL.BindVertexArray(VaoId);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, _numberOfVertices);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
         }
 
-        private void CreateVertexArrayObject(float[] vertices)
+        private void CreateVertexArrayObject(Vertex[] vertices)
         {
             int vaoId = GL.GenVertexArray();
             GL.BindVertexArray(vaoId);
 
             int vboId = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.EnableVertexAttribArray(0);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
             GL.BindVertexArray(0);

@@ -15,7 +15,7 @@ namespace Hyper
 
         internal readonly List<Projectile> Projectiles;
 
-        internal readonly Camera Cam;
+        internal readonly Camera Camera;
 
         internal readonly HudManager Hud;
 
@@ -32,7 +32,7 @@ namespace Hyper
             Chunks = GetChunks(generator);
             LightSources = GetLightSources(generator);
             Projectiles = new List<Projectile>();
-            Cam = GetCamera(generator, aspectRatio);
+            Camera = GetCamera(generator, aspectRatio);
             Hud = new HudManager(aspectRatio);
 
             _objectShader = GetObjectShader();
@@ -45,19 +45,19 @@ namespace Hyper
 
             foreach (var chunk in Chunks)
             {
-                chunk.Render(_objectShader, Scale, Cam.ReferencePointPosition);
+                chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
             }
 
             foreach (var projectile in Projectiles)
             {
-                projectile.Render(_objectShader, Scale, Cam.ReferencePointPosition);
+                projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
             }
 
             SetUpLightingShaderParams();
 
             foreach (var light in LightSources)
             {
-                light.Render(_lightSourceShader, Scale, Cam.ReferencePointPosition);
+                light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
             }
 
             Hud.Render();
@@ -77,64 +77,64 @@ namespace Hyper
         {
             if (input.IsKeyDown(Keys.D8))
             {
-                Cam.Curve = 0f;
+                Camera.Curve = 0f;
             }
 
             if (input.IsKeyDown(Keys.D9))
             {
-                Cam.Curve = 1f;
+                Camera.Curve = 1f;
             }
 
             if (input.IsKeyDown(Keys.D0))
             {
-                Cam.Curve = -1f;
+                Camera.Curve = -1f;
             }
 
             if (input.IsKeyDown(Keys.Down))
             {
-                Cam.Curve -= 0.0001f;
+                Camera.Curve -= 0.0001f;
             }
 
             if (input.IsKeyDown(Keys.Up))
             {
-                Cam.Curve += 0.0001f;
+                Camera.Curve += 0.0001f;
             }
 
             if (input.IsKeyDown(Keys.Tab))
             {
-                Console.WriteLine(Cam.Curve);
+                Console.WriteLine(Camera.Curve);
             }
 
-            Cam.Move(input, time);
+            Camera.Move(input, time);
 
-            Cam.Turn(mousePosition);
+            Camera.Turn(mousePosition);
         }
 
         private void SetUpObjectShaderParams()
         {
             _objectShader.Use();
-            _objectShader.SetFloat("curv", Cam.Curve);
+            _objectShader.SetFloat("curv", Camera.Curve);
             _objectShader.SetFloat("anti", 1.0f);
-            _objectShader.SetMatrix4("view", Cam.GetViewMatrix());
-            _objectShader.SetMatrix4("projection", Cam.GetProjectionMatrix());
+            _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
+            _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
             _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
             _objectShader.SetInt("numLights", LightSources.Count);
-            _objectShader.SetVector4("viewPos", Cam.PortEucToCurved(Vector3.UnitY));
+            _objectShader.SetVector4("viewPos", Camera.PortEucToCurved(Vector3.UnitY));
 
             for (int i = 0; i < LightSources.Count; i++)
             {
                 _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", Cam.PortEucToCurved((LightSources[i].Position - Cam.ReferencePointPosition) * Scale));
+                _objectShader.SetVector4($"lightPos[{i}]", Camera.PortEucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale));
             }
         }
 
         private void SetUpLightingShaderParams()
         {
             _lightSourceShader.Use();
-            _lightSourceShader.SetFloat("curv", Cam.Curve);
+            _lightSourceShader.SetFloat("curv", Camera.Curve);
             _lightSourceShader.SetFloat("anti", 1.0f);
-            _lightSourceShader.SetMatrix4("view", Cam.GetViewMatrix());
-            _lightSourceShader.SetMatrix4("projection", Cam.GetProjectionMatrix());
+            _lightSourceShader.SetMatrix4("view", Camera.GetViewMatrix());
+            _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
         }
 
         private List<Chunk> GetChunks(Generator generator)
@@ -152,8 +152,8 @@ namespace Hyper
         private List<LightSource> GetLightSources(Generator generator)
         {
             var lightSources = new List<LightSource> {
-                new LightSource(CubeMesh.Vertices, new Vector3(10f, 7f + generator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
-                new LightSource(CubeMesh.Vertices, new Vector3(4f, 7f + generator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
+                new(CubeMesh.Vertices, new Vector3(10f, 7f + generator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
+                new(CubeMesh.Vertices, new Vector3(4f, 7f + generator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
             };
 
             return lightSources;
@@ -161,15 +161,17 @@ namespace Hyper
 
         private Camera GetCamera(Generator generator, float aspectRatio)
         {
-            var camera = new Camera(aspectRatio, 0.01f, 100f, Scale);
-            camera.ReferencePointPosition = (5f + generator.AvgElevation) * Vector3.UnitY;
+            var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
+            {
+                ReferencePointPosition = (5f + generator.AvgElevation) * Vector3.UnitY
+            };
 
             return camera;
         }
 
         private Shader GetObjectShader()
         {
-            var shaderParams = new (string, ShaderType)[]
+            var shaderParams = new[]
             {
                 ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
                 ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
@@ -180,7 +182,7 @@ namespace Hyper
 
         private Shader GetLightSourceShader()
         {
-            var shaderParams = new (string, ShaderType)[]
+            var shaderParams = new[]
             {
                 ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
                 ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)

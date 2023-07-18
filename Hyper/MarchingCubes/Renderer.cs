@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Hyper.Meshes;
+using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes
 {
@@ -13,24 +14,24 @@ namespace Hyper.MarchingCubes
             _isolevel = isolevel;
         }
 
-        internal Triangle[] GetMesh()
+        internal Vertex[] GetMesh()
         {
-            var triangles = new List<Triangle>();
+            var vertices = new List<Vertex>();
             for (int x = 0; x < _voxels.GetLength(0) - 1; x++)
             {
                 for (int y = 0; y < _voxels.GetLength(1) - 1; y++)
                 {
                     for (int z = 0; z < _voxels.GetLength(2) - 1; z++)
                     {
-                        GetTriangles(triangles, x, y, z);
+                        GetTriangles(vertices, x, y, z);
                     }
                 }
             }
 
-            return triangles.ToArray();
+            return vertices.ToArray();
         }
 
-        private void GetTriangles(List<Triangle> triangles, int x, int y, int z)
+        private void GetTriangles(List<Vertex> vertices, int x, int y, int z)
         {
             var (cubeValues, normals) = GetCubeValues(x, y, z);
             var edges = GetEdges(cubeValues);
@@ -55,7 +56,9 @@ namespace Hyper.MarchingCubes
                 var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
                 var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
 
-                triangles.Add(new Triangle(a, b, c, na, nb, nc));
+                vertices.Add(new Vertex(a.X, a.Y, a.Z, na.X, na.Y, na.Z));
+                vertices.Add(new Vertex(b.X, b.Y, b.Z, nb.X, nb.Y, nb.Z));
+                vertices.Add(new Vertex(c.X, c.Y, c.Z, nc.X, nc.Y, nc.Z));
             }
         }
 

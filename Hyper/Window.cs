@@ -84,14 +84,14 @@ namespace Hyper
 
             if (e.Button == MouseButton.Middle)
             {
-                var projectile = new Projectile(CubeMesh.Vertices, _scene.Cam.ReferencePointPosition + 1 / Scene.Scale * Vector3.UnitY, _scene.Cam.Front, 20f, 5f);
+                var projectile = new Projectile(CubeMesh.Vertices, _scene.Camera.ReferencePointPosition + 1 / Scene.Scale * Vector3.UnitY, _scene.Camera.Front, 20f, 5f);
                 _scene.Projectiles.Add(projectile);
             }
 
             // These 2 do not work on chunk borders.
             if (e.Button == MouseButton.Left)
             {
-                var position = _scene.Cam.ReferencePointPosition;
+                var position = _scene.Camera.ReferencePointPosition;
 
                 foreach (var chunk in _scene.Chunks)
                 {
@@ -101,7 +101,7 @@ namespace Hyper
 
             if (e.Button == MouseButton.Right)
             {
-                var position = _scene.Cam.ReferencePointPosition;
+                var position = _scene.Camera.ReferencePointPosition;
 
                 foreach (var chunk in _scene.Chunks)
                 {
@@ -114,7 +114,7 @@ namespace Hyper
         {
             base.OnMouseWheel(e);
 
-            _scene.Cam.Fov -= e.OffsetY;
+            _scene.Camera.Fov -= e.OffsetY;
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -122,7 +122,7 @@ namespace Hyper
             base.OnResize(e);
 
             GL.Viewport(0, 0, Size.X, Size.Y);
-            _scene.Cam.AspectRatio = Size.X / (float)Size.Y;
+            _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
             _scene.Hud.AspectRatio = Size.X / (float)Size.Y;
         }
 
@@ -156,7 +156,7 @@ namespace Hyper
                     switch (key)
                     {
                         case "camera":
-                            _scene.Cam.Command(args);
+                            _scene.Camera.Command(args);
                             break;
                         case "hud":
                             _scene.Hud.Command(args);
