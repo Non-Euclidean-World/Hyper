@@ -152,5 +152,16 @@ namespace Hyper
             GL.UseProgram(Handle);
             GL.Uniform4(_uniformLocations[name], data);
         }
+
+        /// <summary>
+        /// Set a uniform bool on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        public void SetBool(string name, bool data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
+        }
     }
 }

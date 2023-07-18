@@ -12,10 +12,10 @@
             switch (key)
             {
                 case "get":
-                    GetComamnd(args);
+                    GetCommand(args);
                     break;
                 case "set":
-                    SetComamnd(args);
+                    SetCommand(args);
                     break;
                 default:
                     CommandNotFound();
@@ -23,17 +23,17 @@
             }
         }
 
-        protected virtual void SetComamnd(string[] args)
+        protected virtual void SetCommand(string[] args)
         {
             CommandNotFound();
         }
 
-        protected virtual void GetComamnd(string[] args)
+        protected virtual void GetCommand(string[] args)
         {
             CommandNotFound();
         }
 
-        private static void CommandNotFound()
+        protected static void CommandNotFound()
         {
             throw new CommandException(_commandNotFound);
         }

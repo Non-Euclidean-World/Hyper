@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.2.0" />
     <PackageReference Include="OpenTK" Version="4.7.7" />
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
     <PackageReference Include="StbImageSharp" Version="2.27.13" />
   </ItemGroup>
 
@@ -41,12 +42,23 @@
     <None Update="Shaders\shader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\Shaders\shader2d.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\Shaders\shader2d.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 	   <_Parameter1>HyperTest</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HUD\Textures\" />
+    <Folder Include="HUD\Shaders\" />
   </ItemGroup>
 
 

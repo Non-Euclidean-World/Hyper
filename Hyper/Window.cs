@@ -1,4 +1,5 @@
-﻿using Hyper.MarchingCubes;
+﻿using Hyper.HUD;
+using Hyper.MarchingCubes;
 using Hyper.Meshes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
@@ -33,6 +34,8 @@ namespace Hyper
 
         private Vector2 _lastPos;
 
+        private HUDManager _hud = null!;
+
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
@@ -54,10 +57,14 @@ namespace Hyper
 
             GL.ClearColor(0f, 0f, 0f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             SetUpShaders();
 
             SetUpScene();
+
+            _hud = new HUDManager();
 
             CursorState = CursorState.Grabbed;
         }
@@ -86,6 +93,8 @@ namespace Hyper
             {
                 light.Render(_lightSourceShader, _scale, _camera.ReferencePointPosition);
             }
+
+            _hud.Render((float)Size.X / Size.Y);
 
             SwapBuffers();
         }
@@ -190,6 +199,9 @@ namespace Hyper
                     {
                         case "camera":
                             _camera.Command(args);
+                            break;
+                        case "hud":
+                            _hud.Command(args);
                             break;
                     }
                 }
