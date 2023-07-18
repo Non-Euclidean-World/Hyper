@@ -16,8 +16,8 @@ namespace Hyper.HUD
             _shader = CreateShader();
             _elements = new Dictionary<HUDElementTypes, HUDElement>()
             {
-                { HUDElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), HUDConstants.DefaultCrosshairSize) },
-                { HUDElementTypes.FPSCounter, new FPSCounter(HUDConstants.DefaultFPSCounterPosition, HUDConstants.DefaultFPSCounterSize) },
+                { HUDElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), Crosshair.DefaultSize) },
+                { HUDElementTypes.FPSCounter, new FPSCounter(FPSCounter.DefaultPosition, FPSCounter.DefaultSize) },
             };
         }
 

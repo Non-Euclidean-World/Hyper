@@ -6,6 +6,12 @@ namespace Hyper.HUD.HUDElements
 {
     internal class FPSCounter : HUDElement
     {
+        internal const float DefaultSize = 0.02f;
+
+        internal static Vector2 DefaultPosition = new Vector2(0.64f, 0.48f);
+
+        private const double _fpsTimeFrame = 0.1f;
+
         private static float[] _vertices = {
             // Position    Color             Texcoords
             -1f,  1f,  0f, 0f, 1f, 0f, 0f,  // Top-left
@@ -78,7 +84,7 @@ namespace Hyper.HUD.HUDElements
         {
             frameCount++;
             elapsedTime = stopwatch.Elapsed.TotalSeconds;
-            if (elapsedTime >= HUDConstants.FPSTimeFrame)
+            if (elapsedTime >= _fpsTimeFrame)
             {
                 fps = (int)(frameCount / elapsedTime);
                 frameCount = 0;
