@@ -3,11 +3,11 @@ using OpenTK.Mathematics;
 
 namespace Hyper.HUD.HUDElements
 {
-    internal class Crosshair : HUDElement
+    internal class Crosshair : HudElement
     {
         internal const float DefaultSize = 0.02f;
 
-        private static float[] vertices = {
+        private static readonly float[] Vertices = {
             // Position // Color // Texture Coords
              -1f, 0f, 1f, 0f, 0f, 0f, 0f,
              1f,  0f, 1f, 0f, 0f, 0f, 0f,
@@ -15,16 +15,16 @@ namespace Hyper.HUD.HUDElements
              0f, -1f, 1f, 0f, 0f, 0f, 0f
         };
 
-        public Crosshair(Vector2 position, float size) : base(position, size, vertices) { }
+        public Crosshair(Vector2 position, float size) : base(position, size, Vertices) { }
 
         public override void Render(Shader shader)
         {
-            var model = Matrix4.CreateTranslation(_position.X, _position.Y, 0.0f);
-            model *= Matrix4.CreateScale(_size, _size, 1.0f);
+            var model = Matrix4.CreateTranslation(Position.X, Position.Y, 0.0f);
+            model *= Matrix4.CreateScale(Size, Size, 1.0f);
 
             shader.SetMatrix4("model", model);
             shader.SetBool("useTexture", false);
-            GL.BindVertexArray(_vaoId);
+            GL.BindVertexArray(VaoId);
             GL.DrawArrays(PrimitiveType.Lines, 0, 4);
         }
     }

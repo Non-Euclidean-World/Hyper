@@ -3,15 +3,15 @@ using OpenTK.Mathematics;
 
 namespace Hyper.HUD
 {
-    internal abstract class HUDElement
+    internal abstract class HudElement
     {
         public bool Visible = true;
 
-        protected int _vaoId;
+        protected readonly int VaoId;
 
-        protected Vector2 _position;
+        protected Vector2 Position;
 
-        protected float _size;
+        protected readonly float Size;
 
         /// <summary>
         /// This constructor is used for HUD elements that don't use textures.
@@ -19,10 +19,10 @@ namespace Hyper.HUD
         /// <param name="position"></param>
         /// <param name="size"></param>
         /// <param name="vertices">vertices should be a 1d array of the form: 2 floats for position, 3 floats for color, 2 floats for texture coordinates.</param>
-        public HUDElement(Vector2 position, float size, float[] vertices)
+        protected HudElement(Vector2 position, float size, float[] vertices)
         {
-            _position = position;
-            _size = size;
+            Position = position;
+            Size = size;
 
             int vao = GL.GenVertexArray();
             GL.BindVertexArray(vao);
@@ -43,7 +43,7 @@ namespace Hyper.HUD
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
 
-            _vaoId = vao;
+            VaoId = vao;
         }
 
         public abstract void Render(Shader shader);

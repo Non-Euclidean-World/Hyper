@@ -11,9 +11,9 @@ namespace Hyper.Meshes
 
         internal new Vector3i Position;
 
-        private float[,,] _voxels;
+        private readonly float[,,] _voxels;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         internal Chunk(float[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
         {
@@ -48,12 +48,12 @@ namespace Hyper.Meshes
                 }
             }
 
-            _logger.Info($"Mined block at {x},{y},{z}");
+            Logger.Info($"Mined block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) _logger.Error(error);
+            if (error != ErrorCode.NoError) Logger.Error(error);
 
             return true;
         }
@@ -83,12 +83,12 @@ namespace Hyper.Meshes
                     }
                 }
             }
-            _logger.Info($"Built block at {x},{y},{z}");
+            Logger.Info($"Built block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) _logger.Error(error);
+            if (error != ErrorCode.NoError) Logger.Error(error);
 
             return true;
         }
@@ -100,11 +100,11 @@ namespace Hyper.Meshes
             Triangle[] triangles = renderer.GetMesh();
             float[] vertices = Generator.GetTriangleAndNormalData(triangles);
 
-            GL.BindVertexArray(_vaoId);
-            GL.DeleteBuffer(_vboId);
-            _vboId = GL.GenBuffer();
+            GL.BindVertexArray(VaoId);
+            GL.DeleteBuffer(VboId);
+            VboId = GL.GenBuffer();
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);

@@ -7,9 +7,9 @@ namespace Hyper
 {
     internal class Texture
     {
-        private const int _fontSize = 50;
+        private const int FontSize = 50;
 
-        internal readonly int Handle;
+        private readonly int _handle;
 
         internal static Texture LoadFromFile(string path)
         {
@@ -47,7 +47,7 @@ namespace Hyper
 
             StbImage.stbi_set_flip_vertically_on_load(1);
 
-            using (var bitmap = new SKBitmap(_fontSize * 3 / 5, _fontSize))
+            using (var bitmap = new SKBitmap(FontSize * 3 / 5, FontSize))
             {
                 using (SKCanvas canvas = new SKCanvas(bitmap))
                 {
@@ -56,12 +56,12 @@ namespace Hyper
                     {
                         paint.Color = SKColors.White;
                         paint.IsAntialias = true;
-                        paint.TextSize = _fontSize;
+                        paint.TextSize = FontSize;
                         paint.TextAlign = SKTextAlign.Center;
 
                         float x = bitmap.Width / 2;
 
-                        canvas.DrawText(text, x, _fontSize - 5, paint);
+                        canvas.DrawText(text, x, FontSize - 5, paint);
                     }
                 }
 
@@ -81,13 +81,13 @@ namespace Hyper
 
         internal Texture(int glHandle)
         {
-            Handle = glHandle;
+            _handle = glHandle;
         }
 
         internal void Use(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.Texture2D, Handle);
+            GL.BindTexture(TextureTarget.Texture2D, _handle);
         }
     }
 }

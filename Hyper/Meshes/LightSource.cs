@@ -14,12 +14,12 @@ namespace Hyper.Meshes
 
         internal override void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
-            var modelLS = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
-            var scaleLS = Matrix4.CreateScale(scale);
-            shader.SetMatrix4("model", scaleLS * modelLS);
+            var modelLs = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
+            var scaleLs = Matrix4.CreateScale(scale);
+            shader.SetMatrix4("model", scaleLs * modelLs);
             shader.SetVector3("color", Color);
 
-            GL.BindVertexArray(_vaoId);
+            GL.BindVertexArray(VaoId);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         }
     }

@@ -43,7 +43,7 @@ namespace Hyper.MarchingCubes
             return new Chunk(data, position, voxels);
         }
 
-        // This function is kinda useless. We could just write floats instead of Triangles but I think this is more readable. If performence is an issue this could be deleted.
+        // This function is kinda useless. We could just write floats instead of Triangles but I think this is more readable. If performance is an issue this could be deleted.
         internal static float[] GetTriangleAndNormalData(Triangle[] triangles)
         {
             float[] data = new float[triangles.Length * 18];

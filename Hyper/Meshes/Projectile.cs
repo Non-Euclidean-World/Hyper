@@ -4,9 +4,9 @@ namespace Hyper.Meshes
 {
     internal class Projectile : Mesh
     {
-        private Vector3 _direction;
+        private readonly Vector3 _direction;
 
-        private float _speed;
+        private readonly float _speed;
 
         private float _lifeTime;
 

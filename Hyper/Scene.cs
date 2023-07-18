@@ -9,21 +9,21 @@ namespace Hyper
 {
     internal class Scene
     {
-        internal List<Chunk> Chunks;
+        internal readonly List<Chunk> Chunks;
 
-        internal List<LightSource> LightSources;
+        internal readonly List<LightSource> LightSources;
 
-        internal List<Projectile> Projectiles;
+        internal readonly List<Projectile> Projectiles;
 
-        internal Camera Cam;
+        internal readonly Camera Cam;
 
-        internal HUDManager Hud;
+        internal readonly HudManager Hud;
 
         internal const float Scale = 0.1f;
 
-        private Shader _objectShader;
+        private readonly Shader _objectShader;
 
-        private Shader _lightSourceShader;
+        private readonly Shader _lightSourceShader;
 
         internal Scene(float aspectRatio)
         {
@@ -33,7 +33,7 @@ namespace Hyper
             LightSources = GetLightSources(generator);
             Projectiles = new List<Projectile>();
             Cam = GetCamera(generator, aspectRatio);
-            Hud = new HUDManager(aspectRatio);
+            Hud = new HudManager(aspectRatio);
 
             _objectShader = GetObjectShader();
             _lightSourceShader = GetLightSourceShader();

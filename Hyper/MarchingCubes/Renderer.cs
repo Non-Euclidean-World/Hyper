@@ -4,8 +4,8 @@ namespace Hyper.MarchingCubes
 {
     internal class Renderer
     {
-        private float _isolevel;
-        private float[,,] _voxels;
+        private readonly float _isolevel;
+        private readonly float[,,] _voxels;
 
         public Renderer(float[,,] voxels, float isolevel = 0f)
         {

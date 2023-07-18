@@ -2,7 +2,7 @@
 {
     public abstract class Commandable
     {
-        private const string _commandNotFound = "Command does not exist";
+        private const string CommandNotFoundMessage = "Command does not exist";
 
         public void Command(string[] arguments)
         {
@@ -35,7 +35,7 @@
 
         protected static void CommandNotFound()
         {
-            throw new CommandException(_commandNotFound);
+            throw new CommandException(CommandNotFoundMessage);
         }
     }
 }

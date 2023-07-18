@@ -10,7 +10,7 @@ namespace Hyper
 {
     internal class Window : GameWindow
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private CancellationTokenSource _debugCancellationTokenSource = null!;
 
@@ -145,7 +145,7 @@ namespace Hyper
                 if (command == null)
                     return;
 
-                _logger.Info($"[Command]{command}");
+                Logger.Info($"[Command]{command}");
 
                 try
                 {
@@ -165,7 +165,7 @@ namespace Hyper
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex);
+                    Logger.Error(ex);
                     Console.WriteLine(ex.Message);
                 }
             }

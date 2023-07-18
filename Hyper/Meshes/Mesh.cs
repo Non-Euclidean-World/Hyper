@@ -8,11 +8,11 @@ namespace Hyper.Meshes
         internal Vector3 Position { get; set; } = Vector3.Zero;
         //Will also have to add rotation and scale
 
-        protected int _vaoId;
+        protected int VaoId;
 
-        protected int _vboId;
+        protected int VboId;
 
-        private int _numberOfVertices;
+        private readonly int _numberOfVertices;
 
         internal Mesh(float[] vertices, Vector3 position)
         {
@@ -27,7 +27,7 @@ namespace Hyper.Meshes
             var scaleMatrix = Matrix4.CreateScale(scale);
             shader.SetMatrix4("model", scaleMatrix * model);
 
-            GL.BindVertexArray(_vaoId);
+            GL.BindVertexArray(VaoId);
             GL.DrawArrays(PrimitiveType.Triangles, 0, _numberOfVertices);
         }
 
@@ -51,13 +51,13 @@ namespace Hyper.Meshes
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
-            _vaoId = vaoId;
-            _vboId = vboId;
+            VaoId = vaoId;
+            VboId = vboId;
         }
 
         public void Dispose()
         {
-            GL.DeleteVertexArray(_vaoId);
+            GL.DeleteVertexArray(VaoId);
         }
     }
 }
