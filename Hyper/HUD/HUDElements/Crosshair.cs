@@ -7,12 +7,11 @@ namespace Hyper.HUD.HUDElements
     {
         public const float DefaultSize = 0.02f;
 
-        private static readonly float[] Vertices = {
-            // Position // Color // Texture Coords
-             -1f, 0f, 1f, 0f, 0f, 0f, 0f,
-             1f,  0f, 1f, 0f, 0f, 0f, 0f,
-             0f,  1f, 1f, 0f, 0f, 0f, 0f,
-             0f, -1f, 1f, 0f, 0f, 0f, 0f
+        private static readonly Vertex2d[] Vertices = {
+            new(-1f, 0f, 1f, 0f, 0f, 0f, 0f),
+            new(1f,  0f, 1f, 0f, 0f, 0f, 0f),
+            new(0f,  1f, 1f, 0f, 0f, 0f, 0f),
+            new(0f, -1f, 1f, 0f, 0f, 0f, 0f)
         };
 
         public Crosshair(Vector2 position, float size) : base(position, size, Vertices) { }

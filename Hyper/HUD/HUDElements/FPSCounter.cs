@@ -8,23 +8,22 @@ namespace Hyper.HUD.HUDElements
     {
         public const float DefaultSize = 0.02f;
 
-        public static Vector2 DefaultPosition = new Vector2(0.64f, 0.48f);
+        public static Vector2 DefaultPosition = new(0.64f, 0.48f);
 
         private const double FpsTimeFrame = 0.1f;
 
-        private static readonly float[] Vertices = {
-            // Position    Color             Texcoords
-            -1f,  1f,  0f, 0f, 1f, 0f, 0f,  // Top-left
-             1f,  1f,  0f, 0f, 1f, 1f, 0f,  // Top-right
-             1f, -1f,  0f, 0f, 1f, 1f, 1f,  // Bottom-right
-             1f, -1f,  0f, 0f, 1f, 1f, 1f,  // Bottom-right
-            -1f, -1f,  0f, 0f, 1f, 0f, 1f,  // Bottom-left
-            -1f,  1f,  0f, 0f, 1f, 0f, 0f,  // Top-left
+        private static readonly Vertex2d[] Vertices = { 
+            new(-1f, 1f, 0f, 0f, 1f, 0f, 0f),
+            new(1f, 1f, 0f, 0f, 1f, 1f, 0f),
+            new(1f, -1f, 0f, 0f, 1f, 1f, 1f),
+            new(1f, -1f, 0f, 0f, 1f, 1f, 1f),
+            new(-1f, -1f, 0f, 0f, 1f, 0f, 1f),
+            new(-1f, 1f, 0f, 0f, 1f, 0f, 0f)
         };
 
         private readonly Texture[] _numberTextures;
 
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly Stopwatch _stopwatch = new();
 
         private int _frameCount = 0;
 
