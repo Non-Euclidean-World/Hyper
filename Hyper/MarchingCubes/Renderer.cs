@@ -14,7 +14,7 @@ namespace Hyper.MarchingCubes
             _isolevel = isolevel;
         }
 
-        internal Vertex[] GetMesh()
+        public Vertex[] GetMesh()
         {
             var vertices = new List<Vertex>();
             for (int x = 0; x < _voxels.GetLength(0) - 1; x++)

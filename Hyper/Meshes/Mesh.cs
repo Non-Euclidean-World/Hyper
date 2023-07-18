@@ -6,7 +6,7 @@ namespace Hyper.Meshes
 {
     internal class Mesh : IDisposable
     {
-        internal Vector3 Position;
+        public Vector3 Position;
         //Will also have to add rotation and scale
 
         protected int VaoId;
@@ -15,14 +15,14 @@ namespace Hyper.Meshes
 
         protected int NumberOfVertices;
 
-        internal Mesh(Vertex[] vertices, Vector3 position)
+        public Mesh(Vertex[] vertices, Vector3 position)
         {
             CreateVertexArrayObject(vertices);
             Position = position;
             NumberOfVertices = vertices.Length;
         }
 
-        internal virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
+        public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
             var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
             var scaleMatrix = Matrix4.CreateScale(scale);

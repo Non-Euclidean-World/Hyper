@@ -4,13 +4,13 @@
     {
         private readonly int[] _permutation;
 
-        internal PerlinNoise(int seed)
+        public PerlinNoise(int seed)
         {
             var random = new Random(seed);
             _permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
         }
 
-        internal float GetNoise3D(float x, float y, float z)
+        public float GetNoise3D(float x, float y, float z)
         {
             float px = x * 0.1553f;
             float py = y * 0.1271f;
@@ -21,7 +21,7 @@
             return noise;
         }
 
-        internal float GetNoise(float x, float y, float z)
+        public float GetNoise(float x, float y, float z)
         {
             // Calculate the unit cube that contains the point
             int cubeX = (int)Math.Floor(x) & 255;

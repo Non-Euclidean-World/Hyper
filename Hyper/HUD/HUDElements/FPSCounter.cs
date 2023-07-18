@@ -6,9 +6,9 @@ namespace Hyper.HUD.HUDElements
 {
     internal class FpsCounter : HudElement
     {
-        internal const float DefaultSize = 0.02f;
+        public const float DefaultSize = 0.02f;
 
-        internal static Vector2 DefaultPosition = new Vector2(0.64f, 0.48f);
+        public static Vector2 DefaultPosition = new Vector2(0.64f, 0.48f);
 
         private const double FpsTimeFrame = 0.1f;
 

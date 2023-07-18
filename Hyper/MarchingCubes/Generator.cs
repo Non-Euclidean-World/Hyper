@@ -19,9 +19,9 @@ namespace Hyper.MarchingCubes
 
         private readonly float _maxAmp;
 
-        internal float AvgElevation { get; private set; } = 0f;
+        public float AvgElevation { get; private set; } = 0f;
 
-        internal Generator(int seed, int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
+        public Generator(int seed, int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
         {
             _seed = seed;
             _octaves = octaves;
@@ -33,7 +33,7 @@ namespace Hyper.MarchingCubes
             _maxAmp = AvgElevation = GetMaxAmp();
         }
 
-        internal Chunk GenerateChunk(Vector3i position)
+        public Chunk GenerateChunk(Vector3i position)
         {
             var voxels = GenerateScalarField(Chunk.Size, position);
             var renderer = new Renderer(voxels);

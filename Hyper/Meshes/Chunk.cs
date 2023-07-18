@@ -8,15 +8,15 @@ namespace Hyper.Meshes
 {
     internal class Chunk : Mesh
     {
-        internal const int Size = 32;
+        public const int Size = 32;
 
-        internal new Vector3i Position;
+        public new Vector3i Position;
 
         private readonly float[,,] _voxels;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal Chunk(Vertex[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
+        public Chunk(Vertex[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
         {
             _voxels = voxels;
             Position = position;

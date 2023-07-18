@@ -7,7 +7,7 @@ namespace Hyper.HUD
 {
     internal class HudManager : Commandable
     {
-        internal float AspectRatio;
+        public float AspectRatio;
 
         private readonly Shader _shader;
 

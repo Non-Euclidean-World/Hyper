@@ -5,7 +5,7 @@ namespace Hyper.HUD.HUDElements
 {
     internal class Crosshair : HudElement
     {
-        internal const float DefaultSize = 0.02f;
+        public const float DefaultSize = 0.02f;
 
         private static readonly float[] Vertices = {
             // Position // Color // Texture Coords

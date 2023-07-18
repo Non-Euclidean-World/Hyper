@@ -4,12 +4,12 @@ namespace Hyper.Meshes
 {
     internal static class CubeMesh
     {
-        internal static Mesh Create(Vector3 position)
+        public static Mesh Create(Vector3 position)
         {
             return new Mesh(Vertices, position);
         }
 
-        internal static readonly Vertex[] Vertices =
+        public static readonly Vertex[] Vertices =
         {
             new Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
             new Vertex(0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),

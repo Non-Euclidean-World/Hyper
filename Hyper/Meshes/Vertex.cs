@@ -6,24 +6,24 @@ namespace Hyper.Meshes;
 internal struct Vertex
 {
     [FieldOffset(0)]
-    internal float X;
+    public float X;
     
     [FieldOffset(4)]
-    internal float Y;
+    public float Y;
     
     [FieldOffset(8)]
-    internal float Z;
+    public float Z;
 
     [FieldOffset(12)] 
-    internal float Nx;
+    public float Nx;
     
     [FieldOffset(16)]
-    internal float Ny;
+    public float Ny;
     
     [FieldOffset(20)]
-    internal float Nz;
+    public float Nz;
     
-    internal Vertex(float x, float y, float z, float nx, float ny, float nz)
+    public Vertex(float x, float y, float z, float nx, float ny, float nz)
     {
         X = x;
         Y = y;

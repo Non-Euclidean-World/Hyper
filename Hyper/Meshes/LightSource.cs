@@ -5,14 +5,14 @@ namespace Hyper.Meshes
 {
     internal class LightSource : Mesh
     {
-        internal Vector3 Color;
+        public Vector3 Color;
 
-        internal LightSource(Vertex[] vertices, Vector3 position, Vector3 color) : base(vertices, position)
+        public LightSource(Vertex[] vertices, Vector3 position, Vector3 color) : base(vertices, position)
         {
             Color = color;
         }
 
-        internal override void Render(Shader shader, float scale, Vector3 cameraPosition)
+        public override void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
             var modelLs = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
             var scaleLs = Matrix4.CreateScale(scale);

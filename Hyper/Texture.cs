@@ -11,7 +11,7 @@ namespace Hyper
 
         private readonly int _handle;
 
-        internal static Texture LoadFromFile(string path)
+        public static Texture LoadFromFile(string path)
         {
             int handle = GL.GenTexture();
 
@@ -38,7 +38,7 @@ namespace Hyper
             return new Texture(handle);
         }
 
-        internal static Texture LoadFromText(string text)
+        public static Texture LoadFromText(string text)
         {
             int handle = GL.GenTexture();
 
@@ -79,12 +79,12 @@ namespace Hyper
             return new Texture(handle);
         }
 
-        internal Texture(int glHandle)
+        public Texture(int glHandle)
         {
             _handle = glHandle;
         }
 
-        internal void Use(TextureUnit unit)
+        public void Use(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, _handle);

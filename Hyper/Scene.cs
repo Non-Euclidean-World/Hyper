@@ -9,23 +9,23 @@ namespace Hyper
 {
     internal class Scene
     {
-        internal readonly List<Chunk> Chunks;
+        public readonly List<Chunk> Chunks;
 
-        internal readonly List<LightSource> LightSources;
+        public readonly List<LightSource> LightSources;
 
-        internal readonly List<Projectile> Projectiles;
+        public readonly List<Projectile> Projectiles;
 
-        internal readonly Camera Camera;
+        public readonly Camera Camera;
 
-        internal readonly HudManager Hud;
+        public readonly HudManager Hud;
 
-        internal const float Scale = 0.1f;
+        public const float Scale = 0.1f;
 
         private readonly Shader _objectShader;
 
         private readonly Shader _lightSourceShader;
 
-        internal Scene(float aspectRatio)
+        public Scene(float aspectRatio)
         {
             Generator generator = new Generator(1);
 
@@ -63,7 +63,7 @@ namespace Hyper
             Hud.Render();
         }
 
-        internal void UpdateProjectiles(float time)
+        public void UpdateProjectiles(float time)
         {
             foreach (var projectile in Projectiles)
             {
@@ -73,7 +73,7 @@ namespace Hyper
             Projectiles.RemoveAll(x => x.IsDead);
         }
 
-        internal void UpdateCamera(KeyboardState input, float time, Vector2 mousePosition)
+        public void UpdateCamera(KeyboardState input, float time, Vector2 mousePosition)
         {
             if (input.IsKeyDown(Keys.D8))
             {

@@ -9,7 +9,7 @@ namespace Hyper
 
         private readonly Dictionary<string, int> _uniformLocations;
 
-        internal Shader((string path, ShaderType shaderType)[] shaders)
+        public Shader((string path, ShaderType shaderType)[] shaders)
         {
             _handle = GL.CreateProgram();
 
@@ -54,12 +54,12 @@ namespace Hyper
             }
         }
 
-        internal void Use()
+        public void Use()
         {
             GL.UseProgram(_handle);
         }
 
-        internal int GetAttribLocation(string attribName)
+        public int GetAttribLocation(string attribName)
         {
             return GL.GetAttribLocation(_handle, attribName);
         }
@@ -69,7 +69,7 @@ namespace Hyper
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        internal void SetInt(string name, int data)
+        public void SetInt(string name, int data)
         {
             GL.UseProgram(_handle);
             GL.Uniform1(_uniformLocations[name], data);
@@ -80,7 +80,7 @@ namespace Hyper
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        internal void SetFloat(string name, float data)
+        public void SetFloat(string name, float data)
         {
             GL.UseProgram(_handle);
             GL.Uniform1(_uniformLocations[name], data);
@@ -96,7 +96,7 @@ namespace Hyper
         ///   The matrix is transposed before being sent to the shader.
         ///   </para>
         /// </remarks>
-        internal void SetMatrix4(string name, Matrix4 data)
+        public void SetMatrix4(string name, Matrix4 data)
         {
             GL.UseProgram(_handle);
             GL.UniformMatrix4(_uniformLocations[name], true, ref data);
@@ -107,13 +107,13 @@ namespace Hyper
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        internal void SetVector3(string name, Vector3 data)
+        public void SetVector3(string name, Vector3 data)
         {
             GL.UseProgram(_handle);
             GL.Uniform3(_uniformLocations[name], data);
         }
 
-        internal void SetVector4(string name, Vector4 data)
+        public void SetVector4(string name, Vector4 data)
         {
             GL.UseProgram(_handle);
             GL.Uniform4(_uniformLocations[name], data);
@@ -124,7 +124,7 @@ namespace Hyper
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        internal void SetBool(string name, bool data)
+        public void SetBool(string name, bool data)
         {
             GL.UseProgram(_handle);
             GL.Uniform1(_uniformLocations[name], data ? 1 : 0);

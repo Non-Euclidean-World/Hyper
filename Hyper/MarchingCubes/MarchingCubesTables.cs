@@ -4,7 +4,7 @@ namespace Hyper.MarchingCubes
 {
     internal static class MarchingCubesTables
     {
-        internal static readonly int[][] EdgeConnections = {
+        public static readonly int[][] EdgeConnections = {
             new int[] {0,1},
             new int[] {1,2},
             new int[] {2,3},
@@ -19,7 +19,7 @@ namespace Hyper.MarchingCubes
             new int[] {3,7}
         };
 
-        internal static readonly Vector3i[] CubeCorners = new Vector3i[] {
+        public static readonly Vector3i[] CubeCorners = new Vector3i[] {
             new Vector3i(0, 0, 1),
             new Vector3i(1, 0, 1),
             new Vector3i(1, 0, 0),
@@ -30,7 +30,7 @@ namespace Hyper.MarchingCubes
             new Vector3i(0, 1, 0)
         };
 
-        internal static readonly int[][] TriTable = {
+        public static readonly int[][] TriTable = {
             new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
             new int[] {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
             new int[] {0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
