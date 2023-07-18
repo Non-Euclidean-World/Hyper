@@ -5,13 +5,13 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper
 {
-    public class Camera : Commandable
+    internal class Camera : Commandable
     {
-        public float Curve { get; set; } = 0f;
+        internal float Curve { get; set; } = 0f;
 
-        public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
+        internal Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
 
-        public Vector3 Front { get; private set; } = -Vector3.UnitZ;
+        internal Vector3 Front { get; private set; } = -Vector3.UnitZ;
 
         private Vector3 _up = Vector3.UnitY;
 
@@ -29,6 +29,8 @@ namespace Hyper
 
         private float _far;
 
+        private readonly Vector3 _position;
+
         private bool _firstMove = true;
 
         private Vector2 _lastPos;
@@ -37,7 +39,7 @@ namespace Hyper
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Camera(float aspectRatio, float near, float far, float scale)
+        internal Camera(float aspectRatio, float near, float far, float scale)
         {
             AspectRatio = aspectRatio;
             _near = near;
@@ -45,11 +47,9 @@ namespace Hyper
             _position = Vector3.UnitY * scale;
         }
 
-        private readonly Vector3 _position;
+        internal float AspectRatio { private get; set; }
 
-        public float AspectRatio { private get; set; }
-
-        public float Pitch
+        internal float Pitch
         {
             get => MathHelper.RadiansToDegrees(_pitch);
             set
@@ -60,7 +60,7 @@ namespace Hyper
             }
         }
 
-        public float Yaw
+        internal float Yaw
         {
             get => MathHelper.RadiansToDegrees(_yaw);
             set
@@ -70,7 +70,7 @@ namespace Hyper
             }
         }
 
-        public float Fov
+        internal float Fov
         {
             get => MathHelper.RadiansToDegrees(_fov);
             set
@@ -80,7 +80,7 @@ namespace Hyper
             }
         }
 
-        public Matrix4 GetViewMatrix()
+        internal Matrix4 GetViewMatrix()
         {
             Matrix4 V = Matrix4.LookAt(_position, _position + Front, _up);
             Vector4 ic = new Vector4(V.Column0.Xyz, 0);
@@ -108,7 +108,7 @@ namespace Hyper
             return nonEuclidView;
         }
 
-        public Matrix4 GetProjectionMatrix()
+        internal Matrix4 GetProjectionMatrix()
         {
             Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
             float sFovX = P.Column0.X;
@@ -129,7 +129,7 @@ namespace Hyper
             return nonEuclidProj;
         }
 
-        public Matrix4 TranslateMatrix(Vector4 to)
+        internal Matrix4 TranslateMatrix(Vector4 to)
         {
             Matrix4 T;
             if (MathHelper.Abs(Curve) < Constants.Eps)
@@ -153,7 +153,7 @@ namespace Hyper
             return T;
         }
 
-        public Vector4 PortEucToCurved(Vector3 eucPoint)
+        internal Vector4 PortEucToCurved(Vector3 eucPoint)
         {
             return PortEucToCurved(new Vector4(eucPoint, 1));
         }
@@ -178,7 +178,7 @@ namespace Hyper
             _up = Vector3.Normalize(Vector3.Cross(_right, Front));
         }
 
-        public void Move(KeyboardState input, float time)
+        internal void Move(KeyboardState input, float time)
         {
             float cameraSpeed = _cameraSpeed;
 

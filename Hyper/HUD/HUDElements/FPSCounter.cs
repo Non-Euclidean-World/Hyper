@@ -24,13 +24,13 @@ namespace Hyper.HUD.HUDElements
 
         private Texture[] _numberTextures;
 
-        private Stopwatch stopwatch = new Stopwatch();
+        private Stopwatch _stopwatch = new Stopwatch();
 
-        private int frameCount = 0;
+        private int _frameCount = 0;
 
-        private double elapsedTime = 0;
+        private double _elapsedTime = 0;
 
-        private int fps = 0;
+        private int _fps = 0;
 
         public FPSCounter(Vector2 position, float size) : base(position, size, _vertices)
         {
@@ -47,7 +47,7 @@ namespace Hyper.HUD.HUDElements
                 Texture.LoadFromText("9"),
             };
 
-            stopwatch.Start();
+            _stopwatch.Start();
         }
 
         public override void Render(Shader shader)
@@ -56,7 +56,7 @@ namespace Hyper.HUD.HUDElements
             GL.BindVertexArray(_vaoId);
 
             UpdateFPS();
-            RenderNumber(shader, fps);
+            RenderNumber(shader, _fps);
         }
 
         private void RenderNumber(Shader shader, int number)
@@ -82,13 +82,13 @@ namespace Hyper.HUD.HUDElements
 
         private void UpdateFPS()
         {
-            frameCount++;
-            elapsedTime = stopwatch.Elapsed.TotalSeconds;
-            if (elapsedTime >= _fpsTimeFrame)
+            _frameCount++;
+            _elapsedTime = _stopwatch.Elapsed.TotalSeconds;
+            if (_elapsedTime >= _fpsTimeFrame)
             {
-                fps = (int)(frameCount / elapsedTime);
-                frameCount = 0;
-                stopwatch.Restart();
+                _fps = (int)(_frameCount / _elapsedTime);
+                _frameCount = 0;
+                _stopwatch.Restart();
             }
         }
     }

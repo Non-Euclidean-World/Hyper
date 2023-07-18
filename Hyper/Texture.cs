@@ -5,13 +5,13 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace Hyper
 {
-    public class Texture
+    internal class Texture
     {
         private const int _fontSize = 50;
 
-        public readonly int Handle;
+        internal readonly int Handle;
 
-        public static Texture LoadFromFile(string path)
+        internal static Texture LoadFromFile(string path)
         {
             int handle = GL.GenTexture();
 
@@ -38,7 +38,7 @@ namespace Hyper
             return new Texture(handle);
         }
 
-        public static Texture LoadFromText(string text)
+        internal static Texture LoadFromText(string text)
         {
             int handle = GL.GenTexture();
 
@@ -79,12 +79,12 @@ namespace Hyper
             return new Texture(handle);
         }
 
-        public Texture(int glHandle)
+        internal Texture(int glHandle)
         {
             Handle = glHandle;
         }
 
-        public void Use(TextureUnit unit)
+        internal void Use(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, Handle);

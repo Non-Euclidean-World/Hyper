@@ -1,16 +1,16 @@
 ﻿namespace Hyper.MarchingCubes
 {
-    public class PerlinNoise
+    internal class PerlinNoise
     {
         private readonly int[] permutation;
 
-        public PerlinNoise(int seed)
+        internal PerlinNoise(int seed)
         {
             var random = new Random(seed);
             permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
         }
 
-        public float GetNoise3D(float x, float y, float z)
+        internal float GetNoise3D(float x, float y, float z)
         {
             float px = x * 0.1553f;
             float py = y * 0.1271f;
@@ -21,7 +21,7 @@
             return noise;
         }
 
-        public float GetNoise(float x, float y, float z)
+        internal float GetNoise(float x, float y, float z)
         {
             // Calculate the unit cube that contains the point
             int cubeX = (int)Math.Floor(x) & 255;

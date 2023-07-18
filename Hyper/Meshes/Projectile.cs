@@ -4,24 +4,27 @@ namespace Hyper.Meshes
 {
     internal class Projectile : Mesh
     {
-        public Vector3 Direction;
-        public float Speed;
-        public float LifeTime;
-        public bool IsDead = false;
+        private Vector3 _direction;
 
-        public Projectile(float[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
+        private float _speed;
+
+        private float _lifeTime;
+
+        internal bool IsDead = false;
+
+        internal Projectile(float[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
         {
-            Direction = direction;
-            Speed = speed;
-            LifeTime = lifeTime;
+            _direction = direction;
+            _speed = speed;
+            _lifeTime = lifeTime;
         }
 
-        public void Update(float deltaTime)
+        internal void Update(float deltaTime)
         {
-            Position += Direction * Speed * deltaTime;
-            LifeTime -= deltaTime;
+            Position += _direction * _speed * deltaTime;
+            _lifeTime -= deltaTime;
 
-            if (LifeTime < 0)
+            if (_lifeTime < 0)
             {
                 IsDead = true;
                 Dispose();

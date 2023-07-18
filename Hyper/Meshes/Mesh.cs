@@ -3,34 +3,32 @@ using OpenTK.Mathematics;
 
 namespace Hyper.Meshes
 {
-    public class Mesh : IDisposable
+    internal class Mesh : IDisposable
     {
-        public int VaoId { get; set; }
-
-        public int VboId { get; set; }
-
-        public Texture? Texture { get; set; }
-
-        public Vector3 Position { get; set; } = Vector3.Zero;
+        internal Vector3 Position { get; set; } = Vector3.Zero;
         //Will also have to add rotation and scale
 
-        public int NumberOfVertices { get; set; } = 0;
+        protected int _vaoId;
 
-        public Mesh(float[] vertices, Vector3 position)
+        protected int _vboId;
+
+        private int _numberOfVertices;
+
+        internal Mesh(float[] vertices, Vector3 position)
         {
             CreateVertexArrayObject(vertices);
             Position = position;
-            NumberOfVertices = vertices.Length / 6;
+            _numberOfVertices = vertices.Length / 6;
         }
 
-        public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
+        internal virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
         {
             var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
             var scaleMatrix = Matrix4.CreateScale(scale);
             shader.SetMatrix4("model", scaleMatrix * model);
 
-            GL.BindVertexArray(VaoId);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
+            GL.BindVertexArray(_vaoId);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, _numberOfVertices);
         }
 
         private void CreateVertexArrayObject(float[] vertices)
@@ -53,13 +51,13 @@ namespace Hyper.Meshes
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
-            VaoId = vaoId;
-            VboId = vboId;
+            _vaoId = vaoId;
+            _vboId = vboId;
         }
 
         public void Dispose()
         {
-            GL.DeleteVertexArray(VaoId);
+            GL.DeleteVertexArray(_vaoId);
         }
     }
 }

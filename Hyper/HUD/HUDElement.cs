@@ -5,7 +5,7 @@ namespace Hyper.HUD
 {
     internal abstract class HUDElement
     {
-        public bool Visible { get; set; } = true;
+        public bool Visible = true;
 
         protected int _vaoId;
 

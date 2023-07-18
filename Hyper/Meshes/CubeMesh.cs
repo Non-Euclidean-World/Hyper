@@ -2,15 +2,15 @@
 
 namespace Hyper.Meshes
 {
-    public static class CubeMesh
+    internal static class CubeMesh
     {
-        public static Mesh Create(Vector3 position)
+        internal static Mesh Create(Vector3 position)
         {
             return new Mesh(Vertices, position);
         }
 
         // vertices & normals
-        public static readonly float[] Vertices =
+        internal static readonly float[] Vertices =
         {
             -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
              0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,

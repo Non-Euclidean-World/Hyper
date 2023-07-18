@@ -1,6 +1,4 @@
-﻿using Hyper.HUD;
-using Hyper.MarchingCubes;
-using Hyper.Meshes;
+﻿using Hyper.Meshes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -10,15 +8,15 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper
 {
-    public class Window : GameWindow
+    internal class Window : GameWindow
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         private CancellationTokenSource _debugCancellationTokenSource = null!;
 
-        private Scene _scene;
+        private Scene _scene = null!;
 
-        public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+        internal Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -86,7 +84,7 @@ namespace Hyper
 
             if (e.Button == MouseButton.Middle)
             {
-                var projectile = new Projectile(CubeMesh.Vertices, _scene.Cam.ReferencePointPosition + 1 / _scene.Scale * Vector3.UnitY, _scene.Cam.Front, 20f, 5f);
+                var projectile = new Projectile(CubeMesh.Vertices, _scene.Cam.ReferencePointPosition + 1 / Scene.Scale * Vector3.UnitY, _scene.Cam.Front, 20f, 5f);
                 _scene.Projectiles.Add(projectile);
             }
 

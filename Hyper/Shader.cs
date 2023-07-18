@@ -3,13 +3,13 @@ using OpenTK.Mathematics;
 
 namespace Hyper
 {
-    public class Shader
+    internal class Shader
     {
-        public readonly int Handle;
+        internal readonly int Handle;
 
         private readonly Dictionary<string, int> _uniformLocations;
 
-        public Shader((string path, ShaderType shaderType)[] shaders)
+        internal Shader((string path, ShaderType shaderType)[] shaders)
         {
             Handle = GL.CreateProgram();
 
@@ -54,6 +54,82 @@ namespace Hyper
             }
         }
 
+        internal void Use()
+        {
+            GL.UseProgram(Handle);
+        }
+
+        internal int GetAttribLocation(string attribName)
+        {
+            return GL.GetAttribLocation(Handle, attribName);
+        }
+
+        /// <summary>
+        /// Set a uniform int on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        internal void SetInt(string name, int data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform1(_uniformLocations[name], data);
+        }
+
+        /// <summary>
+        /// Set a uniform float on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        internal void SetFloat(string name, float data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform1(_uniformLocations[name], data);
+        }
+
+        /// <summary>
+        /// Set a uniform Matrix4 on this shader
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        /// <remarks>
+        ///   <para>
+        ///   The matrix is transposed before being sent to the shader.
+        ///   </para>
+        /// </remarks>
+        internal void SetMatrix4(string name, Matrix4 data)
+        {
+            GL.UseProgram(Handle);
+            GL.UniformMatrix4(_uniformLocations[name], true, ref data);
+        }
+
+        /// <summary>
+        /// Set a uniform Vector3 on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        internal void SetVector3(string name, Vector3 data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform3(_uniformLocations[name], data);
+        }
+
+        internal void SetVector4(string name, Vector4 data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform4(_uniformLocations[name], data);
+        }
+
+        /// <summary>
+        /// Set a uniform bool on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        internal void SetBool(string name, bool data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
+        }
+
         private int CreateShader(string shaderPath, ShaderType shaderType)
         {
             var shaderSource = File.ReadAllText(shaderPath);
@@ -86,82 +162,6 @@ namespace Hyper
                 var infoLog = GL.GetProgramInfoLog(program);
                 throw new Exception($"Error occurred whilst linking Program({program}).\n\n{infoLog}");
             }
-        }
-
-        public void Use()
-        {
-            GL.UseProgram(Handle);
-        }
-
-        public int GetAttribLocation(string attribName)
-        {
-            return GL.GetAttribLocation(Handle, attribName);
-        }
-
-        /// <summary>
-        /// Set a uniform int on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetInt(string name, int data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform1(_uniformLocations[name], data);
-        }
-
-        /// <summary>
-        /// Set a uniform float on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetFloat(string name, float data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform1(_uniformLocations[name], data);
-        }
-
-        /// <summary>
-        /// Set a uniform Matrix4 on this shader
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        /// <remarks>
-        ///   <para>
-        ///   The matrix is transposed before being sent to the shader.
-        ///   </para>
-        /// </remarks>
-        public void SetMatrix4(string name, Matrix4 data)
-        {
-            GL.UseProgram(Handle);
-            GL.UniformMatrix4(_uniformLocations[name], true, ref data);
-        }
-
-        /// <summary>
-        /// Set a uniform Vector3 on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetVector3(string name, Vector3 data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform3(_uniformLocations[name], data);
-        }
-
-        public void SetVector4(string name, Vector4 data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform4(_uniformLocations[name], data);
-        }
-
-        /// <summary>
-        /// Set a uniform bool on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetBool(string name, bool data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
         }
     }
 }
