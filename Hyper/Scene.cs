@@ -137,7 +137,7 @@ namespace Hyper
             _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
         }
 
-        private List<Chunk> GetChunks(Generator generator)
+        private static List<Chunk> GetChunks(Generator generator)
         {
             var chunks = new List<Chunk>
             {
@@ -149,7 +149,7 @@ namespace Hyper
             return chunks;
         }
 
-        private List<LightSource> GetLightSources(Generator generator)
+        private static List<LightSource> GetLightSources(Generator generator)
         {
             var lightSources = new List<LightSource> {
                 new(CubeMesh.Vertices, new Vector3(10f, 7f + generator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
@@ -159,7 +159,7 @@ namespace Hyper
             return lightSources;
         }
 
-        private Camera GetCamera(Generator generator, float aspectRatio)
+        private static Camera GetCamera(Generator generator, float aspectRatio)
         {
             var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
             {
@@ -169,7 +169,7 @@ namespace Hyper
             return camera;
         }
 
-        private Shader GetObjectShader()
+        private static Shader GetObjectShader()
         {
             var shaderParams = new[]
             {
@@ -180,7 +180,7 @@ namespace Hyper
             return new Shader(shaderParams);
         }
 
-        private Shader GetLightSourceShader()
+        private static Shader GetLightSourceShader()
         {
             var shaderParams = new[]
             {
