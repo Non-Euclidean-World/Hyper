@@ -3,7 +3,7 @@
 namespace Hyper.HUD;
 
 [StructLayout(LayoutKind.Explicit)]
-internal struct Vertex2d
+internal struct HUDVertex
 {
     [FieldOffset(0)]
     public float X;
@@ -21,20 +21,20 @@ internal struct Vertex2d
     public float B;
     
     [FieldOffset(20)]
-    public float Tx;
+    public float U;
     
     [FieldOffset(24)]
-    public float Ty;
+    public float V;
     
     
-    public Vertex2d(float x, float y, float r, float g, float b, float tx, float ty)
+    public HUDVertex(float x, float y, float r, float g, float b, float u, float v)
     {
         X = x;
         Y = y;
         R = r;
         G = g;
         B = b;
-        Tx = tx;
-        Ty = ty;
+        U = u;
+        V = v;
     }
 }

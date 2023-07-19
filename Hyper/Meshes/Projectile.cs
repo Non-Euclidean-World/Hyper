@@ -4,13 +4,13 @@ namespace Hyper.Meshes
 {
     internal class Projectile : Mesh
     {
+        public bool IsDead { get; private set; } = false;
+        
         private readonly Vector3 _direction;
 
         private readonly float _speed;
 
         private float _lifeTime;
-
-        public bool IsDead = false;
 
         public Projectile(Vertex[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
         {

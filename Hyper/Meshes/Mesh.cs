@@ -6,7 +6,7 @@ namespace Hyper.Meshes
 {
     internal class Mesh : IDisposable
     {
-        public Vector3 Position;
+        public Vector3 Position { get; set; } 
         //Will also have to add rotation and scale
 
         protected int VaoId;

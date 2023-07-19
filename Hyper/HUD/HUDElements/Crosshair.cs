@@ -7,12 +7,7 @@ namespace Hyper.HUD.HUDElements
     {
         public const float DefaultSize = 0.02f;
 
-        private static readonly Vertex2d[] Vertices = {
-            new(-1f, 0f, 1f, 0f, 0f, 0f, 0f),
-            new(1f,  0f, 1f, 0f, 0f, 0f, 0f),
-            new(0f,  1f, 1f, 0f, 0f, 0f, 0f),
-            new(0f, -1f, 1f, 0f, 0f, 0f, 0f)
-        };
+        private static readonly HUDVertex[] Vertices = InitializeVertices();
 
         public Crosshair(Vector2 position, float size) : base(position, size, Vertices) { }
 
@@ -25,6 +20,19 @@ namespace Hyper.HUD.HUDElements
             shader.SetBool("useTexture", false);
             GL.BindVertexArray(VaoId);
             GL.DrawArrays(PrimitiveType.Lines, 0, 4);
+        }
+
+        public static HUDVertex[] InitializeVertices()
+        {
+            HUDVertexBuilder builder = new();
+            Vector3 color = new Vector3(1, 0, 0);
+            return new[]
+            {
+                builder.SetPosition(-1, 0).SetColor(color).Build(),
+                builder.SetPosition(1, 0).SetColor(color).Build(),
+                builder.SetPosition(0, 1).SetColor(color).Build(),
+                builder.SetPosition(0, -1).SetColor(color).Build()
+            };
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Hyper.Meshes
 {
     internal class LightSource : Mesh
     {
-        public Vector3 Color;
+        public Vector3 Color { get; set; }
 
         public LightSource(Vertex[] vertices, Vector3 position, Vector3 color) : base(vertices, position)
         {

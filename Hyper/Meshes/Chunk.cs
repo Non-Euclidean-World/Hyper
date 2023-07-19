@@ -10,7 +10,7 @@ namespace Hyper.Meshes
     {
         public const int Size = 32;
 
-        public new Vector3i Position;
+        public new Vector3i Position { get; set; }
 
         private readonly float[,,] _voxels;
 

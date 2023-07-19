@@ -8,18 +8,11 @@ namespace Hyper.HUD.HUDElements
     {
         public const float DefaultSize = 0.02f;
 
-        public static Vector2 DefaultPosition = new(0.64f, 0.48f);
+        public static readonly Vector2 DefaultPosition = new(0.64f, 0.48f);
 
         private const double FpsTimeFrame = 0.1f;
 
-        private static readonly Vertex2d[] Vertices = { 
-            new(-1f, 1f, 0f, 0f, 1f, 0f, 0f),
-            new(1f, 1f, 0f, 0f, 1f, 1f, 0f),
-            new(1f, -1f, 0f, 0f, 1f, 1f, 1f),
-            new(1f, -1f, 0f, 0f, 1f, 1f, 1f),
-            new(-1f, -1f, 0f, 0f, 1f, 0f, 1f),
-            new(-1f, 1f, 0f, 0f, 1f, 0f, 0f)
-        };
+        private static readonly HUDVertex[] Vertices = InitializeVertices();
 
         private readonly Texture[] _numberTextures;
 
@@ -89,6 +82,21 @@ namespace Hyper.HUD.HUDElements
                 _frameCount = 0;
                 _stopwatch.Restart();
             }
+        }
+        
+        private static HUDVertex[] InitializeVertices()
+        {
+            HUDVertexBuilder builder = new();
+            Vector3 color = new Vector3(0, 0, 0); // This might come in handy when we implement changing colors when we have texture.
+            return new []
+            {
+                builder.SetPosition(-1, 1).SetColor(color).SetTextureCoords(0, 0).Build(),
+                builder.SetPosition(1, 1).SetColor(color).SetTextureCoords(1, 0).Build(),
+                builder.SetPosition(1, -1).SetColor(color).SetTextureCoords(1, 1).Build(),
+                builder.SetPosition(1, -1).SetColor(color).SetTextureCoords(1, 1).Build(),
+                builder.SetPosition(-1, -1).SetColor(color).SetTextureCoords(0, 1).Build(),
+                builder.SetPosition(-1, 1).SetColor(color).SetTextureCoords(0, 0).Build()
+            };
         }
     }
 }
