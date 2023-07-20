@@ -1,4 +1,5 @@
-﻿using Hyper.Meshes;
+﻿using Hyper.MarchingCubes.Voxels;
+using Hyper.Meshes;
 using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes
@@ -35,17 +36,17 @@ namespace Hyper.MarchingCubes
 
         public Chunk GenerateChunk(Vector3i position)
         {
-            var voxels = GenerateScalarField(Chunk.Size, position);
+            var voxels = GenerateVoxelField(Chunk.Size, position);
             var renderer = new Renderer(voxels);
             Vertex[] data = renderer.GetMesh();
 
             return new Chunk(data, position, voxels);
         }
 
-        private float[,,] GenerateScalarField(int width, int height, int depth, Vector3i position)
+        private Voxel[,,] GenerateVoxelField(int width, int height, int depth, Vector3i position)
         {
             var perlin = new PerlinNoise(_seed);
-            float[,,] scalarField = new float[width, height, depth];
+            Voxel[,,] scalarField = new Voxel[width, height, depth];
 
             for (int x = position.X; x < width + position.X; x++)
             {
@@ -64,7 +65,18 @@ namespace Hyper.MarchingCubes
                             freq *= _freqMul;
                             amp *= _ampMul;
                         }
-                        scalarField[x - position.X, y - position.Y, z - position.Z] = density - _maxAmp;
+
+                        float value = density - _maxAmp;
+                        
+                        VoxelType type;
+                        Random rand = new Random();
+                        // type = (Chunk.Size - y) > rand.Next(0, Chunk.Size) ? VoxelType.Rock : VoxelType.Grass;
+                        // type = y > Chunk.Size / 2 ? VoxelType.Rock : VoxelType.Grass;
+                        if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
+                        else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
+                        else type = VoxelType.Grass;
+                        
+                        scalarField[x - position.X, y - position.Y, z - position.Z] = new Voxel(value, type);
                     }
                 }
             }
@@ -72,7 +84,7 @@ namespace Hyper.MarchingCubes
             return scalarField;
         }
 
-        private float[,,] GenerateScalarField(int size, Vector3i position) => GenerateScalarField(size, size, size, position);
+        private Voxel[,,] GenerateVoxelField(int size, Vector3i position) => GenerateVoxelField(size, size, size, position);
 
         private float GetMaxAmp()
         {

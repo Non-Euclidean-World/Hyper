@@ -117,7 +117,6 @@ namespace Hyper
             _objectShader.SetFloat("anti", 1.0f);
             _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
             _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-            _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
             _objectShader.SetInt("numLights", LightSources.Count);
             _objectShader.SetVector4("viewPos", Camera.PortEucToCurved(Vector3.UnitY));
 
