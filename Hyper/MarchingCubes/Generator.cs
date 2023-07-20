@@ -69,9 +69,6 @@ namespace Hyper.MarchingCubes
                         float value = density - _maxAmp;
                         
                         VoxelType type;
-                        Random rand = new Random();
-                        // type = (Chunk.Size - y) > rand.Next(0, Chunk.Size) ? VoxelType.Rock : VoxelType.Grass;
-                        // type = y > Chunk.Size / 2 ? VoxelType.Rock : VoxelType.Grass;
                         if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
                         else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
                         else type = VoxelType.Grass;
