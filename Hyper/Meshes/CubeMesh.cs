@@ -2,57 +2,56 @@
 
 namespace Hyper.Meshes
 {
-    public static class CubeMesh
+    internal static class CubeMesh
     {
         public static Mesh Create(Vector3 position)
         {
             return new Mesh(Vertices, position);
         }
 
-        // vertices & normals
-        public static readonly float[] Vertices =
+        public static readonly Vertex[] Vertices =
         {
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            new Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
+            new Vertex(0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
+            new Vertex(0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
+            new Vertex(0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
+            new Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
+            new Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),
 
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            new Vertex(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
+            new Vertex(0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
+            new Vertex(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
+            new Vertex(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
+            new Vertex(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
+            new Vertex(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f),
 
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            new Vertex(-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f),
+            new Vertex(-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f),
+            new Vertex(-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f),
+            new Vertex(-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f),
+            new Vertex(-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f),
+            new Vertex(-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f),
 
-             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            new Vertex(0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f),
+            new Vertex(0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f),
+            new Vertex(0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f),
 
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            new Vertex(-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f),
+            new Vertex(0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f),
+            new Vertex(-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f),
+            new Vertex(-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f),
 
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+            new Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f),
+            new Vertex(0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f),
+            new Vertex(0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f),
+            new Vertex(0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f),
+            new Vertex(-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f),
+            new Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f),
         };
     }
 }

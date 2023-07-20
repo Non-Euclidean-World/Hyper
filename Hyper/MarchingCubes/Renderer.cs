@@ -1,11 +1,12 @@
-﻿using OpenTK.Mathematics;
+﻿using Hyper.Meshes;
+using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes
 {
     internal class Renderer
     {
-        private float _isolevel;
-        private float[,,] _voxels;
+        private readonly float _isolevel;
+        private readonly float[,,] _voxels;
 
         public Renderer(float[,,] voxels, float isolevel = 0f)
         {
@@ -13,24 +14,24 @@ namespace Hyper.MarchingCubes
             _isolevel = isolevel;
         }
 
-        public Triangle[] GetMesh()
+        public Vertex[] GetMesh()
         {
-            var triangles = new List<Triangle>();
+            var vertices = new List<Vertex>();
             for (int x = 0; x < _voxels.GetLength(0) - 1; x++)
             {
                 for (int y = 0; y < _voxels.GetLength(1) - 1; y++)
                 {
                     for (int z = 0; z < _voxels.GetLength(2) - 1; z++)
                     {
-                        GetTriangles(triangles, x, y, z);
+                        GetTriangles(vertices, x, y, z);
                     }
                 }
             }
 
-            return triangles.ToArray();
+            return vertices.ToArray();
         }
 
-        internal void GetTriangles(List<Triangle> triangles, int x, int y, int z)
+        private void GetTriangles(List<Vertex> vertices, int x, int y, int z)
         {
             var (cubeValues, normals) = GetCubeValues(x, y, z);
             var edges = GetEdges(cubeValues);
@@ -55,31 +56,13 @@ namespace Hyper.MarchingCubes
                 var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
                 var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
 
-                triangles.Add(new Triangle(a, b, c, na, nb, nc));
+                vertices.Add(new Vertex(a.X, a.Y, a.Z, na.X, na.Y, na.Z));
+                vertices.Add(new Vertex(b.X, b.Y, b.Z, nb.X, nb.Y, nb.Z));
+                vertices.Add(new Vertex(c.X, c.Y, c.Z, nc.X, nc.Y, nc.Z));
             }
         }
 
-        internal int[] GetEdges(float[] cubeValues)
-        {
-            int cubeIndex = 0;
-            if (cubeValues[0] < _isolevel) cubeIndex |= 1;
-            if (cubeValues[1] < _isolevel) cubeIndex |= 2;
-            if (cubeValues[2] < _isolevel) cubeIndex |= 4;
-            if (cubeValues[3] < _isolevel) cubeIndex |= 8;
-            if (cubeValues[4] < _isolevel) cubeIndex |= 16;
-            if (cubeValues[5] < _isolevel) cubeIndex |= 32;
-            if (cubeValues[6] < _isolevel) cubeIndex |= 64;
-            if (cubeValues[7] < _isolevel) cubeIndex |= 128;
-
-            return MarchingCubesTables.TriTable[cubeIndex];
-        }
-
-        internal Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
-        {
-            return edgeVertex1 + (_isolevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
-        }
-
-        internal (float[], Vector3[]) GetCubeValues(int x, int y, int z)
+        private (float[], Vector3[]) GetCubeValues(int x, int y, int z)
         {
             float[] cubeValues = new float[8];
             Vector3[] normals = new Vector3[8];
@@ -103,6 +86,26 @@ namespace Hyper.MarchingCubes
             }
 
             return (cubeValues, normals);
+        }
+
+        private int[] GetEdges(float[] cubeValues)
+        {
+            int cubeIndex = 0;
+            if (cubeValues[0] < _isolevel) cubeIndex |= 1;
+            if (cubeValues[1] < _isolevel) cubeIndex |= 2;
+            if (cubeValues[2] < _isolevel) cubeIndex |= 4;
+            if (cubeValues[3] < _isolevel) cubeIndex |= 8;
+            if (cubeValues[4] < _isolevel) cubeIndex |= 16;
+            if (cubeValues[5] < _isolevel) cubeIndex |= 32;
+            if (cubeValues[6] < _isolevel) cubeIndex |= 64;
+            if (cubeValues[7] < _isolevel) cubeIndex |= 128;
+
+            return MarchingCubesTables.TriTable[cubeIndex];
+        }
+
+        private Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
+        {
+            return edgeVertex1 + (_isolevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
         }
     }
 }

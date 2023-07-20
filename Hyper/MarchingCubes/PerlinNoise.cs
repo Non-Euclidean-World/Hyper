@@ -1,13 +1,13 @@
 ﻿namespace Hyper.MarchingCubes
 {
-    public class PerlinNoise
+    internal class PerlinNoise
     {
-        private readonly int[] permutation;
+        private readonly int[] _permutation;
 
         public PerlinNoise(int seed)
         {
             var random = new Random(seed);
-            permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
+            _permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
         }
 
         public float GetNoise3D(float x, float y, float z)
@@ -69,7 +69,7 @@
 
         private int Permutate(int x)
         {
-            return permutation[x & 255];
+            return _permutation[x & 255];
         }
 
         private static float Fade(float t)

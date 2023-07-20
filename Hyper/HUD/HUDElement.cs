@@ -1,49 +1,44 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper.HUD
 {
-    internal abstract class HUDElement
+    internal abstract class HudElement
     {
         public bool Visible { get; set; } = true;
 
-        protected int _vaoId;
+        protected readonly int VaoId;
 
-        protected Vector2 _position;
+        protected Vector2 Position;
 
-        protected float _size;
-
-        /// <summary>
-        /// This constructor is used for HUD elements that don't use textures.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="size"></param>
-        /// <param name="vertices">vertices should be a 1d array of the form: 2 floats for position, 3 floats for color, 2 floats for texture coordinates.</param>
-        public HUDElement(Vector2 position, float size, float[] vertices)
+        protected readonly float Size;
+        
+        protected HudElement(Vector2 position, float size, HUDVertex[] vertices)
         {
-            _position = position;
-            _size = size;
+            Position = position;
+            Size = size;
 
             int vao = GL.GenVertexArray();
             GL.BindVertexArray(vao);
 
             int vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
 
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 7 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
             GL.EnableVertexAttribArray(0);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 2 * sizeof(float));
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
-            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 7 * sizeof(float), 5 * sizeof(float));
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
 
-            _vaoId = vao;
+            VaoId = vao;
         }
 
         public abstract void Render(Shader shader);

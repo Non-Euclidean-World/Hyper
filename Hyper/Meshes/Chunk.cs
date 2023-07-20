@@ -1,4 +1,5 @@
-﻿using Hyper.MarchingCubes;
+﻿using System.Runtime.InteropServices;
+using Hyper.MarchingCubes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -9,28 +10,16 @@ namespace Hyper.Meshes
     {
         public const int Size = 32;
 
-        public new Vector3i Position;
+        public new Vector3i Position { get; set; }
 
-        public Vector3i Middle => Position + Vector3i.One * Size / 2;
+        private readonly float[,,] _voxels;
 
-        private float[,,] _voxels;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        public Chunk(float[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
+        public Chunk(Vertex[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
         {
             _voxels = voxels;
             Position = position;
-        }
-
-        private static float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
-        {
-            return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
-        }
-
-        private static float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
-        {
-            return (float)MathHelper.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
         }
 
         // This method returns flase if it did not mine anything. True if it did.
@@ -60,12 +49,13 @@ namespace Hyper.Meshes
                 }
             }
 
-            _logger.Info($"Mined block at {x},{y},{z}");
+            Logger.Info($"Mined block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) _logger.Error(error);
+            if (error != ErrorCode.NoError) Logger.Error(error);
+
             return true;
         }
 
@@ -94,12 +84,13 @@ namespace Hyper.Meshes
                     }
                 }
             }
-            _logger.Info($"Built block at {x},{y},{z}");
+            Logger.Info($"Built block at {x},{y},{z}");
 
             UpdateMesh();
 
             var error = GL.GetError();
-            if (error != ErrorCode.NoError) _logger.Error(error);
+            if (error != ErrorCode.NoError) Logger.Error(error);
+
             return true;
         }
 
@@ -107,26 +98,36 @@ namespace Hyper.Meshes
         private void UpdateMesh()
         {
             var renderer = new Renderer(_voxels);
-            Triangle[] triangles = renderer.GetMesh();
-            float[] vertices = Generator.GetTriangleAndNormalData(triangles);
+            Vertex[] vertices = renderer.GetMesh();
+            NumberOfVertices = vertices.Length;
 
             GL.BindVertexArray(VaoId);
             GL.DeleteBuffer(VboId);
             VboId = GL.GenBuffer();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.EnableVertexAttribArray(0);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
             GL.BindVertexArray(0);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+        }
+
+        private static float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
+        {
+            return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+        }
+
+        private static float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
+        {
+            return (float)MathHelper.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
         }
     }
 }

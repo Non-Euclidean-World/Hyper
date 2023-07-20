@@ -5,7 +5,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper
 {
-    public class Camera : Commandable
+    internal class Camera : Commandable
     {
         public float Curve { get; set; } = 0f;
 
@@ -25,11 +25,19 @@ namespace Hyper
 
         private float _cameraSpeed = 100f;
 
-        private float _near;
+        private readonly float _near;
 
-        private float _far;
+        private readonly float _far;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Vector3 _position;
+
+        private bool _firstMove = true;
+
+        private Vector2 _lastPos;
+
+        private const float Sensitivity = 0.2f;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public Camera(float aspectRatio, float near, float far, float scale)
         {
@@ -38,8 +46,6 @@ namespace Hyper
             _far = far;
             _position = Vector3.UnitY * scale;
         }
-
-        private readonly Vector3 _position;
 
         public float AspectRatio { private get; set; }
 
@@ -76,10 +82,10 @@ namespace Hyper
 
         public Matrix4 GetViewMatrix()
         {
-            Matrix4 V = Matrix4.LookAt(_position, _position + Front, _up);
-            Vector4 ic = new Vector4(V.Column0.Xyz, 0);
-            Vector4 jc = new Vector4(V.Column1.Xyz, 0);
-            Vector4 kc = new Vector4(V.Column2.Xyz, 0);
+            Matrix4 v = Matrix4.LookAt(_position, _position + Front, _up);
+            Vector4 ic = new Vector4(v.Column0.Xyz, 0);
+            Vector4 jc = new Vector4(v.Column1.Xyz, 0);
+            Vector4 kc = new Vector4(v.Column2.Xyz, 0);
 
             Vector4 geomEye = PortEucToCurved(_position);
 
@@ -90,7 +96,7 @@ namespace Hyper
 
             if (MathHelper.Abs(Curve) < Constants.Eps)
             {
-                return V;
+                return v;
             }
 
             Matrix4 nonEuclidView = new Matrix4(
@@ -104,14 +110,14 @@ namespace Hyper
 
         public Matrix4 GetProjectionMatrix()
         {
-            Matrix4 P = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
-            float sFovX = P.Column0.X;
-            float sFovY = P.Column1.Y;
+            Matrix4 p = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
+            float sFovX = p.Column0.X;
+            float sFovY = p.Column1.Y;
             float fp = _near; // scale front clipping plane according to the global scale factor of the scene
 
             if (Curve <= Constants.Eps)
             {
-                return P;
+                return p;
             }
             Matrix4 nonEuclidProj = new Matrix4(
                 sFovX, 0, 0, 0,
@@ -204,6 +210,24 @@ namespace Hyper
             }
 
             ReferencePointPosition += move;
+        }
+
+        public void Turn(Vector2 position)
+        {
+            if (_firstMove)
+            {
+                _lastPos = position;
+                _firstMove = false;
+            }
+            else
+            {
+                var deltaX = position.X - _lastPos.X;
+                var deltaY = position.Y - _lastPos.Y;
+                _lastPos = position;
+
+                Yaw += deltaX * Sensitivity;
+                Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
+            }
         }
 
         protected override void SetCommand(string[] args)
