@@ -46,6 +46,9 @@ namespace Hyper.Meshes
 
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
+            
+            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 6 * sizeof(float));
+            GL.EnableVertexAttribArray(2);
 
             GL.BindVertexArray(0);
 
