@@ -3,27 +3,27 @@ using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes
 {
-    internal class Renderer
+    internal class MeshGenerator
     {
         private readonly float _isolevel;
-        private readonly float[,,] _voxels;
+        private readonly float[,,] _scalarField;
 
-        public Renderer(float[,,] voxels, float isolevel = 0f)
+        public MeshGenerator(float[,,] scalarField, float isolevel = 0f)
         {
-            _voxels = voxels;
+            _scalarField = scalarField;
             _isolevel = isolevel;
         }
 
         public Vertex[] GetMesh()
         {
             var vertices = new List<Vertex>();
-            for (int x = 0; x < _voxels.GetLength(0) - 1; x++)
+            for (int x = 0; x < _scalarField.GetLength(0) - 1; x++)
             {
-                for (int y = 0; y < _voxels.GetLength(1) - 1; y++)
+                for (int y = 0; y < _scalarField.GetLength(1) - 1; y++)
                 {
-                    for (int z = 0; z < _voxels.GetLength(2) - 1; z++)
+                    for (int z = 0; z < _scalarField.GetLength(2) - 1; z++)
                     {
-                        GetTriangles(vertices, x, y, z);
+                        vertices.AddRange(GetTriangles(x, y, z));
                     }
                 }
             }
@@ -31,8 +31,10 @@ namespace Hyper.MarchingCubes
             return vertices.ToArray();
         }
 
-        private void GetTriangles(List<Vertex> vertices, int x, int y, int z)
+        private List<Vertex> GetTriangles(int x, int y, int z)
         {
+            var vertices = new List<Vertex>();
+
             var (cubeValues, normals) = GetCubeValues(x, y, z);
             var edges = GetEdges(cubeValues);
             var position = new Vector3(x, y, z);
@@ -60,6 +62,8 @@ namespace Hyper.MarchingCubes
                 vertices.Add(new Vertex(b.X, b.Y, b.Z, nb.X, nb.Y, nb.Z));
                 vertices.Add(new Vertex(c.X, c.Y, c.Z, nc.X, nc.Y, nc.Z));
             }
+
+            return vertices;
         }
 
         private (float[], Vector3[]) GetCubeValues(int x, int y, int z)
@@ -70,18 +74,18 @@ namespace Hyper.MarchingCubes
             {
                 var offset = MarchingCubesTables.CubeCorners[i];
                 Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
-                cubeValues[i] = _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z];
+                cubeValues[i] = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z];
 
                 if (cubeVertexPos.X == 0 || cubeVertexPos.Y == 0 || cubeVertexPos.Z == 0
-                    || cubeVertexPos.X == _voxels.GetLength(0) - 1 || cubeVertexPos.Y == _voxels.GetLength(1) - 1 || cubeVertexPos.Z == _voxels.GetLength(2) - 1)
+                    || cubeVertexPos.X == _scalarField.GetLength(0) - 1 || cubeVertexPos.Y == _scalarField.GetLength(1) - 1 || cubeVertexPos.Z == _scalarField.GetLength(2) - 1)
                 {
                     normals[i] = new Vector3(1, 1, 1); // TODO fix this
                     continue;
                 }
 
-                normals[i].X = _voxels[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z] - _voxels[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z];
-                normals[i].Y = _voxels[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z] - _voxels[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z];
-                normals[i].Z = _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1] - _voxels[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1];
+                normals[i].X = _scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z] - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z];
+                normals[i].Y = _scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z] - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z];
+                normals[i].Z = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1] - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1];
 
             }
 

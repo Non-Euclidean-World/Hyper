@@ -1,4 +1,4 @@
-﻿namespace Hyper
+﻿namespace Hyper.MathUtiils
 {
     public static class Constants
     {

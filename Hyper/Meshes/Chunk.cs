@@ -34,7 +34,7 @@ namespace Hyper.Meshes
                 || _voxels[x, y, z] <= 0f)
                 return false;
 
-            float brushWeight = 0.1f;
+            float brushWeight = 1f;
             for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
             {
                 for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -48,8 +48,6 @@ namespace Hyper.Meshes
                     }
                 }
             }
-
-            Logger.Info($"Mined block at {x},{y},{z}");
 
             UpdateMesh();
 
@@ -70,7 +68,7 @@ namespace Hyper.Meshes
                 || _voxels[x, y, z] >= 1f)
                 return false;
 
-            float brushWeight = 0.1f;
+            float brushWeight = 1f;
             for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
             {
                 for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -84,7 +82,6 @@ namespace Hyper.Meshes
                     }
                 }
             }
-            Logger.Info($"Built block at {x},{y},{z}");
 
             UpdateMesh();
 
@@ -97,7 +94,7 @@ namespace Hyper.Meshes
         // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
         private void UpdateMesh()
         {
-            var renderer = new Renderer(_voxels);
+            var renderer = new MeshGenerator(_voxels);
             Vertex[] vertices = renderer.GetMesh();
             NumberOfVertices = vertices.Length;
 

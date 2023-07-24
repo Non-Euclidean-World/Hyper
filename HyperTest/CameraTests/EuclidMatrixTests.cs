@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Hyper;
+using Hyper.MathUtiils;
 using OpenTK.Mathematics;
 
 namespace HyperTest.CameraTests
@@ -61,7 +62,7 @@ namespace HyperTest.CameraTests
             var expected = Matrix4.CreateTranslation(to);
 
             // Act
-            var to4 = camera.PortEucToCurved(to);
+            var to4 = GeomPorting.EucToCurved(to, camera.Curve);
             var translation = camera.TranslateMatrix(to4);
 
             // Assert

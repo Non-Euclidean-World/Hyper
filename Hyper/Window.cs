@@ -1,4 +1,5 @@
 ﻿using Hyper.Meshes;
+using Hyper.UserInput;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -8,7 +9,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper
 {
-    internal class Window : GameWindow
+    internal class Window : GameWindow, IInputSubscriber
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -16,12 +17,16 @@ namespace Hyper
 
         private Scene _scene = null!;
 
+        private readonly UserInput.Context _context = UserInput.Context.Instance;
+
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             StartDebugThreadAsync();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+            RegisterCallbacks();
         }
 
         public override void Close()
@@ -65,17 +70,57 @@ namespace Hyper
                 return;
             }
 
-            var input = KeyboardState;
-            var time = (float)e.Time;
-
-            if (input.IsKeyDown(Keys.Escape))
+            foreach (var key in _context.UsedKeys)
             {
-                Close();
+                if (_context.HeldKeys[key] && _context.KeyHeldCallbacks.ContainsKey(key))
+                {
+                    foreach (var callback in _context.KeyHeldCallbacks[key])
+                    {
+                        callback(e);
+                    }
+                }
             }
 
-            _scene.UpdateCamera(input, time, new Vector2(MouseState.X, MouseState.Y));
+            foreach (var button in _context.UsedMouseButtons)
+            {
+                if (_context.HeldButtons[button] && _context.ButtonHeldCallbacks.ContainsKey(button))
+                {
+                    foreach (var callback in _context.ButtonHeldCallbacks[button])
+                    {
+                        callback(e);
+                    }
+                }
+            }
+        }
 
-            _scene.UpdateProjectiles(time);
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            foreach (var callback in _context.KeyDownCallbacks[e.Key])
+            {
+                callback();
+            }
+        }
+
+        protected override void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            foreach (var callback in _context.KeyUpCallbacks[e.Key])
+            {
+                callback();
+            }
+        }
+
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            foreach (var callback in _context.MouseMoveCallbacks)
+            {
+                callback(e);
+            }
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -88,25 +133,19 @@ namespace Hyper
                 _scene.Projectiles.Add(projectile);
             }
 
-            // These 2 do not work on chunk borders.
-            if (e.Button == MouseButton.Left)
+            foreach (var callback in _context.ButtonDownCallbacks[e.Button])
             {
-                var position = _scene.Camera.ReferencePointPosition;
-
-                foreach (var chunk in _scene.Chunks)
-                {
-                    if (chunk.Mine(position, 1f)) return;
-                }
+                callback();
             }
+        }
 
-            if (e.Button == MouseButton.Right)
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            foreach (var callback in _context.ButtonUpCallbacks[e.Button])
             {
-                var position = _scene.Camera.ReferencePointPosition;
-
-                foreach (var chunk in _scene.Chunks)
-                {
-                    if (chunk.Build(position, 1f)) return;
-                }
+                callback();
             }
         }
 
@@ -169,6 +208,13 @@ namespace Hyper
                     Console.WriteLine(ex.Message);
                 }
             }
+        }
+
+        public void RegisterCallbacks()
+        {
+            _context.RegisterKeys(new List<Keys> { Keys.Escape });
+
+            _context.RegisterKeyDownCallback(Keys.Escape, Close);
         }
     }
 }
