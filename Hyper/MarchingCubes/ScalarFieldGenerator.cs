@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes;
+
 internal class ScalarFieldGenerator
 {
     private readonly int _seed;

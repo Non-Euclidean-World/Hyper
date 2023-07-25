@@ -1,41 +1,40 @@
-﻿namespace Hyper.Command
+﻿namespace Hyper.Command;
+
+public abstract class Commandable
 {
-    public abstract class Commandable
+    private const string CommandNotFoundMessage = "Command does not exist";
+
+    public void Command(string[] arguments)
     {
-        private const string CommandNotFoundMessage = "Command does not exist";
+        var key = arguments[0];
+        var args = arguments.Skip(1).ToArray();
 
-        public void Command(string[] arguments)
+        switch (key)
         {
-            var key = arguments[0];
-            var args = arguments.Skip(1).ToArray();
-
-            switch (key)
-            {
-                case "get":
-                    GetCommand(args);
-                    break;
-                case "set":
-                    SetCommand(args);
-                    break;
-                default:
-                    CommandNotFound();
-                    break;
-            }
+            case "get":
+                GetCommand(args);
+                break;
+            case "set":
+                SetCommand(args);
+                break;
+            default:
+                CommandNotFound();
+                break;
         }
+    }
 
-        protected virtual void SetCommand(string[] args)
-        {
-            CommandNotFound();
-        }
+    protected virtual void SetCommand(string[] args)
+    {
+        CommandNotFound();
+    }
 
-        protected virtual void GetCommand(string[] args)
-        {
-            CommandNotFound();
-        }
+    protected virtual void GetCommand(string[] args)
+    {
+        CommandNotFound();
+    }
 
-        protected static void CommandNotFound()
-        {
-            throw new CommandException(CommandNotFoundMessage);
-        }
+    protected static void CommandNotFound()
+    {
+        throw new CommandException(CommandNotFoundMessage);
     }
 }

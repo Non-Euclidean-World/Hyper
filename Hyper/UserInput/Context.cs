@@ -2,6 +2,7 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.UserInput;
+
 internal class Context
 {
     private Context() { }
@@ -118,5 +119,35 @@ internal class Context
     public void RegisterMouseMoveCallback(Action<MouseMoveEventArgs> callback)
     {
         MouseMoveCallbacks.Add(callback);
+    }
+
+    private static void ExecuteAllHeldCallbacks<TInput>(Dictionary<TInput, bool> inputHeld,
+        Dictionary<TInput, List<Action<FrameEventArgs>>> inputHeldMapping,
+        HashSet<TInput> usedInputs, FrameEventArgs e)
+        where TInput : notnull
+    {
+        foreach (var input in usedInputs)
+        {
+            if (inputHeld.ContainsKey(input) && inputHeldMapping.ContainsKey(input) && inputHeld[input])
+            {
+                foreach (var callback in inputHeldMapping[input])
+                {
+                    callback(e);
+                }
+            }
+        }
+    }
+
+    public void ExecuteAllHeldCallbacks(InputType inputType, FrameEventArgs e)
+    {
+        switch (inputType)
+        {
+            case InputType.MouseButton:
+                ExecuteAllHeldCallbacks(HeldButtons, ButtonHeldCallbacks, UsedMouseButtons, e);
+                break;
+            case InputType.Key:
+                ExecuteAllHeldCallbacks(HeldKeys, KeyHeldCallbacks, UsedKeys, e);
+                break;
+        }
     }
 }

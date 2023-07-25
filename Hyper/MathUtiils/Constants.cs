@@ -1,7 +1,6 @@
-﻿namespace Hyper.MathUtiils
+﻿namespace Hyper.MathUtiils;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const float Eps = 0.0001f;
-    }
+    public const float Eps = 0.0001f;
 }

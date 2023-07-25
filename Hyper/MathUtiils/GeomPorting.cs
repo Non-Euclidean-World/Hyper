@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hyper.MathUtiils;
+
 internal static class GeomPorting
 {
     public static Vector4 EucToCurved(Vector3 eucPoint, float curve)

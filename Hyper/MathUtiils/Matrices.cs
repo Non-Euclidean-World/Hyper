@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hyper.MathUtiils;
+
 internal static class Matrices
 {
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve)
