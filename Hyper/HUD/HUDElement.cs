@@ -2,45 +2,44 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD
+namespace Hyper.HUD;
+
+internal abstract class HudElement
 {
-    internal abstract class HudElement
+    public bool Visible { get; set; } = true;
+
+    protected readonly int VaoId;
+
+    protected Vector2 Position;
+
+    protected readonly float Size;
+
+    protected HudElement(Vector2 position, float size, HUDVertex[] vertices)
     {
-        public bool Visible { get; set; } = true;
+        Position = position;
+        Size = size;
 
-        protected readonly int VaoId;
+        int vao = GL.GenVertexArray();
+        GL.BindVertexArray(vao);
 
-        protected Vector2 Position;
+        int vbo = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
 
-        protected readonly float Size;
-        
-        protected HudElement(Vector2 position, float size, HUDVertex[] vertices)
-        {
-            Position = position;
-            Size = size;
+        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
+        GL.EnableVertexAttribArray(0);
 
-            int vao = GL.GenVertexArray();
-            GL.BindVertexArray(vao);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
+        GL.EnableVertexAttribArray(1);
 
-            int vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
+        GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 5 * sizeof(float));
+        GL.EnableVertexAttribArray(2);
 
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
-            GL.EnableVertexAttribArray(0);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        GL.BindVertexArray(0);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-
-            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 5 * sizeof(float));
-            GL.EnableVertexAttribArray(2);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
-
-            VaoId = vao;
-        }
-
-        public abstract void Render(Shader shader);
+        VaoId = vao;
     }
+
+    public abstract void Render(Shader shader);
 }

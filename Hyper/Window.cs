@@ -1,172 +1,206 @@
-﻿using Hyper.Meshes;
+﻿using Hyper.UserInput;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper
+namespace Hyper;
+
+internal class Window : GameWindow, IInputSubscriber
 {
-    internal class Window : GameWindow
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    private CancellationTokenSource _debugCancellationTokenSource = null!;
+
+    private Scene _scene = null!;
+
+    private readonly Context _context = UserInput.Context.Instance;
+
+    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+        : base(gameWindowSettings, nativeWindowSettings)
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        StartDebugThreadAsync().ConfigureAwait(false);
 
-        private CancellationTokenSource _debugCancellationTokenSource = null!;
+        RegisterCallbacks();
+    }
 
-        private Scene _scene = null!;
+    public override void Close()
+    {
+        StopDebugThread();
+        base.Close();
+        LogManager.Flush();
+    }
 
-        public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
-            : base(gameWindowSettings, nativeWindowSettings)
+    protected override void OnLoad()
+    {
+        base.OnLoad();
+
+        GL.ClearColor(0f, 0f, 0f, 1.0f);
+        GL.Enable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+        _scene = new Scene(Size.X / (float)Size.Y);
+
+        CursorState = CursorState.Grabbed;
+    }
+
+    protected override void OnRenderFrame(FrameEventArgs e)
+    {
+        base.OnRenderFrame(e);
+
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+        _scene.Render();
+
+        SwapBuffers();
+    }
+
+    protected override void OnUpdateFrame(FrameEventArgs e)
+    {
+        base.OnUpdateFrame(e);
+
+        if (!IsFocused)
         {
-            StartDebugThreadAsync().ConfigureAwait(false);
+            return;
         }
 
-        public override void Close()
+        foreach (var callback in _context.FrameUpdateCallbacks)
         {
-            StopDebugThread();
-            base.Close();
-            LogManager.Flush();
+            callback(e);
         }
+        _context.ExecuteAllHeldCallbacks(InputType.Key, e);
+        _context.ExecuteAllHeldCallbacks(InputType.MouseButton, e);
+    }
 
-        protected override void OnLoad()
+    protected override void OnKeyDown(KeyboardKeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (!_context.KeyDownCallbacks.ContainsKey(e.Key))
+            return;
+
+        foreach (var callback in _context.KeyDownCallbacks[e.Key])
         {
-            base.OnLoad();
-
-            GL.ClearColor(0f, 0f, 0f, 1.0f);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            _scene = new Scene(Size.X / (float)Size.Y);
-
-            CursorState = CursorState.Grabbed;
+            callback();
         }
+    }
 
-        protected override void OnRenderFrame(FrameEventArgs e)
+    protected override void OnKeyUp(KeyboardKeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+
+        if (!_context.KeyUpCallbacks.ContainsKey(e.Key))
+            return;
+
+        foreach (var callback in _context.KeyUpCallbacks[e.Key])
         {
-            base.OnRenderFrame(e);
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            _scene.Render();
-
-            SwapBuffers();
+            callback();
         }
+    }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+    protected override void OnMouseMove(MouseMoveEventArgs e)
+    {
+        base.OnMouseMove(e);
+
+        foreach (var callback in _context.MouseMoveCallbacks)
         {
-            base.OnUpdateFrame(e);
+            callback(e);
+        }
+    }
 
-            if (!IsFocused)
-            {
+    protected override void OnMouseDown(MouseButtonEventArgs e)
+    {
+        base.OnMouseDown(e);
+
+        if (!_context.ButtonDownCallbacks.ContainsKey(e.Button))
+            return;
+
+        foreach (var callback in _context.ButtonDownCallbacks[e.Button])
+        {
+            callback();
+        }
+    }
+
+    protected override void OnMouseUp(MouseButtonEventArgs e)
+    {
+        base.OnMouseUp(e);
+
+        if (!_context.ButtonUpCallbacks.ContainsKey(e.Button))
+            return;
+
+        foreach (var callback in _context.ButtonUpCallbacks[e.Button])
+        {
+            callback();
+        }
+    }
+
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    {
+        base.OnMouseWheel(e);
+
+        _scene.Camera.Fov -= e.OffsetY;
+    }
+
+    protected override void OnResize(ResizeEventArgs e)
+    {
+        base.OnResize(e);
+
+        GL.Viewport(0, 0, Size.X, Size.Y);
+        _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
+        _scene.Hud.AspectRatio = Size.X / (float)Size.Y;
+    }
+
+    private async Task StartDebugThreadAsync()
+    {
+        _debugCancellationTokenSource = new CancellationTokenSource();
+        await Task.Run(() => Command(_debugCancellationTokenSource.Token));
+    }
+
+    private void StopDebugThread()
+    {
+        _debugCancellationTokenSource.Cancel();
+    }
+
+    private void Command(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            string? command = Console.ReadLine();
+            if (command == null)
                 return;
-            }
 
-            var input = KeyboardState;
-            var time = (float)e.Time;
+            Logger.Info($"[Command]{command}");
 
-            if (input.IsKeyDown(Keys.Escape))
+            try
             {
-                Close();
-            }
+                var args = command.Split(' ');
+                var key = args[0];
+                args = args.Skip(1).ToArray();
 
-            _scene.UpdateCamera(input, time, new Vector2(MouseState.X, MouseState.Y));
-
-            _scene.UpdateProjectiles(time);
-        }
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseDown(e);
-
-            if (e.Button == MouseButton.Middle)
-            {
-                var projectile = new Projectile(CubeMesh.Vertices, _scene.Camera.ReferencePointPosition + 1 / Scene.Scale * Vector3.UnitY, _scene.Camera.Front, 20f, 5f);
-                _scene.Projectiles.Add(projectile);
-            }
-
-            // These 2 do not work on chunk borders.
-            if (e.Button == MouseButton.Left)
-            {
-                var position = _scene.Camera.ReferencePointPosition;
-
-                foreach (var chunk in _scene.Chunks)
+                switch (key)
                 {
-                    if (chunk.Mine(position, 1f)) return;
+                    case "camera":
+                        _scene.Camera.Command(args);
+                        break;
+                    case "hud":
+                        _scene.Hud.Command(args);
+                        break;
                 }
             }
-
-            if (e.Button == MouseButton.Right)
+            catch (Exception ex)
             {
-                var position = _scene.Camera.ReferencePointPosition;
-
-                foreach (var chunk in _scene.Chunks)
-                {
-                    if (chunk.Build(position, 1f)) return;
-                }
+                Logger.Error(ex);
+                Console.WriteLine(ex.Message);
             }
         }
+    }
 
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            base.OnMouseWheel(e);
+    public void RegisterCallbacks()
+    {
+        _context.RegisterKeys(new List<Keys> { Keys.Escape });
 
-            _scene.Camera.Fov -= e.OffsetY;
-        }
-
-        protected override void OnResize(ResizeEventArgs e)
-        {
-            base.OnResize(e);
-
-            GL.Viewport(0, 0, Size.X, Size.Y);
-            _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
-            _scene.Hud.AspectRatio = Size.X / (float)Size.Y;
-        }
-
-        private async Task StartDebugThreadAsync()
-        {
-            _debugCancellationTokenSource = new CancellationTokenSource();
-            await Task.Run(() => Command(_debugCancellationTokenSource.Token));
-        }
-
-        private void StopDebugThread()
-        {
-            _debugCancellationTokenSource.Cancel();
-        }
-
-        private void Command(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                string? command = Console.ReadLine();
-                if (command == null)
-                    return;
-
-                Logger.Info($"[Command]{command}");
-
-                try
-                {
-                    var args = command.Split(' ');
-                    var key = args[0];
-                    args = args.Skip(1).ToArray();
-
-                    switch (key)
-                    {
-                        case "camera":
-                            _scene.Camera.Command(args);
-                            break;
-                        case "hud":
-                            _scene.Hud.Command(args);
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
+        _context.RegisterKeyDownCallback(Keys.Escape, Close);
     }
 }

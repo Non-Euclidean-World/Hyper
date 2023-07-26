@@ -14,6 +14,4 @@ public static class VoxelHelper
             _ => Vector3.Zero
         };
     }
-    
-    
 }
