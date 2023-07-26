@@ -1,4 +1,5 @@
 ﻿using Hyper;
+using Hyper.Animation;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -10,6 +11,8 @@ var nativeWindowSettings = new NativeWindowSettings()
     // This is needed to run on macos
     Flags = ContextFlags.ForwardCompatible,
 };
+
+var test = new Model();
 
 using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
 {
