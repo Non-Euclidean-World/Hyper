@@ -1,8 +1,6 @@
-﻿using Hyper.Meshes;
-using Hyper.UserInput;
+﻿using Hyper.UserInput;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -17,7 +15,7 @@ internal class Window : GameWindow, IInputSubscriber
 
     private Scene _scene = null!;
 
-    private readonly UserInput.Context _context = UserInput.Context.Instance;
+    private readonly Context _context = UserInput.Context.Instance;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
@@ -68,6 +66,10 @@ internal class Window : GameWindow, IInputSubscriber
             return;
         }
 
+        foreach (var callback in _context.FrameUpdateCallbacks)
+        {
+            callback(e);
+        }
         _context.ExecuteAllHeldCallbacks(InputType.Key, e);
         _context.ExecuteAllHeldCallbacks(InputType.MouseButton, e);
     }
@@ -111,12 +113,6 @@ internal class Window : GameWindow, IInputSubscriber
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         base.OnMouseDown(e);
-
-        if (e.Button == MouseButton.Middle)
-        {
-            var projectile = new Projectile(CubeMesh.Vertices, _scene.Camera.ReferencePointPosition + 1 / Scene.Scale * Vector3.UnitY, _scene.Camera.Front, 20f, 5f);
-            _scene.Projectiles.Add(projectile);
-        }
 
         if (!_context.ButtonDownCallbacks.ContainsKey(e.Button))
             return;

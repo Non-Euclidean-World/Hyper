@@ -35,9 +35,9 @@ internal class Scene : IInputSubscriber
         ChunkFactory chunkFactory = new ChunkFactory(_scalarFieldGenerator);
 
         Chunks = GetChunks(chunkFactory);
-        LightSources = GetLightSources(chunkFactory);
+        LightSources = GetLightSources();
         Projectiles = new List<Projectile>();
-        Camera = GetCamera(chunkFactory, aspectRatio);
+        Camera = GetCamera(aspectRatio);
         Hud = new HudManager(aspectRatio);
 
         _objectShader = GetObjectShader();
@@ -119,7 +119,7 @@ internal class Scene : IInputSubscriber
         return chunks;
     }
 
-    private List<LightSource> GetLightSources(ChunkFactory generator)
+    private List<LightSource> GetLightSources()
     {
         var lightSources = new List<LightSource> {
             new(CubeMesh.Vertices, new Vector3(10f, 7f + _scalarFieldGenerator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
@@ -129,7 +129,7 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private Camera GetCamera(ChunkFactory generator, float aspectRatio)
+    private Camera GetCamera(float aspectRatio)
     {
         var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
         {
@@ -164,7 +164,7 @@ internal class Scene : IInputSubscriber
     {
         Context context = Context.Instance;
 
-        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
+        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right, MouseButton.Middle });
 
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
@@ -185,6 +185,12 @@ internal class Scene : IInputSubscriber
             {
                 if (chunk.Build(position, (float)e.Time)) return;
             }
+        });
+
+        context.RegisterMouseButtonDownCallback(MouseButton.Middle, () =>
+        {
+            var projectile = new Projectile(CubeMesh.Vertices, Camera.ReferencePointPosition, Camera.Front, 100f, 5f);
+            Projectiles.Add(projectile);
         });
     }
 }

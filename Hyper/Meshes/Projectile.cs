@@ -12,7 +12,8 @@ internal class Projectile : Mesh
 
     private float _lifeTime;
 
-    public Projectile(Vertex[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime) : base(vertices, position)
+    public Projectile(Vertex[] vertices, Vector3 position, Vector3 direction, float speed, float lifeTime)
+        : base(vertices, position)
     {
         _direction = direction;
         _speed = speed;
