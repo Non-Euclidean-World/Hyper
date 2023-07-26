@@ -30,7 +30,7 @@ internal class Chunk : Mesh
         var z = (int)location.Z - Position.Z;
 
         if (x < 0 || y < 0 || z < 0
-            | x > Size - 1 || y > Size - 1 || z > Size - 1
+            || x > Size - 1 || y > Size - 1 || z > Size - 1
             || _voxels[x, y, z].Value <= 0f)
             return false;
 
