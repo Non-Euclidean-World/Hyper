@@ -1,4 +1,5 @@
-﻿using Hyper.Meshes;
+﻿using Hyper.MarchingCubes.Voxels;
+using Hyper.Meshes;
 using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes;
@@ -6,9 +7,9 @@ namespace Hyper.MarchingCubes;
 internal class MeshGenerator
 {
     private readonly float _isolevel;
-    private readonly float[,,] _scalarField;
+    private readonly Voxel[,,] _scalarField;
 
-    public MeshGenerator(float[,,] scalarField, float isolevel = 0f)
+    public MeshGenerator(Voxel[,,] scalarField, float isolevel = 0f)
     {
         _scalarField = scalarField;
         _isolevel = isolevel;
@@ -35,7 +36,7 @@ internal class MeshGenerator
     {
         var vertices = new List<Vertex>();
 
-        var (cubeValues, normals) = GetCubeValues(x, y, z);
+        var (cubeValues, normals, colors) = GetCubeValues(x, y, z);
         var edges = GetEdges(cubeValues);
         var position = new Vector3(x, y, z);
 
@@ -58,23 +59,29 @@ internal class MeshGenerator
             var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
             var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
 
-            vertices.Add(new Vertex(a.X, a.Y, a.Z, na.X, na.Y, na.Z));
-            vertices.Add(new Vertex(b.X, b.Y, b.Z, nb.X, nb.Y, nb.Z));
-            vertices.Add(new Vertex(c.X, c.Y, c.Z, nc.X, nc.Y, nc.Z));
+            var colorA = Interpolate(colors[e00], cubeValues[e00], colors[e01], cubeValues[e01]);
+            var colorB = Interpolate(colors[e10], cubeValues[e10], colors[e11], cubeValues[e11]);
+            var colorC = Interpolate(colors[e20], cubeValues[e20], colors[e21], cubeValues[e21]);
+
+            vertices.Add(new Vertex(a, na, colorA));
+            vertices.Add(new Vertex(b, nb, colorB));
+            vertices.Add(new Vertex(c, nc, colorC));
         }
 
         return vertices;
     }
 
-    private (float[], Vector3[]) GetCubeValues(int x, int y, int z)
+    private (float[], Vector3[], Vector3[]) GetCubeValues(int x, int y, int z)
     {
         float[] cubeValues = new float[8];
+        Vector3[] colors = new Vector3[8];
         Vector3[] normals = new Vector3[8];
         for (int i = 0; i < 8; i++)
         {
-            var offset = MarchingCubesTables.CubeCorners[i];
+            Vector3i offset = MarchingCubesTables.CubeCorners[i];
             Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
-            cubeValues[i] = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z];
+            cubeValues[i] = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
+            colors[i] = VoxelHelper.GetColor(_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
 
             if (cubeVertexPos.X == 0 || cubeVertexPos.Y == 0 || cubeVertexPos.Z == 0
                 || cubeVertexPos.X == _scalarField.GetLength(0) - 1 || cubeVertexPos.Y == _scalarField.GetLength(1) - 1 || cubeVertexPos.Z == _scalarField.GetLength(2) - 1)
@@ -83,13 +90,13 @@ internal class MeshGenerator
                 continue;
             }
 
-            normals[i].X = _scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z] - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z];
-            normals[i].Y = _scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z] - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z];
-            normals[i].Z = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1] - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1];
+            normals[i].X = _scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
+            normals[i].Y = _scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
+            normals[i].Z = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
 
         }
 
-        return (cubeValues, normals);
+        return (cubeValues, normals, colors);
     }
 
     private int[] GetEdges(float[] cubeValues)

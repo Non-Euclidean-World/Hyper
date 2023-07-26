@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 

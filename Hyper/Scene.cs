@@ -1,4 +1,13 @@
-﻿namespace Hyper;
+﻿using Hyper.HUD;
+using Hyper.MarchingCubes;
+using Hyper.MathUtiils;
+using Hyper.Meshes;
+using Hyper.UserInput;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
@@ -78,7 +87,6 @@ internal class Scene : IInputSubscriber
         _objectShader.SetFloat("anti", 1.0f);
         _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
         _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-        _objectShader.SetVector3("objectColor", new Vector3(1f, 0.5f, 0.31f));
         _objectShader.SetInt("numLights", LightSources.Count);
         _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
 

@@ -1,4 +1,13 @@
-﻿namespace Hyper;
+﻿using Hyper.Meshes;
+using Hyper.UserInput;
+using NLog;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+namespace Hyper;
 
 internal class Window : GameWindow, IInputSubscriber
 {
@@ -8,10 +17,14 @@ internal class Window : GameWindow, IInputSubscriber
 
     private Scene _scene = null!;
 
+    private readonly UserInput.Context _context = UserInput.Context.Instance;
+
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
         StartDebugThreadAsync().ConfigureAwait(false);
+
+        RegisterCallbacks();
     }
 
     public override void Close()

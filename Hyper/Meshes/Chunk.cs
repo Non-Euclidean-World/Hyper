@@ -1,5 +1,9 @@
 ﻿using System.Runtime.InteropServices;
-
+using Hyper.MarchingCubes;
+using Hyper.MarchingCubes.Voxels;
+using NLog;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 namespace Hyper.Meshes;
 
 internal class Chunk : Mesh
@@ -30,7 +34,7 @@ internal class Chunk : Mesh
             || _voxels[x, y, z].Value <= 0f)
             return false;
 
-        float brushWeight = 0.1f;
+        float brushWeight = 1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -64,7 +68,7 @@ internal class Chunk : Mesh
             || _voxels[x, y, z].Value >= 1f)
             return false;
 
-        float brushWeight = 0.1f;
+        float brushWeight = 1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -78,7 +82,6 @@ internal class Chunk : Mesh
                 }
             }
         }
-        Logger.Info($"Built block at {x},{y},{z}");
 
         UpdateMesh();
 

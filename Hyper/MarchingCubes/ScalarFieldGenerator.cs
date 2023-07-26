@@ -1,4 +1,6 @@
-﻿using OpenTK.Mathematics;
+﻿using Hyper.MarchingCubes.Voxels;
+using Hyper.Meshes;
+using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes;
 
@@ -32,10 +34,10 @@ internal class ScalarFieldGenerator
         _maxAmp = AvgElevation = GetMaxAmp();
     }
 
-    public float[,,] Generate(int width, int height, int depth, Vector3i position)
+    public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
     {
         var perlin = new PerlinNoise(_seed);
-        float[,,] scalarField = new float[width, height, depth];
+        Voxel[,,] scalarField = new Voxel[width, height, depth];
 
         for (int x = position.X; x < width + position.X; x++)
         {
@@ -54,7 +56,14 @@ internal class ScalarFieldGenerator
                         freq *= _freqMul;
                         amp *= _ampMul;
                     }
-                    scalarField[x - position.X, y - position.Y, z - position.Z] = density - _maxAmp;
+                    float value = density - _maxAmp;
+
+                    VoxelType type;
+                    if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
+                    else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
+                    else type = VoxelType.Grass;
+
+                    scalarField[x - position.X, y - position.Y, z - position.Z] = new Voxel(value, type);
                 }
             }
         }
@@ -62,7 +71,7 @@ internal class ScalarFieldGenerator
         return scalarField;
     }
 
-    public float[,,] Generate(int size, Vector3i position) => Generate(size, size, size, position);
+    public Voxel[,,] Generate(int size, Vector3i position) => Generate(size, size, size, position);
 
     private float GetMaxAmp()
     {
