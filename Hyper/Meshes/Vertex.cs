@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 
@@ -22,6 +23,15 @@ internal struct Vertex
     
     [FieldOffset(20)]
     public float Nz;
+
+    [FieldOffset(24)] 
+    public float R;
+    
+    [FieldOffset(28)]
+    public float G;
+    
+    [FieldOffset(32)]
+    public float B;
     
     public Vertex(float x, float y, float z, float nx, float ny, float nz)
     {
@@ -31,5 +41,18 @@ internal struct Vertex
         Nx = nx;
         Ny = ny;
         Nz = nz;
+    }
+
+    public Vertex(Vector3 position, Vector3 normal, Vector3 color)
+    {
+        X = position.X;
+        Y = position.Y;
+        Z = position.Z;
+        Nx = normal.X;
+        Ny = normal.Y;
+        Nz = normal.Z;
+        R = color.X;
+        G = color.Y;
+        B = color.Z;
     }
 }

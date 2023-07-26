@@ -1,13 +1,4 @@
-﻿using Hyper.HUD;
-using Hyper.MarchingCubes;
-using Hyper.MathUtiils;
-using Hyper.Meshes;
-using Hyper.UserInput;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-
-namespace Hyper;
+﻿namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {

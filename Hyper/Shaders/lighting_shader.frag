@@ -4,7 +4,6 @@ out vec4 FragColor;
 
 #define MAX_LIGHTS 10
 
-uniform vec3 objectColor;
 uniform vec3 lightColor[MAX_LIGHTS];
 uniform vec4 lightPos[MAX_LIGHTS];
 uniform vec4 viewPos;
@@ -14,6 +13,7 @@ uniform float curv;
 
 in vec4 Normal;
 in vec4 FragPos;
+in vec3 Color;
 
 float dotProduct(vec4 u, vec4 v)
 {
@@ -55,6 +55,6 @@ void main()
         specular += specularStrength * spec * lightColor[i];
     }
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 result = (ambient + diffuse + specular) * Color;
     FragColor = vec4(result, 1.0);
 }

@@ -2,6 +2,7 @@
 
 layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec3 aColor;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -11,6 +12,7 @@ uniform float anti;
 
 out vec4 Normal;
 out vec4 FragPos; // in world space coordinates
+out vec3 Color;
 
 vec4 port(vec4 ePoint) {
     vec3 p = ePoint.xyz;
@@ -48,4 +50,5 @@ void main(void)
     gl_Position = anti * port(eucPos * model) * view * projection;
     FragPos = anti * port(eucPos * model);
     Normal = vec4(aNormal, 0) * TranslateMatrix(port(eucPos * model));
+    Color = aColor;
 }

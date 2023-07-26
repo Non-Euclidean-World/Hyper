@@ -1,8 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Hyper.MarchingCubes;
-using NLog;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 
@@ -12,11 +8,11 @@ internal class Chunk : Mesh
 
     public new Vector3i Position { get; set; }
 
-    private readonly float[,,] _voxels;
+    private readonly Voxel[,,] _voxels;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public Chunk(Vertex[] vertices, Vector3i position, float[,,] voxels) : base(vertices, position)
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
     {
         _voxels = voxels;
         Position = position;
@@ -31,10 +27,10 @@ internal class Chunk : Mesh
 
         if (x < 0 || y < 0 || z < 0
             | x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z] <= 0f)
+            || _voxels[x, y, z].Value <= 0f)
             return false;
 
-        float brushWeight = 1f;
+        float brushWeight = 0.1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -43,7 +39,7 @@ internal class Chunk : Mesh
                 {
                     if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi] += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
@@ -65,10 +61,10 @@ internal class Chunk : Mesh
 
         if (x < 0 || y < 0 || z < 0
             || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z] >= 1f)
+            || _voxels[x, y, z].Value >= 1f)
             return false;
 
-        float brushWeight = 1f;
+        float brushWeight = 0.1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -77,11 +73,12 @@ internal class Chunk : Mesh
                 {
                     if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi] -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
         }
+        Logger.Info($"Built block at {x},{y},{z}");
 
         UpdateMesh();
 
@@ -110,6 +107,9 @@ internal class Chunk : Mesh
 
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
+
+        GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 6 * sizeof(float));
+        GL.EnableVertexAttribArray(2);
 
         GL.BindVertexArray(0);
 

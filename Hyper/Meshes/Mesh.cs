@@ -1,6 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 
@@ -46,6 +44,9 @@ internal class Mesh : IDisposable
 
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
+
+        GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 6 * sizeof(float));
+        GL.EnableVertexAttribArray(2);
 
         GL.BindVertexArray(0);
 

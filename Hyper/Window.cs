@@ -1,13 +1,4 @@
-﻿using Hyper.Meshes;
-using Hyper.UserInput;
-using NLog;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-
-namespace Hyper;
+﻿namespace Hyper;
 
 internal class Window : GameWindow, IInputSubscriber
 {
@@ -17,16 +8,10 @@ internal class Window : GameWindow, IInputSubscriber
 
     private Scene _scene = null!;
 
-    private readonly UserInput.Context _context = UserInput.Context.Instance;
-
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        StartDebugThreadAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-        RegisterCallbacks();
+        StartDebugThreadAsync().ConfigureAwait(false);
     }
 
     public override void Close()
