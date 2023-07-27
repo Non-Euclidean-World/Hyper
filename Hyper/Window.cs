@@ -1,4 +1,5 @@
-﻿using Hyper.Meshes;
+﻿using Hyper.Animation;
+using Hyper.Meshes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

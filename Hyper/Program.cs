@@ -12,8 +12,6 @@ var nativeWindowSettings = new NativeWindowSettings()
     Flags = ContextFlags.ForwardCompatible,
 };
 
-var test = new Model();
-
 using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
 {
     window.RenderFrequency = 500.0f;

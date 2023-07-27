@@ -25,6 +25,7 @@ public static class ModelLoader
             GetFaces(mesh);
         }
         
+        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         GL.BindVertexArray(0);
 
         return vao;
@@ -70,9 +71,11 @@ public static class ModelLoader
 
     private static void GetBones(Assimp.Mesh mesh)
     {
-        List<int> boneIndices = new List<int>();
-        List<float> boneWeights = new List<float>();
+        // Initialize arrays of bones and weights for each vertex in the mesh
+        int[,] vertexBones = new int[mesh.VertexCount, 3];
+        float[,] vertexWeights = new float[mesh.VertexCount, 3];
 
+        // Go through each bone in the mesh
         for (int boneIndex = 0; boneIndex < mesh.BoneCount; boneIndex++)
         {
             var bone = mesh.Bones[boneIndex];
@@ -80,27 +83,51 @@ public static class ModelLoader
             // Go through each vertex weight in the bone
             foreach (var weight in bone.VertexWeights)
             {
-                // The vertex ID is the index of the vertex this weight applies to
-                int vertexId = weight.VertexID;
-
-                // Store the bone index and weight
-                boneIndices.Add(boneIndex);
-                boneWeights.Add(weight.Weight);
+                // Find the next available slot for this vertex
+                for (int slot = 0; slot < 3; slot++)
+                {
+                    if (vertexBones[weight.VertexID, slot] == 0 && vertexWeights[weight.VertexID, slot] == 0f)
+                    {
+                        vertexBones[weight.VertexID, slot] = boneIndex;
+                        vertexWeights[weight.VertexID, slot] = weight.Weight;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        int[] boneIndices = new int[mesh.VertexCount * 3];
+        for (int i = 0; i < mesh.VertexCount; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                boneIndices[i * 3 + j] = vertexBones[i, j];
             }
         }
 
+        float[] boneWeights = new float[mesh.VertexCount * 3];
+        for (int i = 0; i < mesh.VertexCount; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                boneWeights[i * 3 + j] = vertexWeights[i, j];
+            }
+        }
+
+        int size = 3;
+
         int vboBoneIndices = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboBoneIndices);
-        GL.BufferData(BufferTarget.ArrayBuffer, boneIndices.Count * sizeof(int), boneIndices.ToArray(), BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, boneIndices.Length * sizeof(int), boneIndices.ToArray(), BufferUsageHint.StaticDraw);
 
+        GL.VertexAttribPointer(3, size, VertexAttribPointerType.Int, false, 0, 0);
+        GL.EnableVertexAttribArray(3);
+        
         int vboBoneWeights = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboBoneWeights);
-        GL.BufferData(BufferTarget.ArrayBuffer, boneWeights.Count * sizeof(float), boneWeights.ToArray(), BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, boneWeights.Length * sizeof(float), boneWeights.ToArray(), BufferUsageHint.StaticDraw);
 
-        GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Int, false, 0, 0);
-        GL.EnableVertexAttribArray(3);
-
-        GL.VertexAttribPointer(4, 4, VertexAttribPointerType.Float, false, 0, 0);
+        GL.VertexAttribPointer(4, size, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(4);
     }
     

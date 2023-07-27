@@ -1,4 +1,5 @@
-﻿using Hyper.HUD;
+﻿using Hyper.Animation;
+using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
@@ -14,6 +15,8 @@ namespace Hyper
         public readonly List<LightSource> LightSources;
 
         public readonly List<Projectile> Projectiles;
+        
+        public readonly List<Model> Models;
 
         public readonly Camera Camera;
 
@@ -25,6 +28,8 @@ namespace Hyper
 
         private readonly Shader _lightSourceShader;
 
+        private readonly Shader _modelShader;
+
         public Scene(float aspectRatio)
         {
             Generator generator = new Generator(1);
@@ -32,11 +37,13 @@ namespace Hyper
             Chunks = GetChunks(generator);
             LightSources = GetLightSources(generator);
             Projectiles = new List<Projectile>();
+            Models = GetModels();
             Camera = GetCamera(generator, aspectRatio);
             Hud = new HudManager(aspectRatio);
 
             _objectShader = GetObjectShader();
             _lightSourceShader = GetLightSourceShader();
+            _modelShader = GetModelShader();
         }
 
         public void Render() 
@@ -58,6 +65,13 @@ namespace Hyper
             foreach (var light in LightSources)
             {
                 light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
+            }
+            
+            SetUpModelShaderParams();
+            
+            foreach (var model in Models)
+            {
+                model.Render(_modelShader, Scale, Camera.ReferencePointPosition);
             }
 
             Hud.Render();
@@ -136,6 +150,13 @@ namespace Hyper
             _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
         }
 
+        private void SetUpModelShaderParams()
+        {
+            _modelShader.Use();
+            _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
+            _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+        }
+
         private static List<Chunk> GetChunks(Generator generator)
         {
             var chunks = new List<Chunk>
@@ -156,6 +177,16 @@ namespace Hyper
             };
 
             return lightSources;
+        }
+        
+        private static List<Model> GetModels()
+        {
+            var models = new List<Model>
+            {
+                new()
+            };
+
+            return models;
         }
 
         private static Camera GetCamera(Generator generator, float aspectRatio)
@@ -187,6 +218,16 @@ namespace Hyper
                 ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
             };
             return new Shader(shaderParams);
+        }
+
+        private static Shader GetModelShader()
+        {
+            var shader = new[]
+            {
+                ("Animation/Shaders/shader2d.vert", ShaderType.VertexShader),
+                ("Animation/Shaders/shader2d.frag", ShaderType.FragmentShader)
+            };
+            return new Shader(shader);
         }
     }
 }
