@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <Compile Remove="HUD\Textures\**" />
+    <EmbeddedResource Remove="HUD\Textures\**" />
+    <None Remove="HUD\Textures\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="NLog" Version="5.2.0" />
     <PackageReference Include="OpenTK" Version="4.7.7" />
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
@@ -76,7 +82,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HUD\Textures\" />
     <Folder Include="HUD\Shaders\" />
   </ItemGroup>
 

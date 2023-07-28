@@ -1,233 +1,237 @@
 ﻿using Hyper.Animation;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
+using Hyper.MathUtiils;
 using Hyper.Meshes;
+using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper
+namespace Hyper;
+
+internal class Scene : IInputSubscriber
 {
-    internal class Scene
+    public readonly List<Chunk> Chunks;
+
+    public readonly List<LightSource> LightSources;
+
+    public readonly List<Projectile> Projectiles;
+        
+    public readonly List<Model> Models;
+
+    public readonly Camera Camera;
+
+    public readonly HudManager Hud;
+
+    public const float Scale = 0.1f;
+
+    private readonly Shader _objectShader;
+
+    private readonly Shader _lightSourceShader;
+
+    private readonly Shader _modelShader;
+
+    private readonly ScalarFieldGenerator _scalarFieldGenerator;
+
+    public Scene(float aspectRatio)
     {
-        public readonly List<Chunk> Chunks;
+        _scalarFieldGenerator = new ScalarFieldGenerator(1);
+        ChunkFactory chunkFactory = new ChunkFactory(_scalarFieldGenerator);
 
-        public readonly List<LightSource> LightSources;
+        Chunks = GetChunks(chunkFactory);
+        LightSources = GetLightSources();
+        Projectiles = new List<Projectile>();
+        Models = GetModels();
+        Camera = GetCamera(aspectRatio);
+        Hud = new HudManager(aspectRatio);
 
-        public readonly List<Projectile> Projectiles;
-        
-        public readonly List<Model> Models;
+        _objectShader = GetObjectShader();
+        _lightSourceShader = GetLightSourceShader();
+        _modelShader = GetModelShader();
 
-        public readonly Camera Camera;
+        RegisterCallbacks();
+    }
 
-        public readonly HudManager Hud;
+    public void Render()
+    {
+        SetUpObjectShaderParams();
 
-        public const float Scale = 0.1f;
-
-        private readonly Shader _objectShader;
-
-        private readonly Shader _lightSourceShader;
-
-        private readonly Shader _modelShader;
-
-        public Scene(float aspectRatio)
+        foreach (var chunk in Chunks)
         {
-            Generator generator = new Generator(1);
-
-            Chunks = GetChunks(generator);
-            LightSources = GetLightSources(generator);
-            Projectiles = new List<Projectile>();
-            Models = GetModels();
-            Camera = GetCamera(generator, aspectRatio);
-            Hud = new HudManager(aspectRatio);
-
-            _objectShader = GetObjectShader();
-            _lightSourceShader = GetLightSourceShader();
-            _modelShader = GetModelShader();
+            chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
         }
 
-        public void Render() 
+        foreach (var projectile in Projectiles)
         {
-            SetUpObjectShaderParams();
+            projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
+        }
 
-            foreach (var chunk in Chunks)
-            {
-                chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
-            }
+        SetUpLightingShaderParams();
 
-            foreach (var projectile in Projectiles)
-            {
-                projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
-            }
-
-            SetUpLightingShaderParams();
-
-            foreach (var light in LightSources)
-            {
-                light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
-            }
+        foreach (var light in LightSources)
+        {
+            light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
+        }
             
-            SetUpModelShaderParams();
+        SetUpModelShaderParams();
             
-            foreach (var model in Models)
-            {
-                model.Render(_modelShader, Scale, Camera.ReferencePointPosition);
-            }
-
-            Hud.Render();
+        foreach (var model in Models)
+        {
+            model.Render(_modelShader, Scale, Camera.ReferencePointPosition);
         }
 
-        public void UpdateProjectiles(float time)
-        {
-            foreach (var projectile in Projectiles)
-            {
-                projectile.Update(time);
-            }
+        Hud.Render();
+    }
 
-            Projectiles.RemoveAll(x => x.IsDead);
+    public void UpdateProjectiles(float time)
+    {
+        foreach (var projectile in Projectiles)
+        {
+            projectile.Update(time);
         }
 
-        public void UpdateCamera(KeyboardState input, float time, Vector2 mousePosition)
+        Projectiles.RemoveAll(x => x.IsDead);
+    }
+
+    private void SetUpObjectShaderParams()
+    {
+        _objectShader.Use();
+        _objectShader.SetFloat("curv", Camera.Curve);
+        _objectShader.SetFloat("anti", 1.0f);
+        _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
+        _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+        _objectShader.SetInt("numLights", LightSources.Count);
+        _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
+
+        for (int i = 0; i < LightSources.Count; i++)
         {
-            if (input.IsKeyDown(Keys.D8))
-            {
-                Camera.Curve = 0f;
-            }
-
-            if (input.IsKeyDown(Keys.D9))
-            {
-                Camera.Curve = 1f;
-            }
-
-            if (input.IsKeyDown(Keys.D0))
-            {
-                Camera.Curve = -1f;
-            }
-
-            if (input.IsKeyDown(Keys.Down))
-            {
-                Camera.Curve -= 0.0001f;
-            }
-
-            if (input.IsKeyDown(Keys.Up))
-            {
-                Camera.Curve += 0.0001f;
-            }
-
-            if (input.IsKeyDown(Keys.Tab))
-            {
-                Console.WriteLine(Camera.Curve);
-            }
-
-            Camera.Move(input, time);
-
-            Camera.Turn(mousePosition);
+            _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
+            _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale, Camera.Curve));
         }
+    }
 
-        private void SetUpObjectShaderParams()
+    private void SetUpLightingShaderParams()
+    {
+        _lightSourceShader.Use();
+        _lightSourceShader.SetFloat("curv", Camera.Curve);
+        _lightSourceShader.SetFloat("anti", 1.0f);
+        _lightSourceShader.SetMatrix4("view", Camera.GetViewMatrix());
+        _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+    }
+
+    private void SetUpModelShaderParams()
+    {
+        _modelShader.Use();
+        _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
+        _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+    }
+
+    private static List<Chunk> GetChunks(ChunkFactory generator)
+    {
+        var chunks = new List<Chunk>
         {
-            _objectShader.Use();
-            _objectShader.SetFloat("curv", Camera.Curve);
-            _objectShader.SetFloat("anti", 1.0f);
-            _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
-            _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-            _objectShader.SetInt("numLights", LightSources.Count);
-            _objectShader.SetVector4("viewPos", Camera.PortEucToCurved(Vector3.UnitY));
+            generator.GenerateChunk(new Vector3i(0, 0, 0)),
+            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
+            generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
+            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
+        };
 
-            for (int i = 0; i < LightSources.Count; i++)
-            {
-                _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
-                _objectShader.SetVector4($"lightPos[{i}]", Camera.PortEucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale));
-            }
-        }
+        return chunks;
+    }
 
-        private void SetUpLightingShaderParams()
-        {
-            _lightSourceShader.Use();
-            _lightSourceShader.SetFloat("curv", Camera.Curve);
-            _lightSourceShader.SetFloat("anti", 1.0f);
-            _lightSourceShader.SetMatrix4("view", Camera.GetViewMatrix());
-            _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-        }
+    private List<LightSource> GetLightSources()
+    {
+        var lightSources = new List<LightSource> {
+            new(CubeMesh.Vertices, new Vector3(10f, 7f + _scalarFieldGenerator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
+            new(CubeMesh.Vertices, new Vector3(4f, 7f + _scalarFieldGenerator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
+        };
 
-        private void SetUpModelShaderParams()
-        {
-            _modelShader.Use();
-            _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
-            _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-        }
+        return lightSources;
+    }
 
-        private static List<Chunk> GetChunks(Generator generator)
-        {
-            var chunks = new List<Chunk>
-            {
-                generator.GenerateChunk(new Vector3i(0, 0, 0)),
-                generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
-                generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1))
-            };
-
-            return chunks;
-        }
-
-        private static List<LightSource> GetLightSources(Generator generator)
-        {
-            var lightSources = new List<LightSource> {
-                new(CubeMesh.Vertices, new Vector3(10f, 7f + generator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
-                new(CubeMesh.Vertices, new Vector3(4f, 7f + generator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
-            };
-
-            return lightSources;
-        }
-        
-        private static List<Model> GetModels()
-        {
-            var models = new List<Model>
+    private static List<Model> GetModels()
+    {
+        var models = new List<Model>
             {
                 new()
             };
 
-            return models;
-        }
+        return models;
+    }
 
-        private static Camera GetCamera(Generator generator, float aspectRatio)
+    private Camera GetCamera(float aspectRatio)
+    {
+        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
         {
-            var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
-            {
-                ReferencePointPosition = (5f + generator.AvgElevation) * Vector3.UnitY
-            };
+            ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
+        };
 
-            return camera;
-        }
+        return camera;
+    }
 
-        private static Shader GetObjectShader()
+    private static Shader GetObjectShader()
+    {
+        var shaderParams = new[]
         {
-            var shaderParams = new[]
-            {
-                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-                ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
-            };
+            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+            ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
+        };
 
-            return new Shader(shaderParams);
-        }
+        return new Shader(shaderParams);
+    }
 
-        private static Shader GetLightSourceShader()
+    private static Shader GetLightSourceShader()
+    {
+        var shaderParams = new[]
         {
-            var shaderParams = new[]
-            {
-                ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-                ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
-            };
-            return new Shader(shaderParams);
-        }
+            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+            ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
+        };
+        return new Shader(shaderParams);
+    }
 
-        private static Shader GetModelShader()
+    public void RegisterCallbacks()
+    {
+        Context context = Context.Instance;
+
+        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right, MouseButton.Middle });
+
+        context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
+        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
-            var shader = new[]
+            var position = Camera.ReferencePointPosition;
+
+            foreach (var chunk in Chunks)
             {
+                if (chunk.Mine(position, (float)e.Time)) return;
+            }
+        });
+
+        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
+        {
+            var position = Camera.ReferencePointPosition;
+
+            foreach (var chunk in Chunks)
+            {
+                if (chunk.Build(position, (float)e.Time)) return;
+            }
+        });
+
+        context.RegisterMouseButtonDownCallback(MouseButton.Middle, () =>
+        {
+            var projectile = new Projectile(CubeMesh.Vertices, Camera.ReferencePointPosition, Camera.Front, 100f, 5f);
+            Projectiles.Add(projectile);
+        });
+    }
+
+    private static Shader GetModelShader()
+    {
+        var shader = new[]
+        {
                 ("Animation/Shaders/shader2d.vert", ShaderType.VertexShader),
                 ("Animation/Shaders/shader2d.frag", ShaderType.FragmentShader)
             };
-            return new Shader(shader);
-        }
+        return new Shader(shader);
     }
 }

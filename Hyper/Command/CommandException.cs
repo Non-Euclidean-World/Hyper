@@ -1,9 +1,8 @@
-﻿namespace Hyper.Command
-{
-    internal class CommandException : Exception
-    {
-        public CommandException() { }
+﻿namespace Hyper.Command;
 
-        public CommandException(string message) : base(message) { }
-    }
+internal class CommandException : Exception
+{
+    public CommandException() { }
+
+    public CommandException(string message) : base(message) { }
 }

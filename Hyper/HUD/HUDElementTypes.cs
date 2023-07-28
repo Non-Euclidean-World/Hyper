@@ -1,8 +1,7 @@
-﻿namespace Hyper.HUD
+﻿namespace Hyper.HUD;
+
+internal enum HudElementTypes
 {
-    internal enum HudElementTypes
-    {
-        Crosshair,
-        FpsCounter,
-    }
+    Crosshair,
+    FpsCounter,
 }

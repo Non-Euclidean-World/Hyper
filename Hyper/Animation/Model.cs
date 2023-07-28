@@ -1,7 +1,6 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using AScene = Assimp.Scene;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace Hyper.Animation;
@@ -10,7 +9,7 @@ internal class Model
 {
     private readonly int _vao;
     private readonly Texture _texture;
-    private readonly AScene _model;
+    private readonly Assimp.Scene _model;
     
     public Model()
     {
@@ -35,11 +34,14 @@ internal class Model
         }
         
         GL.BindVertexArray(_vao);
-        // GL.DrawArrays(PrimitiveType.Triangles, 0, _model.Meshes[0].VertexCount);
-        GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[0].FaceCount * 3, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[0].FaceCount * 3,
+            DrawElementsType.UnsignedInt, 0);
     }
     
-    private Matrix4[] GetBoneTransforms() => _model.Meshes[0].Bones.Select(bone => AssimpToOpenTk(bone.OffsetMatrix)).ToArray();
+    private Matrix4[] GetBoneTransforms() => 
+        _model.Meshes[0].Bones
+        .Select(bone => AssimpToOpenTk(bone.OffsetMatrix))
+        .ToArray();
     
     private static Matrix4 AssimpToOpenTk(Matrix4x4 assimpMatrix)
     {
@@ -49,5 +51,4 @@ internal class Model
             assimpMatrix.C1, assimpMatrix.C2, assimpMatrix.C3, assimpMatrix.C4,
             assimpMatrix.D1, assimpMatrix.D2, assimpMatrix.D3, assimpMatrix.D4);
     }
-
 }

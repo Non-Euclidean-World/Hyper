@@ -1,283 +1,208 @@
 using Hyper.Command;
+using Hyper.MathUtiils;
+using Hyper.UserInput;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper
+namespace Hyper;
+
+internal class Camera : Commandable, IInputSubscriber
 {
-    internal class Camera : Commandable
+    public float Curve { get; set; } = 0f;
+
+    public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
+
+    public Vector3 Front { get; private set; } = -Vector3.UnitZ;
+
+    private Vector3 _up = Vector3.UnitY;
+
+    private Vector3 _right = Vector3.UnitX;
+
+    private float _pitch;
+
+    private float _yaw = -MathHelper.PiOver2;
+
+    private float _fov = MathHelper.PiOver2;
+
+    private float _cameraSpeed = 100f;
+
+    private readonly float _near;
+
+    private readonly float _far;
+
+    private readonly Vector3 _position;
+
+    private bool _firstMove = true;
+
+    private Vector2 _lastPos;
+
+    private const float Sensitivity = 0.2f;
+
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    public Camera(float aspectRatio, float near, float far, float scale)
     {
-        public float Curve { get; set; } = 0f;
+        AspectRatio = aspectRatio;
+        _near = near;
+        _far = far;
+        _position = Vector3.UnitY * scale;
 
-        public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
+        RegisterCallbacks();
+    }
 
-        public Vector3 Front { get; private set; } = -Vector3.UnitZ;
+    public float AspectRatio { private get; set; }
 
-        private Vector3 _up = Vector3.UnitY;
-
-        private Vector3 _right = Vector3.UnitX;
-
-        private float _pitch;
-
-        private float _yaw = -MathHelper.PiOver2;
-
-        private float _fov = MathHelper.PiOver2;
-
-        private float _cameraSpeed = 100f;
-
-        private readonly float _near;
-
-        private readonly float _far;
-
-        private readonly Vector3 _position;
-
-        private bool _firstMove = true;
-
-        private Vector2 _lastPos;
-
-        private const float Sensitivity = 0.2f;
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public Camera(float aspectRatio, float near, float far, float scale)
+    public float Pitch
+    {
+        get => MathHelper.RadiansToDegrees(_pitch);
+        set
         {
-            AspectRatio = aspectRatio;
-            _near = near;
-            _far = far;
-            _position = Vector3.UnitY * scale;
+            var angle = MathHelper.Clamp(value, -89f, 89f);
+            _pitch = MathHelper.DegreesToRadians(angle);
+            UpdateVectors();
         }
+    }
 
-        public float AspectRatio { private get; set; }
-
-        public float Pitch
+    public float Yaw
+    {
+        get => MathHelper.RadiansToDegrees(_yaw);
+        set
         {
-            get => MathHelper.RadiansToDegrees(_pitch);
-            set
-            {
-                var angle = MathHelper.Clamp(value, -89f, 89f);
-                _pitch = MathHelper.DegreesToRadians(angle);
-                UpdateVectors();
-            }
+            _yaw = MathHelper.DegreesToRadians(value);
+            UpdateVectors();
         }
+    }
 
-        public float Yaw
+    public float Fov
+    {
+        get => MathHelper.RadiansToDegrees(_fov);
+        set
         {
-            get => MathHelper.RadiansToDegrees(_yaw);
-            set
-            {
-                _yaw = MathHelper.DegreesToRadians(value);
-                UpdateVectors();
-            }
+            var angle = MathHelper.Clamp(value, 1f, 90f);
+            _fov = MathHelper.DegreesToRadians(angle);
         }
+    }
 
-        public float Fov
+    public Matrix4 GetViewMatrix()
+    {
+        return Matrices.ViewMatrix(_position, Front, _up, Curve);
+    }
+
+    public Matrix4 GetProjectionMatrix()
+    {
+        return Matrices.ProjectionMatrix(_fov, _near, _far, AspectRatio, Curve);
+    }
+
+    public Matrix4 TranslateMatrix(Vector4 to)
+    {
+        return Matrices.TranslationMatrix(to, Curve);
+    }
+
+    private void UpdateVectors()
+    {
+        Front = new Vector3(MathF.Cos(_pitch) * MathF.Cos(_yaw), MathF.Sin(_pitch), MathF.Cos(_pitch) * MathF.Sin(_yaw));
+
+        Front = Vector3.Normalize(Front);
+
+        _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
+        _up = Vector3.Normalize(Vector3.Cross(_right, Front));
+    }
+
+    public void Turn(Vector2 position)
+    {
+        if (_firstMove)
         {
-            get => MathHelper.RadiansToDegrees(_fov);
-            set
-            {
-                var angle = MathHelper.Clamp(value, 1f, 90f);
-                _fov = MathHelper.DegreesToRadians(angle);
-            }
+            _lastPos = position;
+            _firstMove = false;
         }
-
-        public Matrix4 GetViewMatrix()
+        else
         {
-            Matrix4 v = Matrix4.LookAt(_position, _position + Front, _up);
-            Vector4 ic = new Vector4(v.Column0.Xyz, 0);
-            Vector4 jc = new Vector4(v.Column1.Xyz, 0);
-            Vector4 kc = new Vector4(v.Column2.Xyz, 0);
+            var deltaX = position.X - _lastPos.X;
+            var deltaY = position.Y - _lastPos.Y;
+            _lastPos = position;
 
-            Vector4 geomEye = PortEucToCurved(_position);
-
-            Matrix4 eyeTranslate = TranslateMatrix(geomEye);
-            Vector4 icp = ic * eyeTranslate;
-            Vector4 jcp = jc * eyeTranslate;
-            Vector4 kcp = kc * eyeTranslate;
-
-            if (MathHelper.Abs(Curve) < Constants.Eps)
-            {
-                return v;
-            }
-
-            Matrix4 nonEuclidView = new Matrix4(
-                icp.X, jcp.X, kcp.X, Curve * geomEye.X,
-                icp.Y, jcp.Y, kcp.Y, Curve * geomEye.Y,
-                icp.Z, jcp.Z, kcp.Z, Curve * geomEye.Z,
-                Curve * icp.W, Curve * jcp.W, Curve * kcp.W, geomEye.W);
-
-            return nonEuclidView;
+            Yaw += deltaX * Sensitivity;
+            Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
         }
+    }
 
-        public Matrix4 GetProjectionMatrix()
+    protected override void SetCommand(string[] args)
+    {
+        switch (args[0])
         {
-            Matrix4 p = Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, _near, _far);
-            float sFovX = p.Column0.X;
-            float sFovY = p.Column1.Y;
-            float fp = _near; // scale front clipping plane according to the global scale factor of the scene
-
-            if (Curve <= Constants.Eps)
-            {
-                return p;
-            }
-            Matrix4 nonEuclidProj = new Matrix4(
-                sFovX, 0, 0, 0,
-                0, sFovY, 0, 0,
-                0, 0, 0, -1,
-                0, 0, -fp, 0
-                );
-
-            return nonEuclidProj;
+            case "fov":
+                Fov = int.Parse(args[1]);
+                break;
+            case "curve":
+                if (args[1] == "h")
+                    Curve = -1f;
+                else if (args[1] == "s")
+                    Curve = 1f;
+                else if (args[1] == "e")
+                    Curve = 0f;
+                else
+                    Curve = float.Parse(args[1]);
+                break;
+            case "speed":
+                _cameraSpeed = float.Parse(args[1]);
+                break;
+            case "position":
+                if (args.Length != 4)
+                    return;
+                float x = float.Parse(args[1]);
+                float y = float.Parse(args[2]);
+                float z = float.Parse(args[3]);
+                ReferencePointPosition = new Vector3(x, y, z);
+                break;
+            default:
+                CommandNotFound();
+                break;
         }
+    }
 
-        public Matrix4 TranslateMatrix(Vector4 to)
+    protected override void GetCommand(string[] args)
+    {
+        switch (args[0])
         {
-            Matrix4 T;
-            if (MathHelper.Abs(Curve) < Constants.Eps)
-            {
-                T = new Matrix4(
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                to.X, to.Y, to.Z, 1);
-            }
-            else
-            {
-                float denom = 1 + to.W;
-                T = new Matrix4(
-                    1 - Curve * to.X * to.X / denom, -Curve * to.X * to.Y / denom, -Curve * to.X * to.Z / denom, -Curve * to.X,
-                    -Curve * to.Y * to.X / denom, 1 - Curve * to.Y * to.Y / denom, -Curve * to.Y * to.Z / denom, -Curve * to.Y,
-                    -Curve * to.Z * to.X / denom, -Curve * to.Z * to.Y / denom, 1 - Curve * to.Z * to.Z / denom, -Curve * to.Z,
-                    to.X, to.Y, to.Z, to.W);
-            }
-
-            return T;
+            case "fov":
+                Console.WriteLine(Fov);
+                break;
+            case "position":
+                Console.WriteLine(ReferencePointPosition);
+                break;
+            default:
+                CommandNotFound();
+                break;
         }
+    }
 
-        public Vector4 PortEucToCurved(Vector3 eucPoint)
-        {
-            return PortEucToCurved(new Vector4(eucPoint, 1));
-        }
+    private void UpdatePosition(Vector3 direction, float time)
+    {
+        ReferencePointPosition += direction * _cameraSpeed * time;
+    }
 
-        private Vector4 PortEucToCurved(Vector4 eucPoint)
-        {
-            Vector3 p = eucPoint.Xyz;
-            float dist = p.Length;
-            if (dist < 0.0001f) return eucPoint;
-            if (Curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
-            if (Curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
-            return eucPoint;
-        }
+    public void RegisterCallbacks()
+    {
+        Context context = Context.Instance;
+        context.RegisterKeys(new List<Keys>() {
+            Keys.W, Keys.S, Keys.D, Keys.A, Keys.Space, Keys.LeftShift,
+            Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
+        });
 
-        private void UpdateVectors()
-        {
-            Front = new Vector3(MathF.Cos(_pitch) * MathF.Cos(_yaw), MathF.Sin(_pitch), MathF.Cos(_pitch) * MathF.Sin(_yaw));
+        context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.S, (e) => UpdatePosition(-Front, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.A, (e) => UpdatePosition(-_right, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.D, (e) => UpdatePosition(_right, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.Space, (e) => UpdatePosition(_up, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-_up, (float)e.Time));
 
-            Front = Vector3.Normalize(Front);
+        context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
+        context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);
+        context.RegisterKeyDownCallback(Keys.D0, () => Curve = -1f);
+        context.RegisterKeyHeldCallback(Keys.Down, (e) => Curve -= 1f * (float)e.Time);
+        context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
 
-            _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
-            _up = Vector3.Normalize(Vector3.Cross(_right, Front));
-        }
-
-        public void Move(KeyboardState input, float time)
-        {
-            float cameraSpeed = _cameraSpeed;
-
-            Vector3 move = Vector3.Zero;
-
-            if (input.IsKeyDown(Keys.W))
-            {
-                move += Front * cameraSpeed * time;
-            }
-            if (input.IsKeyDown(Keys.S))
-            {
-                move -= Front * cameraSpeed * time;
-            }
-            if (input.IsKeyDown(Keys.A))
-            {
-                move -= _right * cameraSpeed * time;
-            }
-            if (input.IsKeyDown(Keys.D))
-            {
-                move += _right * cameraSpeed * time;
-            }
-            if (input.IsKeyDown(Keys.Space))
-            {
-                move += _up * cameraSpeed * time;
-            }
-            if (input.IsKeyDown(Keys.LeftShift))
-            {
-                move -= _up * cameraSpeed * time;
-            }
-
-            ReferencePointPosition += move;
-        }
-
-        public void Turn(Vector2 position)
-        {
-            if (_firstMove)
-            {
-                _lastPos = position;
-                _firstMove = false;
-            }
-            else
-            {
-                var deltaX = position.X - _lastPos.X;
-                var deltaY = position.Y - _lastPos.Y;
-                _lastPos = position;
-
-                Yaw += deltaX * Sensitivity;
-                Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
-            }
-        }
-
-        protected override void SetCommand(string[] args)
-        {
-            switch (args[0])
-            {
-                case "fov":
-                    Fov = int.Parse(args[1]);
-                    break;
-                case "curve":
-                    if (args[1] == "h")
-                        Curve = -1f;
-                    else if (args[1] == "s")
-                        Curve = 1f;
-                    else if (args[1] == "e")
-                        Curve = 0f;
-                    else
-                        Curve = float.Parse(args[1]);
-                    break;
-                case "speed":
-                    _cameraSpeed = float.Parse(args[1]);
-                    break;
-                case "position":
-                    if (args.Length != 4)
-                        return;
-                    float x = float.Parse(args[1]);
-                    float y = float.Parse(args[2]);
-                    float z = float.Parse(args[3]);
-                    ReferencePointPosition = new Vector3(x, y, z);
-                    break;
-                default:
-                    CommandNotFound();
-                    break;
-            }
-        }
-
-        protected override void GetCommand(string[] args)
-        {
-            switch (args[0])
-            {
-                case "fov":
-                    Console.WriteLine(Fov);
-                    break;
-                case "position":
-                    Console.WriteLine(ReferencePointPosition);
-                    break;
-                default:
-                    CommandNotFound();
-                    break;
-            }
-        }
+        context.RegisterMouseMoveCallback((e) => Turn(e.Position));
     }
 }
