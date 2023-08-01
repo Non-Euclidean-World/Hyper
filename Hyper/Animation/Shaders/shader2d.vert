@@ -32,6 +32,9 @@ void main(void){
 		totalNormal += worldNormal * in_weights[i];
 	}
 	
+	if (totalLocalPos.w == 0) {
+		totalLocalPos = vec4(in_position, 1.0);
+	}
 	gl_Position = totalLocalPos * model * view * projection;
 	pass_normal = totalNormal.xyz;
 	pass_textureCoords = in_textureCoords;

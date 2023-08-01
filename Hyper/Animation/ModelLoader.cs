@@ -11,24 +11,28 @@ public static class ModelLoader
         return importer.ImportFile(path);
     }
 
-    public static int GetVao(Assimp.Scene model)
+    public static int[] GetVao(Assimp.Scene model)
     {
-        int vao = GL.GenVertexArray();
-        GL.BindVertexArray(vao);
+        var vaos = new List<int>();
 
         foreach (var mesh in model.Meshes)
         {
+            int vao = GL.GenVertexArray();
+            GL.BindVertexArray(vao);
+
             GetPositions(mesh);
             GetNormals(mesh);
             GetTextureCoords(mesh);
             GetBones(mesh);
             GetFaces(mesh);
+        
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(0);
+        
+            vaos.Add(vao);
         }
-        
-        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-        GL.BindVertexArray(0);
-        
-        return vao;
+
+        return vaos.ToArray();
     }
 
     private static void GetPositions(Mesh mesh)

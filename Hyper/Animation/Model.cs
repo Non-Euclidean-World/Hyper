@@ -7,16 +7,19 @@ namespace Hyper.Animation;
 
 internal class Model
 {
-    private readonly int _vao;
+    private readonly int[] _vaos;
     private readonly Texture _texture;
     private readonly Assimp.Scene _model;
+    private readonly Animator _animator;
     
     public Model()
     {
         var path = "Animation/Resources/model.dae";
         _model = ModelLoader.GetModel(path);
-        _vao = ModelLoader.GetVao(_model);
+        _vaos = ModelLoader.GetVao(_model);
         _texture = Texture.LoadFromFile("Animation/Resources/diffuse.png");
+
+        _animator = new Animator();
     }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition)
@@ -26,20 +29,26 @@ internal class Model
         var modelLs = Matrix4.CreateTranslation((new Vector3(0, 20, 0) - cameraPosition) * scale);
         var scaleLs = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleLs * modelLs);
+
+        _animator.Animate(_model);
         
-        var boneTransforms = GetBoneTransforms();
-        for (int i = 0; i < _model.Meshes[0].BoneCount; i++)
+        for (int i = 0; i < _model.Meshes.Count; i++)
         {
-            shader.SetMatrix4($"jointTransforms[{i}]", boneTransforms[i]);
-        }
+            var boneTransforms = _animator.GetBones(_model).Select(bone => AssimpToOpenTk(bone)).ToArray();
+            // var boneTransforms = GetBoneTransforms(i);
+            for (int j = 0; j < _model.Meshes[i].BoneCount; j++)
+            {
+                shader.SetMatrix4($"jointTransforms[{j}]", boneTransforms[j]);
+            }
         
-        GL.BindVertexArray(_vao);
-        GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[0].FaceCount * 3,
-            DrawElementsType.UnsignedInt, 0);
+            GL.BindVertexArray(_vaos[i]);
+            GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[i].FaceCount * 3,
+                DrawElementsType.UnsignedInt, 0);
+        }
     }
     
-    private Matrix4[] GetBoneTransforms() => 
-        _model.Meshes[0].Bones
+    private Matrix4[] GetBoneTransforms(int i) => 
+        _model.Meshes[i].Bones
         .Select(bone => AssimpToOpenTk(bone.OffsetMatrix))
         .ToArray();
     
