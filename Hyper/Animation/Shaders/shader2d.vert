@@ -26,7 +26,9 @@ void main(void){
 		// Might want to add -1 value in jointTransforms if it is connected to fewer than 3 bones.
 		mat4 jointTransform = jointTransforms[in_jointIndices[i]];
 		vec4 posePosition = jointTransform * vec4(in_position, 1.0);
+//		vec4 posePosition = vec4(in_position, 1.0) * jointTransform;
 		totalLocalPos += posePosition * in_weights[i];
+//		totalLocalPos += in_weights[i] * posePosition;
 		
 		vec4 worldNormal = jointTransform * vec4(in_normal, 0.0);
 		totalNormal += worldNormal * in_weights[i];
@@ -36,6 +38,7 @@ void main(void){
 		totalLocalPos = vec4(in_position, 1.0);
 	}
 	gl_Position = totalLocalPos * model * view * projection;
+//	gl_Position =  projection * view * model * totalLocalPos;
 	pass_normal = totalNormal.xyz;
 	pass_textureCoords = in_textureCoords;
 

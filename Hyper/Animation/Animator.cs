@@ -8,7 +8,7 @@ public class Animator
 {
     private int _animationIndex;
     public bool IsAnimationRunning { get; set; } = true;
-    private Stopwatch _stopwatch;
+    private readonly Stopwatch _stopwatch;
 
     public Animator()
     {
@@ -16,21 +16,25 @@ public class Animator
         _stopwatch.Start();
     }
     
-    public Matrix4x4[] GetBones(Assimp.Scene model)
+    public Matrix4x4[] GetBones(Assimp.Scene model, int meshIndex)
     {
         var dict = new Dictionary<string, Matrix4x4>();
-        GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
+        // GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
+        GetBones2(model.RootNode.Children[1], Matrix4x4.Identity, ref dict); // with this one it kinda works
         
-        return model.Meshes[0].Bones.Select(bone =>
-            dict[bone.Name]).ToArray();
         
-        return model.Meshes[0].Bones.Select(bone =>
-            model.RootNode.FindNode(bone.Name).Transform).ToArray();
+        // return model.Meshes[meshIndex].Bones.Select(bone =>
+            // dict[bone.Name]).ToArray();
+        
+        return model.Meshes[meshIndex].Bones.Select(bone =>
+            bone.OffsetMatrix * dict[bone.Name]).ToArray();
     }
 
     private void GetBones2(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
     {
         var transform = node.Transform * parentTransform;
+        // var transform = parentTransform * node.Transform;
+        
         bones.Add(node.Name, transform);
         
         foreach (var child in node.Children)
@@ -58,7 +62,7 @@ public class Animator
     {
         var seconds = _stopwatch.ElapsedMilliseconds / 1000.0;
         var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond;
-        return ticks / model.Animations[_animationIndex].DurationInTicks;
+        return ticks % model.Animations[_animationIndex].DurationInTicks;
     }
     
     private void ApplyNodeTransform(Node node, Matrix4x4 transform)

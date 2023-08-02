@@ -29,12 +29,12 @@ internal class Model
         var modelLs = Matrix4.CreateTranslation((new Vector3(0, 20, 0) - cameraPosition) * scale);
         var scaleLs = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleLs * modelLs);
-
+        
         _animator.Animate(_model);
         
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
-            var boneTransforms = _animator.GetBones(_model).Select(bone => AssimpToOpenTk(bone)).ToArray();
+            var boneTransforms = _animator.GetBones(_model, i).Select(bone => AssimpToOpenTk(bone)).ToArray();
             // var boneTransforms = GetBoneTransforms(i);
             for (int j = 0; j < _model.Meshes[i].BoneCount; j++)
             {
