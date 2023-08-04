@@ -20,11 +20,6 @@ public class Animator
     {
         var dict = new Dictionary<string, Matrix4x4>();
         GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
-        // GetBones2(model.RootNode.Children[1], Matrix4x4.Identity, ref dict); // with this one it kinda works
-        
-        
-        // return model.Meshes[meshIndex].Bones.Select(bone =>
-            // dict[bone.Name]).ToArray();
         
         return model.Meshes[meshIndex].Bones.Select(bone =>
             bone.OffsetMatrix * dict[bone.Name]).ToArray();
@@ -33,8 +28,6 @@ public class Animator
     private void GetBones2(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
     {
         var transform = node.Transform * parentTransform;
-        // var transform = parentTransform * node.Transform;
-        
         bones.Add(node.Name, transform);
         
         foreach (var child in node.Children)
@@ -52,7 +45,6 @@ public class Animator
         {
             var nodeTransform = CalculateNodeTransform(channel, (float)time);
             var node = model.RootNode.FindNode(channel.NodeName);
-            // ApplyNodeTransform(node, nodeTransform);
             node.Transform = nodeTransform;
         }
     }
@@ -62,24 +54,6 @@ public class Animator
         var seconds = _stopwatch.ElapsedMilliseconds / 1000.0;
         var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond;
         return ticks % model.Animations[_animationIndex].DurationInTicks;
-    }
-    
-    private void ApplyNodeTransform(Node node, Matrix4x4 transform)
-    {
-        // Node node = nodes[nodeName];
-        // node.Transform = transform;
-        //
-        // // If the node has a parent, multiply the transformation by the parent's transformation
-        // if (node.Parent != null)
-        // {
-        //     node.Transform *= node.Parent.Transform;
-        // }
-        //
-        // // Recursively apply the transformation to child nodes
-        // foreach (var child in node.Children)
-        // {
-        //     ApplyNodeTransform(nodes, child.Name, transform);
-        // }
     }
     
     private Matrix4x4 CalculateNodeTransform(NodeAnimationChannel channel, float time)

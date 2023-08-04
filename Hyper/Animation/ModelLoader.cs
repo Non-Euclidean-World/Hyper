@@ -77,19 +77,15 @@ public static class ModelLoader
     {
         const int maxBones = 3;
         
-        // Initialize arrays of bones and weights for each vertex in the mesh
         int[,] vertexBones = new int[mesh.VertexCount, maxBones];
         float[,] vertexWeights = new float[mesh.VertexCount, maxBones];
 
-        // Go through each bone in the mesh
         for (int boneIndex = 0; boneIndex < mesh.BoneCount; boneIndex++)
         {
             var bone = mesh.Bones[boneIndex];
 
-            // Go through each vertex weight in the bone
             foreach (var weight in bone.VertexWeights)
             {
-                // Find the next available slot for this vertex
                 for (int slot = 0; slot < maxBones; slot++)
                 {
                     if (vertexBones[weight.VertexID, slot] == 0 && vertexWeights[weight.VertexID, slot] == 0f)
@@ -108,7 +104,6 @@ public static class ModelLoader
             for (int j = 0; j < maxBones; j++)
             {
                 boneIndices[i * maxBones + j] = vertexBones[i, j];
-                // boneIndices[i * maxBones + j] = j;
             }
         }
 
@@ -126,7 +121,6 @@ public static class ModelLoader
         GL.BufferData(BufferTarget.ArrayBuffer, boneIndices.Length * sizeof(int), boneIndices.ToArray(), BufferUsageHint.StaticDraw);
 
         GL.VertexAttribIPointer(3, maxBones, VertexAttribIntegerType.Int, 0, 0);
-        // GL.VertexAttribPointer(3, maxBones, VertexAttribPointerType.Int, false, 0, 0);
         GL.EnableVertexAttribArray(3);
         
         int vboBoneWeights = GL.GenBuffer();

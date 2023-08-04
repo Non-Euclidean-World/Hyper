@@ -35,17 +35,8 @@ internal class Model
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
             var boneTransforms = _animator.GetBones(_model, i).Select(bone => AssimpToOpenTk(bone)).ToArray();
-            // boneTransforms = Enumerable.Repeat(boneTransforms[0], 16).ToArray(); // TODO remove
-            // var boneTransforms = GetBoneTransforms(i);
-
-            // for (int j = 0; j < _model.Meshes[i].BoneCount; j++)
-            // {
-            //     shader.SetMatrix4($"jointTransforms[{j}]", boneTransforms[j]);
-            // }
             shader.SetMatrix4Array("jointTransforms", boneTransforms);
             
-            // shader.GetUniforms();
-        
             GL.BindVertexArray(_vaos[i]);
             GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[i].FaceCount * 3,
                 DrawElementsType.UnsignedInt, 0);

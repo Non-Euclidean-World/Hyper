@@ -9,8 +9,9 @@ layout(location = 2) in vec2 in_textureCoords;
 layout(location = 3) in ivec3 in_jointIndices;
 layout(location = 4) in vec3 in_weights;
 
-out vec2 pass_textureCoords;
-out vec3 pass_normal;
+out vec4 FragPos;
+out vec2 Texture;
+out vec4 Normal;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -18,7 +19,6 @@ uniform mat4 model;
 uniform mat4 jointTransforms[MAX_JOINTS];
 
 void main(void){
-	
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);
 	
@@ -32,7 +32,7 @@ void main(void){
 	}
 	
 	gl_Position = totalLocalPos * model * view * projection;
-	pass_normal = totalNormal.xyz;
-	pass_textureCoords = in_textureCoords;
-
+	FragPos = totalLocalPos * model;
+	Normal = totalNormal * model;
+	Texture = in_textureCoords;
 }

@@ -104,12 +104,6 @@ internal class Scene : IInputSubscriber
         _objectShader.SetInt("numLights", LightSources.Count);
         _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
 
-        // for (int i = 0; i < LightSources.Count; i++)
-        // {
-        //     _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
-        //     _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale, Camera.Curve));
-        // }
-        
         _objectShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
         _objectShader.SetVector4Array("lightPos", LightSources.Select(x =>
             GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
@@ -129,16 +123,22 @@ internal class Scene : IInputSubscriber
         _modelShader.Use();
         _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
         _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+        
+        _modelShader.SetInt("numLights", LightSources.Count);
+        _modelShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
+        _modelShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
+        _modelShader.SetVector4Array("lightPos", LightSources.Select(x =>
+            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
     }
 
     private static List<Chunk> GetChunks(ChunkFactory generator)
     {
         var chunks = new List<Chunk>
         {
-            // generator.GenerateChunk(new Vector3i(0, 0, 0)),
-            // generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
-            // generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
-            // generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
+            generator.GenerateChunk(new Vector3i(0, 0, 0)),
+            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
+            generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
+            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
         };
 
         return chunks;
@@ -194,6 +194,16 @@ internal class Scene : IInputSubscriber
         };
         return new Shader(shaderParams);
     }
+    
+    private static Shader GetModelShader()
+    {
+        var shader = new[]
+        {
+            ("Animation/Shaders/shader2d.vert", ShaderType.VertexShader),
+            ("Animation/Shaders/shader2d.frag", ShaderType.FragmentShader)
+        };
+        return new Shader(shader);
+    }
 
     public void RegisterCallbacks()
     {
@@ -227,15 +237,5 @@ internal class Scene : IInputSubscriber
             var projectile = new Projectile(CubeMesh.Vertices, Camera.ReferencePointPosition, Camera.Front, 100f, 5f);
             Projectiles.Add(projectile);
         });
-    }
-
-    private static Shader GetModelShader()
-    {
-        var shader = new[]
-        {
-                ("Animation/Shaders/shader2d.vert", ShaderType.VertexShader),
-                ("Animation/Shaders/shader2d.frag", ShaderType.FragmentShader)
-            };
-        return new Shader(shader);
     }
 }

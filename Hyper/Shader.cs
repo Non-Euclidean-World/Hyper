@@ -222,37 +222,4 @@ internal class Shader
             throw new Exception($"Error occurred whilst linking Program({program}).\n\n{infoLog}");
         }
     }
-
-    public void GetUniforms()
-    {
-        int shaderProgramID = _handle; // Your shader program ID
-
-// Get the number of active uniforms
-        int numberOfActiveUniforms;
-        GL.GetProgram(shaderProgramID, GetProgramParameterName.ActiveUniforms, out numberOfActiveUniforms);
-
-// Loop through and retrieve information for each uniform
-        for (int i = 0; i < numberOfActiveUniforms; i++)
-        {
-            int size;
-            ActiveUniformType type;
-            
-            GL.GetActiveUniform(shaderProgramID, 
-                i, 
-                100, 
-                out size, 
-                out int length, 
-                out type, 
-                out string name);
-
-            string uniformName = name.ToString();
-
-            // Print or store the uniform information
-            Console.WriteLine($"Uniform index: {i}, Name: {uniformName}, Type: {type}, Size: {size}, Length: {length}");
-            
-            float[] matrixValues = new float[16]; // For a 4x4 matrix
-            GL.GetUniform(_handle, i, matrixValues);
-            var test = 1;
-        }
-    }
 }
