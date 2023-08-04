@@ -19,8 +19,8 @@ public class Animator
     public Matrix4x4[] GetBones(Assimp.Scene model, int meshIndex)
     {
         var dict = new Dictionary<string, Matrix4x4>();
-        // GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
-        GetBones2(model.RootNode.Children[1], Matrix4x4.Identity, ref dict); // with this one it kinda works
+        GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
+        // GetBones2(model.RootNode.Children[1], Matrix4x4.Identity, ref dict); // with this one it kinda works
         
         
         // return model.Meshes[meshIndex].Bones.Select(bone =>
@@ -42,7 +42,6 @@ public class Animator
             GetBones2(child, transform, ref bones);
         }
     }
-
 
     public void Animate(Assimp.Scene model)
     {

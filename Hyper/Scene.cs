@@ -104,11 +104,15 @@ internal class Scene : IInputSubscriber
         _objectShader.SetInt("numLights", LightSources.Count);
         _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
 
-        for (int i = 0; i < LightSources.Count; i++)
-        {
-            _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
-            _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale, Camera.Curve));
-        }
+        // for (int i = 0; i < LightSources.Count; i++)
+        // {
+        //     _objectShader.SetVector3($"lightColor[{i}]", LightSources[i].Color);
+        //     _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((LightSources[i].Position - Camera.ReferencePointPosition) * Scale, Camera.Curve));
+        // }
+        
+        _objectShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
+        _objectShader.SetVector4Array("lightPos", LightSources.Select(x =>
+            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
     }
 
     private void SetUpLightingShaderParams()
@@ -131,10 +135,10 @@ internal class Scene : IInputSubscriber
     {
         var chunks = new List<Chunk>
         {
-            generator.GenerateChunk(new Vector3i(0, 0, 0)),
-            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
-            generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
-            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
+            // generator.GenerateChunk(new Vector3i(0, 0, 0)),
+            // generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
+            // generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
+            // generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
         };
 
         return chunks;

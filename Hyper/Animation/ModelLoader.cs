@@ -108,6 +108,7 @@ public static class ModelLoader
             for (int j = 0; j < maxBones; j++)
             {
                 boneIndices[i * maxBones + j] = vertexBones[i, j];
+                // boneIndices[i * maxBones + j] = j;
             }
         }
 
