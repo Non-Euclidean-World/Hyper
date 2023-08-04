@@ -30,12 +30,12 @@ internal class Model
         var scaleLs = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleLs * modelLs);
         
-        // _animator.Animate(_model);
+        _animator.Animate(_model);
         
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
             var boneTransforms = _animator.GetBones(_model, i).Select(bone => AssimpToOpenTk(bone)).ToArray();
-            boneTransforms = Enumerable.Repeat(boneTransforms[0], 16).ToArray(); // TODO remove
+            // boneTransforms = Enumerable.Repeat(boneTransforms[0], 16).ToArray(); // TODO remove
             // var boneTransforms = GetBoneTransforms(i);
 
             // for (int j = 0; j < _model.Meshes[i].BoneCount; j++)

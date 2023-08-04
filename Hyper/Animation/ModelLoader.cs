@@ -125,7 +125,8 @@ public static class ModelLoader
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboBoneIndices);
         GL.BufferData(BufferTarget.ArrayBuffer, boneIndices.Length * sizeof(int), boneIndices.ToArray(), BufferUsageHint.StaticDraw);
 
-        GL.VertexAttribPointer(3, maxBones, VertexAttribPointerType.Int, false, 0, 0);
+        GL.VertexAttribIPointer(3, maxBones, VertexAttribIntegerType.Int, 0, 0);
+        // GL.VertexAttribPointer(3, maxBones, VertexAttribPointerType.Int, false, 0, 0);
         GL.EnableVertexAttribArray(3);
         
         int vboBoneWeights = GL.GenBuffer();
