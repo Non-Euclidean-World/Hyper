@@ -1,4 +1,5 @@
-﻿using Hyper.HUD;
+﻿using System.Reflection;
+using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
 using Hyper.Meshes;
@@ -6,12 +7,15 @@ using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Collections.Concurrent;
 
 namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks;
+    public readonly ConcurrentDictionary<Guid, Chunk> _existingChunks;
+
+    public readonly ChunkWorker _chunkWorker;
 
     public readonly List<LightSource> LightSources;
 
@@ -27,14 +31,13 @@ internal class Scene : IInputSubscriber
 
     private readonly Shader _lightSourceShader;
 
-    private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
     public Scene(float aspectRatio)
     {
-        _scalarFieldGenerator = new ScalarFieldGenerator(1);
-        ChunkFactory chunkFactory = new ChunkFactory(_scalarFieldGenerator);
-
-        Chunks = GetChunks(chunkFactory);
+        _existingChunks = new ConcurrentDictionary<Guid, Chunk>();
+        _chunkWorker = new ChunkWorker(_existingChunks);
+        _chunkWorker.StartProcessing();
+        
         LightSources = GetLightSources();
         Projectiles = new List<Projectile>();
         Camera = GetCamera(aspectRatio);
@@ -50,13 +53,15 @@ internal class Scene : IInputSubscriber
     {
         SetUpObjectShaderParams();
 
-        foreach (var chunk in Chunks)
+        foreach (var chunk in _existingChunks.Values)
         {
+            chunk.CreateVertexArrayObject();
             chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
         }
 
         foreach (var projectile in Projectiles)
         {
+            projectile.CreateVertexArrayObject();
             projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
         }
 
@@ -64,6 +69,7 @@ internal class Scene : IInputSubscriber
 
         foreach (var light in LightSources)
         {
+            light.CreateVertexArrayObject();
             light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
         }
 
@@ -122,8 +128,8 @@ internal class Scene : IInputSubscriber
     private List<LightSource> GetLightSources()
     {
         var lightSources = new List<LightSource> {
-            new(CubeMesh.Vertices, new Vector3(10f, 7f + _scalarFieldGenerator.AvgElevation, 10f), new Vector3(1f, 1f, 1f)),
-            new(CubeMesh.Vertices, new Vector3(4f, 7f + _scalarFieldGenerator.AvgElevation, 4f), new Vector3(0f, 1f, 0.5f)),
+            new(CubeMesh.Vertices, new Vector3(10f, 7f + 10, 10f), new Vector3(1f, 1f, 1f)),
+            new(CubeMesh.Vertices, new Vector3(4f, 7f + 10, 4f), new Vector3(0f, 1f, 0.5f)),
         };
 
         return lightSources;
@@ -133,7 +139,7 @@ internal class Scene : IInputSubscriber
     {
         var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
         {
-            ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
+            ReferencePointPosition = (5f + 10) * Vector3.UnitY
         };
 
         return camera;
@@ -171,7 +177,7 @@ internal class Scene : IInputSubscriber
         {
             var position = Camera.ReferencePointPosition;
 
-            foreach (var chunk in Chunks)
+            foreach (var chunk in _existingChunks.Values)
             {
                 if (chunk.Mine(position, (float)e.Time)) return;
             }
@@ -180,8 +186,7 @@ internal class Scene : IInputSubscriber
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
             var position = Camera.ReferencePointPosition;
-
-            foreach (var chunk in Chunks)
+            foreach (var chunk in _existingChunks.Values)
             {
                 if (chunk.Build(position, (float)e.Time)) return;
             }

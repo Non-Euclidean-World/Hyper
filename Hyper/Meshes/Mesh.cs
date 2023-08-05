@@ -7,6 +7,8 @@ namespace Hyper.Meshes;
 internal class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
+
+    public Vertex[] vertices;
     //Will also have to add rotation and scale
 
     protected int VaoId;
@@ -15,9 +17,13 @@ internal class Mesh : IDisposable
 
     protected int NumberOfVertices;
 
+    private bool createdVertexArrayObject;
+
     public Mesh(Vertex[] vertices, Vector3 position)
     {
-        CreateVertexArrayObject(vertices);
+        //CreateVertexArrayObject(vertices);
+        createdVertexArrayObject = false;
+        this.vertices = vertices;
         Position = position;
         NumberOfVertices = vertices.Length;
     }
@@ -32,8 +38,14 @@ internal class Mesh : IDisposable
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
     }
 
-    private void CreateVertexArrayObject(Vertex[] vertices)
+    public void CreateVertexArrayObject()
     {
+        if (createdVertexArrayObject)
+        {
+            return;
+        }
+        createdVertexArrayObject = true;
+        
         int vaoId = GL.GenVertexArray();
         GL.BindVertexArray(vaoId);
 

@@ -17,7 +17,6 @@ internal class ChunkFactory
         var scalarField = _scalarFieldGenerator.Generate(Chunk.Size, position);
         var meshGenerator = new MeshGenerator(scalarField);
         Vertex[] data = meshGenerator.GetMesh();
-
         return new Chunk(data, position, scalarField);
     }
 }

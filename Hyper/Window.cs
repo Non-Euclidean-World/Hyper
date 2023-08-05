@@ -51,7 +51,8 @@ internal class Window : GameWindow, IInputSubscriber
         base.OnRenderFrame(e);
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
+        
+        _scene._chunkWorker.UpdateNeededChunksBasedOnPosition(_scene.Camera.ReferencePointPosition);
         _scene.Render();
 
         SwapBuffers();
