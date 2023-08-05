@@ -89,7 +89,7 @@ internal class Scene : IInputSubscriber
         Hud.Render();
     }
 
-    public void UpdateProjectiles(float time)
+    private void UpdateProjectiles(float time)
     {
         foreach (var projectile in Projectiles)
         {

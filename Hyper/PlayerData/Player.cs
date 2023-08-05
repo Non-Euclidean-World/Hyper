@@ -1,5 +1,4 @@
-﻿using Assimp.Configs;
-using Hyper.Animation.Characters.Cowboy;
+﻿using Hyper.Animation.Characters.Cowboy;
 using Hyper.UserInput;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -10,7 +9,7 @@ internal class Player : IInputSubscriber
 {
     public Camera Camera { get; init; }
     
-    public Cowboy Character { get; init; }
+    private Cowboy Character { get; init; }
     
     private bool _isFirstPerson;
     
@@ -23,24 +22,21 @@ internal class Player : IInputSubscriber
         RegisterCallbacks();
     }
 
+    private void Update()
+    {
+        Character.Position = Camera.ReferencePointPosition + GetThirdPersonOffset();
+        var front = Camera.Front;
+        front.Y = 0;
+        float angle = (float)Math.Atan2(front.X, front.Z);
+        Character.Rotation = Matrix4.CreateRotationY(angle);
+    }
+    
     public void Render(Shader shader, float scale, Vector3 cameraPosition)
     {
-        // move this part to different method
-        Character.Position = Camera.ReferencePointPosition + GetThirdPersonOffset();
-        var front = -Camera.Front;
-        front.Y = 0;
-        Vector3 right = Vector3.Normalize(Vector3.Cross(front, Camera.Up));
-        Character.Rotation = new Matrix4(
-            new Vector4(right, 0),
-            new Vector4(0, 1, 0, 0),
-            new Vector4(-front, 0),
-            new Vector4(0, 0, 0, 1)
-        );
-        
         if (!_isFirstPerson) Character.Render(shader, scale, cameraPosition);
     }
 
-    private Vector3 GetThirdPersonOffset() => Camera.Up * -8f + Camera.Front * 8f;
+    private Vector3 GetThirdPersonOffset() => Camera.Up * -8f + Camera.Front * 12f;
     
     private void SetCameraPerson()
     {
@@ -83,5 +79,7 @@ internal class Player : IInputSubscriber
         context.RegisterKeyUpCallback(Keys.S, () => UpdateMovementAnimation(context));
         context.RegisterKeyUpCallback(Keys.A, () => UpdateMovementAnimation(context));
         context.RegisterKeyUpCallback(Keys.D, () => UpdateMovementAnimation(context));
+        
+        context.RegisterUpdateFrameCallback((_) => Update());
     }
 }
