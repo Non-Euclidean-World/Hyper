@@ -13,10 +13,40 @@ out vec4 FragPos;
 out vec2 Texture;
 out vec4 Normal;
 
+uniform float curv;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform mat4 jointTransforms[MAX_JOINTS];
+
+vec4 port(vec4 ePoint) {
+	vec3 p = ePoint.xyz;
+	float d = length(p);
+	if(d < 0.0001 || curv == 0) return ePoint;
+	if(curv > 0) return vec4(p / d * sin(d), cos(d));
+	return vec4(p / d * sinh(d), cosh(d));
+}
+
+mat4 TranslateMatrix(vec4 to)
+{
+	if (abs(curv) < 0.001)
+	{
+		return transpose(mat4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		to.x, to.y, to.z, 1));
+	}
+	else
+	{
+		float denom = 1 + to.w;
+		return transpose(mat4(
+		1 - curv * to.x * to.x / denom, -curv * to.x * to.y / denom, -curv * to.x * to.z / denom, -curv * to.x,
+		-curv * to.y * to.x / denom, 1 - curv * to.y * to.y / denom, -curv * to.y * to.z / denom, -curv * to.y,
+		-curv * to.z * to.x / denom, -curv * to.z * to.y / denom, 1 - curv * to.z * to.z / denom, -curv * to.z,
+		to.x, to.y, to.z, to.w));
+	}
+}
 
 void main(void){
 	vec4 totalLocalPos = vec4(0.0);
@@ -30,9 +60,9 @@ void main(void){
 		vec4 worldNormal = jointTransform * vec4(in_normal, 0.0);
 		totalNormal += worldNormal * in_weights[i];
 	}
-	
-	gl_Position = totalLocalPos * model * view * projection;
-	FragPos = totalLocalPos * model;
-	Normal = totalNormal * model;
+
+	gl_Position = port(totalLocalPos * model) * view * projection;
+	FragPos = port(totalLocalPos * model);
+	Normal = totalNormal * TranslateMatrix(port(totalLocalPos * model));
 	Texture = in_textureCoords;
 }

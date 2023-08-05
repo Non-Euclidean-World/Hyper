@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Assimp;
+using OpenTK.Mathematics;
 using Quaternion = Assimp.Quaternion;
 
 namespace Hyper.Animation;
@@ -20,21 +21,24 @@ public class Animator
     
     public Matrix4x4[] GetBones(Assimp.Scene model, int meshIndex)
     {
+        if (!_isAnimationRunning)
+            return Enumerable.Repeat(model.RootNode.Transform, model.Meshes[meshIndex].BoneCount).ToArray();
+        
         var dict = new Dictionary<string, Matrix4x4>();
-        GetBones2(model.RootNode, Matrix4x4.Identity, ref dict);
+        GetBoneDict(model.RootNode, Matrix4x4.Identity, ref dict);
         
         return model.Meshes[meshIndex].Bones.Select(bone =>
             bone.OffsetMatrix * dict[bone.Name]).ToArray();
     }
 
-    private void GetBones2(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
+    private void GetBoneDict(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
     {
         var transform = node.Transform * parentTransform;
         bones.Add(node.Name, transform);
         
         foreach (var child in node.Children)
         {
-            GetBones2(child, transform, ref bones);
+            GetBoneDict(child, transform, ref bones);
         }
     }
 

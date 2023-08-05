@@ -81,7 +81,7 @@ internal class Scene : IInputSubscriber
             
         foreach (var model in Models)
         {
-            // model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0));
+            model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0), Matrix4.Identity);
         }
         
         Player.Render(_modelShader, Scale, Camera.ReferencePointPosition);
@@ -126,6 +126,7 @@ internal class Scene : IInputSubscriber
     private void SetUpModelShaderParams()
     {
         _modelShader.Use();
+        _modelShader.SetFloat("curv", Camera.Curve);
         _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
         _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
         
@@ -163,7 +164,7 @@ internal class Scene : IInputSubscriber
     {
         var models = new List<Model>
             {
-                // new("Animation/Characters/Cowboy/Resources/model.dae", "Animation/Characters/Cowboy/Resources/texture.png")
+                new("Animation/Characters/Cowboy/Resources/model.dae", "Animation/Characters/Cowboy/Resources/texture.png")
             };
 
         return models;

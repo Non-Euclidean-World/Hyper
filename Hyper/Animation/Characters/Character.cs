@@ -8,9 +8,9 @@ internal abstract class Character
     
     public Matrix4 Rotation { get; set; }
     
-    public float Scale { get; set; } = 1f;
+    public float Scale { get; set; }
     
-    protected Model Model;
+    protected Model Model = null!;
     
     protected Character(Vector3 position, float scale = 1f)
     {
