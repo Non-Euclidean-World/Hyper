@@ -55,18 +55,6 @@
     <None Update="HUD\Shaders\shader2d.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Animation\Resources\duck.dae">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Animation\Resources\duckCM.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Animation\Resources\model.dae">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Animation\Resources\diffuse.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Animation\Shaders\shader2d.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

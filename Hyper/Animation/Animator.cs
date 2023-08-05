@@ -6,8 +6,10 @@ namespace Hyper.Animation;
 
 public class Animator
 {
-    private int _animationIndex;
-    public bool IsAnimationRunning { get; set; } = true;
+    private int _animationIndex = 0;
+    
+    private bool _isAnimationRunning = false;
+    
     private readonly Stopwatch _stopwatch;
 
     public Animator()
@@ -38,6 +40,8 @@ public class Animator
 
     public void Animate(Assimp.Scene model)
     {
+        if (!_isAnimationRunning) return;
+        
         var time = GetCurrentTime(model);
         var animation = model.Animations[_animationIndex];
 
@@ -47,6 +51,19 @@ public class Animator
             var node = model.RootNode.FindNode(channel.NodeName);
             node.Transform = nodeTransform;
         }
+    }
+
+    public void Reset()
+    {
+        _stopwatch.Reset();
+        _isAnimationRunning = false;
+    }
+
+    public void Restart(int index)
+    {
+        _animationIndex = index;
+        _isAnimationRunning = true;
+        _stopwatch.Restart();
     }
 
     private double GetCurrentTime(Assimp.Scene model)

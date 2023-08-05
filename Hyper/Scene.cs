@@ -78,7 +78,7 @@ internal class Scene : IInputSubscriber
             
         foreach (var model in Models)
         {
-            model.Render(_modelShader, Scale, Camera.ReferencePointPosition);
+            model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0));
         }
 
         Hud.Render();
@@ -158,7 +158,7 @@ internal class Scene : IInputSubscriber
     {
         var models = new List<Model>
             {
-                new()
+                new("Animation/Resources/model.dae", "Animation/Resources/diffuse.png")
             };
 
         return models;
