@@ -11,6 +11,12 @@
     <Compile Remove="HUD\Textures\**" />
     <EmbeddedResource Remove="HUD\Textures\**" />
     <None Remove="HUD\Textures\**" />
+    <None Update="Animation\Characters\Cowboy\Resources\model.dae">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Animation\Characters\Cowboy\Resources\texture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -55,10 +61,10 @@
     <None Update="HUD\Shaders\shader2d.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Animation\Shaders\shader2d.vert">
+    <None Update="Animation\Shaders\model_shader.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Animation\Shaders\shader2d.frag">
+    <None Update="Animation\Shaders\model_shader.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

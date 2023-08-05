@@ -23,13 +23,13 @@ internal class Model
         Animator = new Animator();
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition, Vector3 modelPosition)
+    public void Render(Shader shader, float scale, Vector3 cameraPosition, Vector3 modelPosition, Matrix4 modelRotation)
     {
         _texture.Use(TextureUnit.Texture0);
         
         var modelLs = Matrix4.CreateTranslation((modelPosition - cameraPosition) * scale);
         var scaleLs = Matrix4.CreateScale(scale);
-        shader.SetMatrix4("model", scaleLs * modelLs);
+        shader.SetMatrix4("model", scaleLs * modelRotation * modelLs);
         
         Animator.Animate(_model);
         

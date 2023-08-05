@@ -3,6 +3,7 @@ using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
 using Hyper.Meshes;
+using Hyper.PlayerData;
 using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -20,7 +21,9 @@ internal class Scene : IInputSubscriber
         
     public readonly List<Model> Models;
 
-    public readonly Camera Camera;
+    public readonly Player Player;
+
+    public Camera Camera => Player.Camera;
 
     public readonly HudManager Hud;
 
@@ -43,7 +46,7 @@ internal class Scene : IInputSubscriber
         LightSources = GetLightSources();
         Projectiles = new List<Projectile>();
         Models = GetModels();
-        Camera = GetCamera(aspectRatio);
+        Player = new Player(GetCamera(aspectRatio));
         Hud = new HudManager(aspectRatio);
 
         _objectShader = GetObjectShader();
@@ -78,8 +81,10 @@ internal class Scene : IInputSubscriber
             
         foreach (var model in Models)
         {
-            model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0));
+            // model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0));
         }
+        
+        Player.Render(_modelShader, Scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }
@@ -158,7 +163,7 @@ internal class Scene : IInputSubscriber
     {
         var models = new List<Model>
             {
-                new("Animation/Resources/model.dae", "Animation/Resources/diffuse.png")
+                // new("Animation/Characters/Cowboy/Resources/model.dae", "Animation/Characters/Cowboy/Resources/texture.png")
             };
 
         return models;
@@ -199,8 +204,8 @@ internal class Scene : IInputSubscriber
     {
         var shader = new[]
         {
-            ("Animation/Shaders/shader2d.vert", ShaderType.VertexShader),
-            ("Animation/Shaders/shader2d.frag", ShaderType.FragmentShader)
+            ("Animation/Shaders/model_shader.vert", ShaderType.VertexShader),
+            ("Animation/Shaders/model_shader.frag", ShaderType.FragmentShader)
         };
         return new Shader(shader);
     }

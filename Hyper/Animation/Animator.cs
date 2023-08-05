@@ -59,6 +59,13 @@ public class Animator
         _isAnimationRunning = false;
     }
 
+    public void Play(int index)
+    {
+        if (_animationIndex == index && _isAnimationRunning) return;
+
+        Restart(index);
+    }
+
     public void Restart(int index)
     {
         _animationIndex = index;
