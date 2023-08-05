@@ -1,4 +1,6 @@
 ﻿using Hyper.Animation;
+using Hyper.Animation.Characters;
+using Hyper.Animation.Characters.Cowboy;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
@@ -19,7 +21,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Projectile> Projectiles;
         
-    public readonly List<Model> Models;
+    public readonly List<Character> Characters;
 
     public readonly Player Player;
 
@@ -33,7 +35,7 @@ internal class Scene : IInputSubscriber
 
     private readonly Shader _lightSourceShader;
 
-    private readonly Shader _modelShader;
+    private readonly Shader _characterShader;
 
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
@@ -45,13 +47,13 @@ internal class Scene : IInputSubscriber
         Chunks = GetChunks(chunkFactory);
         LightSources = GetLightSources();
         Projectiles = new List<Projectile>();
-        Models = GetModels();
+        Characters = GetCharacters();
         Player = new Player(GetCamera(aspectRatio));
         Hud = new HudManager(aspectRatio);
 
         _objectShader = GetObjectShader();
         _lightSourceShader = GetLightSourceShader();
-        _modelShader = GetModelShader();
+        _characterShader = GetModelShader();
 
         RegisterCallbacks();
     }
@@ -79,12 +81,12 @@ internal class Scene : IInputSubscriber
             
         SetUpModelShaderParams();
             
-        foreach (var model in Models)
+        foreach (var character in Characters)
         {
-            model.Render(_modelShader, Scale, Camera.ReferencePointPosition, new Vector3(0, 20, 0), Matrix4.Identity);
+            character.Render(_characterShader, Scale, Camera.ReferencePointPosition);
         }
         
-        Player.Render(_modelShader, Scale, Camera.ReferencePointPosition);
+        Player.Render(_characterShader, Scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }
@@ -125,15 +127,15 @@ internal class Scene : IInputSubscriber
 
     private void SetUpModelShaderParams()
     {
-        _modelShader.Use();
-        _modelShader.SetFloat("curv", Camera.Curve);
-        _modelShader.SetMatrix4("view", Camera.GetViewMatrix());
-        _modelShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
+        _characterShader.Use();
+        _characterShader.SetFloat("curv", Camera.Curve);
+        _characterShader.SetMatrix4("view", Camera.GetViewMatrix());
+        _characterShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
         
-        _modelShader.SetInt("numLights", LightSources.Count);
-        _modelShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
-        _modelShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
-        _modelShader.SetVector4Array("lightPos", LightSources.Select(x =>
+        _characterShader.SetInt("numLights", LightSources.Count);
+        _characterShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
+        _characterShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
+        _characterShader.SetVector4Array("lightPos", LightSources.Select(x =>
             GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
     }
 
@@ -160,11 +162,11 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private static List<Model> GetModels()
+    private static List<Character> GetCharacters()
     {
-        var models = new List<Model>
+        var models = new List<Character>
             {
-                new("Animation/Characters/Cowboy/Resources/model.dae", "Animation/Characters/Cowboy/Resources/texture.png")
+                new Cowboy(new Vector3(0, 20, 0), 1f)
             };
 
         return models;

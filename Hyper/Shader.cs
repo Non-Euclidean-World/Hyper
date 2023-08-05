@@ -36,22 +36,6 @@ internal class Shader
         for (var i = 0; i < numberOfUniforms; i++)
         {
             var key = GL.GetActiveUniform(_handle, i, out int size, out _);
-
-            // if (size > 1)
-            // {
-            //     string baseName = key.Split('[')[0];
-            //     for (int j = 0; j < size; j++)
-            //     {
-            //         var arrayKey = baseName + "[" + j + "]";
-            //         var location = GL.GetUniformLocation(_handle, arrayKey);
-            //         _uniformLocations.Add(arrayKey, location);
-            //     }
-            // }
-            // else
-            // {
-            //     var location = GL.GetUniformLocation(_handle, key);
-            //     _uniformLocations.Add(key, location);
-            // }
             
             var location = GL.GetUniformLocation(_handle, key);
             _uniformLocations.Add(key, location);
