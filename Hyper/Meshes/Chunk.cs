@@ -95,15 +95,15 @@ internal class Chunk : Mesh
     private void UpdateMesh()
     {
         var renderer = new MeshGenerator(_voxels);
-        Vertex[] vertices = renderer.GetMesh();
-        NumberOfVertices = vertices.Length;
+        Vertices = renderer.GetMesh();
+        NumberOfVertices = Vertices.Length;
 
         GL.BindVertexArray(VaoId);
         GL.DeleteBuffer(VboId);
         VboId = GL.GenBuffer();
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices, BufferUsageHint.StaticDraw);
 
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
         GL.EnableVertexAttribArray(0);

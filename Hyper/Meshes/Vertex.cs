@@ -58,4 +58,6 @@ internal struct Vertex
         G = color.Y;
         B = color.Z;
     }
+
+    public readonly Vector3 Position => new Vector3(X, Y, Z);
 }
