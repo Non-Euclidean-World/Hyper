@@ -18,7 +18,7 @@ internal class Model
     public Model(string modelPath, string texturePath)
     {
         _model = ModelLoader.GetModel(modelPath);
-        _vaos = ModelLoader.GetVao(_model);
+        _vaos = ModelLoader.GetVaos(_model);
         _texture = Texture.LoadFromFile(texturePath);
         Animator = new Animator();
     }
@@ -35,8 +35,8 @@ internal class Model
         
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
-            var boneTransforms = Animator.GetBones(_model, i).Select(AssimpToOpenTk).ToArray();
-            shader.SetMatrix4Array("jointTransforms", boneTransforms);
+            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(AssimpToOpenTk).ToArray();
+            shader.SetMatrix4Array("boneTransforms", boneTransforms);
             
             GL.BindVertexArray(_vaos[i]);
             GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[i].FaceCount * 3,

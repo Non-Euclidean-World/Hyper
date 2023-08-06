@@ -79,7 +79,7 @@ internal class Scene : IInputSubscriber
             light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
         }
             
-        SetUpModelShaderParams();
+        SetUpCharacterShaderParams();
             
         foreach (var character in Characters)
         {
@@ -125,7 +125,7 @@ internal class Scene : IInputSubscriber
         _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
     }
 
-    private void SetUpModelShaderParams()
+    private void SetUpCharacterShaderParams()
     {
         _characterShader.Use();
         _characterShader.SetFloat("curv", Camera.Curve);

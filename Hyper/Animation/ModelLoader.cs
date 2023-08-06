@@ -1,5 +1,6 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
+using Buffer = OpenTK.Graphics.OpenGL4.Buffer;
 
 namespace Hyper.Animation;
 
@@ -11,7 +12,7 @@ public static class ModelLoader
         return importer.ImportFile(path);
     }
 
-    public static int[] GetVao(Assimp.Scene model)
+    public static int[] GetVaos(Assimp.Scene model)
     {
         var vaos = new List<int>();
 
@@ -20,11 +21,11 @@ public static class ModelLoader
             int vao = GL.GenVertexArray();
             GL.BindVertexArray(vao);
 
-            GetPositions(mesh);
-            GetNormals(mesh);
-            GetTextureCoords(mesh);
-            GetBones(mesh);
-            GetFaces(mesh);
+            SetupPositions(mesh);
+            SetupNormals(mesh);
+            SetupTextureCoords(mesh);
+            SetupBones(mesh);
+            SetupFaces(mesh);
         
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
@@ -35,7 +36,7 @@ public static class ModelLoader
         return vaos.ToArray();
     }
 
-    private static void GetPositions(Mesh mesh)
+    private static void SetupPositions(Mesh mesh)
     {
         int vboPositions = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboPositions);
@@ -47,7 +48,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(0);
     }
 
-    private static void GetNormals(Mesh mesh)
+    private static void SetupNormals(Mesh mesh)
     {
         int vboNormals = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboNormals);
@@ -59,7 +60,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(1);
     }
     
-    private static void GetTextureCoords(Mesh mesh)
+    private static void SetupTextureCoords(Mesh mesh)
     {
         if (!mesh.HasTextureCoords(0)) return;
         
@@ -73,7 +74,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(2);
     }
 
-    private static void GetBones(Mesh mesh)
+    private static void SetupBones(Mesh mesh)
     {
         const int maxBones = 3;
         
@@ -131,7 +132,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(4);
     }
     
-    private static void GetFaces(Mesh mesh)
+    private static void SetupFaces(Mesh mesh)
     {
         if (!mesh.HasFaces) return;
         

@@ -19,7 +19,7 @@ public class Animator
         _stopwatch.Start();
     }
     
-    public Matrix4x4[] GetBones(Assimp.Scene model, int meshIndex)
+    public Matrix4x4[] GetBoneTransforms(Assimp.Scene model, int meshIndex)
     {
         if (!_isAnimationRunning)
             return Enumerable.Repeat(model.RootNode.Transform, model.Meshes[meshIndex].BoneCount).ToArray();
@@ -94,7 +94,7 @@ public class Animator
         return transform;
     }
 
-    private Matrix4x4 GetTranslation(NodeAnimationChannel channel, float time)
+    private static Matrix4x4 GetTranslation(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasPositionKeys) return Matrix4x4.Identity;
         
@@ -113,7 +113,7 @@ public class Animator
         return Matrix4x4.FromTranslation(position);
     }
 
-    private Matrix4x4 GetRotation(NodeAnimationChannel channel, float time)
+    private static Matrix4x4 GetRotation(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasRotationKeys) return Matrix4x4.Identity;
         
@@ -132,7 +132,7 @@ public class Animator
         return rotation.GetMatrix();
     }
 
-    private Matrix4x4 GetScale(NodeAnimationChannel channel, float time)
+    private static Matrix4x4 GetScale(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasScalingKeys) return Matrix4x4.Identity;
         
@@ -151,12 +151,12 @@ public class Animator
         return Matrix4x4.FromScaling(scale);
     }
 
-    private Vector3D Interpolate(Vector3D previousValue, Vector3D nextValue, float factor)
+    private static Vector3D Interpolate(Vector3D previousValue, Vector3D nextValue, float factor)
     {
         return Lerp(previousValue, nextValue, factor);
     }
 
-    private Quaternion Interpolate(Quaternion previousValue, Quaternion nextValue, float factor)
+    private static Quaternion Interpolate(Quaternion previousValue, Quaternion nextValue, float factor)
     {
         return Quaternion.Slerp(previousValue, nextValue, factor);
     }
