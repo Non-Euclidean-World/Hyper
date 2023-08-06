@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Text;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper;
@@ -35,22 +36,9 @@ internal class Shader
         for (var i = 0; i < numberOfUniforms; i++)
         {
             var key = GL.GetActiveUniform(_handle, i, out int size, out _);
-
-            if (size > 1)
-            {
-                string baseName = key.Split('[')[0];
-                for (int j = 0; j < size; j++)
-                {
-                    var arrayKey = baseName + "[" + j + "]";
-                    var location = GL.GetUniformLocation(_handle, arrayKey);
-                    _uniformLocations.Add(arrayKey, location);
-                }
-            }
-            else
-            {
-                var location = GL.GetUniformLocation(_handle, key);
-                _uniformLocations.Add(key, location);
-            }
+            
+            var location = GL.GetUniformLocation(_handle, key);
+            _uniformLocations.Add(key, location);
         }
     }
 
@@ -128,6 +116,61 @@ internal class Shader
     {
         GL.UseProgram(_handle);
         GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
+    }
+    
+    public void SetVector3Array(string name, Vector3[] data)
+    {
+        float[] vectorData = new float[data.Length * 3];
+        for (int i = 0; i < data.Length; i++)
+        {
+            vectorData[i * 3 + 0] = data[i].X;
+            vectorData[i * 3 + 1] = data[i].Y;
+            vectorData[i * 3 + 2] = data[i].Z;
+        }
+        GL.UseProgram(_handle);
+        GL.Uniform3(_uniformLocations[name + "[0]"], data.Length, vectorData);
+    }
+    
+    public void SetVector4Array(string name, Vector4[] data)
+    {
+        float[] vectorData = new float[data.Length * 4];
+        for (int i = 0; i < data.Length; i++)
+        {
+            vectorData[i * 4 + 0] = data[i].X;
+            vectorData[i * 4 + 1] = data[i].Y;
+            vectorData[i * 4 + 2] = data[i].Z;
+            vectorData[i * 4 + 3] = data[i].W;
+        }
+        GL.UseProgram(_handle);
+        GL.Uniform4(_uniformLocations[name + "[0]"], data.Length, vectorData);
+    }
+
+    public void SetMatrix4Array(string name, Matrix4[] data)
+    {
+        float[] matrixData = new float[data.Length * 16];
+        for (int i = 0; i < data.Length; i++)
+        {
+            var matrix = data[i];
+            matrixData[i * 16 + 0] = matrix.M11;
+            matrixData[i * 16 + 1] = matrix.M12;
+            matrixData[i * 16 + 2] = matrix.M13;
+            matrixData[i * 16 + 3] = matrix.M14;
+            matrixData[i * 16 + 4] = matrix.M21;
+            matrixData[i * 16 + 5] = matrix.M22;
+            matrixData[i * 16 + 6] = matrix.M23;
+            matrixData[i * 16 + 7] = matrix.M24;
+            matrixData[i * 16 + 8] = matrix.M31;
+            matrixData[i * 16 + 9] = matrix.M32;
+            matrixData[i * 16 + 10] = matrix.M33;
+            matrixData[i * 16 + 11] = matrix.M34;
+            matrixData[i * 16 + 12] = matrix.M41;
+            matrixData[i * 16 + 13] = matrix.M42;
+            matrixData[i * 16 + 14] = matrix.M43;
+            matrixData[i * 16 + 15] = matrix.M44;
+        }
+
+        GL.UseProgram(_handle);
+        GL.UniformMatrix4(_uniformLocations[name + "[0]"], data.Length, true, matrixData);
     }
 
     private int CreateShader(string shaderPath, ShaderType shaderType)
