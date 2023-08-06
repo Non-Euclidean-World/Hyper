@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Numerics;
 using BepuPhysics;
 using BepuUtilities;
 
-namespace Hyper.Collisions;
+namespace Hyper.Collisions.Bepu;
 
 public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
 {

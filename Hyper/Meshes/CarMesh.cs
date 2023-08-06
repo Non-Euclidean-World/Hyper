@@ -1,11 +1,9 @@
 ﻿using BepuPhysics;
-using Hyper.Collisions;
 using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 internal class CarMesh
 {
-    public Mesh UpperPart { get; private set; }
     public Mesh LowerPart { get; private set; }
     public Mesh BackLeftWheel { get; private set; }
     public Mesh BackRightWheel { get; private set; }
@@ -16,25 +14,23 @@ internal class CarMesh
 
     public Vector3 Position { get; private set; }
 
-    public Vector3 UpperPartOffset { get; private set; }
+    public Vector3 LowerPartOffset { get; private set; }
 
-    public CarMesh(Vector3 upperPart, Vector3 lowerPart, Vector3 upperPartOffset, float wheelRadius, float wheelWidth)
+    public CarMesh(Vector3 lowerPart, float wheelRadius, float wheelWidth)
     {
-        UpperPart = BoxMesh.Create(upperPart);
         WheelRadius = wheelRadius;
         WheelWidth = wheelWidth;
-        UpperPartOffset = upperPartOffset;
         LowerPart = BoxMesh.Create(lowerPart);
-        BackLeftWheel = BoxMesh.Create(new Vector3(wheelRadius, wheelRadius, wheelWidth));
-        BackRightWheel = BoxMesh.Create(new Vector3(wheelRadius, wheelRadius, wheelWidth));
-        FrontLeftWheel = BoxMesh.Create(new Vector3(wheelRadius, wheelRadius, wheelWidth));
-        FrontRightWheel = BoxMesh.Create(new Vector3(wheelRadius, wheelRadius, wheelWidth));
+        float wheelDiameter = 2 * wheelRadius;
+        BackLeftWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
+        BackRightWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
+        FrontLeftWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
+        FrontRightWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
     }
 
     public void Update(RigidPose bodyPose, RigidPose rearLeftWheelPose, RigidPose rearRightWheelPose, RigidPose frontLeftWheelPose, RigidPose frontRightWheelPose)
     {
         LowerPart.RigidPose = bodyPose;
-        UpperPart.RigidPose = new RigidPose(bodyPose.Position + TypingUtils.ToNumericsVector(UpperPartOffset), bodyPose.Orientation);
         BackLeftWheel.RigidPose = rearLeftWheelPose;
         BackRightWheel.RigidPose = rearRightWheelPose;
         FrontLeftWheel.RigidPose = frontLeftWheelPose;

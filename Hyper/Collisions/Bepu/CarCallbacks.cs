@@ -1,10 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 
-namespace Hyper.Collisions;
+namespace Hyper.Collisions.Bepu;
 /// <summary>
 /// For the car demo, we want both wheel-body collision filtering and different friction for wheels versus the car body.
 /// </summary>

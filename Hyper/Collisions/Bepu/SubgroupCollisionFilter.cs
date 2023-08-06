@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Hyper.Collisions;
+namespace Hyper.Collisions.Bepu;
 
 /// <summary>
 /// Bit masks which control whether different members of a group of objects can collide with each other.

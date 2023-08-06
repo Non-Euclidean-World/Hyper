@@ -4,6 +4,7 @@ using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Hyper.Collisions;
+using Hyper.Collisions.Bepu;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
@@ -39,21 +40,15 @@ internal class Scene : IInputSubscriber, IDisposable
 
     private readonly int _chunksPerSide = 2;
 
-    private Simulation _simulation;
+    private Simulation _simulation = null!;
 
     private BufferPool _bufferPool;
 
     private ThreadDispatcher _threadDispatcher;
 
-    private const float TimeStepDuration = 1 / 60f;
-
     SimpleCarController _playerController;
 
-    //private readonly CarMesh _landmark;
-
     private readonly Vector3 _carInitialPosition;
-
-    //private readonly Vector3 _landmarkPosition;
 
     public Scene(float aspectRatio)
     {
@@ -63,10 +58,8 @@ internal class Scene : IInputSubscriber, IDisposable
         Chunks = GetChunks(chunkFactory);
         LightSources = GetLightSources(_chunksPerSide);
         Projectiles = new List<Projectile>();
-        _carInitialPosition = new Vector3(-2, _scalarFieldGenerator.AvgElevation + 30, -2);
-        //_landmarkPosition = new Vector3(-1.5f, _scalarFieldGenerator.AvgElevation + 4, -1.5f);
-        CarMesh = new CarMesh(new Vector3(1.5f, 0.6f, 2.5f), new Vector3(1.85f, 0.7f, 4.73f), new Vector3(0, 0.65f, -1f), 0.4f, 0.18f);
-        //_landmark = new CarMesh(CubeMesh.Vertices, _landmarkPosition);
+        _carInitialPosition = new Vector3(-5, _scalarFieldGenerator.AvgElevation + 10, 10);
+        CarMesh = new CarMesh(new Vector3(1.85f, 0.7f, 4.73f), 0.4f, 0.18f);
 
         Camera = GetCamera(aspectRatio);
         Hud = new HudManager(aspectRatio);
@@ -105,7 +98,6 @@ internal class Scene : IInputSubscriber, IDisposable
         }
 
         CarMesh.Render(_objectShader, Scale, Camera.ReferencePointPosition);
-        //_landmark.Render(_objectShader, Scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }
@@ -281,13 +273,13 @@ internal class Scene : IInputSubscriber, IDisposable
         _simulation = Simulation.Create(_bufferPool, new CarCallbacks() { Properties = properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1));
 
         var builder = new CompoundBuilder(_bufferPool, _simulation.Shapes, 2);
-        builder.Add(new Box(CarMesh.LowerPart.Scaling.X, CarMesh.LowerPart.Scaling.Y, CarMesh.LowerPart.Scaling.Z), RigidPose.Identity, 10);
-        builder.Add(new Box(CarMesh.UpperPart.Scaling.X, CarMesh.UpperPart.Scaling.Y, CarMesh.UpperPart.Scaling.Z), TypingUtils.ToNumericsVector(CarMesh.UpperPartOffset), 0.5f);
+        builder.Add(new Box(1.85f, 0.7f, 4.73f), RigidPose.Identity, 10);
+        builder.Add(new Box(1.5f, 0.6f, 2.5f), new System.Numerics.Vector3(0, 0.65f, -1f), 0.5f);
         builder.BuildDynamicCompound(out var children, out var bodyInertia, out _);
         builder.Dispose();
         var bodyShape = new Compound(children);
         var bodyShapeIndex = _simulation.Shapes.Add(bodyShape);
-        var wheelShape = new Cylinder(CarMesh.WheelRadius, CarMesh.WheelWidth);
+        var wheelShape = new Cylinder(0.4f, .18f);
         var wheelInertia = wheelShape.ComputeInertia(0.25f);
         var wheelShapeIndex = _simulation.Shapes.Add(wheelShape);
 
@@ -314,11 +306,6 @@ internal class Scene : IInputSubscriber, IDisposable
                 QuaternionEx.Identity,
                 _simulation.Shapes.Add(mesh)));
         }
-
-        Box buildingShape = new Box(1, 1, 1);
-        //System.Numerics.Vector3 pos = new(_landmarkPosition.X, _landmarkPosition.Y, _landmarkPosition.Z);
-        /*_simulation.Statics.Add(new StaticDescription(
-           pos, QuaternionEx.Identity, _simulation.Shapes.Add(buildingShape)));*/
     }
 
     bool _disposed;

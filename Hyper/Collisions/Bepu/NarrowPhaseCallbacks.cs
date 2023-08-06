@@ -1,10 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 
-namespace Hyper.Collisions;
+namespace Hyper.Collisions.Bepu;
 
 public unsafe struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {

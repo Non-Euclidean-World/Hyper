@@ -1,10 +1,12 @@
-﻿using System.Numerics;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.Constraints;
 using BepuUtilities;
 
-namespace Hyper.Collisions;
+namespace Hyper.Collisions.Bepu;
 struct SimpleCar
 {
     public BodyHandle Body;

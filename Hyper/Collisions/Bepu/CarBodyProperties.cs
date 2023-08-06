@@ -1,4 +1,6 @@
-﻿namespace Hyper.Collisions;
+﻿// Copyright The Authors of bepuphysics2
+
+namespace Hyper.Collisions.Bepu;
 internal struct CarBodyProperties
 {
     public SubgroupCollisionFilter Filter;

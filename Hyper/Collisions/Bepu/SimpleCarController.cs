@@ -1,6 +1,8 @@
-﻿using BepuPhysics;
+﻿// Copyright The Authors of bepuphysics2
 
-namespace Hyper.Collisions;
+using BepuPhysics;
+
+namespace Hyper.Collisions.Bepu;
 struct SimpleCarController
 {
     public SimpleCar Car;
@@ -66,11 +68,11 @@ struct SimpleCarController
             float leftSteeringAngle;
             float rightSteeringAngle;
 
-            float steeringAngleAbs = MathF.Abs(steeringAngle);
+            var steeringAngleAbs = MathF.Abs(steeringAngle);
 
             if (AckermanSteering > 0 && steeringAngleAbs > 1e-6)
             {
-                float turnRadius = MathF.Abs(WheelBaseLength * MathF.Tan(MathF.PI * 0.5f - steeringAngleAbs));
+                var turnRadius = MathF.Abs(WheelBaseLength * MathF.Tan(MathF.PI * 0.5f - steeringAngleAbs));
                 var wheelBaseHalfWidth = WheelBaseWidth * 0.5f;
                 if (steeringAngle > 0)
                 {

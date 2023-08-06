@@ -3,23 +3,24 @@
 namespace Hyper.Meshes;
 internal class BoxMesh
 {
-    public static Mesh Create(Vector3 scaling, Vector3 position)
+    public static Mesh Create(Vector3 size, Vector3 position)
     {
-        Mesh cube = CubeMesh.Create(position);
-        Vertex[] vertices = cube.Vertices;
+        Vertex[] vertices = new Vertex[CubeMesh.Vertices.Length];
+        Array.Copy(CubeMesh.Vertices, vertices, CubeMesh.Vertices.Length);
+
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i].X *= scaling.X;
-            vertices[i].Y *= scaling.Y;
-            vertices[i].Z *= scaling.Z;
+            vertices[i].X *= size.X;
+            vertices[i].Y *= size.Y;
+            vertices[i].Z *= size.Z;
         }
 
         Mesh mesh = new Mesh(vertices, position);
-        mesh.Scaling = scaling;
+        mesh.Scaling = size;
 
         return mesh;
     }
 
-    public static Mesh Create(Vector3 scaling)
-        => Create(scaling, Vector3.Zero);
+    public static Mesh Create(Vector3 size)
+        => Create(size, Vector3.Zero);
 }

@@ -1,6 +1,8 @@
-﻿using BepuPhysics;
+﻿// Copyright The Authors of bepuphysics2
 
-namespace Hyper.Collisions;
+using BepuPhysics;
+
+namespace Hyper.Collisions.Bepu;
 struct WheelHandles
 {
     public BodyHandle Wheel;
