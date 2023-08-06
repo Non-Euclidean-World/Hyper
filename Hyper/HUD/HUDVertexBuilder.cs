@@ -14,24 +14,6 @@ internal class HUDVertexBuilder
         return this;
     }
 
-    public HUDVertexBuilder SetColor(float r, float g, float b)
-    {
-        _vertex.R = r;
-        _vertex.G = g;
-        _vertex.B = b;
-
-        return this;
-    }
-
-    public HUDVertexBuilder SetColor(Vector3 color)
-    {
-        _vertex.R = color.X;
-        _vertex.G = color.Y;
-        _vertex.B = color.Z;
-
-        return this;
-    }
-
     public HUDVertexBuilder SetTextureCoords(float u, float v)
     {
         _vertex.U = u;

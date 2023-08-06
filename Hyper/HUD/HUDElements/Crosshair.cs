@@ -18,6 +18,7 @@ internal class Crosshair : HudElement
 
         shader.SetMatrix4("model", model);
         shader.SetBool("useTexture", false);
+        shader.SetVector4("color", new Vector4(1, 0, 0, 1));
         GL.BindVertexArray(VaoId);
         GL.DrawArrays(PrimitiveType.Lines, 0, 4);
     }
@@ -28,10 +29,10 @@ internal class Crosshair : HudElement
         Vector3 color = new Vector3(1, 0, 0);
         return new[]
         {
-            builder.SetPosition(-1, 0).SetColor(color).Build(),
-            builder.SetPosition(1, 0).SetColor(color).Build(),
-            builder.SetPosition(0, 1).SetColor(color).Build(),
-            builder.SetPosition(0, -1).SetColor(color).Build()
+            builder.SetPosition(-1, 0).Build(),
+            builder.SetPosition(1, 0).Build(),
+            builder.SetPosition(0, 1).Build(),
+            builder.SetPosition(0, -1).Build()
         };
     }
 }
