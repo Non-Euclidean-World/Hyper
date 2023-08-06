@@ -1,6 +1,5 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
-using Buffer = OpenTK.Graphics.OpenGL4.Buffer;
 
 namespace Hyper.Animation;
 
@@ -100,22 +99,10 @@ public static class ModelLoader
         }
         
         int[] boneIndices = new int[mesh.VertexCount * maxBones];
-        for (int i = 0; i < mesh.VertexCount; i++)
-        {
-            for (int j = 0; j < maxBones; j++)
-            {
-                boneIndices[i * maxBones + j] = vertexBones[i, j];
-            }
-        }
+        System.Buffer.BlockCopy(vertexBones, 0, boneIndices, 0, boneIndices.Length * sizeof(int));
 
         float[] boneWeights = new float[mesh.VertexCount * maxBones];
-        for (int i = 0; i < mesh.VertexCount; i++)
-        {
-            for (int j = 0; j < maxBones; j++)
-            {
-                boneWeights[i * maxBones + j] = vertexWeights[i, j];
-            }
-        }
+        System.Buffer.BlockCopy(vertexWeights, 0, boneWeights, 0, boneWeights.Length * sizeof(float));
 
         int vboBoneIndices = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboBoneIndices);
