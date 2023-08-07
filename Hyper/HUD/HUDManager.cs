@@ -40,7 +40,7 @@ internal class HudManager : Commandable
 
     private Shader CreateShader()
     {
-        var shader = new (string, ShaderType)[]
+        var shader = new []
         {
             ("HUD/Shaders/shader2d.vert", ShaderType.VertexShader),
             ("HUD/Shaders/shader2d.frag", ShaderType.FragmentShader)
