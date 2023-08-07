@@ -6,7 +6,7 @@ in vec2 TexCoord;
 uniform vec4 color;
 uniform sampler2D texture0;
 uniform bool useTexture;
-uniform vec4 spriteRect;
+uniform vec4 spriteRect; // x - left, y - bottom, z - width, w - height
 
 void main()
 {             

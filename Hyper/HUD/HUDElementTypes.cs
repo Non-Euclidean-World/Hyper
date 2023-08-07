@@ -4,4 +4,5 @@ internal enum HudElementTypes
 {
     Crosshair,
     FpsCounter,
+    InventoryRenderer
 }

@@ -4,11 +4,13 @@ using OpenTK.Mathematics;
 
 namespace Hyper.HUD.HUDElements;
 
-internal class FpsCounter : HudElement
+internal class FpsCounter : IHudElement
 {
-    public const float DefaultSize = 0.02f;
+    public bool Visible { get; set; } = true;
+    
+    private readonly Vector2 _size;
 
-    public static readonly Vector2 DefaultPosition = new(0.64f, 0.48f);
+    private readonly Vector2 _position;
 
     private const double FpsTimeFrame = 0.1f;
 
@@ -20,15 +22,17 @@ internal class FpsCounter : HudElement
 
     private int _fps = 0;
 
-    public FpsCounter(Vector2 position, float size) : base(position, size)
+    public FpsCounter()
     {
+        _position = new Vector2(0.64f, 0.48f);
+        _size = new Vector2(0.02f);
         _stopwatch.Start();
     }
 
-    public override void Render(Shader shader)
+    public void Render(Shader shader)
     {
         UpdateFps();
-        Printer.RenderString(shader, _fps.ToString(), Size, Position.X - 0.1f, Position.Y);
+        Printer.RenderString(shader, _fps.ToString(), _size.X, _position.X - 0.1f, _position.Y);
     }
 
     private void UpdateFps()
