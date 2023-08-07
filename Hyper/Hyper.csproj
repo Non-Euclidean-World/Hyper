@@ -17,6 +17,9 @@
     <None Update="Animation\Characters\Cowboy\Resources\texture.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\HUDElements\Inventory\Resources\Hotbar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

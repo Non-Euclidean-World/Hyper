@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
 using System.Text;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -9,10 +9,9 @@ namespace Hyper.HUD;
 internal static class Printer
 {
     private static readonly Texture AsciiTexture;
-    private static readonly int[] Vaos;
+    private static readonly Vector4[] Rectangles;
     
     private const int CharacterCount = 256;
-    private const float CharacterHeight = 1.0f;
     private const int FontSize = 50;
     
     static Printer()
@@ -38,12 +37,15 @@ internal static class Printer
         }
 
         AsciiTexture = Texture.LoadFromBitmap(bitmap);
-        Vaos = GetVaos(text, paint);
+        Rectangles = GetRectangles(text, paint);
     }
 
     public static void RenderString(Shader shader, string text, float size, float x, float y)
     {
+        GL.BindVertexArray(SharedVao.Instance.Vao);
         shader.SetBool("useTexture", true);
+        AsciiTexture.Use(TextureUnit.Texture0);
+
         float offset = size * 2;
         for (int i = 0; i < text.Length; i++)
         {
@@ -56,56 +58,25 @@ internal static class Printer
         var model = Matrix4.CreateTranslation(x, y, 0.0f);
         model = Matrix4.CreateScale(size, size, 1.0f) * model;
         shader.SetMatrix4("model", model);
-        AsciiTexture.Use(TextureUnit.Texture0);
-        GL.BindVertexArray(Vaos[c]);
+        shader.SetVector4("spriteRect", Rectangles[c]);
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
     
-    private static int[] GetVaos(string text, SKPaint paint)
+    private static Vector4[] GetRectangles(string text, SKPaint paint)
     {
         float textWidth = paint.MeasureText(text);
 
-        var vaos = new int[CharacterCount];
+        var rectangles = new Vector4[CharacterCount];
         
         for (int i = 0; i < CharacterCount; i++)
         {
             float begin = paint.MeasureText(text[..i]) / textWidth;
             float end = paint.MeasureText(text[..(i + 1)]) / textWidth;
             
-            HUDVertexBuilder builder = new();
-            var vertices = new[]
-            {
-                builder.SetPosition(-1, -1).SetTextureCoords(begin, CharacterHeight).Build(),
-                builder.SetPosition(1, -1).SetTextureCoords(end, CharacterHeight).Build(),
-                builder.SetPosition(1, 1).SetTextureCoords(end, 0).Build(),
-
-                builder.SetPosition(-1, -1).SetTextureCoords(begin, CharacterHeight).Build(),
-                builder.SetPosition(1, 1).SetTextureCoords(end, 0).Build(),
-                builder.SetPosition(-1, 1).SetTextureCoords(begin, 0).Build(),
-            };
-
-            int vao = GL.GenVertexArray();
-            int vbo = GL.GenBuffer();
-
-            GL.BindVertexArray(vao);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
-
-
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
-            GL.EnableVertexAttribArray(0);
-
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
-
-            vaos[i] = vao;
+            rectangles[i] = new Vector4(begin, 0, end - begin, 1);
         }
 
-        return vaos;
+        return rectangles;
     }
 }

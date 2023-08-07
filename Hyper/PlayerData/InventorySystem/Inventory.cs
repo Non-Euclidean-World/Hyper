@@ -1,4 +1,5 @@
 ﻿using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Tools;
 
 namespace Hyper.PlayerData.InventorySystem;
 
@@ -8,8 +9,12 @@ public class Inventory
     public static Inventory Instance { get => _instance ??= new Inventory(); }
     
     private const int ItemColumns = 10;
+    
     private const int ItemRows = 5;
+    
     private int _selectedItemIndex = 0;
+    
+    public bool isOpen = false;
     
     public readonly (Item? Item, int Count)[,] Items;
     public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[0, i]).ToArray();
@@ -18,6 +23,7 @@ public class Inventory
     private Inventory()
     {
         Items = new (Item? Item, int Count)[ItemColumns, ItemRows];
+        AddItem(new Hammer());
     }
 
     public void UseItem() => SelectedItem?.Use();
