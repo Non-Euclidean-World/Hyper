@@ -3,13 +3,11 @@
 using BepuPhysics;
 
 namespace Hyper.Collisions.Bepu;
-struct SimpleCarController
+internal class SimpleCarController
 {
-    public SimpleCar Car;
+    private float _steeringAngle;
 
-    private float steeringAngle;
-
-    public readonly float SteeringAngle { get { return steeringAngle; } }
+    public float SteeringAngle { get => _steeringAngle; }
 
     public float SteeringSpeed;
     public float MaximumSteeringAngle;
@@ -29,14 +27,13 @@ struct SimpleCarController
     public float AckermanSteering;
 
     //Track the previous state to force wakeups if the constraint targets have changed.
-    private float previousTargetSpeed;
-    private float previousTargetForce;
+    private float _previousTargetSpeed;
+    private float _previousTargetForce;
 
-    public SimpleCarController(SimpleCar car,
+    public SimpleCarController(
         float forwardSpeed, float forwardForce, float zoomMultiplier, float backwardSpeed, float backwardForce, float idleForce, float brakeForce,
         float steeringSpeed, float maximumSteeringAngle, float wheelBaseLength, float wheelBaseWidth, float ackermanSteering)
     {
-        Car = car;
         ForwardSpeed = forwardSpeed;
         ForwardForce = forwardForce;
         ZoomMultiplier = zoomMultiplier;
@@ -50,57 +47,57 @@ struct SimpleCarController
         WheelBaseWidth = wheelBaseWidth;
         AckermanSteering = ackermanSteering;
 
-        steeringAngle = 0;
-        previousTargetForce = 0;
-        previousTargetSpeed = 0;
+        _steeringAngle = 0;
+        _previousTargetForce = 0;
+        _previousTargetSpeed = 0;
     }
 
-    public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
+    public void Update(Simulation simulation, SimpleCar car, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
     {
-        var steeringAngleDifference = targetSteeringAngle - steeringAngle;
+        var steeringAngleDifference = targetSteeringAngle - _steeringAngle;
         var maximumChange = SteeringSpeed * dt;
         var steeringAngleChange = MathF.Min(maximumChange, MathF.Max(-maximumChange, steeringAngleDifference));
-        var previousSteeringAngle = steeringAngle;
+        var previousSteeringAngle = _steeringAngle;
 
-        steeringAngle = MathF.Min(MaximumSteeringAngle, MathF.Max(-MaximumSteeringAngle, steeringAngle + steeringAngleChange));
-        if (steeringAngle != previousSteeringAngle)
+        _steeringAngle = MathF.Min(MaximumSteeringAngle, MathF.Max(-MaximumSteeringAngle, _steeringAngle + steeringAngleChange));
+        if (_steeringAngle != previousSteeringAngle)
         {
             float leftSteeringAngle;
             float rightSteeringAngle;
 
-            var steeringAngleAbs = MathF.Abs(steeringAngle);
+            var steeringAngleAbs = MathF.Abs(_steeringAngle);
 
             if (AckermanSteering > 0 && steeringAngleAbs > 1e-6)
             {
                 var turnRadius = MathF.Abs(WheelBaseLength * MathF.Tan(MathF.PI * 0.5f - steeringAngleAbs));
                 var wheelBaseHalfWidth = WheelBaseWidth * 0.5f;
-                if (steeringAngle > 0)
+                if (_steeringAngle > 0)
                 {
                     rightSteeringAngle = MathF.Atan(WheelBaseLength / (turnRadius - wheelBaseHalfWidth));
-                    rightSteeringAngle = steeringAngle + (rightSteeringAngle - steeringAngleAbs) * AckermanSteering;
+                    rightSteeringAngle = _steeringAngle + (rightSteeringAngle - steeringAngleAbs) * AckermanSteering;
 
                     leftSteeringAngle = MathF.Atan(WheelBaseLength / (turnRadius + wheelBaseHalfWidth));
-                    leftSteeringAngle = steeringAngle + (leftSteeringAngle - steeringAngleAbs) * AckermanSteering;
+                    leftSteeringAngle = _steeringAngle + (leftSteeringAngle - steeringAngleAbs) * AckermanSteering;
                 }
                 else
                 {
                     rightSteeringAngle = MathF.Atan(WheelBaseLength / (turnRadius + wheelBaseHalfWidth));
-                    rightSteeringAngle = steeringAngle - (rightSteeringAngle - steeringAngleAbs) * AckermanSteering;
+                    rightSteeringAngle = _steeringAngle - (rightSteeringAngle - steeringAngleAbs) * AckermanSteering;
 
                     leftSteeringAngle = MathF.Atan(WheelBaseLength / (turnRadius - wheelBaseHalfWidth));
-                    leftSteeringAngle = steeringAngle - (leftSteeringAngle - steeringAngleAbs) * AckermanSteering;
+                    leftSteeringAngle = _steeringAngle - (leftSteeringAngle - steeringAngleAbs) * AckermanSteering;
                 }
             }
             else
             {
-                leftSteeringAngle = steeringAngle;
-                rightSteeringAngle = steeringAngle;
+                leftSteeringAngle = _steeringAngle;
+                rightSteeringAngle = _steeringAngle;
             }
 
             //By guarding the constraint modifications behind a state test, we avoid waking up the car every single frame.
             //(We could have also used the ApplyDescriptionWithoutWaking function and then explicitly woke the car up when changes occur.)
-            Car.Steer(simulation, Car.FrontLeftWheel, leftSteeringAngle);
-            Car.Steer(simulation, Car.FrontRightWheel, rightSteeringAngle);
+            car.Steer(simulation, car.FrontLeftWheel, leftSteeringAngle);
+            car.Steer(simulation, car.FrontRightWheel, rightSteeringAngle);
         }
         float newTargetSpeed, newTargetForce;
         bool allWheels;
@@ -128,21 +125,21 @@ struct SimpleCarController
             newTargetSpeed = 0;
             allWheels = true;
         }
-        if (previousTargetSpeed != newTargetSpeed || previousTargetForce != newTargetForce)
+        if (_previousTargetSpeed != newTargetSpeed || _previousTargetForce != newTargetForce)
         {
-            previousTargetSpeed = newTargetSpeed;
-            previousTargetForce = newTargetForce;
-            Car.SetSpeed(simulation, Car.FrontLeftWheel, newTargetSpeed, newTargetForce);
-            Car.SetSpeed(simulation, Car.FrontRightWheel, newTargetSpeed, newTargetForce);
+            _previousTargetSpeed = newTargetSpeed;
+            _previousTargetForce = newTargetForce;
+            SimpleCar.SetSpeed(simulation, car.FrontLeftWheel, newTargetSpeed, newTargetForce);
+            SimpleCar.SetSpeed(simulation, car.FrontRightWheel, newTargetSpeed, newTargetForce);
             if (allWheels)
             {
-                Car.SetSpeed(simulation, Car.BackLeftWheel, newTargetSpeed, newTargetForce);
-                Car.SetSpeed(simulation, Car.BackRightWheel, newTargetSpeed, newTargetForce);
+                SimpleCar.SetSpeed(simulation, car.BackLeftWheel, newTargetSpeed, newTargetForce);
+                SimpleCar.SetSpeed(simulation, car.BackRightWheel, newTargetSpeed, newTargetForce);
             }
             else
             {
-                Car.SetSpeed(simulation, Car.BackLeftWheel, 0, 0);
-                Car.SetSpeed(simulation, Car.BackRightWheel, 0, 0);
+                SimpleCar.SetSpeed(simulation, car.BackLeftWheel, 0, 0);
+                SimpleCar.SetSpeed(simulation, car.BackRightWheel, 0, 0);
             }
         }
     }
