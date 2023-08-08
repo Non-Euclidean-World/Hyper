@@ -1,6 +1,6 @@
 ﻿using Hyper.Command;
 using Hyper.HUD.HUDElements;
-using Hyper.HUD.HUDElements.Inventory;
+using Hyper.HUD.HUDElements.InventoryRendering;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 

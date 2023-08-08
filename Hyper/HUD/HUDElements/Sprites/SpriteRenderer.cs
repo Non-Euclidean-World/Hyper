@@ -6,17 +6,17 @@ namespace Hyper.HUD.HUDElements.Sprites;
 
 internal class SpriteRenderer
 {
-    private Dictionary<string, Vector4> _rectangles;
+    private readonly Dictionary<string, Vector4> _rectangles;
 
-    private int spriteSheetWidth;
+    private readonly int _spriteSheetWidth;
     
-    private int spriteSheetHeight;
+    private readonly int _spriteSheetHeight;
     
     public SpriteRenderer(string metadataPath)
     {
         using FileStream stream = File.OpenRead(metadataPath);
         var data = JsonSerializer.Deserialize<SpriteSheetMetadata>(stream);
-        (_rectangles, spriteSheetWidth, spriteSheetHeight) = data!.GetRectangles();
+        (_rectangles, _spriteSheetWidth, _spriteSheetHeight) = data!.GetRectangles();
     }
     
     public void Render(Shader shader, string spriteName, Vector2 position, float sizeY)
@@ -29,14 +29,22 @@ internal class SpriteRenderer
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
 
+    /// <summary>
+    /// Renders a sprite relative to another sprite. I hope it works.
+    /// </summary>
+    /// <param name="shader"></param>
+    /// <param name="spriteName">Name of the sprite we want to print.</param>
+    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
+    /// <param name="parentPosition">The position at which the parent is rendered.</param>
+    /// <param name="parentSizeY">Parents Y size.</param>
+    /// <param name="parentSpriteName">Parent sprite name.</param>
     public void RenderRelative(Shader shader, string spriteName, Vector2i relativePosition, Vector2 parentPosition, float parentSizeY, string parentSpriteName)
     {
         var parentRect = _rectangles[parentSpriteName];
-        var parentSizeX = parentSizeY * parentRect.Z / parentRect.W;
-
         var rect = _rectangles[spriteName];
-        var positionX = parentPosition.X + (relativePosition.X - (parentRect.Z - 1.0f / spriteSheetWidth)) * parentSizeX;
-        var positionY = parentPosition.Y + (relativePosition.Y - (parentRect.W - 1.0f / spriteSheetHeight)) * parentSizeY;
+        
+        var positionX = parentPosition.X + ((2.0f * relativePosition.X + 1) / _spriteSheetWidth - parentRect.Z) / 2;
+        var positionY = parentPosition.Y + ((2.0f * relativePosition.Y + 1) / _spriteSheetHeight - parentRect.W) / 2;
         var sizeY = parentSizeY * rect.W / parentRect.W;
         
         var model = Matrix4.CreateTranslation(positionX, positionY, 0.0f);

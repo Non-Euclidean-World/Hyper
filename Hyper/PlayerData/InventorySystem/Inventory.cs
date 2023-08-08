@@ -1,31 +1,37 @@
-﻿using System.ComponentModel;
-using Hyper.PlayerData.InventorySystem.Items;
-using Hyper.PlayerData.InventorySystem.Items.Tools;
+﻿using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.UserInput;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.PlayerData.InventorySystem;
 
-public class Inventory
+public class Inventory : IInputSubscriber
 {
     private static Inventory? _instance;
     public static Inventory Instance { get => _instance ??= new Inventory(); }
     
-    private const int ItemColumns = 10;
+    public const int ItemColumns = 10;
     
-    private const int ItemRows = 5;
+    public const int ItemRows = 4;
     
     public int SelectedItemIndex = 0;
     
-    public bool isOpen = false;
+    public bool IsOpen = false;
     
     public readonly (Item? Item, int Count)[,] Items;
+    
     public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[i, 0]).ToArray();
+    
     public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
     
     private Inventory()
     {
         Items = new (Item? Item, int Count)[ItemColumns, ItemRows];
-        AddItem(new Sword());
-        AddItem(new Sword());
+        RegisterCallbacks();
+        
+        for (int i = 0; i < 12; i++)
+        {
+            AddItem(new Sword());
+        }
     }
 
     public void UseItem() => SelectedItem?.Use();
@@ -81,5 +87,24 @@ public class Inventory
 
         (x, y) = (-1, -1);
         return false;
+    }
+
+
+    public void RegisterCallbacks()
+    {
+        Context context = Context.Instance;
+
+        context.RegisterKeyDownCallback(Keys.D0, () => SelectedItemIndex = 9);
+        context.RegisterKeyDownCallback(Keys.D1, () => SelectedItemIndex = 0);
+        context.RegisterKeyDownCallback(Keys.D2, () => SelectedItemIndex = 1);
+        context.RegisterKeyDownCallback(Keys.D3, () => SelectedItemIndex = 2);
+        context.RegisterKeyDownCallback(Keys.D4, () => SelectedItemIndex = 3);
+        context.RegisterKeyDownCallback(Keys.D5, () => SelectedItemIndex = 4);
+        context.RegisterKeyDownCallback(Keys.D6, () => SelectedItemIndex = 5);
+        context.RegisterKeyDownCallback(Keys.D7, () => SelectedItemIndex = 6);
+        context.RegisterKeyDownCallback(Keys.D8, () => SelectedItemIndex = 7);
+        context.RegisterKeyDownCallback(Keys.D9, () => SelectedItemIndex = 8);
+        
+        context.RegisterKeyDownCallback(Keys.E, () => IsOpen = !IsOpen);
     }
 }

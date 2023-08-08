@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace Hyper.HUD;
+﻿namespace Hyper.HUD;
 
 internal class HUDVertexBuilder
 {

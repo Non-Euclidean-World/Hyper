@@ -23,6 +23,12 @@
     <None Update="HUD\HUDElements\Inventory\Resources\sprite_sheet.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\HUDElements\InventoryRendering\Resources\sprite_sheet.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\HUDElements\InventoryRendering\Resources\sprite_sheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
