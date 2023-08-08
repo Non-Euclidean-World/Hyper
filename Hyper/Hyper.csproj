@@ -17,17 +17,11 @@
     <None Update="Animation\Characters\Cowboy\Resources\texture.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="HUD\HUDElements\Inventory\Resources\Hotbar.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="HUD\HUDElements\Inventory\Resources\sprite_sheet.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HUD\HUDElements\Inventory\Resources\inventory_old.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="HUD\HUDElements\Inventory\Resources\inventory.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="HUD\HUDElements\Inventory\Resources\inventory.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="HUD\HUDElements\Inventory\Resources\sprite_sheet.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

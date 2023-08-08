@@ -13,18 +13,18 @@ public class Inventory
     
     private const int ItemRows = 5;
     
-    private int _selectedItemIndex = 0;
+    public int SelectedItemIndex = 0;
     
     public bool isOpen = false;
     
     public readonly (Item? Item, int Count)[,] Items;
     public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[i, 0]).ToArray();
-    public Item? SelectedItem => Items[0, _selectedItemIndex].Item;
+    public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
     
     private Inventory()
     {
         Items = new (Item? Item, int Count)[ItemColumns, ItemRows];
-        AddItem(new Hammer());
+        AddItem(new Sword());
         AddItem(new Sword());
     }
 
@@ -49,9 +49,9 @@ public class Inventory
 
     private bool TryGetFirstEmptySlot(out int x, out int y)
     {
-        for (int i = 0; i < ItemColumns; i++)
+        for (int j = 0; j < ItemRows; j++)
         {
-            for (int j = 0; j < ItemRows; j++)
+            for (int i = 0; i < ItemColumns; i++)
             {
                 if (Items[i, j].Item is null)
                 {
