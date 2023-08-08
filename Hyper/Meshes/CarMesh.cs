@@ -12,10 +12,6 @@ internal class CarMesh
     public float WheelRadius { get; private set; }
     public float WheelWidth { get; private set; }
 
-    public Vector3 Position { get; private set; }
-
-    public Vector3 LowerPartOffset { get; private set; }
-
     public CarMesh(Vector3 lowerPart, float wheelRadius, float wheelWidth)
     {
         WheelRadius = wheelRadius;

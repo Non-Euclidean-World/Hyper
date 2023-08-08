@@ -25,7 +25,7 @@ internal class Scene : IInputSubscriber
 
     public HudManager Hud { get; private set; }
 
-    private const float Scale = 0.1f;
+    private readonly float _scale = 0.1f;
 
     private readonly Shader _objectShader;
 
@@ -35,9 +35,11 @@ internal class Scene : IInputSubscriber
 
     private readonly int _chunksPerSide = 2;
 
-    SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
+    private readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
 
-    private SimpleCar _simpleCar = null!;
+    private readonly CollidableProperty<SimulationProperties> _properties;
+
+    private readonly SimpleCar _simpleCar;
 
     private readonly Vector3 _carInitialPosition;
 
@@ -59,7 +61,21 @@ internal class Scene : IInputSubscriber
 
         RegisterCallbacks();
 
-        Initialize();
+        _properties = new CollidableProperty<SimulationProperties>();
+
+        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks() { Properties = _properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1));
+
+        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, TypingUtils.ToNumericsVector(_carInitialPosition));
+
+        foreach (var chunk in _chunks)
+        {
+            var mesh = MeshHelper.CreateMeshFromChunk(chunk, _scale, _simulationManager.BufferPool);
+            var position = chunk.Position;
+            _simulationManager.Simulation.Statics.Add(new StaticDescription(
+                new System.Numerics.Vector3(position.X, position.Y, position.Z),
+                QuaternionEx.Identity,
+                _simulationManager.Simulation.Shapes.Add(mesh)));
+        }
     }
 
     public void Render()
@@ -68,34 +84,33 @@ internal class Scene : IInputSubscriber
 
         foreach (var chunk in _chunks)
         {
-            chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
+            chunk.Render(_objectShader, _scale, Camera.ReferencePointPosition);
         }
 
         foreach (var projectile in _projectiles)
         {
-            projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
+            projectile.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
         }
 
         SetUpLightingShaderParams();
 
         foreach (var light in _lightSources)
         {
-            light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
+            light.Render(_lightSourceShader, _scale, Camera.ReferencePointPosition);
         }
 
-        _simpleCar.Mesh.Render(_objectShader, Scale, Camera.ReferencePointPosition);
+        _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }
 
-    public void UpdateProjectiles(float time)
+    public void UpdateProjectiles(float dt)
     {
+        _projectiles.RemoveAll(x => x.IsDead);
         foreach (var projectile in _projectiles)
         {
-            projectile.Update(time);
+            projectile.Update(_simulationManager.Simulation, dt);
         }
-
-        _projectiles.RemoveAll(x => x.IsDead);
     }
 
     private void SetUpObjectShaderParams()
@@ -111,7 +126,7 @@ internal class Scene : IInputSubscriber
         for (int i = 0; i < _lightSources.Count; i++)
         {
             _objectShader.SetVector3($"lightColor[{i}]", _lightSources[i].Color);
-            _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((_lightSources[i].Position - Camera.ReferencePointPosition) * Scale, Camera.Curve));
+            _objectShader.SetVector4($"lightPos[{i}]", GeomPorting.EucToCurved((_lightSources[i].Position - Camera.ReferencePointPosition) * _scale, Camera.Curve));
         }
     }
 
@@ -173,7 +188,7 @@ internal class Scene : IInputSubscriber
 
     private Camera GetCamera(float aspectRatio)
     {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
+        var camera = new Camera(aspectRatio, 0.01f, 100f, _scale)
         {
             ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
@@ -206,8 +221,8 @@ internal class Scene : IInputSubscriber
     {
         Context context = Context.Instance;
 
-        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right, MouseButton.Middle });
-        context.RegisterKeys(new List<Keys> { Keys.Backspace });
+        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
+        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P });
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterUpdateFrameCallback((e) =>
         {
@@ -239,29 +254,10 @@ internal class Scene : IInputSubscriber
             }
         });
 
-        context.RegisterMouseButtonDownCallback(MouseButton.Middle, () =>
+        context.RegisterKeyDownCallback(Keys.P, () =>
         {
-            var projectile = new Projectile(CubeMesh.Vertices, Camera.ReferencePointPosition, Camera.Front, 100f, 5f);
+            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, TypingUtils.ToNumericsVector(Camera.ReferencePointPosition), TypingUtils.ToNumericsVector(Camera.Front) * 15);
             _projectiles.Add(projectile);
         });
-    }
-
-    private void Initialize()
-    {
-        var properties = new CollidableProperty<SimulationProperties>();
-
-        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks() { Properties = properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1));
-
-        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, properties, TypingUtils.ToNumericsVector(_carInitialPosition));
-
-        foreach (var chunk in _chunks)
-        {
-            var mesh = MeshHelper.CreateMeshFromChunk(chunk, Scale, _simulationManager.BufferPool);
-            var position = chunk.Position;
-            _simulationManager.Simulation.Statics.Add(new StaticDescription(
-                new System.Numerics.Vector3(position.X, position.Y, position.Z),
-                QuaternionEx.Identity,
-                _simulationManager.Simulation.Shapes.Add(mesh)));
-        }
     }
 }
