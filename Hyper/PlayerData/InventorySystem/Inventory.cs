@@ -1,4 +1,5 @@
-﻿using Hyper.PlayerData.InventorySystem.Items;
+﻿using System.ComponentModel;
+using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Tools;
 
 namespace Hyper.PlayerData.InventorySystem;
@@ -17,13 +18,14 @@ public class Inventory
     public bool isOpen = false;
     
     public readonly (Item? Item, int Count)[,] Items;
-    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[0, i]).ToArray();
+    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[i, 0]).ToArray();
     public Item? SelectedItem => Items[0, _selectedItemIndex].Item;
     
     private Inventory()
     {
         Items = new (Item? Item, int Count)[ItemColumns, ItemRows];
         AddItem(new Hammer());
+        AddItem(new Sword());
     }
 
     public void UseItem() => SelectedItem?.Use();

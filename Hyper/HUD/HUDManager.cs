@@ -1,7 +1,6 @@
 ﻿using Hyper.Command;
 using Hyper.HUD.HUDElements;
 using Hyper.HUD.HUDElements.Inventory;
-using Hyper.PlayerData.InventorySystem;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -29,6 +28,7 @@ internal class HudManager : Commandable
 
     public void Render()
     {
+        GL.Disable(EnableCap.DepthTest);
         var projection = Matrix4.CreateOrthographic(AspectRatio, 1, -1.0f, 1.0f);
 
         _shader.Use();
@@ -39,6 +39,7 @@ internal class HudManager : Commandable
         {
             if (element.Visible) element.Render(_shader);
         }
+        GL.Enable(EnableCap.DepthTest);
     }
 
     private Shader CreateShader()

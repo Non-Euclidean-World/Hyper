@@ -20,6 +20,15 @@
     <None Update="HUD\HUDElements\Inventory\Resources\Hotbar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\HUDElements\Inventory\Resources\inventory_old.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\HUDElements\Inventory\Resources\inventory.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\HUDElements\Inventory\Resources\inventory.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +37,7 @@
     <PackageReference Include="OpenTK" Version="4.7.7" />
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
     <PackageReference Include="StbImageSharp" Version="2.27.13" />
+    <PackageReference Include="Svg" Version="3.4.4" />
   </ItemGroup>
 
   <ItemGroup>
