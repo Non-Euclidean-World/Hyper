@@ -52,4 +52,16 @@ internal class HudManager : Commandable
 
         return new Shader(shader);
     }
+    
+    public static Vector2 GetMousePosition()
+    {
+        var window = Window.Instance;
+        var mouse = window.MouseState;
+        var windowSize = window.Size;
+        var aspectRatio = windowSize.X / (float)windowSize.Y;
+        
+        return new Vector2(
+            (mouse.X / windowSize.X) * aspectRatio - aspectRatio * 0.5f,
+            0.5f - (mouse.Y / windowSize.Y));
+    }
 }

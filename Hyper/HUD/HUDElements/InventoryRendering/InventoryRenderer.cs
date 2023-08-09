@@ -9,27 +9,31 @@ internal class InventoryRenderer : IHudElement
 {
     public bool Visible { get; set; } = true;
 
-    private const float HotbarSize = 0.05f;
+    public const float HotbarSizeY = 0.05f;
 
-    private static readonly Vector2 HotbarPosition = new(0.0f, -0.38f);
+    public static readonly Vector2 HotbarPosition = new(0.0f, -0.38f);
+
+    public static readonly Vector2 InventoryPosition = new(0.0f, 0.0f);
     
-    private readonly Texture _spriteSheet = Texture.LoadFromFile("HUD/HUDElements/InventoryRendering/Resources/sprite_sheet.png");
-
-    private readonly SpriteRenderer _spriteRenderer = new("HUD/HUDElements/InventoryRendering/Resources/sprite_sheet.json");
+    private readonly Inventory _inventory = Inventory.Instance;
+    
+    private readonly SpriteRenderer _spriteRenderer = 
+        new("HUD/HUDElements/InventoryRendering/Resources/sprite_sheet.json", 
+            "HUD/HUDElements/InventoryRendering/Resources/sprite_sheet.png");
 
     public void Render(Shader shader)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
-        shader.SetBool("useTexture", true);
-        _spriteSheet.Use(TextureUnit.Texture0);
+        _spriteRenderer.UseTexture(shader);
         
         RenderHotbar(shader);
         RenderInventory(shader);
+        RenderInHandItem(shader);
     }
 
     private void RenderHotbar(Shader shader)
     {
-        _spriteRenderer.Render(shader, "hotbar", HotbarPosition, HotbarSize);
+        _spriteRenderer.Render(shader, "hotbar", HotbarPosition, HotbarSizeY);
 
         RenderHotbarSelectedSlot(shader);
         RenderHotbarItems(shader);
@@ -40,15 +44,15 @@ internal class InventoryRenderer : IHudElement
         _spriteRenderer.RenderRelative(
             shader, 
             "selectedSlot", 
-            new Vector2i(Inventory.Instance.SelectedItemIndex, 0),
+            new Vector2i(_inventory.SelectedItemIndex, 0),
             HotbarPosition, 
-            HotbarSize, 
+            HotbarSizeY, 
             "hotbar");
     }
 
     private void RenderHotbarItems(Shader shader)
     {
-        var hotbar = Inventory.Instance.Hotbar;
+        var hotbar = _inventory.Hotbar;
         for (int i = 0; i < 10; i++)
         {
             var item = hotbar[i].Item;
@@ -64,28 +68,28 @@ internal class InventoryRenderer : IHudElement
             itemId, 
             new Vector2i(index, 0), 
             HotbarPosition, 
-            HotbarSize, 
+            HotbarSizeY, 
             "hotbar");
     }
     
     private void RenderInventory(Shader shader)
     {
-        if (!Inventory.Instance.IsOpen) return;
+        if (!_inventory.IsOpen) return;
         
-        _spriteRenderer.Render(shader, "inventory", Vector2.Zero, 3 * HotbarSize);
+        _spriteRenderer.Render(shader, "inventory", InventoryPosition, 3 * HotbarSizeY);
         RenderInventoryItems(shader);
     }
 
     private void RenderInventoryItems(Shader shader)
     {
-        var inventory = Inventory.Instance.Items;
+        var inventory = _inventory.Items;
         for (int i = 0; i < 10; i++)
         {
             for (int j = 1; j < 4; j++)
             {
                 var item = inventory[i, j].Item;
                 if (item is not null)
-                    RenderInventoryItem(shader, item.ID, i, Inventory.ItemRows - j - 1);
+                    RenderInventoryItem(shader, item.ID, i, Inventory.Rows - j - 1);
             }
         }
     }
@@ -97,7 +101,14 @@ internal class InventoryRenderer : IHudElement
             itemId, 
             new Vector2i(x, y), 
             Vector2.Zero, 
-            3 * HotbarSize, 
+            3 * HotbarSizeY, 
             "inventory");
+    }
+
+    private void RenderInHandItem(Shader shader)
+    {
+        if (_inventory.InHandItem is null) return;
+
+        _spriteRenderer.Render(shader, _inventory.InHandItem.ID, HudManager.GetMousePosition(), HotbarSizeY);
     }
 }

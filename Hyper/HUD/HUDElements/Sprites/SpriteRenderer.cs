@@ -6,17 +6,26 @@ namespace Hyper.HUD.HUDElements.Sprites;
 
 internal class SpriteRenderer
 {
+    private readonly Texture _spriteSheet;
+    
     private readonly Dictionary<string, Vector4> _rectangles;
 
     private readonly int _spriteSheetWidth;
     
     private readonly int _spriteSheetHeight;
     
-    public SpriteRenderer(string metadataPath)
+    public SpriteRenderer(string metadataPath, string spriteSheetPath)
     {
         using FileStream stream = File.OpenRead(metadataPath);
         var data = JsonSerializer.Deserialize<SpriteSheetMetadata>(stream);
         (_rectangles, _spriteSheetWidth, _spriteSheetHeight) = data!.GetRectangles();
+        _spriteSheet = Texture.LoadFromFile(spriteSheetPath);
+    }
+    
+    public void UseTexture(Shader shader)
+    {
+        shader.SetBool("useTexture", true);
+        _spriteSheet.Use(TextureUnit.Texture0);
     }
     
     public void Render(Shader shader, string spriteName, Vector2 position, float sizeY)

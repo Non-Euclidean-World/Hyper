@@ -1,5 +1,10 @@
-﻿using Hyper.PlayerData.InventorySystem.Items;
+﻿using Hyper.HUD;
+using Hyper.HUD.HUDElements.InventoryRendering;
+using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Tools;
 using Hyper.UserInput;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.PlayerData.InventorySystem;
@@ -9,9 +14,9 @@ public class Inventory : IInputSubscriber
     private static Inventory? _instance;
     public static Inventory Instance { get => _instance ??= new Inventory(); }
     
-    public const int ItemColumns = 10;
+    public const int Columns = 10;
     
-    public const int ItemRows = 4;
+    public const int Rows = 4;
     
     public int SelectedItemIndex = 0;
     
@@ -19,18 +24,24 @@ public class Inventory : IInputSubscriber
     
     public readonly (Item? Item, int Count)[,] Items;
     
-    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, ItemColumns).Select(i => Items[i, 0]).ToArray();
+    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
     
     public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
+
+    public Item? InHandItem;
     
     private Inventory()
     {
-        Items = new (Item? Item, int Count)[ItemColumns, ItemRows];
+        Items = new (Item? Item, int Count)[Columns, Rows];
         RegisterCallbacks();
         
         for (int i = 0; i < 12; i++)
         {
             AddItem(new Sword());
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            AddItem(new Hammer());
         }
     }
 
@@ -55,9 +66,9 @@ public class Inventory : IInputSubscriber
 
     private bool TryGetFirstEmptySlot(out int x, out int y)
     {
-        for (int j = 0; j < ItemRows; j++)
+        for (int j = 0; j < Rows; j++)
         {
-            for (int i = 0; i < ItemColumns; i++)
+            for (int i = 0; i < Columns; i++)
             {
                 if (Items[i, j].Item is null)
                 {
@@ -73,9 +84,9 @@ public class Inventory : IInputSubscriber
     
     private bool TryGetFirstSlotWithItem(Item item, out int x, out int y)
     {
-        for (int i = 0; i < ItemColumns; i++)
+        for (int i = 0; i < Columns; i++)
         {
-            for (int j = 0; j < ItemRows; j++)
+            for (int j = 0; j < Rows; j++)
             {
                 if (Items[i, j].Item == item)
                 {
@@ -89,6 +100,60 @@ public class Inventory : IInputSubscriber
         return false;
     }
 
+    private void DropItem()
+    {
+        InHandItem = null;
+    }
+
+    private Item? RemoveItem(int x, int y)
+    {
+        var item = Items[x, y].Item;
+        Items[x, y] = (null, 0);
+        
+        return item;
+    }
+    
+    private void SwapWithHand(int x, int y)
+    {
+        var temp = InHandItem;
+        InHandItem = RemoveItem(x, y);
+        Items[x, y] = (temp, 1);
+    }
+
+    private bool TryGetPosition(out int x, out int y)
+    {
+        var mousePosition = HudManager.GetMousePosition();
+
+        if (TryGetHotbarPosition(mousePosition, out x, out y)) return true;
+        if (TryGetInventoryPosition(mousePosition, out x, out y)) return true;
+        return false;
+    }
+
+    private bool TryGetHotbarPosition(Vector2 mousePosition, out int x, out int y)
+    {
+        float cellSize = 2 * InventoryRenderer.HotbarSizeY;
+
+        float gridTopLeftX = InventoryRenderer.HotbarPosition.X - (cellSize * Columns / 2);
+        float gridTopLeftY = InventoryRenderer.HotbarPosition.Y - (cellSize / 2);
+
+        x = (int)((mousePosition.X - gridTopLeftX) / cellSize);
+        y = (int)((mousePosition.Y - gridTopLeftY) / cellSize);
+        
+        return x is >= 0 and < Columns && y == 0;
+    }
+
+    private bool TryGetInventoryPosition(Vector2 mousePosition, out int x, out int y)
+    {
+        float cellSize = 2 * InventoryRenderer.HotbarSizeY;
+
+        float gridTopLeftX = InventoryRenderer.InventoryPosition.X - (cellSize * Columns / 2);
+        float gridTopLeftY = InventoryRenderer.InventoryPosition.Y - (cellSize * (Rows - 1) / 2);
+
+        x = (int)((mousePosition.X - gridTopLeftX) / cellSize);
+        y = Rows - (int)((mousePosition.Y - gridTopLeftY) / cellSize) - 1;
+        
+        return x is >= 0 and < Columns && y is > 0 and < Rows;
+    }
 
     public void RegisterCallbacks()
     {
@@ -105,6 +170,19 @@ public class Inventory : IInputSubscriber
         context.RegisterKeyDownCallback(Keys.D8, () => SelectedItemIndex = 7);
         context.RegisterKeyDownCallback(Keys.D9, () => SelectedItemIndex = 8);
         
-        context.RegisterKeyDownCallback(Keys.E, () => IsOpen = !IsOpen);
+        context.RegisterKeyDownCallback(Keys.E, () =>
+        {
+            IsOpen = !IsOpen;
+            Window.Instance.CursorState = IsOpen ? CursorState.Normal : CursorState.Grabbed;
+            DropItem();
+        });
+        
+        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
+        {
+            if (!IsOpen) return;
+
+            var isMouseOnInventory = TryGetPosition(out int x, out int y);
+            if (isMouseOnInventory) SwapWithHand(x, y);
+        });
     }
 }
