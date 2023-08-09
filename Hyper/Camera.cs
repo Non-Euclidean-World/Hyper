@@ -1,3 +1,10 @@
+using Hyper.Command;
+using Hyper.MathUtiils;
+using Hyper.UserInput;
+using NLog;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
 namespace Hyper;
 
 internal class Camera : Commandable, IInputSubscriber
@@ -18,7 +25,7 @@ internal class Camera : Commandable, IInputSubscriber
 
     private float _fov = MathHelper.PiOver2;
 
-    private float _cameraSpeed = 100f;
+    private float _cameraSpeed = 10f;
 
     private readonly float _near;
 

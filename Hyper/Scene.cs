@@ -1,4 +1,21 @@
-﻿namespace Hyper;
+﻿using BepuPhysics;
+using BepuUtilities;
+using Hyper.Animation.Characters;
+using Hyper.Animation.Characters.Cowboy;
+using Hyper.Collisions;
+using Hyper.Collisions.Bepu;
+using Hyper.HUD;
+using Hyper.MarchingCubes;
+using Hyper.MathUtiils;
+using Hyper.Meshes;
+using Hyper.PlayerData;
+using Hyper.UserInput;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+
+namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
@@ -6,13 +23,13 @@ internal class Scene : IInputSubscriber
 
     private readonly List<LightSource> _lightSources;
 
-    public readonly List<Projectile> Projectiles;
+    private readonly List<Projectile> _projectiles;
+
+    public Camera Camera => Player.Camera;
 
     public readonly List<Character> Characters;
 
     public readonly Player Player;
-
-    public Camera Camera => Player.Camera;
 
     public HudManager Hud { get; private set; }
 
@@ -44,9 +61,10 @@ internal class Scene : IInputSubscriber
         _chunks = GetChunks(chunkFactory);
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
+        Characters = GetCharacters();
+        Player = new Player(GetCamera(aspectRatio));
         _carInitialPosition = new Vector3(-5, _scalarFieldGenerator.AvgElevation + 10, 10);
 
-        Camera = GetCamera(aspectRatio);
         Hud = new HudManager(aspectRatio);
 
         _objectShader = GetObjectShader();
@@ -97,10 +115,10 @@ internal class Scene : IInputSubscriber
 
         foreach (var character in Characters)
         {
-            character.Render(_characterShader, Scale, Camera.ReferencePointPosition);
+            character.Render(_characterShader, _scale, Camera.ReferencePointPosition);
         }
 
-        Player.Render(_characterShader, Scale, Camera.ReferencePointPosition);
+        Player.Render(_characterShader, _scale, Camera.ReferencePointPosition);
 
 
         _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
@@ -127,9 +145,9 @@ internal class Scene : IInputSubscriber
         _objectShader.SetInt("numLights", _lightSources.Count);
         _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
 
-        _objectShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
-        _objectShader.SetVector4Array("lightPos", LightSources.Select(x =>
-            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
+        _objectShader.SetVector3Array("lightColor", _lightSources.Select(x => x.Color).ToArray());
+        _objectShader.SetVector4Array("lightPos", _lightSources.Select(x =>
+            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * _scale, Camera.Curve)).ToArray());
     }
 
     private void SetUpLightingShaderParams()
@@ -154,155 +172,147 @@ internal class Scene : IInputSubscriber
         _characterShader.SetMatrix4("view", Camera.GetViewMatrix());
         _characterShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
 
-        _characterShader.SetInt("numLights", LightSources.Count);
+        _characterShader.SetInt("numLights", _lightSources.Count);
         _characterShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
-        _characterShader.SetVector3Array("lightColor", LightSources.Select(x => x.Color).ToArray());
-        _characterShader.SetVector4Array("lightPos", LightSources.Select(x =>
-            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * Scale, Camera.Curve)).ToArray());
+        _characterShader.SetVector3Array("lightColor", _lightSources.Select(x => x.Color).ToArray());
+        _characterShader.SetVector4Array("lightPos", _lightSources.Select(x =>
+            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * _scale, Camera.Curve)).ToArray());
     }
 
-    private static List<Chunk> GetChunks(ChunkFactory generator)
+    private static List<Chunk> MakeSquare(int chunksPerSide, ChunkFactory generator)
     {
-        var chunks = new List<Chunk>
-        {
-            generator.GenerateChunk(new Vector3i(0, 0, 0)),
-            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, 0)),
-            generator.GenerateChunk(new Vector3i(0, 0, Chunk.Size - 1)),
-            generator.GenerateChunk(new Vector3i(Chunk.Size - 1, 0, Chunk.Size - 1))
-        };
-        private static List<Chunk> MakeSquare(int chunksPerSide, ChunkFactory generator)
-        {
-            if (chunksPerSide % 2 != 0)
-                throw new ArgumentException("# of chunks/side must be even");
+        if (chunksPerSide % 2 != 0)
+            throw new ArgumentException("# of chunks/side must be even");
 
-            List<Chunk> chunks = new List<Chunk>();
-            for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
+        List<Chunk> chunks = new List<Chunk>();
+        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
+        {
+            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
             {
-                for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-                {
-                    int offset = Chunk.Size - 1;
+                int offset = Chunk.Size - 1;
 
-                    chunks.Add(generator.GenerateChunk(new Vector3i(offset * x, 0, offset * y)));
-                }
+                chunks.Add(generator.GenerateChunk(new Vector3i(offset * x, 0, offset * y)));
             }
-
-            return chunks;
         }
 
-        private List<LightSource> GetLightSources(int chunksPerSide)
+        return chunks;
+    }
+
+    private List<LightSource> GetLightSources(int chunksPerSide)
+    {
+        if (chunksPerSide % 2 != 0)
+            throw new ArgumentException("# of chunks/side must be even");
+
+        List<LightSource> lightSources = new List<LightSource>();
+        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
         {
-            if (chunksPerSide % 2 != 0)
-                throw new ArgumentException("# of chunks/side must be even");
-
-            List<LightSource> lightSources = new List<LightSource>();
-            for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
+            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
             {
-                for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-                {
-                    if (x % 2 == 0 && y % 2 == 0)
-                        continue;
+                if (x % 2 == 0 && y % 2 == 0)
+                    continue;
 
-                    int offset = Chunk.Size - 1;
+                int offset = Chunk.Size - 1;
 
-                    lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, _scalarFieldGenerator.AvgElevation + 10f, offset * y), new Vector3(1, 1, 1)));
-                }
+                lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, _scalarFieldGenerator.AvgElevation + 10f, offset * y), new Vector3(1, 1, 1)));
             }
-
-            return lightSources;
         }
 
-        private static List<Character> GetCharacters()
-        {
-            var models = new List<Character>
+        return lightSources;
+    }
+
+    private static List<Character> GetCharacters()
+    {
+        var models = new List<Character>
             {
                 new Cowboy(new Vector3(0, 20, 0), 1f)
             };
 
-            return models;
-        }
+        return models;
+    }
 
-        private Camera GetCamera(float aspectRatio)
+    private Camera GetCamera(float aspectRatio)
+    {
+        var camera = new Camera(aspectRatio, 0.01f, 100f, _scale)
         {
-            var camera = new Camera(aspectRatio, 0.01f, 100f, _scale)
-            {
-                ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
-            };
+            ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
+        };
 
-            return camera;
-        }
+        return camera;
+    }
 
-        private static Shader GetObjectShader()
+    private static Shader GetObjectShader()
+    {
+        var shaderParams = new[]
         {
-            var shaderParams = new[]
-            {
             ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
             ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
         };
 
-            return new Shader(shaderParams);
-        }
+        return new Shader(shaderParams);
+    }
 
-        private static Shader GetLightSourceShader()
+    private static Shader GetLightSourceShader()
+    {
+        var shaderParams = new[]
         {
-            var shaderParams = new[]
-            {
             ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
             ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
         };
-            return new Shader(shaderParams);
-        }
+        return new Shader(shaderParams);
+    }
 
-        private static Shader GetModelShader()
+    private static Shader GetModelShader()
+    {
+        var shader = new[]
         {
-            var shader = new[]
-            {
             ("Animation/Shaders/model_shader.vert", ShaderType.VertexShader),
             ("Animation/Shaders/model_shader.frag", ShaderType.FragmentShader)
         };
-            return new Shader(shader);
-        }
-
-        public void RegisterCallbacks()
-        {
-            Context context = Context.Instance;
-
-            context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
-            context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P });
-            context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
-            context.RegisterUpdateFrameCallback((e) =>
-            {
-                float steeringSum = 0;
-                if (context.HeldKeys[Keys.A]) steeringSum += 1;
-                if (context.HeldKeys[Keys.D]) steeringSum -= 1;
-                float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;
-                _simpleCar.Update(_simulationManager.Simulation, (float)e.Time, steeringSum, targetSpeedFraction, false, context.HeldKeys[Keys.Backspace]);
-                _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
-            });
-
-            context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
-            {
-                var position = Camera.ReferencePointPosition;
-
-                foreach (var chunk in _chunks)
-                {
-                    if (chunk.Mine(position, (float)e.Time)) return;
-                }
-            });
-
-            context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
-            {
-                var position = Camera.ReferencePointPosition;
-
-                foreach (var chunk in _chunks)
-                {
-                    if (chunk.Build(position, (float)e.Time)) return;
-                }
-            });
-
-            context.RegisterKeyDownCallback(Keys.P, () =>
-            {
-                var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, TypingUtils.ToNumericsVector(Camera.ReferencePointPosition), TypingUtils.ToNumericsVector(Camera.Front) * 15);
-                _projectiles.Add(projectile);
-            });
-        }
+        return new Shader(shader);
     }
+
+    public void RegisterCallbacks()
+    {
+        Context context = Context.Instance;
+
+        context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
+        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P });
+        context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
+        context.RegisterUpdateFrameCallback((e) =>
+        {
+            // TODO commented out until we have context switching
+            /*float steeringSum = 0;
+            if (context.HeldKeys[Keys.A]) steeringSum += 1;
+            if (context.HeldKeys[Keys.D]) steeringSum -= 1;
+            float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;*/
+            _simpleCar.Update(_simulationManager.Simulation, (float)e.Time, 0/*steeringSum*/, 0f/*targetSpeedFraction*/, false, false /*context.HeldKeys[Keys.Backspace]*/);
+            _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
+        });
+
+        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
+        {
+            var position = Camera.ReferencePointPosition;
+
+            foreach (var chunk in _chunks)
+            {
+                if (chunk.Mine(position, (float)e.Time)) return;
+            }
+        });
+
+        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
+        {
+            var position = Camera.ReferencePointPosition;
+
+            foreach (var chunk in _chunks)
+            {
+                if (chunk.Build(position, (float)e.Time)) return;
+            }
+        });
+
+        context.RegisterKeyDownCallback(Keys.P, () =>
+        {
+            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, TypingUtils.ToNumericsVector(Camera.ReferencePointPosition), TypingUtils.ToNumericsVector(Camera.Front) * 15);
+            _projectiles.Add(projectile);
+        });
+    }
+}
