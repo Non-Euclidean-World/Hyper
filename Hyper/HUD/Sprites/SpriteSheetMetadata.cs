@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.HUDElements.Sprites;
+namespace Hyper.HUD.Sprites;
 
 public class SpriteSheetMetadata
 {
@@ -12,7 +12,7 @@ public class SpriteSheetMetadata
     public int Height { get; set; }
     
     [JsonPropertyName("items")]
-    public List<SpriteSheetItem> Items { get; set; }
+    public List<Sprite> Items { get; set; }
 
     public (Dictionary<string, Vector4>, int, int) GetRectangles()
     {

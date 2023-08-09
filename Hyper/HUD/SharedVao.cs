@@ -21,13 +21,13 @@ public class SharedVao
         HUDVertexBuilder builder = new();
         var vertices = new[]
         {
-            builder.SetPosition(-1, -1).SetTextureCoords(0, 1).Build(),
-            builder.SetPosition(1, -1).SetTextureCoords(1, 1).Build(),
-            builder.SetPosition(1, 1).SetTextureCoords(1, 0).Build(),
+            builder.SetPosition(-1, -1).SetTextureCoords(0, 0).Build(),
+            builder.SetPosition(1, -1).SetTextureCoords(1, 0).Build(),
+            builder.SetPosition(1, 1).SetTextureCoords(1, 1).Build(),
 
-            builder.SetPosition(-1, -1).SetTextureCoords(0, 1).Build(),
-            builder.SetPosition(1, 1).SetTextureCoords(1, 0).Build(),
-            builder.SetPosition(-1, 1).SetTextureCoords(0, 0).Build(),
+            builder.SetPosition(-1, -1).SetTextureCoords(0, 0).Build(),
+            builder.SetPosition(1, 1).SetTextureCoords(1, 1).Build(),
+            builder.SetPosition(-1, 1).SetTextureCoords(0, 1).Build(),
         };
 
         int vao = GL.GenVertexArray();

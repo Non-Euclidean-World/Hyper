@@ -30,6 +30,8 @@ internal static class Printer
         using var bitmap = new SKBitmap((int)Math.Ceiling(textWidth), FontSize);
         using (SKCanvas canvas = new SKCanvas(bitmap))
         {
+            canvas.Translate(0, bitmap.Height);
+            canvas.Scale(1, -1);
             canvas.Clear(SKColors.Transparent);
             float x = bitmap.Width / 2.0f;
             canvas.DrawText(text, x, FontSize - 5, paint);

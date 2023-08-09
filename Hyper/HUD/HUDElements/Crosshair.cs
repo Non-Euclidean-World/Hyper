@@ -8,14 +8,9 @@ internal class Crosshair : IHudElement
 {
     public bool Visible { get; set; } = true;
     
-    private static Vector2 Size = new (0.02f);
+    private static readonly Vector2 Size = new (0.02f);
     
-    private readonly int _vao;
-
-    public Crosshair()
-    {
-        _vao = GetVao();
-    }
+    private readonly int _vao = GetVao();
 
     public void Render(Shader shader)
     {

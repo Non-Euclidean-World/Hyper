@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.HUDElements.Sprites;
+namespace Hyper.HUD.Sprites;
 
 internal class SpriteRenderer
 {
