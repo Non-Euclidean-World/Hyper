@@ -1,4 +1,5 @@
 ﻿using Hyper;
+using Hyper.Animation;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;

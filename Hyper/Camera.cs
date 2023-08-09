@@ -1,10 +1,3 @@
-using Hyper.Command;
-using Hyper.MathUtiils;
-using Hyper.UserInput;
-using NLog;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-
 namespace Hyper;
 
 internal class Camera : Commandable, IInputSubscriber
@@ -15,7 +8,7 @@ internal class Camera : Commandable, IInputSubscriber
 
     public Vector3 Front { get; private set; } = -Vector3.UnitZ;
 
-    private Vector3 _up = Vector3.UnitY;
+    public Vector3 Up { get; private set; } = Vector3.UnitY;
 
     private Vector3 _right = Vector3.UnitX;
 
@@ -86,7 +79,7 @@ internal class Camera : Commandable, IInputSubscriber
 
     public Matrix4 GetViewMatrix()
     {
-        return Matrices.ViewMatrix(_position, Front, _up, Curve);
+        return Matrices.ViewMatrix(_position, Front, Up, Curve);
     }
 
     public Matrix4 GetProjectionMatrix()
@@ -106,7 +99,7 @@ internal class Camera : Commandable, IInputSubscriber
         Front = Vector3.Normalize(Front);
 
         _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
-        _up = Vector3.Normalize(Vector3.Cross(_right, Front));
+        Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 
     public void Turn(Vector2 position)
@@ -190,12 +183,12 @@ internal class Camera : Commandable, IInputSubscriber
             Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
         });
 
-        //context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
-        //context.RegisterKeyHeldCallback(Keys.S, (e) => UpdatePosition(-Front, (float)e.Time));
-        //context.RegisterKeyHeldCallback(Keys.A, (e) => UpdatePosition(-_right, (float)e.Time));
-        // context.RegisterKeyHeldCallback(Keys.D, (e) => UpdatePosition(_right, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.Space, (e) => UpdatePosition(_up, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-_up, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.S, (e) => UpdatePosition(-Front, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.A, (e) => UpdatePosition(-_right, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.D, (e) => UpdatePosition(_right, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.Space, (e) => UpdatePosition(Up, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-Up, (float)e.Time));
 
         context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
         context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);

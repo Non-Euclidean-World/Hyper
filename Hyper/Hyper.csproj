@@ -12,11 +12,18 @@
     <Compile Remove="HUD\Textures\**" />
     <EmbeddedResource Remove="HUD\Textures\**" />
     <None Remove="HUD\Textures\**" />
+    <None Update="Animation\Characters\Cowboy\Resources\model.dae">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Animation\Characters\Cowboy\Resources\texture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BepuPhysics" Version="2.4.0" />
     <PackageReference Include="BepuUtilities" Version="2.4.0" />
+	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="NLog" Version="5.2.0" />
     <PackageReference Include="OpenTK" Version="4.7.7" />
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
@@ -56,6 +63,12 @@
     </None>
     <None Update="HUD\Shaders\shader2d.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Animation\Shaders\model_shader.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animation\Shaders\model_shader.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
