@@ -20,6 +20,8 @@ internal class FpsCounter : IHudElement
     private double _elapsedTime = 0;
 
     private int _fps = 0;
+    
+    private readonly Window _window = Window.Instance;
 
     public FpsCounter()
     {
@@ -31,7 +33,8 @@ internal class FpsCounter : IHudElement
     public void Render(Shader shader)
     {
         UpdateFps();
-        Printer.RenderString(shader, _fps.ToString(), _size.X, _position.X - 0.1f, _position.Y);
+
+        Printer.RenderStringTopRight(shader, _fps.ToString(), _size.X, (float)_window.Size.X / _window.Size.Y / 2, 0.5f);
     }
 
     private void UpdateFps()

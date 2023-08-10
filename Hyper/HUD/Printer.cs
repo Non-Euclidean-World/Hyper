@@ -41,13 +41,29 @@ internal static class Printer
         Rectangles = GetRectangles(text, paint);
     }
 
+    public static void RenderStringTopRight(Shader shader, string text, float size, float x, float y)
+    {
+        var centerX = x - (text.Length * size * 2 - size);
+        var centerY = y - size;
+        
+        RenderString(shader, text, size, centerX, centerY);
+    }
+    
+    public static void RenderStringBottomRight(Shader shader, string text, float size, float x, float y)
+    {
+        var centerX = x - (text.Length * size * 2 - size);
+        var centerY = y + size;
+        
+        RenderString(shader, text, size, centerX, centerY);
+    }
+
     public static void RenderString(Shader shader, string text, float size, float x, float y)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
         shader.SetBool("useTexture", true);
         AsciiTexture.Use(TextureUnit.Texture0);
 
-        float offset = size * 2;
+        float offset = GetOffset(size);
         for (int i = 0; i < text.Length; i++)
         {
             RenderChar(shader, text[i], size, x + i * offset, y);
@@ -63,6 +79,8 @@ internal static class Printer
         
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
+
+    private static float GetOffset(float size) => 2 * size;
     
     private static Vector4[] GetRectangles(string text, SKPaint paint)
     {
