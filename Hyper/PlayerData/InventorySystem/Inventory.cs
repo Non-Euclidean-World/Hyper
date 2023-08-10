@@ -28,7 +28,7 @@ public class Inventory : IInputSubscriber
     
     public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
 
-    public Item? InHandItem;
+    public (Item? Item, int Count) InHandItem;
     
     private Inventory()
     {
@@ -43,11 +43,13 @@ public class Inventory : IInputSubscriber
         {
             AddItem(new Hammer());
         }
+        AddItem(new Rock(), 23);
+        AddItem(new Rock(), 7);
     }
 
     public void UseItem() => SelectedItem?.Use();
     
-    public void AddItem(Item item)
+    public void AddItem(Item item, int count = 1)
     {
         int x, y;
         if (item.IsStackable)
@@ -61,7 +63,7 @@ public class Inventory : IInputSubscriber
         }
         
         bool isEmptySlot = TryGetFirstEmptySlot(out x, out y);
-        if (isEmptySlot) Items[x, y] = (item, 1);
+        if (isEmptySlot) Items[x, y] = (item, count);
     }
 
     private bool TryGetFirstEmptySlot(out int x, out int y)
@@ -102,12 +104,13 @@ public class Inventory : IInputSubscriber
 
     private void DropItem()
     {
-        InHandItem = null;
+        InHandItem.Item = null;
+        InHandItem.Count = 0;
     }
 
-    private Item? RemoveItem(int x, int y)
+    private (Item?, int) RemoveItem(int x, int y)
     {
-        var item = Items[x, y].Item;
+        var item = Items[x, y];
         Items[x, y] = (null, 0);
         
         return item;
@@ -117,7 +120,7 @@ public class Inventory : IInputSubscriber
     {
         var temp = InHandItem;
         InHandItem = RemoveItem(x, y);
-        Items[x, y] = (temp, 1);
+        Items[x, y] = temp;
     }
 
     private bool TryGetPosition(out int x, out int y)

@@ -13,7 +13,7 @@ void main()
     if (useTexture)
     {
         vec2 adjustedCoords = TexCoord * spriteRect.zw + spriteRect.xy;
-        FragColor = texture(texture0, adjustedCoords);
+        FragColor = texture(texture0, adjustedCoords) * color;
     }
     else
     {

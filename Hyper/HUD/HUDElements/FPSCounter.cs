@@ -32,6 +32,7 @@ internal class FpsCounter : IHudElement
 
     public void Render(Shader shader)
     {
+        shader.SetVector4("color", Vector4.One);
         UpdateFps();
 
         Printer.RenderStringTopRight(shader, _fps.ToString(), _size.X, (float)_window.Size.X / _window.Size.Y / 2, 0.5f);
