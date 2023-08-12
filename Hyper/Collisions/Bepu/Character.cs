@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿//#define ANIMATION
+
+using System.Diagnostics;
 using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
@@ -13,10 +15,13 @@ internal class Character
     float speed;
     Capsule shape;
 
+#if ANIMATION
+    PlayerData.Player _player;
+    public PlayerData.Player Player { get => _player; }
+#else
     public Meshes.Mesh Mesh { get => _mesh; }
-
     private Meshes.Mesh _mesh;
-
+#endif
     public BodyHandle BodyHandle { get { return bodyHandle; } }
 
     public Character(CharacterControllers characters, Vector3 initialPosition, Capsule shape,
@@ -24,13 +29,13 @@ internal class Character
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
         this.characters = characters;
-        var shapeIndex = characters.Simulation.Shapes.Add(shape); // TODO System.NullReferenceException: 'Object reference not set to an instance of an object.'
+        var shapeIndex = characters.Simulation.Shapes.Add(shape);
 
         //Because characters are dynamic, they require a defined BodyInertia. For the purposes of the demos, we don't want them to rotate or fall over, so the inverse inertia tensor is left at its default value of all zeroes.
         //This is effectively equivalent to giving it an infinite inertia tensor- in other words, no torque will cause it to rotate.
         bodyHandle = characters.Simulation.Bodies.Add(
             BodyDescription.CreateDynamic(initialPosition, new BodyInertia { InverseMass = 1f / mass },
-            new(shapeIndex, minimumSpeculativeMargin, float.MaxValue, ContinuousDetection.Passive), shape.Radius * 0.02f));
+            new(shapeIndex, minimumSpeculativeMargin, float.MaxValue, ContinuousDetection.Passive), activity: shape.Radius * 0.0002f));
         ref var character = ref characters.AllocateCharacter(bodyHandle);
         character.LocalUp = new Vector3(0, 1, 0);
         character.CosMaximumSlope = MathF.Cos(maximumSlope);
@@ -41,13 +46,16 @@ internal class Character
         character.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
         this.speed = speed;
         this.shape = shape;
+
+#if ANIMATION
+        _player = new PlayerData.Player();
+#else
         _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(shape.Radius * 2, shape.Length, shape.Radius * 2));
+#endif
     }
 
     public void UpdateCharacterGoals(Simulation simulation, Camera camera, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
     {
-        //Vector2 movementDirection = default;
-
         var movementDirectionLengthSquared = movementDirection.LengthSquared();
         if (movementDirectionLengthSquared > 0)
         {
@@ -55,10 +63,8 @@ internal class Character
         }
 
         ref var character = ref characters.GetCharacterByBodyHandle(bodyHandle);
-        //character.TryJump = input.WasPushed(Jump) || input.WasPushed(JumpAlternate);
         character.TryJump = tryJump;
         var characterBody = new BodyReference(bodyHandle, characters.Simulation.Bodies);
-        //var effectiveSpeed = input.IsDown(Sprint) ? speed * 1.75f : speed;
         var effectiveSpeed = sprint ? speed * 1.75f : speed;
         var newTargetVelocity = movementDirection * effectiveSpeed;
         var viewDirection = TypingUtils.ToNumericsVector(camera.Front);
@@ -107,13 +113,23 @@ internal class Character
         }
 
         var body = new BodyReference(bodyHandle, simulation.Bodies);
+
+#if ANIMATION
+        _player.Update(body.Pose);
+#else
         _mesh.RigidPose = body.Pose;
+#endif
+
     }
 
     // TODO this should be a method in mesh cf. simple car
     public void RenderCharacterMesh(Shader shader, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
     {
+#if ANIMATION
+        _player.Render(shader, scale, cameraPosition);
+#else
         _mesh.RenderFullDescription(shader, scale, cameraPosition);
+#endif
     }
 
 

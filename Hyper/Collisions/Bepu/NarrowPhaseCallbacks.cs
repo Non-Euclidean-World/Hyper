@@ -23,9 +23,10 @@ struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
         Characters.Initialize(simulation);
     }
 
-    public NarrowPhaseCallbacks(CharacterControllers characters)
+    public NarrowPhaseCallbacks(CharacterControllers characters, CollidableProperty<SimulationProperties> properties)
     {
         Characters = characters;
+        Properties = properties;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

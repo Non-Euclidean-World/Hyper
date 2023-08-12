@@ -59,14 +59,11 @@ internal class Scene : IInputSubscriber
 
     private readonly Vector3 _carInitialPosition;
 
-    // BUG some assert fires if you do the following: 
-    // make it so that the first thing that happens to the character is a collision with the car (before hitting any key)
-    // make a jump -- you'll notice that the character gets stuck mid-air
-    // make a move -- the assert fires
-    // overall these are some very specific conditions, so I'll leave it for now
     private readonly Vector3 _characterInitialPosition;
 
     private readonly BufferPool _bufferPool;
+
+    public const float TimestepDuration = 1 / 60f;
 
     public Scene(float aspectRatio)
     {
@@ -95,15 +92,13 @@ internal class Scene : IInputSubscriber
 
         _characterControllers = new CharacterControllers(_bufferPool);
 
-        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers) { Properties = _properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1), _bufferPool);
+        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, _properties),
+            new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
+            new SolveDescription(6, 1), _bufferPool);
 
         _character = new Character(_characterControllers, TypingUtils.ToNumericsVector(_characterInitialPosition), new Capsule(0.5f, 1), 0.1f, 1, 20, 100, 6, 4, MathF.PI * 0.4f);
 
-
-
         _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, TypingUtils.ToNumericsVector(_carInitialPosition));
-
-
 
         Camera = GetCamera(aspectRatio);
 
@@ -132,6 +127,8 @@ internal class Scene : IInputSubscriber
             projectile.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
         }
 
+        _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
+
         SetUpLightingShaderParams();
 
         foreach (var light in _lightSources)
@@ -139,7 +136,7 @@ internal class Scene : IInputSubscriber
             light.Render(_lightSourceShader, _scale, Camera.ReferencePointPosition);
         }
 
-        SetUpCharacterShaderParams();
+
 
         /*foreach (var character in Characters)
         {
@@ -149,9 +146,17 @@ internal class Scene : IInputSubscriber
         //Player.Render(_characterShader, _scale, Camera.ReferencePointPosition);
 
 
-        _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
+        //_simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
 
-        _character.RenderCharacterMesh(_objectShader, _scale, Camera.ReferencePointPosition);
+        SetUpCharacterShaderParams();
+
+        _character.RenderCharacterMesh(
+#if ANIMATION
+            _characterShader,
+#else
+            _objectShader,
+#endif
+            _scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }

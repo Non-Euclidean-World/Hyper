@@ -11,6 +11,8 @@ internal class Cowboy : Character
         Model = new Model(model, texture);
     }
 
+    public Cowboy() : this(Vector3.Zero, 0.05f) { }
+
     public void Run() => Model.Animator.Play(0);
 
     public void Idle() => Model.Animator.Reset();
