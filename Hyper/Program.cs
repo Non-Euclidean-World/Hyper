@@ -1,5 +1,4 @@
 ﻿using Hyper;
-using Hyper.Animation;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -14,7 +13,7 @@ var nativeWindowSettings = new NativeWindowSettings()
 
 using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
 {
-    window.RenderFrequency = 500.0f;
+    window.RenderFrequency = 60.0f; // TODO we *really* need to rein this thing in. My CPU fries otherwise
     window.Run();
 }
 

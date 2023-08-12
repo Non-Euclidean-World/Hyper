@@ -1,8 +1,14 @@
 ﻿namespace Hyper.Collisions;
 internal class TypingUtils
 {
+    public static System.Numerics.Vector2 ToNumericsVector(OpenTK.Mathematics.Vector2 v)
+        => new(v.X, v.Y);
+
     public static System.Numerics.Vector3 ToNumericsVector(OpenTK.Mathematics.Vector3 v)
         => new(v.X, v.Y, v.Z);
+
+    public static OpenTK.Mathematics.Vector2 ToOpenTKVector(System.Numerics.Vector2 v)
+        => new(v.X, v.Y);
 
     public static OpenTK.Mathematics.Vector3 ToOpenTKVector(System.Numerics.Vector3 v)
         => new(v.X, v.Y, v.Z);

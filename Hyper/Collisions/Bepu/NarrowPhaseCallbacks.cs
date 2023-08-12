@@ -1,5 +1,7 @@
 ﻿// Copyright The Authors of bepuphysics2
 
+// changes: added characters handling from `CharacterNarrowPhaseCallbacks.cs`
+
 using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
@@ -13,9 +15,17 @@ namespace Hyper.Collisions.Bepu;
 struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {
     public CollidableProperty<SimulationProperties> Properties;
+    public CharacterControllers Characters;
+
     public void Initialize(Simulation simulation)
     {
         Properties.Initialize(simulation);
+        Characters.Initialize(simulation);
+    }
+
+    public NarrowPhaseCallbacks(CharacterControllers characters)
+    {
+        Characters = characters;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46,6 +56,7 @@ struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
         }
         pairMaterial.MaximumRecoveryVelocity = 2f;
         pairMaterial.SpringSettings = new SpringSettings(30, 1);
+        Characters.TryReportContacts(pair, ref manifold, workerIndex, ref pairMaterial);
         return true;
     }
 
@@ -59,5 +70,6 @@ struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
     public void Dispose()
     {
         Properties.Dispose();
+        Characters.Dispose();
     }
 }

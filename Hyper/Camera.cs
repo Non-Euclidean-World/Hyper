@@ -190,12 +190,12 @@ internal class Camera : Commandable, IInputSubscriber
             Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
         });
 
-        context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
+        /*context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
         context.RegisterKeyHeldCallback(Keys.S, (e) => UpdatePosition(-Front, (float)e.Time));
         context.RegisterKeyHeldCallback(Keys.A, (e) => UpdatePosition(-_right, (float)e.Time));
         context.RegisterKeyHeldCallback(Keys.D, (e) => UpdatePosition(_right, (float)e.Time));
         context.RegisterKeyHeldCallback(Keys.Space, (e) => UpdatePosition(Up, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-Up, (float)e.Time));
+        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-Up, (float)e.Time));*/
 
         context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
         context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);

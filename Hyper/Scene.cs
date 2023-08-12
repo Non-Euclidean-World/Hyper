@@ -1,14 +1,16 @@
 ﻿using BepuPhysics;
+using BepuPhysics.Collidables;
 using BepuUtilities;
-using Hyper.Animation.Characters;
-using Hyper.Animation.Characters.Cowboy;
+using BepuUtilities.Memory;
+/*using Hyper.Animation.Characters;
+using Hyper.Animation.Characters.Cowboy;*/
 using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
 using Hyper.Meshes;
-using Hyper.PlayerData;
+//using Hyper.PlayerData;
 using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -25,11 +27,15 @@ internal class Scene : IInputSubscriber
 
     private readonly List<Projectile> _projectiles;
 
-    public Camera Camera => Player.Camera;
+    public Camera Camera; //=> Player.Camera;
 
-    public readonly List<Character> Characters;
+    //public readonly List<Character> Characters;
+    // TODO these two fields should really be in one object
+    CharacterControllers _characterControllers;
 
-    public readonly Player Player;
+    Character _character;
+
+    //public readonly Player Player;
 
     public HudManager Hud { get; private set; }
 
@@ -53,6 +59,15 @@ internal class Scene : IInputSubscriber
 
     private readonly Vector3 _carInitialPosition;
 
+    // BUG some assert fires if you do the following: 
+    // make it so that the first thing that happens to the character is a collision with the car (before hitting any key)
+    // make a jump -- you'll notice that the character gets stuck mid-air
+    // make a move -- the assert fires
+    // overall these are some very specific conditions, so I'll leave it for now
+    private readonly Vector3 _characterInitialPosition;
+
+    private readonly BufferPool _bufferPool;
+
     public Scene(float aspectRatio)
     {
         _scalarFieldGenerator = new ScalarFieldGenerator(1);
@@ -61,9 +76,10 @@ internal class Scene : IInputSubscriber
         _chunks = GetChunks(chunkFactory);
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
-        Characters = GetCharacters();
-        Player = new Player(GetCamera(aspectRatio));
-        _carInitialPosition = new Vector3(-5, _scalarFieldGenerator.AvgElevation + 10, 10);
+        //Characters = GetCharacters();
+        //Player = new Player(GetCamera(aspectRatio));
+        _carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 8, 12);
+        _characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
 
         Hud = new HudManager(aspectRatio);
 
@@ -73,11 +89,23 @@ internal class Scene : IInputSubscriber
 
         RegisterCallbacks();
 
+        _bufferPool = new BufferPool();
+
         _properties = new CollidableProperty<SimulationProperties>();
 
-        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks() { Properties = _properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1));
+        _characterControllers = new CharacterControllers(_bufferPool);
+
+        _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers) { Properties = _properties }, new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)), new SolveDescription(6, 1), _bufferPool);
+
+        _character = new Character(_characterControllers, TypingUtils.ToNumericsVector(_characterInitialPosition), new Capsule(0.5f, 1), 0.1f, 1, 20, 100, 6, 4, MathF.PI * 0.4f);
+
+
 
         _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, TypingUtils.ToNumericsVector(_carInitialPosition));
+
+
+
+        Camera = GetCamera(aspectRatio);
 
         foreach (var chunk in _chunks)
         {
@@ -113,15 +141,17 @@ internal class Scene : IInputSubscriber
 
         SetUpCharacterShaderParams();
 
-        foreach (var character in Characters)
+        /*foreach (var character in Characters)
         {
             character.Render(_characterShader, _scale, Camera.ReferencePointPosition);
-        }
+        }*/
 
-        Player.Render(_characterShader, _scale, Camera.ReferencePointPosition);
+        //Player.Render(_characterShader, _scale, Camera.ReferencePointPosition);
 
 
         _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
+
+        _character.RenderCharacterMesh(_objectShader, _scale, Camera.ReferencePointPosition);
 
         Hud.Render();
     }
@@ -220,7 +250,7 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private static List<Character> GetCharacters()
+    /*private static List<Character> GetCharacters()
     {
         var models = new List<Character>
             {
@@ -228,7 +258,7 @@ internal class Scene : IInputSubscriber
             };
 
         return models;
-    }
+    }*/
 
     private Camera GetCamera(float aspectRatio)
     {
@@ -276,7 +306,7 @@ internal class Scene : IInputSubscriber
         Context context = Context.Instance;
 
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
-        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P });
+        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P, Keys.LeftShift, Keys.Space });
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterUpdateFrameCallback((e) =>
         {
@@ -286,6 +316,28 @@ internal class Scene : IInputSubscriber
             if (context.HeldKeys[Keys.D]) steeringSum -= 1;
             float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;*/
             _simpleCar.Update(_simulationManager.Simulation, (float)e.Time, 0/*steeringSum*/, 0f/*targetSpeedFraction*/, false, false /*context.HeldKeys[Keys.Backspace]*/);
+
+            Vector2 movementDirection = default;
+            if (context.HeldKeys[Keys.W])
+            {
+                movementDirection = new Vector2(0, 1);
+            }
+            if (context.HeldKeys[Keys.S])
+            {
+                movementDirection += new Vector2(0, -1);
+            }
+            if (context.HeldKeys[Keys.A])
+            {
+                movementDirection += new Vector2(-1, 0);
+            }
+            if (context.HeldKeys[Keys.D])
+            {
+                movementDirection += new Vector2(1, 0);
+            }
+            _character.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
+                tryJump: context.HeldKeys[Keys.Space], sprint: context.HeldKeys[Keys.LeftShift],
+                TypingUtils.ToNumericsVector(movementDirection));
+
             _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
         });
 
