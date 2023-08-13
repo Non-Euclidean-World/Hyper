@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using BepuPhysics;
 using BepuPhysics.Constraints;

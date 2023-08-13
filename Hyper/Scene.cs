@@ -1,10 +1,6 @@
-﻿//#define ANIMATION
-
-using BepuPhysics;
+﻿using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
-/*using Hyper.Animation.Characters;
-using Hyper.Animation.Characters.Cowboy;*/
 using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
 using Hyper.HUD;
@@ -12,7 +8,6 @@ using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
 using Hyper.Meshes;
 using Hyper.TypingUtils;
-//using Hyper.PlayerData;
 using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -29,15 +24,12 @@ internal class Scene : IInputSubscriber
 
     private readonly List<Projectile> _projectiles;
 
-    public Camera Camera; //=> Player.Camera;
+    public Camera Camera;
 
-    //public readonly List<Character> Characters;
     // TODO these two fields should really be in one object
     CharacterControllers _characterControllers;
 
     Character _character;
-
-    //public readonly Player Player;
 
     public HudManager Hud { get; private set; }
 
@@ -73,8 +65,7 @@ internal class Scene : IInputSubscriber
         _chunks = GetChunks(chunkFactory);
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
-        //Characters = GetCharacters();
-        //Player = new Player(GetCamera(aspectRatio));
+
         _carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 8, 12);
         _characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
 
@@ -136,27 +127,13 @@ internal class Scene : IInputSubscriber
             light.Render(_lightSourceShader, _scale, Camera.ReferencePointPosition);
         }
 
-
-
-        /*foreach (var character in Characters)
-        {
-            character.Render(_characterShader, _scale, Camera.ReferencePointPosition);
-        }*/
-
-        //Player.Render(_characterShader, _scale, Camera.ReferencePointPosition);
-
-
-        //_simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
-
         SetUpCharacterShaderParams();
 
-        _character.RenderCharacterMesh(
-
-            _characterShader,
-
+        _character.RenderCharacterMesh(_characterShader,
+#if BOUNDING_BOXES
             _objectShader,
-
-            _scale, Camera.ReferencePointPosition);
+#endif
+            _scale, Camera.ReferencePointPosition, Camera.FirstPerson);
 
         Hud.Render();
     }
@@ -254,16 +231,6 @@ internal class Scene : IInputSubscriber
 
         return lightSources;
     }
-
-    /*private static List<Character> GetCharacters()
-    {
-        var models = new List<Character>
-            {
-                new Cowboy(new Vector3(0, 20, 0), 1f)
-            };
-
-        return models;
-    }*/
 
     private Camera GetCamera(float aspectRatio)
     {

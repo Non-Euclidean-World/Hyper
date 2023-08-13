@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿
+using OpenTK.Mathematics;
 
 namespace Hyper.Animation.Characters.Cowboy;
 
@@ -12,11 +13,9 @@ internal class Cowboy : Character
         return new Model(model, texture);
     }
 
-    public Cowboy(Vector3 position, float scale) : base(position, scale, GetModel())
-    {
-    }
+    public static Vector3 LocalTranslation => new(0, -5f, 0); // make sure the middle point is in (0, 0, 0)
 
-    public Cowboy() : this(Vector3.Zero, 0.04f) { }
+    public Cowboy(float scale) : base(scale, GetModel()) { }
 
     public void Run() => Model.Animator.Play(0);
 

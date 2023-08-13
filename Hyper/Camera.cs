@@ -39,6 +39,8 @@ internal class Camera : Commandable, IInputSubscriber
 
     private const float Sensitivity = 0.2f;
 
+    public bool FirstPerson { get; set; }
+
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public Camera(float aspectRatio, float near, float far, float scale)
@@ -177,31 +179,19 @@ internal class Camera : Commandable, IInputSubscriber
         }
     }
 
-    private void UpdatePosition(Vector3 direction, float time)
-    {
-        ReferencePointPosition += direction * _cameraSpeed * time;
-    }
-
     public void RegisterCallbacks()
     {
         Context context = Context.Instance;
         context.RegisterKeys(new List<Keys>() {
-            Keys.W, Keys.S, Keys.D, Keys.A, Keys.Space, Keys.LeftShift,
             Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
         });
-
-        /*context.RegisterKeyHeldCallback(Keys.W, (e) => UpdatePosition(Front, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.S, (e) => UpdatePosition(-Front, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.A, (e) => UpdatePosition(-_right, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.D, (e) => UpdatePosition(_right, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.Space, (e) => UpdatePosition(Up, (float)e.Time));
-        context.RegisterKeyHeldCallback(Keys.LeftShift, (e) => UpdatePosition(-Up, (float)e.Time));*/
 
         context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
         context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);
         context.RegisterKeyDownCallback(Keys.D0, () => Curve = -1f);
         context.RegisterKeyHeldCallback(Keys.Down, (e) => Curve -= 1f * (float)e.Time);
         context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
+        context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
 
         context.RegisterMouseMoveCallback((e) => Turn(e.Position));
     }

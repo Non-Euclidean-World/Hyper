@@ -1,4 +1,5 @@
-﻿
+﻿// Copyright The Authors of bepuphysics2
+
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;

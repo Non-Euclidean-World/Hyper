@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿// Copyright The Authors of bepuphysics2
+
+using System.Diagnostics;
 using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
@@ -19,8 +21,10 @@ internal class Character
     PlayerData.Player _player;
     public PlayerData.Player Player { get => _player; }
 
+#if BOUNDING_BOXES
     public Meshes.Mesh Mesh { get => _mesh; }
     private Meshes.Mesh _mesh;
+#endif
 
     public BodyHandle BodyHandle { get { return bodyHandle; } }
 
@@ -48,8 +52,9 @@ internal class Character
         character.MinimumSupportDepth = shape.Radius * -0.01f;
         character.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
         this.speed = speed;
-
+#if BOUNDING_BOXES
         _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(shape.Radius * 2, shape.Length + shape.Radius * 2, shape.Radius * 2));
+#endif
     }
 
     public void UpdateCharacterGoals(Simulation simulation, Camera camera, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
@@ -112,24 +117,26 @@ internal class Character
 
         var body = new BodyReference(bodyHandle, simulation.Bodies);
 
-
-        _player.Update(body.Pose);
-
-
+        _player.Update(body.Pose, camera);
+#if BOUNDING_BOXES
         _mesh.RigidPose = body.Pose;
-
-
+#endif
     }
 
     // TODO this should be a method in mesh cf. simple car
-    public void RenderCharacterMesh(Shader shader, Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
+    public void RenderCharacterMesh(Shader shader,
+#if BOUNDING_BOXES
+        Shader shaderBoundingBox,
+#endif
+        float scale, OpenTK.Mathematics.Vector3 cameraPosition, bool isFirstPersonCamera)
     {
 
-        _player.Render(shader, scale, cameraPosition);
-
+        _player.Render(shader, scale, cameraPosition, isFirstPersonCamera);
+#if BOUNDING_BOXES
         TurnOnWireframe();
         _mesh.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
         TurnOffWireframe();
+#endif
     }
 
 
@@ -143,14 +150,15 @@ internal class Character
         characters.RemoveCharacterByBodyHandle(bodyHandle);
     }
 
-    private void TurnOnWireframe()
+#if BOUNDING_BOXES
+    private static void TurnOnWireframe()
     {
         GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
     }
 
-    private void TurnOffWireframe()
+    private static void TurnOffWireframe()
     {
         GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
     }
-
+#endif
 }

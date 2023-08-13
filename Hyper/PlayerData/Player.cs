@@ -1,5 +1,7 @@
 ﻿using BepuPhysics;
+using BepuUtilities;
 using Hyper.Animation.Characters.Cowboy;
+using Hyper.TypingUtils;
 using Hyper.UserInput;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -8,58 +10,40 @@ namespace Hyper.PlayerData;
 
 internal class Player : IInputSubscriber
 {
-    //public Camera Camera { get; init; }
-
     public Cowboy Character { get; init; }
-
-    //private bool _isFirstPerson;
 
     public Player()
     {
-        //Camera = camera;
-        Character = new Cowboy();
-        //_isFirstPerson = true;
+        Character = new Cowboy(scale: 0.04f);
 
         RegisterCallbacks();
     }
 
-    public void Update(RigidPose bodyPose)
+    public void Update(RigidPose bodyPose, Camera camera)
     {
-        /* Character.Position = Camera.ReferencePointPosition + GetThirdPersonOffset();
-         //var front = Camera.Front;
-         front.Y = 0;
-         float angle = (float)Math.Atan2(front.X, front.Z);
-         Character.Rotation = Matrix4.CreateRotationY(angle);*/
-
-        Character.RigidPose = bodyPose;
+        var front = camera.Front;
+        front.Y = 0;
+        float angle = MathF.Atan2(front.X, front.Z);
+        RigidPose playerPose = bodyPose;
+        playerPose.Orientation = QuaternionEx.CreateFromAxisAngle(new System.Numerics.Vector3(0, 1, 0), angle);
+        Character.RigidPose = playerPose;
+        camera.ReferencePointPosition = Conversions.ToOpenTKVector(bodyPose.Position)
+            + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonOffset(camera));
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition)
+    public void Render(Shader shader, float scale, Vector3 cameraPosition, bool isFirstPerson)
     {
-        /*if (!_isFirstPerson)*/
-        Character.RenderFullDescription(shader, scale, cameraPosition);
+        if (!isFirstPerson)
+            Character.RenderFullDescription(shader, scale, cameraPosition, Cowboy.LocalTranslation);
     }
 
-    //private Vector3 GetThirdPersonOffset(Camera camera) => Camera.Up * -8f + Camera.Front * 12f;
-
-    /*private void SetCameraPerson()
-    {
-        if (_isFirstPerson)
-        {
-            _isFirstPerson = false;
-            Camera.ReferencePointPosition -= GetThirdPersonOffset();
-
-            return;
-        }
-        
-        _isFirstPerson = true;
-        Camera.ReferencePointPosition += GetThirdPersonOffset();
-    }*/
+    private static Vector3 GetThirdPersonOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
 
     private void UpdateMovementAnimation(Context context)
     {
-        if (context.HeldKeys[Keys.W] || context.HeldKeys[Keys.S] || context.HeldKeys[Keys.A] ||
-            context.HeldKeys[Keys.D])
+        if (context.HeldKeys[Keys.W] || context.HeldKeys[Keys.S]
+            || context.HeldKeys[Keys.A] || context.HeldKeys[Keys.D])
             Character.Run();
         else
             Character.Idle();
@@ -72,8 +56,6 @@ internal class Player : IInputSubscriber
             Keys.F5, Keys.W, Keys.S, Keys.A, Keys.D,
         });
 
-        //context.RegisterKeyDownCallback(Keys.F5, SetCameraPerson);
-
         context.RegisterKeyDownCallback(Keys.W, () => UpdateMovementAnimation(context));
         context.RegisterKeyDownCallback(Keys.S, () => UpdateMovementAnimation(context));
         context.RegisterKeyDownCallback(Keys.A, () => UpdateMovementAnimation(context));
@@ -83,7 +65,5 @@ internal class Player : IInputSubscriber
         context.RegisterKeyUpCallback(Keys.S, () => UpdateMovementAnimation(context));
         context.RegisterKeyUpCallback(Keys.A, () => UpdateMovementAnimation(context));
         context.RegisterKeyUpCallback(Keys.D, () => UpdateMovementAnimation(context));
-
-        //context.RegisterUpdateFrameCallback((_) => Update());
     }
 }
