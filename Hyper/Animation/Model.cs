@@ -1,6 +1,6 @@
 ﻿using Assimp;
 using BepuPhysics;
-using Hyper.Collisions;
+using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
@@ -46,15 +46,17 @@ internal class Model
         }
     }
 
-    public void RenderFromPose(RigidPose rigidPose, Shader shader, float scale, Vector3 cameraPosition)
+    public void RenderFromPose(RigidPose rigidPose, Shader shader, float globalScale, Vector3 cameraPosition, float localScale)
     {
         _texture.Use(TextureUnit.Texture0);
 
-        var translation = Matrix4.CreateTranslation((TypingUtils.ToOpenTKVector(rigidPose.Position) - cameraPosition) * scale);
-        var scaleMatrix = Matrix4.CreateScale(scale);
-        var rotation = TypingUtils.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(rigidPose.Orientation));
+        var localTranslation = Matrix4.CreateTranslation(new Vector3(0, -5f, 0));
+        var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(rigidPose.Position) - cameraPosition) * globalScale);
+        var localScaleMatrix = Matrix4.CreateScale(localScale);
+        var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(rigidPose.Orientation));
+        var globalScaleMatrix = Matrix4.CreateScale(globalScale);
 
-        shader.SetMatrix4("model", scaleMatrix * rotation * translation);
+        shader.SetMatrix4("model", localTranslation * localScaleMatrix * rotation * translation * globalScale);
 
         Animator.Animate(_model);
 

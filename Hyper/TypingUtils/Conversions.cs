@@ -1,5 +1,5 @@
-﻿namespace Hyper.Collisions;
-internal class TypingUtils
+﻿namespace Hyper.TypingUtils;
+internal class Conversions
 {
     public static System.Numerics.Vector2 ToNumericsVector(OpenTK.Mathematics.Vector2 v)
         => new(v.X, v.Y);
@@ -21,4 +21,10 @@ internal class TypingUtils
             m.M21, m.M22, m.M23, m.M24,
             m.M31, m.M32, m.M33, m.M34,
             m.M41, m.M42, m.M43, m.M44);
+
+    public static System.Numerics.Vector3 ToNumericsVector(Assimp.Vector3D v)
+        => new(v.X, v.Y, v.Z);
+
+    public static OpenTK.Mathematics.Vector3 ToOpenTKVector(Assimp.Vector3D v)
+        => new(v.X, v.Y, v.Z);
 }

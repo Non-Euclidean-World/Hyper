@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using BepuPhysics;
-using Hyper.Collisions;
+using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -42,9 +42,9 @@ internal class Mesh : IDisposable
 
     public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
     {
-        var translation = Matrix4.CreateTranslation((TypingUtils.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
+        var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
-        var rotation = TypingUtils.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
+        var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
 
         shader.SetMatrix4("model", scaleMatrix * rotation * translation);
 

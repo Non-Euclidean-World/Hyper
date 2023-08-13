@@ -1,5 +1,6 @@
-﻿using BepuPhysics;
-using BepuPhysics.Collidables;
+﻿//#define ANIMATION
+
+using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
 /*using Hyper.Animation.Characters;
@@ -10,6 +11,7 @@ using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.MathUtiils;
 using Hyper.Meshes;
+using Hyper.TypingUtils;
 //using Hyper.PlayerData;
 using Hyper.UserInput;
 using OpenTK.Graphics.OpenGL4;
@@ -63,8 +65,6 @@ internal class Scene : IInputSubscriber
 
     private readonly BufferPool _bufferPool;
 
-    public const float TimestepDuration = 1 / 60f;
-
     public Scene(float aspectRatio)
     {
         _scalarFieldGenerator = new ScalarFieldGenerator(1);
@@ -96,9 +96,9 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1), _bufferPool);
 
-        _character = new Character(_characterControllers, TypingUtils.ToNumericsVector(_characterInitialPosition), new Capsule(0.5f, 1), 0.1f, 1, 20, 100, 6, 4, MathF.PI * 0.4f);
+        _character = new Character(_characterControllers, Conversions.ToNumericsVector(_characterInitialPosition), 0.1f, 1, 20, 100, 6, 4, MathF.PI * 0.4f);
 
-        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, TypingUtils.ToNumericsVector(_carInitialPosition));
+        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, Conversions.ToNumericsVector(_carInitialPosition));
 
         Camera = GetCamera(aspectRatio);
 
@@ -151,11 +151,11 @@ internal class Scene : IInputSubscriber
         SetUpCharacterShaderParams();
 
         _character.RenderCharacterMesh(
-#if ANIMATION
+
             _characterShader,
-#else
+
             _objectShader,
-#endif
+
             _scale, Camera.ReferencePointPosition);
 
         Hud.Render();
@@ -341,7 +341,7 @@ internal class Scene : IInputSubscriber
             }
             _character.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
                 tryJump: context.HeldKeys[Keys.Space], sprint: context.HeldKeys[Keys.LeftShift],
-                TypingUtils.ToNumericsVector(movementDirection));
+                Conversions.ToNumericsVector(movementDirection));
 
             _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
         });
@@ -368,7 +368,7 @@ internal class Scene : IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.P, () =>
         {
-            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, TypingUtils.ToNumericsVector(Camera.ReferencePointPosition), TypingUtils.ToNumericsVector(Camera.Front) * 15);
+            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, Conversions.ToNumericsVector(Camera.ReferencePointPosition), Conversions.ToNumericsVector(Camera.Front) * 15);
             _projectiles.Add(projectile);
         });
     }

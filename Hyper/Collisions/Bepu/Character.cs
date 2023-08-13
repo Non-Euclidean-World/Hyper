@@ -1,11 +1,11 @@
-﻿//#define ANIMATION
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using Hyper.Meshes;
+using Hyper.TypingUtils;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Hyper.Collisions.Bepu;
 internal class Character
@@ -15,20 +15,23 @@ internal class Character
     float speed;
     Capsule shape;
 
-#if ANIMATION
+
     PlayerData.Player _player;
     public PlayerData.Player Player { get => _player; }
-#else
+
     public Meshes.Mesh Mesh { get => _mesh; }
     private Meshes.Mesh _mesh;
-#endif
+
     public BodyHandle BodyHandle { get { return bodyHandle; } }
 
-    public Character(CharacterControllers characters, Vector3 initialPosition, Capsule shape,
+    public Character(CharacterControllers characters, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
         this.characters = characters;
+        _player = new PlayerData.Player();
+        Capsule capsule = new Capsule(1, 2);
+        this.shape = capsule;
         var shapeIndex = characters.Simulation.Shapes.Add(shape);
 
         //Because characters are dynamic, they require a defined BodyInertia. For the purposes of the demos, we don't want them to rotate or fall over, so the inverse inertia tensor is left at its default value of all zeroes.
@@ -45,13 +48,8 @@ internal class Character
         character.MinimumSupportDepth = shape.Radius * -0.01f;
         character.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
         this.speed = speed;
-        this.shape = shape;
 
-#if ANIMATION
-        _player = new PlayerData.Player();
-#else
-        _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(shape.Radius * 2, shape.Length, shape.Radius * 2));
-#endif
+        _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(shape.Radius * 2, shape.Length + shape.Radius * 2, shape.Radius * 2));
     }
 
     public void UpdateCharacterGoals(Simulation simulation, Camera camera, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
@@ -67,7 +65,7 @@ internal class Character
         var characterBody = new BodyReference(bodyHandle, characters.Simulation.Bodies);
         var effectiveSpeed = sprint ? speed * 1.75f : speed;
         var newTargetVelocity = movementDirection * effectiveSpeed;
-        var viewDirection = TypingUtils.ToNumericsVector(camera.Front);
+        var viewDirection = Conversions.ToNumericsVector(camera.Front);
         //Modifying the character's raw data does not automatically wake the character up, so we do so explicitly if necessary.
         //If you don't explicitly wake the character up, it won't respond to the changed motion goals.
         //(You can also specify a negative deactivation threshold in the BodyActivityDescription to prevent the character from sleeping at all.)
@@ -114,22 +112,24 @@ internal class Character
 
         var body = new BodyReference(bodyHandle, simulation.Bodies);
 
-#if ANIMATION
+
         _player.Update(body.Pose);
-#else
+
+
         _mesh.RigidPose = body.Pose;
-#endif
+
 
     }
 
     // TODO this should be a method in mesh cf. simple car
-    public void RenderCharacterMesh(Shader shader, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
+    public void RenderCharacterMesh(Shader shader, Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
     {
-#if ANIMATION
+
         _player.Render(shader, scale, cameraPosition);
-#else
-        _mesh.RenderFullDescription(shader, scale, cameraPosition);
-#endif
+
+        TurnOnWireframe();
+        _mesh.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
+        TurnOffWireframe();
     }
 
 
@@ -141,6 +141,16 @@ internal class Character
         characters.Simulation.Shapes.Remove(new BodyReference(bodyHandle, characters.Simulation.Bodies).Collidable.Shape);
         characters.Simulation.Bodies.Remove(bodyHandle);
         characters.RemoveCharacterByBodyHandle(bodyHandle);
+    }
+
+    private void TurnOnWireframe()
+    {
+        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+    }
+
+    private void TurnOffWireframe()
+    {
+        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
     }
 
 }
