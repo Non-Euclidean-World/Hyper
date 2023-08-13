@@ -24,12 +24,12 @@ internal class Scene : IInputSubscriber
 
     private readonly List<Projectile> _projectiles;
 
-    public Camera Camera;
+    public Camera Camera { get; set; }
 
     // TODO these two fields should really be in one object
-    CharacterControllers _characterControllers;
+    private readonly CharacterControllers _characterControllers;
 
-    Character _character;
+    private readonly Character _character;
 
     public HudManager Hud { get; private set; }
 
@@ -93,14 +93,16 @@ internal class Scene : IInputSubscriber
 
         Camera = GetCamera(aspectRatio);
 
+        // TODO this is really awful
         foreach (var chunk in _chunks)
         {
-            var mesh = MeshHelper.CreateMeshFromChunk(chunk, _scale, _simulationManager.BufferPool);
+            var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
             var position = chunk.Position;
-            _simulationManager.Simulation.Statics.Add(new StaticDescription(
+            chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
+            chunk.Handle = _simulationManager.Simulation.Statics.Add(new StaticDescription(
                 new System.Numerics.Vector3(position.X, position.Y, position.Z),
                 QuaternionEx.Identity,
-                _simulationManager.Simulation.Shapes.Add(mesh)));
+                chunk.Shape));
         }
     }
 
@@ -315,28 +317,49 @@ internal class Scene : IInputSubscriber
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
-            var position = Camera.ReferencePointPosition;
-
             foreach (var chunk in _chunks)
             {
-                if (chunk.Mine(position, (float)e.Time)) return;
+                if (chunk.Mine(Conversions.ToOpenTKVector(GetCharacterRay(1)), (float)e.Time))
+                {
+                    // interestingly this doesn't kill the performance
+                    _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
+                    var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
+                    var position = chunk.Position;
+                    chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
+                    _simulationManager.Simulation.Statics[chunk.Handle].SetShape(chunk.Shape);
+                    return;
+                }
             }
         });
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
-            var position = Camera.ReferencePointPosition;
-
             foreach (var chunk in _chunks)
             {
-                if (chunk.Build(position, (float)e.Time)) return;
+                if (chunk.Build(Conversions.ToOpenTKVector(GetCharacterRay(3)), (float)e.Time))
+                {
+                    // interestingly this doesn't kill the performance
+                    _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
+                    var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
+                    var position = chunk.Position;
+                    chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
+                    _simulationManager.Simulation.Statics[chunk.Handle].SetShape(chunk.Shape);
+                    return;
+                }
             }
         });
 
         context.RegisterKeyDownCallback(Keys.P, () =>
         {
-            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation, _properties, Conversions.ToNumericsVector(Camera.ReferencePointPosition), Conversions.ToNumericsVector(Camera.Front) * 15);
+            var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation,
+                _properties,
+                GetCharacterRay(2),
+                Conversions.ToNumericsVector(Camera.Front) * 15);
             _projectiles.Add(projectile);
         });
     }
+
+    private System.Numerics.Vector3 GetCharacterRay(float length)
+        => _character.Player.Character.RigidPose.Position
+                + Conversions.ToNumericsVector(Camera.Front * length);
 }

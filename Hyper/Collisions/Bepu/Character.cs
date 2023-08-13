@@ -12,48 +12,46 @@ using OpenTK.Graphics.OpenGL4;
 namespace Hyper.Collisions.Bepu;
 internal class Character
 {
-    BodyHandle bodyHandle;
-    CharacterControllers characters;
-    float speed;
-    Capsule shape;
+    private BodyHandle _bodyHandle;
+    private readonly CharacterControllers _characters;
+    private readonly float _speed;
+    private Capsule _shape;
 
 
-    PlayerData.Player _player;
+    private readonly PlayerData.Player _player;
     public PlayerData.Player Player { get => _player; }
 
 #if BOUNDING_BOXES
     public Meshes.Mesh Mesh { get => _mesh; }
-    private Meshes.Mesh _mesh;
+    private readonly Meshes.Mesh _mesh;
 #endif
-
-    public BodyHandle BodyHandle { get { return bodyHandle; } }
 
     public Character(CharacterControllers characters, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
-        this.characters = characters;
+        _characters = characters;
         _player = new PlayerData.Player();
         Capsule capsule = new Capsule(1, 2);
-        this.shape = capsule;
-        var shapeIndex = characters.Simulation.Shapes.Add(shape);
+        _shape = capsule;
+        var shapeIndex = characters.Simulation.Shapes.Add(_shape);
 
         //Because characters are dynamic, they require a defined BodyInertia. For the purposes of the demos, we don't want them to rotate or fall over, so the inverse inertia tensor is left at its default value of all zeroes.
         //This is effectively equivalent to giving it an infinite inertia tensor- in other words, no torque will cause it to rotate.
-        bodyHandle = characters.Simulation.Bodies.Add(
+        _bodyHandle = characters.Simulation.Bodies.Add(
             BodyDescription.CreateDynamic(initialPosition, new BodyInertia { InverseMass = 1f / mass },
-            new(shapeIndex, minimumSpeculativeMargin, float.MaxValue, ContinuousDetection.Passive), activity: shape.Radius * 0.0002f));
-        ref var character = ref characters.AllocateCharacter(bodyHandle);
+            new(shapeIndex, minimumSpeculativeMargin, float.MaxValue, ContinuousDetection.Passive), activity: _shape.Radius * 0.0002f));
+        ref var character = ref characters.AllocateCharacter(_bodyHandle);
         character.LocalUp = new Vector3(0, 1, 0);
         character.CosMaximumSlope = MathF.Cos(maximumSlope);
         character.JumpVelocity = jumpVelocity;
         character.MaximumVerticalForce = maximumVerticalGlueForce;
         character.MaximumHorizontalForce = maximumHorizontalForce;
-        character.MinimumSupportDepth = shape.Radius * -0.01f;
+        character.MinimumSupportDepth = _shape.Radius * -0.01f;
         character.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
-        this.speed = speed;
+        _speed = speed;
 #if BOUNDING_BOXES
-        _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(shape.Radius * 2, shape.Length + shape.Radius * 2, shape.Radius * 2));
+        _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2));
 #endif
     }
 
@@ -65,10 +63,10 @@ internal class Character
             movementDirection /= MathF.Sqrt(movementDirectionLengthSquared);
         }
 
-        ref var character = ref characters.GetCharacterByBodyHandle(bodyHandle);
+        ref var character = ref _characters.GetCharacterByBodyHandle(_bodyHandle);
         character.TryJump = tryJump;
-        var characterBody = new BodyReference(bodyHandle, characters.Simulation.Bodies);
-        var effectiveSpeed = sprint ? speed * 1.75f : speed;
+        var characterBody = new BodyReference(_bodyHandle, _characters.Simulation.Bodies);
+        var effectiveSpeed = sprint ? _speed * 1.75f : _speed;
         var newTargetVelocity = movementDirection * effectiveSpeed;
         var viewDirection = Conversions.ToNumericsVector(camera.Front);
         //Modifying the character's raw data does not automatically wake the character up, so we do so explicitly if necessary.
@@ -79,7 +77,7 @@ internal class Character
             newTargetVelocity != character.TargetVelocity ||
             (newTargetVelocity != Vector2.Zero && character.ViewDirection != viewDirection)))
         {
-            characters.Simulation.Awakener.AwakenBody(character.BodyHandle);
+            _characters.Simulation.Awakener.AwakenBody(character.BodyHandle);
         }
         character.TargetVelocity = newTargetVelocity;
         character.ViewDirection = viewDirection;
@@ -115,7 +113,7 @@ internal class Character
             }
         }
 
-        var body = new BodyReference(bodyHandle, simulation.Bodies);
+        var body = new BodyReference(_bodyHandle, simulation.Bodies);
 
         _player.Update(body.Pose, camera);
 #if BOUNDING_BOXES
@@ -145,9 +143,9 @@ internal class Character
     /// </summary>
     public void Dispose()
     {
-        characters.Simulation.Shapes.Remove(new BodyReference(bodyHandle, characters.Simulation.Bodies).Collidable.Shape);
-        characters.Simulation.Bodies.Remove(bodyHandle);
-        characters.RemoveCharacterByBodyHandle(bodyHandle);
+        _characters.Simulation.Shapes.Remove(new BodyReference(_bodyHandle, _characters.Simulation.Bodies).Collidable.Shape);
+        _characters.Simulation.Bodies.Remove(_bodyHandle);
+        _characters.RemoveCharacterByBodyHandle(_bodyHandle);
     }
 
 #if BOUNDING_BOXES

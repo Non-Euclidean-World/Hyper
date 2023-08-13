@@ -6,7 +6,7 @@ using Hyper.TypingUtils;
 namespace Hyper.Collisions;
 internal class MeshHelper
 {
-    public static BepuPhysics.Collidables.Mesh CreateMeshFromChunk(Chunk chunk, float scaling, BufferPool pool)
+    public static BepuPhysics.Collidables.Mesh CreateMeshFromChunk(Chunk chunk, BufferPool pool)
     {
         int triangleCount = chunk.Vertices.Length / 3;
         pool.Take<Triangle>(triangleCount, out var triangles);

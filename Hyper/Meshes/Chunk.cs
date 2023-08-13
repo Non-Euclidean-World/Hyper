@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using BepuPhysics;
+using BepuPhysics.Collidables;
 using Hyper.MarchingCubes;
 using Hyper.MarchingCubes.Voxels;
 using NLog;
@@ -15,6 +17,10 @@ internal class Chunk : Mesh
     private readonly Voxel[,,] _voxels;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    public StaticHandle Handle { get; set; }
+
+    public TypedIndex Shape { get; set; }
 
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
     {
@@ -41,7 +47,7 @@ internal class Chunk : Mesh
             {
                 for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
                 {
-                    if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
+                    if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
                         _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
@@ -75,7 +81,7 @@ internal class Chunk : Mesh
             {
                 for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
                 {
-                    if (DistSqrd(x, y, z, xi, yi, zi) <= radius * radius)
+                    if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
                         _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
@@ -120,7 +126,7 @@ internal class Chunk : Mesh
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
     }
 
-    private static float DistSqrd(float x1, float y1, float z1, float x2, float y2, float z2)
+    private static float DistanceSquared(float x1, float y1, float z1, float x2, float y2, float z2)
     {
         return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
     }
