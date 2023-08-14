@@ -145,7 +145,7 @@ internal class Scene : IInputSubscriber
         _projectiles.RemoveAll(x => x.IsDead);
         foreach (var projectile in _projectiles)
         {
-            projectile.Update(_simulationManager.Simulation, dt);
+            projectile.Update(_simulationManager.Simulation, dt, _simulationManager.BufferPool);
         }
     }
 
