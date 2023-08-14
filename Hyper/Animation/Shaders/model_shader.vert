@@ -17,9 +17,11 @@ uniform float curv;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat4 normalRotation;
 uniform mat4 boneTransforms[MAX_BONES];
 
-vec4 port(vec4 ePoint) {
+vec4 port(vec4 ePoint)
+{
 	vec3 p = ePoint.xyz;
 	float d = length(p);
 	if(d < 0.0001 || curv == 0) return ePoint;
@@ -48,11 +50,13 @@ mat4 TranslateMatrix(vec4 to)
 	}
 }
 
-void main(void){
+void main(void)
+{
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);
 	
-	for(int i = 0; i < MAX_WEIGHTS; i++){
+	for(int i = 0; i < MAX_WEIGHTS; i++)
+	{
 		mat4 boneTransform = boneTransforms[in_boneIndices[i]];
 		vec4 posePosition = boneTransform * vec4(in_position, 1.0);
 		totalLocalPos += posePosition * in_weights[i];
@@ -63,6 +67,6 @@ void main(void){
 
 	gl_Position = port(totalLocalPos * model) * view * projection;
 	FragPos = port(totalLocalPos * model);
-	Normal = totalNormal * TranslateMatrix(port(totalLocalPos * model));
+	Normal = totalNormal * normalRotation * TranslateMatrix(port(totalLocalPos * model));
 	Texture = in_textureCoords;
 }

@@ -56,6 +56,7 @@ internal class Model
         var globalScaleMatrix = Matrix4.CreateScale(globalScale);
 
         shader.SetMatrix4("model", localTranslationMatrix * localScaleMatrix * rotation * translation * globalScale);
+        shader.SetMatrix4("normalRotation", rotation);
 
         Animator.Animate(_model);
 
@@ -69,4 +70,5 @@ internal class Model
                 DrawElementsType.UnsignedInt, 0);
         }
     }
+
 }
