@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MathUtiils;
+namespace Hyper.MathUtils;
 
 internal static class Matrices
 {

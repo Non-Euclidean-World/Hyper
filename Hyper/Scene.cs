@@ -5,11 +5,10 @@ using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
-using Hyper.MathUtiils;
 using Hyper.Meshes;
+using Hyper.Shaders;
 using Hyper.TypingUtils;
 using Hyper.UserInput;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -71,9 +70,9 @@ internal class Scene : IInputSubscriber
 
         Hud = new HudManager(aspectRatio);
 
-        _objectShader = GetObjectShader();
-        _lightSourceShader = GetLightSourceShader();
-        _characterShader = GetModelShader();
+        _objectShader = ShaderFactory.CreateObjectShader();
+        _lightSourceShader = ShaderFactory.CreateLightSourceShader();
+        _characterShader = ShaderFactory.CreateModelShader();
 
         RegisterCallbacks();
 
@@ -108,7 +107,7 @@ internal class Scene : IInputSubscriber
 
     public void Render()
     {
-        SetUpObjectShaderParams();
+        ShaderFactory.SetUpObjectShaderParams(_objectShader, Camera, _lightSources, _scale);
 
         foreach (var chunk in _chunks)
         {
@@ -122,14 +121,14 @@ internal class Scene : IInputSubscriber
 
         _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
 
-        SetUpLightingShaderParams();
+        ShaderFactory.SetUpLightingShaderParams(_lightSourceShader, Camera);
 
         foreach (var light in _lightSources)
         {
             light.Render(_lightSourceShader, _scale, Camera.ReferencePointPosition);
         }
 
-        SetUpCharacterShaderParams();
+        ShaderFactory.SetUpCharacterShaderParams(_characterShader, Camera, _lightSources, _scale);
 
         _character.RenderCharacterMesh(_characterShader,
 #if BOUNDING_BOXES
@@ -149,48 +148,9 @@ internal class Scene : IInputSubscriber
         }
     }
 
-    private void SetUpObjectShaderParams()
-    {
-        _objectShader.Use();
-        _objectShader.SetFloat("curv", Camera.Curve);
-        _objectShader.SetFloat("anti", 1.0f);
-        _objectShader.SetMatrix4("view", Camera.GetViewMatrix());
-        _objectShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-        _objectShader.SetInt("numLights", _lightSources.Count);
-        _objectShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
-
-        _objectShader.SetVector3Array("lightColor", _lightSources.Select(x => x.Color).ToArray());
-        _objectShader.SetVector4Array("lightPos", _lightSources.Select(x =>
-            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * _scale, Camera.Curve)).ToArray());
-    }
-
-    private void SetUpLightingShaderParams()
-    {
-        _lightSourceShader.Use();
-        _lightSourceShader.SetFloat("curv", Camera.Curve);
-        _lightSourceShader.SetFloat("anti", 1.0f);
-        _lightSourceShader.SetMatrix4("view", Camera.GetViewMatrix());
-        _lightSourceShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-    }
-
-
     private List<Chunk> GetChunks(ChunkFactory generator)
     {
         return MakeSquare(_chunksPerSide, generator);
-    }
-
-    private void SetUpCharacterShaderParams()
-    {
-        _characterShader.Use();
-        _characterShader.SetFloat("curv", Camera.Curve);
-        _characterShader.SetMatrix4("view", Camera.GetViewMatrix());
-        _characterShader.SetMatrix4("projection", Camera.GetProjectionMatrix());
-
-        _characterShader.SetInt("numLights", _lightSources.Count);
-        _characterShader.SetVector4("viewPos", GeomPorting.EucToCurved(Vector3.UnitY, Camera.Curve));
-        _characterShader.SetVector3Array("lightColor", _lightSources.Select(x => x.Color).ToArray());
-        _characterShader.SetVector4Array("lightPos", _lightSources.Select(x =>
-            GeomPorting.EucToCurved((x.Position - Camera.ReferencePointPosition) * _scale, Camera.Curve)).ToArray());
     }
 
     private static List<Chunk> MakeSquare(int chunksPerSide, ChunkFactory generator)
@@ -242,37 +202,6 @@ internal class Scene : IInputSubscriber
         };
 
         return camera;
-    }
-
-    private static Shader GetObjectShader()
-    {
-        var shaderParams = new[]
-        {
-            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-            ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
-        };
-
-        return new Shader(shaderParams);
-    }
-
-    private static Shader GetLightSourceShader()
-    {
-        var shaderParams = new[]
-        {
-            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-            ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
-        };
-        return new Shader(shaderParams);
-    }
-
-    private static Shader GetModelShader()
-    {
-        var shader = new[]
-        {
-            ("Animation/Shaders/model_shader.vert", ShaderType.VertexShader),
-            ("Animation/Shaders/model_shader.frag", ShaderType.FragmentShader)
-        };
-        return new Shader(shader);
     }
 
     public void RegisterCallbacks()

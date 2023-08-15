@@ -1,5 +1,5 @@
 using Hyper.Command;
-using Hyper.MathUtiils;
+using Hyper.MathUtils;
 using Hyper.UserInput;
 using NLog;
 using OpenTK.Mathematics;
@@ -42,6 +42,8 @@ internal class Camera : Commandable, IInputSubscriber
     public bool FirstPerson { get; set; }
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    public Vector3 ViewPosition { get => _position; }
 
     public Camera(float aspectRatio, float near, float far, float scale)
     {
