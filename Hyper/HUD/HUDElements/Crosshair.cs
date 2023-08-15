@@ -50,7 +50,6 @@ internal class Crosshair : IHudElement
     private static HUDVertex[] GetVertices()
     {
         HUDVertexBuilder builder = new();
-        Vector3 color = new Vector3(1, 0, 0);
         return new[]
         {
             builder.SetPosition(-1, 0).Build(),

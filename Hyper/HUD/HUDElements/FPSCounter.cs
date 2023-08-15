@@ -9,8 +9,6 @@ internal class FpsCounter : IHudElement
     
     private readonly Vector2 _size;
 
-    private readonly Vector2 _position;
-
     private const double FpsTimeFrame = 0.1f;
 
     private readonly Stopwatch _stopwatch = new();
@@ -25,7 +23,6 @@ internal class FpsCounter : IHudElement
 
     public FpsCounter()
     {
-        _position = new Vector2(0.64f, 0.48f);
         _size = new Vector2(0.02f);
         _stopwatch.Start();
     }

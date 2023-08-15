@@ -2,10 +2,11 @@
 
 namespace Hyper.HUD.Sprites;
 
+[Serializable]
 public class Sprite
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
     [JsonPropertyName("x")]
     public int X { get; set; } // Row in which the sprite is located.

@@ -1,9 +1,11 @@
 ﻿namespace Hyper.PlayerData.InventorySystem.Items.Tools;
 
-public class Hammer : Tool
+public class Hammer : Item
 {
     public override string ID => "hammer";
-    
+
+    public override bool IsStackable { get; } = false;
+
     public override void Use()
     {
         Console.WriteLine("Digging...");
