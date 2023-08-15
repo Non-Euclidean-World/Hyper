@@ -9,7 +9,7 @@ namespace Hyper;
 
 internal class Window : GameWindow, IInputSubscriber
 {
-    public static Window Instance;
+    public static Window Instance = null!;
     
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
