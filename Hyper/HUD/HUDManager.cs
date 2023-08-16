@@ -1,5 +1,6 @@
 ﻿using Hyper.Command;
 using Hyper.HUD.HUDElements;
+using Hyper.HUD.HUDElements.InventoryRendering;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -11,21 +12,23 @@ internal class HudManager : Commandable
 
     private readonly Shader _shader;
 
-    private readonly Dictionary<HudElementTypes, HudElement> _elements;
+    private readonly IHudElement[] _elements;
 
     public HudManager(float aspectRatio)
     {
         AspectRatio = aspectRatio;
         _shader = CreateShader();
-        _elements = new Dictionary<HudElementTypes, HudElement>()
+        _elements = new IHudElement[]
         {
-            { HudElementTypes.Crosshair, new Crosshair(new Vector2(0, 0), Crosshair.DefaultSize) },
-            { HudElementTypes.FpsCounter, new FpsCounter(FpsCounter.DefaultPosition, FpsCounter.DefaultSize) },
+            new Crosshair(),
+            new FpsCounter(),
+            new InventoryRenderer(),
         };
     }
 
     public void Render()
     {
+        GL.Disable(EnableCap.DepthTest);
         var projection = Matrix4.CreateOrthographic(AspectRatio, 1, -1.0f, 1.0f);
 
         _shader.Use();
@@ -34,13 +37,14 @@ internal class HudManager : Commandable
 
         foreach (var element in _elements)
         {
-            if (element.Value.Visible) element.Value.Render(_shader);
+            if (element.Visible) element.Render(_shader);
         }
+        GL.Enable(EnableCap.DepthTest);
     }
 
     private Shader CreateShader()
     {
-        var shader = new (string, ShaderType)[]
+        var shader = new []
         {
             ("HUD/Shaders/shader2d.vert", ShaderType.VertexShader),
             ("HUD/Shaders/shader2d.frag", ShaderType.FragmentShader)
@@ -48,41 +52,16 @@ internal class HudManager : Commandable
 
         return new Shader(shader);
     }
-
-    protected override void SetCommand(string[] args)
+    
+    public static Vector2 GetMousePosition()
     {
-        switch (args[0])
-        {
-            case "crosshair":
-                SetVisibility(args[1], HudElementTypes.Crosshair);
-                break;
-            case "fps":
-                SetVisibility(args[1], HudElementTypes.FpsCounter);
-                break;
-            default:
-                throw new CommandException($"Property '{args[0]}' not found");
-        }
-    }
-
-    protected override void GetCommand(string[] args)
-    {
-        switch (args[0])
-        {
-            case "crosshair":
-                if (args[1] == "visibility") Console.WriteLine(_elements[HudElementTypes.Crosshair].Visible);
-                break;
-            case "fps":
-                if (args[1] == "visibility") Console.WriteLine(_elements[HudElementTypes.FpsCounter].Visible);
-                break;
-            default:
-                throw new CommandException($"Property '{args[0]}' not found");
-        }
-    }
-
-    private void SetVisibility(string argument, HudElementTypes elementType)
-    {
-        if (argument == "visible") _elements[elementType].Visible = true;
-        else if (argument == "invisible") _elements[elementType].Visible = false;
-        else CommandNotFound();
+        var window = Window.Instance;
+        var mouse = window.MouseState;
+        var windowSize = window.Size;
+        var aspectRatio = windowSize.X / (float)windowSize.Y;
+        
+        return new Vector2(
+            (mouse.X / windowSize.X) * aspectRatio - aspectRatio * 0.5f,
+            0.5f - (mouse.Y / windowSize.Y));
     }
 }

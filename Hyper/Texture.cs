@@ -38,7 +38,7 @@ internal class Texture
         return new Texture(handle);
     }
 
-    public static Texture LoadFromText(string text)
+    public static Texture LoadFromBitmap(SKBitmap bitmap)
     {
         int handle = GL.GenTexture();
 
@@ -47,26 +47,7 @@ internal class Texture
 
         StbImage.stbi_set_flip_vertically_on_load(1);
 
-        using (var bitmap = new SKBitmap(FontSize * 3 / 5, FontSize))
-        {
-            using (SKCanvas canvas = new SKCanvas(bitmap))
-            {
-                canvas.Clear(SKColors.Transparent);
-                using (SKPaint paint = new SKPaint())
-                {
-                    paint.Color = SKColors.White;
-                    paint.IsAntialias = true;
-                    paint.TextSize = FontSize;
-                    paint.TextAlign = SKTextAlign.Center;
-
-                    float x = bitmap.Width / 2;
-
-                    canvas.DrawText(text, x, FontSize - 5, paint);
-                }
-            }
-
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bitmap.GetPixels());
-        }
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bitmap.GetPixels());
 
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
