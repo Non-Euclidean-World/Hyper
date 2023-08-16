@@ -8,27 +8,25 @@ namespace Hyper.Collisions;
 internal class Projectile
 {
     public BodyHandle Body { get; private set; }
+    public bool IsDead { get; private set; }
+    public ProjectileMesh Mesh { get; private set; }
+
     private TypedIndex _shape;
     private float _lifeTime;
     private bool _disposed;
-    public bool IsDead { get; private set; }
-    public ProjectileMesh Mesh { get => _mesh; }
-
-    private readonly ProjectileMesh _mesh;
 
     private Projectile(ProjectileMesh mesh, float lifeTime)
     {
-        _mesh = mesh;
+        Mesh = mesh;
         _lifeTime = lifeTime;
     }
 
     public static Projectile CreateStandardProjectile(Simulation simulation, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose, in BodyVelocity initialVelocity)
+        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh)
     {
-        var projectileShape = new Box(1, 1, 1);
+        var projectileShape = new Box(mesh.Size.X, mesh.Size.Y, mesh.Size.Z);
 
-        ProjectileMesh mesh = new ProjectileMesh(1);
-        Projectile projectile = new Projectile(mesh, 5);
+        var projectile = new Projectile(mesh, 5);
         projectile._shape = simulation.Shapes.Add(projectileShape);
         var inertia = projectileShape.ComputeInertia(0.01f);
 
@@ -42,7 +40,7 @@ internal class Projectile
     public void Update(Simulation simulation, float dt, BufferPool pool)
     {
         var body = new BodyReference(Body, simulation.Bodies);
-        _mesh.Update(body.Pose);
+        Mesh.Update(body.Pose);
 
         _lifeTime -= dt;
         if (!_disposed && _lifeTime < 0)

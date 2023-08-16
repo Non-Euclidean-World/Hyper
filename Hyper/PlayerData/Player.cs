@@ -1,7 +1,4 @@
-﻿using BepuPhysics;
-using BepuUtilities;
-using Hyper.Animation.Characters.Cowboy;
-using Hyper.TypingUtils;
+﻿using Hyper.Animation.Characters.Cowboy;
 using Hyper.UserInput;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -19,7 +16,7 @@ internal class Player : IInputSubscriber
         RegisterCallbacks();
     }
 
-    public void Update(RigidPose bodyPose, Camera camera)
+    /*public void Update(RigidPose bodyPose, Camera camera)
     {
         var front = camera.Front;
         front.Y = 0;
@@ -29,16 +26,13 @@ internal class Player : IInputSubscriber
         Character.RigidPose = playerPose;
         camera.ReferencePointPosition = Conversions.ToOpenTKVector(bodyPose.Position)
             + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonOffset(camera));
-    }
+    }*/
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition, bool isFirstPerson)
     {
         if (!isFirstPerson)
-            Character.RenderFullDescription(shader, scale, cameraPosition, Cowboy.LocalTranslation);
+            Character.Render(shader, scale, cameraPosition, Cowboy.LocalTranslation);
     }
-
-    private static Vector3 GetThirdPersonOffset(Camera camera)
-        => camera.Up * 1f - camera.Front * 5f;
 
     private void UpdateMovementAnimation(Context context)
     {

@@ -29,7 +29,7 @@ internal class Chunk : Mesh
     }
 
     // This method returns flase if it did not mine anything. True if it did.
-    public bool Mine(Vector3 location, float deltaTime, int radius = 5)
+    public bool Mine(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -40,7 +40,6 @@ internal class Chunk : Mesh
             || _voxels[x, y, z].Value <= 0f)
             return false;
 
-        float brushWeight = 1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -63,7 +62,7 @@ internal class Chunk : Mesh
         return true;
     }
 
-    public bool Build(Vector3 location, float deltaTime, int radius = 5)
+    public bool Build(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -74,7 +73,6 @@ internal class Chunk : Mesh
             || _voxels[x, y, z].Value >= 1f)
             return false;
 
-        float brushWeight = 1f;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)

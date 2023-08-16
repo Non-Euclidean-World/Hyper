@@ -8,22 +8,19 @@ internal class SimulationManager<TNarrowPhaseCallbacks, TPoseIntegratorCallbacks
     where TNarrowPhaseCallbacks : struct, INarrowPhaseCallbacks
     where TPoseIntegratorCallbacks : struct, IPoseIntegratorCallbacks
 {
-    public Simulation Simulation { get => _simulation; }
-    public BufferPool BufferPool { get => _bufferPool; }
-    public ThreadDispatcher ThreadDispatcher { get => _threadDispatcher; }
+    public Simulation Simulation { get; private set; }
+    public BufferPool BufferPool { get; private set; }
+    public ThreadDispatcher ThreadDispatcher { get; private set; }
 
     private bool _disposed = false;
-    private Simulation _simulation;
-    private BufferPool _bufferPool;
-    private ThreadDispatcher _threadDispatcher;
 
     public SimulationManager(TNarrowPhaseCallbacks narrowPhaseCallbacks, TPoseIntegratorCallbacks poseIntegratorCallbacks, SolveDescription solveDescription, BufferPool bufferPool)
 
     {
-        _bufferPool = bufferPool;
+        BufferPool = bufferPool;
         int targetThreadCount = int.Max(1, Environment.ProcessorCount > 4 ? Environment.ProcessorCount - 2 : Environment.ProcessorCount - 1);
-        _threadDispatcher = new ThreadDispatcher(targetThreadCount);
-        _simulation = Simulation.Create(_bufferPool, narrowPhaseCallbacks, poseIntegratorCallbacks, solveDescription);
+        ThreadDispatcher = new ThreadDispatcher(targetThreadCount);
+        Simulation = Simulation.Create(BufferPool, narrowPhaseCallbacks, poseIntegratorCallbacks, solveDescription);
     }
 
     public void Dispose()
@@ -31,9 +28,9 @@ internal class SimulationManager<TNarrowPhaseCallbacks, TPoseIntegratorCallbacks
         if (!_disposed)
         {
             _disposed = true;
-            _simulation.Dispose();
-            _threadDispatcher.Dispose();
-            _bufferPool.Clear();
+            Simulation.Dispose();
+            ThreadDispatcher.Dispose();
+            BufferPool.Clear();
         }
     }
 }

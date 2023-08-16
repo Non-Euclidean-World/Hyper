@@ -28,7 +28,7 @@ internal class Scene : IInputSubscriber
     // TODO these two fields should really be in one object
     private readonly CharacterControllers _characterControllers;
 
-    private readonly Character _character;
+    private readonly PhysicalCharacter _physicalCharacter;
 
     public HudManager Hud { get; private set; }
 
@@ -55,6 +55,8 @@ internal class Scene : IInputSubscriber
     private readonly Vector3 _characterInitialPosition;
 
     private readonly BufferPool _bufferPool;
+
+    private readonly PlayerData.Player _player;
 
     public Scene(float aspectRatio)
     {
@@ -86,7 +88,11 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1), _bufferPool);
 
-        _character = new Character(_characterControllers, Conversions.ToNumericsVector(_characterInitialPosition), 0.1f, 1, 20, 100, 6, 4, MathF.PI * 0.4f);
+        _player = new PlayerData.Player();
+
+        _physicalCharacter = new PhysicalCharacter(_characterControllers, _player.Character, Conversions.ToNumericsVector(_characterInitialPosition),
+            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
+            maximumSlope: MathF.PI * 0.4f);
 
         _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, Conversions.ToNumericsVector(_carInitialPosition));
 
@@ -130,12 +136,10 @@ internal class Scene : IInputSubscriber
 
         ShaderFactory.SetUpCharacterShaderParams(_characterShader, Camera, _lightSources, _scale);
 
-        _character.RenderCharacterMesh(_characterShader,
 #if BOUNDING_BOXES
-            _objectShader,
+        _physicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
 #endif
-            _scale, Camera.ReferencePointPosition, Camera.FirstPerson);
-
+        _player.Render(_characterShader, _scale, Camera.ReferencePointPosition, Camera.FirstPerson);
         Hud.Render();
     }
 
@@ -237,9 +241,10 @@ internal class Scene : IInputSubscriber
             {
                 movementDirection += new Vector2(1, 0);
             }
-            _character.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
+            _physicalCharacter.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
                 tryJump: context.HeldKeys[Keys.Space], sprint: context.HeldKeys[Keys.LeftShift],
                 Conversions.ToNumericsVector(movementDirection));
+            Camera.UpdateWithCharacter(_player.Character);
 
             _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
         });
@@ -248,9 +253,8 @@ internal class Scene : IInputSubscriber
         {
             foreach (var chunk in _chunks)
             {
-                if (chunk.Mine(Conversions.ToOpenTKVector(GetCharacterRay(1)), (float)e.Time))
+                if (chunk.Mine(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
                 {
-                    // interestingly this doesn't kill the performance
                     _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
                     var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
                     var position = chunk.Position;
@@ -265,9 +269,8 @@ internal class Scene : IInputSubscriber
         {
             foreach (var chunk in _chunks)
             {
-                if (chunk.Build(Conversions.ToOpenTKVector(GetCharacterRay(3)), (float)e.Time))
+                if (chunk.Build(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
                 {
-                    // interestingly this doesn't kill the performance
                     _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
                     var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
                     var position = chunk.Position;
@@ -280,15 +283,13 @@ internal class Scene : IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.P, () =>
         {
+            var q = MathUtils.Helpers.CreateFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(Camera.Front));
             var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation,
                 _properties,
-                GetCharacterRay(2),
-                Conversions.ToNumericsVector(Camera.Front) * 15);
+                new RigidPose(_player.Character.GetCharacterRay(Camera.Front, 2), q),
+                Conversions.ToNumericsVector(Camera.Front) * 15,
+                new ProjectileMesh(2, 0.5f, 0.5f)); // let's throw some refrigerators
             _projectiles.Add(projectile);
         });
     }
-
-    private System.Numerics.Vector3 GetCharacterRay(float length)
-        => _character.Player.Character.RigidPose.Position
-                + Conversions.ToNumericsVector(Camera.Front * length);
 }

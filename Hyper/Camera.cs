@@ -1,5 +1,7 @@
+using Hyper.Animation.Characters;
 using Hyper.Command;
 using Hyper.MathUtils;
+using Hyper.TypingUtils;
 using Hyper.UserInput;
 using NLog;
 using OpenTK.Mathematics;
@@ -129,6 +131,16 @@ internal class Camera : Commandable, IInputSubscriber
             Yaw += deltaX * Sensitivity;
             Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
         }
+    }
+
+    public void UpdateWithCharacter(CharacterModel character)
+    {
+        float angle = MathF.Atan2(Front.X, Front.Z);
+        BepuPhysics.RigidPose characterPose = character.RigidPose;
+        characterPose.Orientation = BepuUtilities.QuaternionEx.CreateFromAxisAngle(System.Numerics.Vector3.UnitY, angle);
+        character.RigidPose = characterPose;
+        ReferencePointPosition = Conversions.ToOpenTKVector(characterPose.Position)
+            + (FirstPerson ? Vector3.Zero : character.GetThirdPersonCameraOffset(this));
     }
 
     protected override void SetCommand(string[] args)

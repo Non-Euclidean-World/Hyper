@@ -24,28 +24,7 @@ internal class Model
         Animator = new Animator();
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition, Vector3 modelPosition, Matrix4 modelRotation)
-    {
-        _texture.Use(TextureUnit.Texture0);
-
-        var modelLs = Matrix4.CreateTranslation((modelPosition - cameraPosition) * scale);
-        var scaleLs = Matrix4.CreateScale(scale);
-        shader.SetMatrix4("model", scaleLs * modelRotation * modelLs);
-
-        Animator.Animate(_model);
-
-        for (int i = 0; i < _model.Meshes.Count; i++)
-        {
-            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(Conversions.ToOpenTKMatrix).ToArray();
-            shader.SetMatrix4Array("boneTransforms", boneTransforms);
-
-            GL.BindVertexArray(_vaos[i]);
-            GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[i].FaceCount * 3,
-                DrawElementsType.UnsignedInt, 0);
-        }
-    }
-
-    public void RenderFromPose(RigidPose rigidPose, Shader shader, float globalScale, Vector3 cameraPosition, float localScale, Vector3 localTranslation)
+    public void Render(RigidPose rigidPose, Shader shader, float globalScale, Vector3 cameraPosition, float localScale, Vector3 localTranslation)
     {
         _texture.Use(TextureUnit.Texture0);
 

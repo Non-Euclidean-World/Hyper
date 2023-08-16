@@ -5,33 +5,31 @@ using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
+using Hyper.Animation.Characters;
 using Hyper.Meshes;
 using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Hyper.Collisions.Bepu;
-internal class Character
+internal class PhysicalCharacter
 {
+    public CharacterModel Model { get; private set; }
+
+#if BOUNDING_BOXES
+    public Meshes.Mesh BoundingBoxMesh { get; private set; }
+#endif
+
     private BodyHandle _bodyHandle;
     private readonly CharacterControllers _characters;
     private readonly float _speed;
     private Capsule _shape;
 
-
-    private readonly PlayerData.Player _player;
-    public PlayerData.Player Player { get => _player; }
-
-#if BOUNDING_BOXES
-    public Meshes.Mesh Mesh { get => _mesh; }
-    private readonly Meshes.Mesh _mesh;
-#endif
-
-    public Character(CharacterControllers characters, Vector3 initialPosition,
+    public PhysicalCharacter(CharacterControllers characters, CharacterModel model, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
         _characters = characters;
-        _player = new PlayerData.Player();
+        Model = model;
         Capsule capsule = new Capsule(1, 2);
         _shape = capsule;
         var shapeIndex = characters.Simulation.Shapes.Add(_shape);
@@ -41,17 +39,17 @@ internal class Character
         _bodyHandle = characters.Simulation.Bodies.Add(
             BodyDescription.CreateDynamic(initialPosition, new BodyInertia { InverseMass = 1f / mass },
             new(shapeIndex, minimumSpeculativeMargin, float.MaxValue, ContinuousDetection.Passive), activity: _shape.Radius * 0.000002f));
-        ref var character = ref characters.AllocateCharacter(_bodyHandle);
-        character.LocalUp = new Vector3(0, 1, 0);
-        character.CosMaximumSlope = MathF.Cos(maximumSlope);
-        character.JumpVelocity = jumpVelocity;
-        character.MaximumVerticalForce = maximumVerticalGlueForce;
-        character.MaximumHorizontalForce = maximumHorizontalForce;
-        character.MinimumSupportDepth = _shape.Radius * -0.01f;
-        character.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
+        ref var physicalCharacter = ref characters.AllocateCharacter(_bodyHandle);
+        physicalCharacter.LocalUp = new Vector3(0, 1, 0);
+        physicalCharacter.CosMaximumSlope = MathF.Cos(maximumSlope);
+        physicalCharacter.JumpVelocity = jumpVelocity;
+        physicalCharacter.MaximumVerticalForce = maximumVerticalGlueForce;
+        physicalCharacter.MaximumHorizontalForce = maximumHorizontalForce;
+        physicalCharacter.MinimumSupportDepth = _shape.Radius * -0.01f;
+        physicalCharacter.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
         _speed = speed;
 #if BOUNDING_BOXES
-        _mesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2));
+        BoundingBoxMesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2));
 #endif
     }
 
@@ -115,28 +113,11 @@ internal class Character
 
         var body = new BodyReference(_bodyHandle, simulation.Bodies);
 
-        _player.Update(body.Pose, camera);
+        Model.RigidPose = body.Pose;
 #if BOUNDING_BOXES
-        _mesh.RigidPose = body.Pose;
+        BoundingBoxMesh.RigidPose = body.Pose;
 #endif
     }
-
-    // TODO this should be a method in mesh cf. simple car
-    public void RenderCharacterMesh(Shader shader,
-#if BOUNDING_BOXES
-        Shader shaderBoundingBox,
-#endif
-        float scale, OpenTK.Mathematics.Vector3 cameraPosition, bool isFirstPersonCamera)
-    {
-
-        _player.Render(shader, scale, cameraPosition, isFirstPersonCamera);
-#if BOUNDING_BOXES
-        TurnOnWireframe();
-        _mesh.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
-        TurnOffWireframe();
-#endif
-    }
-
 
     /// <summary>
     /// Removes the character's body from the simulation and the character from the associated characters set.
@@ -149,6 +130,13 @@ internal class Character
     }
 
 #if BOUNDING_BOXES
+    public void RenderBoundingBox(Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
+    {
+        TurnOnWireframe();
+        BoundingBoxMesh.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
+        TurnOffWireframe();
+    }
+
     private static void TurnOnWireframe()
     {
         GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);

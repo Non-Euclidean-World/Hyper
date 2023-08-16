@@ -5,13 +5,16 @@ namespace Hyper.Meshes;
 internal class ProjectileMesh : IDisposable
 {
     public Mesh Body { get; private set; }
-    public float Size { get; private set; }
+    public Vector3 Size { get; private set; }
 
-    public ProjectileMesh(float size)
+    public ProjectileMesh(Vector3 size)
     {
         Size = size;
-        Body = BoxMesh.Create(new Vector3(size, size, size));
+        Body = BoxMesh.Create(size);
     }
+
+    public ProjectileMesh(float sizeX, float sizeY, float sizeZ)
+        : this(new Vector3(sizeX, sizeY, sizeZ)) { }
 
     public void Update(RigidPose bodyPose)
     {
