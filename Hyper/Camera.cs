@@ -109,7 +109,7 @@ internal class Camera : Commandable, IInputSubscriber
         Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 
-    public void Turn(Vector2 position)
+    private void Turn(Vector2 position)
     {
         if (_firstMove)
         {

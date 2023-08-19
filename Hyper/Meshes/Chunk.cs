@@ -22,7 +22,13 @@ internal class Chunk : Mesh
         Position = position;
     }
 
-    // This method returns flase if it did not mine anything. True if it did.
+    /// <summary>
+    /// Mines the selected voxel and all voxels within the radius. Then updates the mesh.
+    /// </summary>
+    /// <param name="location"></param>
+    /// <param name="deltaTime"></param>
+    /// <param name="radius"></param>
+    /// <returns>true is something was mined. false otherwise.</returns>
     public bool Mine(Vector3 location, float deltaTime, int radius = 5)
     {
         var x = (int)location.X - Position.X;
@@ -57,6 +63,13 @@ internal class Chunk : Mesh
         return true;
     }
 
+    /// <summary>
+    /// Fills the selected voxel and all voxels within the radius. Then updates the mesh.
+    /// </summary>
+    /// <param name="location"></param>
+    /// <param name="deltaTime"></param>
+    /// <param name="radius"></param>
+    /// <returns>true is something was built. false otherwise.</returns>
     public bool Build(Vector3 location, float deltaTime, int radius = 5)
     {
         var x = (int)location.X - Position.X;

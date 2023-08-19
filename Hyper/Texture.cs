@@ -7,10 +7,13 @@ namespace Hyper;
 
 internal class Texture
 {
-    private const int FontSize = 50;
-
     private readonly int _handle;
 
+    /// <summary>
+    /// Creates a shader from a file.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
     public static Texture LoadFromFile(string path)
     {
         int handle = GL.GenTexture();
@@ -38,6 +41,11 @@ internal class Texture
         return new Texture(handle);
     }
 
+    /// <summary>
+    /// Creates a texture from a bitmap.
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <returns></returns>
     public static Texture LoadFromBitmap(SKBitmap bitmap)
     {
         int handle = GL.GenTexture();
@@ -60,7 +68,7 @@ internal class Texture
         return new Texture(handle);
     }
 
-    public Texture(int glHandle)
+    private Texture(int glHandle)
     {
         _handle = glHandle;
     }
