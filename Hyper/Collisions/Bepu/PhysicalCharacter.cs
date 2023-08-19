@@ -112,6 +112,9 @@ internal class PhysicalCharacter
 
         var body = new BodyReference(_bodyHandle, simulation.Bodies);
 
+        float angle = MathF.Atan2(viewDirection.X, viewDirection.Z);
+        body.Pose.Orientation = QuaternionEx.CreateFromAxisAngle(Vector3.UnitY, angle);
+
 #if BOUNDING_BOXES
         BoundingBoxMesh.RigidPose = body.Pose;
 #endif

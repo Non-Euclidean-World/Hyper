@@ -135,11 +135,7 @@ internal class Camera : Commandable, IInputSubscriber
 
     public void UpdateWithCharacter(CharacterModel character)
     {
-        float angle = MathF.Atan2(Front.X, Front.Z);
-        BepuPhysics.RigidPose characterPose = character.RigidPose;
-        characterPose.Orientation = BepuUtilities.QuaternionEx.CreateFromAxisAngle(System.Numerics.Vector3.UnitY, angle);
-        character.RigidPose = characterPose;
-        ReferencePointPosition = Conversions.ToOpenTKVector(characterPose.Position)
+        ReferencePointPosition = Conversions.ToOpenTKVector(character.RigidPose.Position)
             + (FirstPerson ? Vector3.Zero : character.GetThirdPersonCameraOffset(this));
     }
 

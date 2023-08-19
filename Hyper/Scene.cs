@@ -222,7 +222,7 @@ internal class Scene : IInputSubscriber
         Context context = Context.Instance;
 
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
-        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P, Keys.LeftShift, Keys.Space });
+        context.RegisterKeys(new List<Keys> { Keys.Backspace, Keys.P, Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterUpdateFrameCallback((e) =>
         {
@@ -256,9 +256,9 @@ internal class Scene : IInputSubscriber
             foreach (var bot in _bots)
             {
                 float tMs = _stopwatch.ElapsedMilliseconds;
-                Vector3 movement = new Vector3(MathF.Sin(tMs / 3000), 0, MathF.Cos(tMs / 3000));
+                Vector3 movement = new Vector3(MathF.Sin(tMs / 3000), 0, MathF.Cos(tMs / 3000)); // this poor fella is cursed with eternal running in circles
                 bot.UpdateCharacterGoals(_simulationManager.Simulation, movement, (float)e.Time,
-                    tryJump: false, sprint: false, movementDirection: Vector2.UnitX);
+                    tryJump: false, sprint: false, movementDirection: Vector2.UnitY);
             }
 
             Camera.UpdateWithCharacter(_player.Character);
