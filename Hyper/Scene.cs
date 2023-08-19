@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Diagnostics;
+using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Hyper.Collisions;
@@ -25,10 +26,7 @@ internal class Scene : IInputSubscriber
 
     public Camera Camera { get; set; }
 
-    // TODO these two fields should really be in one object
     private readonly CharacterControllers _characterControllers;
-
-    private readonly PhysicalCharacter _physicalCharacter;
 
     public HudManager Hud { get; private set; }
 
@@ -56,7 +54,11 @@ internal class Scene : IInputSubscriber
 
     private readonly BufferPool _bufferPool;
 
-    private readonly PlayerData.Player _player;
+    private readonly GameEntities.Player _player;
+
+    private readonly List<GameEntities.Bot> _bots;
+
+    private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
     public Scene(float aspectRatio)
     {
@@ -67,7 +69,7 @@ internal class Scene : IInputSubscriber
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
 
-        _carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 8, 12);
+        _carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 5, 12);
         _characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
 
         Hud = new HudManager(aspectRatio);
@@ -88,11 +90,9 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1), _bufferPool);
 
-        _player = new PlayerData.Player();
+        _player = new GameEntities.Player(CreatePhysicalHumanoid(_characterInitialPosition));
 
-        _physicalCharacter = new PhysicalCharacter(_characterControllers, _player.Character, Conversions.ToNumericsVector(_characterInitialPosition),
-            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
-            maximumSlope: MathF.PI * 0.4f);
+        _bots = new List<GameEntities.Bot>() { new GameEntities.Bot(CreatePhysicalHumanoid(new Vector3(-3, _scalarFieldGenerator.AvgElevation + 8, -3))) };
 
         _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, Conversions.ToNumericsVector(_carInitialPosition));
 
@@ -137,9 +137,18 @@ internal class Scene : IInputSubscriber
         ShaderFactory.SetUpCharacterShaderParams(_characterShader, Camera, _lightSources, _scale);
 
 #if BOUNDING_BOXES
-        _physicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+        _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
 #endif
         _player.Render(_characterShader, _scale, Camera.ReferencePointPosition, Camera.FirstPerson);
+
+        foreach (var bot in _bots)
+        {
+            bot.Render(_characterShader, _scale, Camera.ReferencePointPosition);
+#if BOUNDING_BOXES
+            bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+#endif
+        }
+
         Hud.Render();
     }
 
@@ -241,9 +250,17 @@ internal class Scene : IInputSubscriber
             {
                 movementDirection += new Vector2(1, 0);
             }
-            _physicalCharacter.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
+            _player.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
                 tryJump: context.HeldKeys[Keys.Space], sprint: context.HeldKeys[Keys.LeftShift],
-                Conversions.ToNumericsVector(movementDirection));
+                movementDirection);
+            foreach (var bot in _bots)
+            {
+                float tMs = _stopwatch.ElapsedMilliseconds;
+                Vector3 movement = new Vector3(MathF.Sin(tMs / 3000), 0, MathF.Cos(tMs / 3000));
+                bot.UpdateCharacterGoals(_simulationManager.Simulation, movement, (float)e.Time,
+                    tryJump: false, sprint: false, movementDirection: Vector2.UnitX);
+            }
+
             Camera.UpdateWithCharacter(_player.Character);
 
             _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
@@ -292,4 +309,9 @@ internal class Scene : IInputSubscriber
             _projectiles.Add(projectile);
         });
     }
+
+    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
+        => new(_characterControllers, _properties, Conversions.ToNumericsVector(initialPosition),
+            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
+            maximumSlope: MathF.PI * 0.4f);
 }

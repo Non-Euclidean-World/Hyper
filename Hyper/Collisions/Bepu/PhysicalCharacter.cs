@@ -5,16 +5,12 @@ using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
-using Hyper.Animation.Characters;
 using Hyper.Meshes;
-using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Hyper.Collisions.Bepu;
 internal class PhysicalCharacter
 {
-    public CharacterModel Model { get; private set; }
-
 #if BOUNDING_BOXES
     public Meshes.Mesh BoundingBoxMesh { get; private set; }
 #endif
@@ -24,12 +20,11 @@ internal class PhysicalCharacter
     private readonly float _speed;
     private Capsule _shape;
 
-    public PhysicalCharacter(CharacterControllers characters, CharacterModel model, Vector3 initialPosition,
+    public PhysicalCharacter(CharacterControllers characters, CollidableProperty<SimulationProperties> properties, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
         _characters = characters;
-        Model = model;
         Capsule capsule = new Capsule(1, 2);
         _shape = capsule;
         var shapeIndex = characters.Simulation.Shapes.Add(_shape);
@@ -47,13 +42,17 @@ internal class PhysicalCharacter
         physicalCharacter.MaximumHorizontalForce = maximumHorizontalForce;
         physicalCharacter.MinimumSupportDepth = _shape.Radius * -0.01f;
         physicalCharacter.MinimumSupportContinuationDepth = -minimumSpeculativeMargin;
+
+        ref var bodyProperties = ref properties.Allocate(_bodyHandle);
+        bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(_bodyHandle.Value, 0) };
+
         _speed = speed;
 #if BOUNDING_BOXES
         BoundingBoxMesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2));
 #endif
     }
 
-    public void UpdateCharacterGoals(Simulation simulation, Camera camera, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
+    public RigidPose UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
     {
         var movementDirectionLengthSquared = movementDirection.LengthSquared();
         if (movementDirectionLengthSquared > 0)
@@ -66,7 +65,7 @@ internal class PhysicalCharacter
         var characterBody = new BodyReference(_bodyHandle, _characters.Simulation.Bodies);
         var effectiveSpeed = sprint ? _speed * 1.75f : _speed;
         var newTargetVelocity = movementDirection * effectiveSpeed;
-        var viewDirection = Conversions.ToNumericsVector(camera.Front);
+        //var viewDirection = Conversions.ToNumericsVector(camera.Front);
         //Modifying the character's raw data does not automatically wake the character up, so we do so explicitly if necessary.
         //If you don't explicitly wake the character up, it won't respond to the changed motion goals.
         //(You can also specify a negative deactivation threshold in the BodyActivityDescription to prevent the character from sleeping at all.)
@@ -113,10 +112,10 @@ internal class PhysicalCharacter
 
         var body = new BodyReference(_bodyHandle, simulation.Bodies);
 
-        Model.RigidPose = body.Pose;
 #if BOUNDING_BOXES
         BoundingBoxMesh.RigidPose = body.Pose;
 #endif
+        return body.Pose;
     }
 
     /// <summary>

@@ -1,32 +1,32 @@
-﻿using Hyper.Animation.Characters.Cowboy;
+﻿using BepuPhysics;
+using Hyper.Animation.Characters.Cowboy;
+using Hyper.Collisions.Bepu;
+using Hyper.TypingUtils;
 using Hyper.UserInput;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper.PlayerData;
+namespace Hyper.GameEntities;
 
 internal class Player : IInputSubscriber
 {
     public Cowboy Character { get; init; }
 
-    public Player()
+    public PhysicalCharacter PhysicalCharacter { get; init; }
+
+
+    public Player(PhysicalCharacter physicalCharacter)
     {
         Character = new Cowboy(scale: 0.04f);
+        PhysicalCharacter = physicalCharacter;
 
         RegisterCallbacks();
     }
 
-    /*public void Update(RigidPose bodyPose, Camera camera)
+    public void UpdateCharacterGoals(Simulation simulation, Camera camera, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
     {
-        var front = camera.Front;
-        front.Y = 0;
-        float angle = MathF.Atan2(front.X, front.Z);
-        RigidPose playerPose = bodyPose;
-        playerPose.Orientation = QuaternionEx.CreateFromAxisAngle(new System.Numerics.Vector3(0, 1, 0), angle);
-        Character.RigidPose = playerPose;
-        camera.ReferencePointPosition = Conversions.ToOpenTKVector(bodyPose.Position)
-            + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonOffset(camera));
-    }*/
+        Character.RigidPose = PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(camera.Front), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
+    }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition, bool isFirstPerson)
     {
