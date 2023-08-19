@@ -61,9 +61,9 @@ public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
         AngularDamping = angularDamping;
     }
 
-    Vector3Wide gravityWideDt;
-    Vector<float> linearDampingDt;
-    Vector<float> angularDampingDt;
+    Vector3Wide _gravityWideDt;
+    Vector<float> _linearDampingDt;
+    Vector<float> _angularDampingDt;
 
     /// <summary>
     /// Callback invoked ahead of dispatches that may call into <see cref="IntegrateVelocity"/>.
@@ -77,9 +77,9 @@ public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
     {
         //No reason to recalculate gravity * dt for every body; just cache it ahead of time.
         //Since these callbacks don't use per-body damping values, we can precalculate everything.
-        linearDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - LinearDamping, 0, 1), dt));
-        angularDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - AngularDamping, 0, 1), dt));
-        gravityWideDt = Vector3Wide.Broadcast(Gravity * dt);
+        _linearDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - LinearDamping, 0, 1), dt));
+        _angularDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - AngularDamping, 0, 1), dt));
+        _gravityWideDt = Vector3Wide.Broadcast(Gravity * dt);
     }
 
     /// <summary>
@@ -101,8 +101,8 @@ public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
         //Note that these are SIMD operations and "Wide" types. There are Vector<float>.Count lanes of execution being evaluated simultaneously.
         //The types are laid out in array-of-structures-of-arrays (AOSOA) format. That's because this function is frequently called from vectorized contexts within the solver.
         //Transforming to "array of structures" (AOS) format for the callback and then back to AOSOA would involve a lot of overhead, so instead the callback works on the AOSOA representation directly.
-        velocity.Linear = (velocity.Linear + gravityWideDt) * linearDampingDt;
-        velocity.Angular = velocity.Angular * angularDampingDt;
+        velocity.Linear = (velocity.Linear + _gravityWideDt) * _linearDampingDt;
+        velocity.Angular = velocity.Angular * _angularDampingDt;
     }
 }
 
