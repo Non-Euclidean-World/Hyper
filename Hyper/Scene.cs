@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using BepuPhysics;
-using BepuUtilities;
 using BepuUtilities.Memory;
 using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
@@ -52,8 +51,6 @@ internal class Scene : IInputSubscriber
 
     private readonly Vector3 _characterInitialPosition;
 
-    private readonly BufferPool _bufferPool;
-
     private readonly GameEntities.Player _player;
 
     private readonly List<GameEntities.Bot> _bots;
@@ -80,15 +77,15 @@ internal class Scene : IInputSubscriber
 
         RegisterCallbacks();
 
-        _bufferPool = new BufferPool();
+        var bufferPool = new BufferPool();
 
         _properties = new CollidableProperty<SimulationProperties>();
 
-        _characterControllers = new CharacterControllers(_bufferPool);
+        _characterControllers = new CharacterControllers(bufferPool);
 
         _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, _properties),
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
-            new SolveDescription(6, 1), _bufferPool);
+            new SolveDescription(6, 1), bufferPool);
 
         _player = new GameEntities.Player(CreatePhysicalHumanoid(_characterInitialPosition));
 
@@ -98,16 +95,9 @@ internal class Scene : IInputSubscriber
 
         Camera = GetCamera(aspectRatio);
 
-        // TODO this is really awful
         foreach (var chunk in _chunks)
         {
-            var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
-            var position = chunk.Position;
-            chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
-            chunk.Handle = _simulationManager.Simulation.Statics.Add(new StaticDescription(
-                new System.Numerics.Vector3(position.X, position.Y, position.Z),
-                QuaternionEx.Identity,
-                chunk.Shape));
+            chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
         }
     }
 
@@ -272,11 +262,7 @@ internal class Scene : IInputSubscriber
             {
                 if (chunk.Mine(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
                 {
-                    _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
-                    var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
-                    var position = chunk.Position;
-                    chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
-                    _simulationManager.Simulation.Statics[chunk.Handle].SetShape(chunk.Shape);
+                    chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     return;
                 }
             }
@@ -288,11 +274,7 @@ internal class Scene : IInputSubscriber
             {
                 if (chunk.Build(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
                 {
-                    _simulationManager.Simulation.Shapes.RemoveAndDispose(chunk.Shape, _simulationManager.BufferPool);
-                    var mesh = MeshHelper.CreateMeshFromChunk(chunk, _simulationManager.BufferPool);
-                    var position = chunk.Position;
-                    chunk.Shape = _simulationManager.Simulation.Shapes.Add(mesh);
-                    _simulationManager.Simulation.Statics[chunk.Handle].SetShape(chunk.Shape);
+                    chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     return;
                 }
             }

@@ -1,6 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using BepuPhysics;
 using BepuPhysics.Collidables;
+using BepuUtilities;
+using BepuUtilities.Memory;
+using Hyper.Collisions;
 using Hyper.MarchingCubes;
 using Hyper.MarchingCubes.Voxels;
 using NLog;
@@ -18,9 +21,9 @@ internal class Chunk : Mesh
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public StaticHandle Handle { get; set; }
+    private StaticHandle _handle;
 
-    public TypedIndex Shape { get; set; }
+    private TypedIndex _shape;
 
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
     {
@@ -95,6 +98,25 @@ internal class Chunk : Mesh
         return true;
     }
 
+    public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
+    {
+        simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        _shape = simulation.Shapes.Add(mesh);
+        simulation.Statics[_handle].SetShape(_shape);
+    }
+
+    public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
+    {
+        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        var position = Position;
+        _shape = simulation.Shapes.Add(mesh);
+        _handle = simulation.Statics.Add(new StaticDescription(
+            new System.Numerics.Vector3(position.X, position.Y, position.Z),
+            QuaternionEx.Identity,
+            _shape));
+    }
+
     // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
     private void UpdateMesh()
     {
@@ -131,6 +153,6 @@ internal class Chunk : Mesh
 
     private static float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
     {
-        return (float)MathHelper.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
+        return MathF.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
     }
 }
