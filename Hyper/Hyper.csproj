@@ -5,6 +5,11 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);BOUNDING_BOXES</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BepuPhysics" Version="2.4.0" />
+    <PackageReference Include="BepuUtilities" Version="2.4.0" />
 	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="NLog" Version="5.2.0" />
     <PackageReference Include="OpenTK" Version="4.7.7" />

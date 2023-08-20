@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Assimp;
-using OpenTK.Mathematics;
 using Quaternion = Assimp.Quaternion;
 
 namespace Hyper.Animation;
@@ -8,9 +7,9 @@ namespace Hyper.Animation;
 public class Animator
 {
     private int _animationIndex = 0;
-    
+
     private bool _isAnimationRunning = false;
-    
+
     private readonly Stopwatch _stopwatch;
 
     public Animator()
@@ -18,15 +17,15 @@ public class Animator
         _stopwatch = new Stopwatch();
         _stopwatch.Start();
     }
-    
+
     public Matrix4x4[] GetBoneTransforms(Assimp.Scene model, int meshIndex)
     {
         if (!_isAnimationRunning)
             return Enumerable.Repeat(model.RootNode.Transform, model.Meshes[meshIndex].BoneCount).ToArray();
-        
+
         var dict = new Dictionary<string, Matrix4x4>();
         GetBoneDict(model.RootNode, Matrix4x4.Identity, ref dict);
-        
+
         return model.Meshes[meshIndex].Bones.Select(bone =>
             bone.OffsetMatrix * dict[bone.Name]).ToArray();
     }
@@ -35,7 +34,7 @@ public class Animator
     {
         var transform = node.Transform * parentTransform;
         bones.Add(node.Name, transform);
-        
+
         foreach (var child in node.Children)
         {
             GetBoneDict(child, transform, ref bones);
@@ -45,7 +44,7 @@ public class Animator
     public void Animate(Assimp.Scene model)
     {
         if (!_isAnimationRunning) return;
-        
+
         var time = GetCurrentTime(model);
         var animation = model.Animations[_animationIndex];
 
@@ -80,10 +79,10 @@ public class Animator
     private double GetCurrentTime(Assimp.Scene model)
     {
         var seconds = _stopwatch.ElapsedMilliseconds / 1000.0;
-        var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond;
+        var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond / 2;
         return ticks % model.Animations[_animationIndex].DurationInTicks;
     }
-    
+
     private Matrix4x4 CalculateNodeTransform(NodeAnimationChannel channel, float time)
     {
         Matrix4x4 transform = Matrix4x4.Identity;
@@ -97,7 +96,7 @@ public class Animator
     private static Matrix4x4 GetTranslation(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasPositionKeys) return Matrix4x4.Identity;
-        
+
         Vector3D position = channel.PositionKeys[0].Value;
 
         for (int i = 0; i < channel.PositionKeys.Count - 1; i++)
@@ -116,9 +115,9 @@ public class Animator
     private static Matrix4x4 GetRotation(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasRotationKeys) return Matrix4x4.Identity;
-        
+
         Quaternion rotation = channel.RotationKeys[0].Value;
-        
+
         for (int i = 0; i < channel.RotationKeys.Count - 1; i++)
         {
             if (time < channel.RotationKeys[i + 1].Time)
@@ -135,7 +134,7 @@ public class Animator
     private static Matrix4x4 GetScale(NodeAnimationChannel channel, float time)
     {
         if (!channel.HasScalingKeys) return Matrix4x4.Identity;
-        
+
         Vector3D scale = channel.ScalingKeys[0].Value;
 
         for (int i = 0; i < channel.ScalingKeys.Count - 1; i++)
@@ -160,7 +159,7 @@ public class Animator
     {
         return Quaternion.Slerp(previousValue, nextValue, factor);
     }
-    
+
     private static Vector3D Lerp(Vector3D a, Vector3D b, float t)
     {
         return new Vector3D(a.X + t * (b.X - a.X), a.Y + t * (b.Y - a.Y), a.Z + t * (b.Z - a.Z));

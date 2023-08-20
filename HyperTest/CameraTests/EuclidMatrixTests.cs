@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Hyper;
-using Hyper.MathUtiils;
+using Hyper.MathUtils;
 using OpenTK.Mathematics;
 
 namespace HyperTest.CameraTests;

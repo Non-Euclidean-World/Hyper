@@ -2,16 +2,28 @@
 
 namespace Hyper.Animation.Characters.Cowboy;
 
-internal class Cowboy : Character
+internal class CowboyModel : Model
 {
-    public Cowboy(Vector3 position, float scale) : base(position, scale)
+    private static readonly string ModelPath;
+
+    private static readonly string TexturePath;
+
+    private static readonly float LocalScale;
+
+    private static readonly Vector3 LocalTranslation;
+
+    static CowboyModel()
     {
-        var model = Path.GetFullPath("Animation/Characters/Cowboy/Resources/model.dae");
-        var texture = Path.GetFullPath("Animation/Characters/Cowboy/Resources/texture.png");
-        Model = new Model(model, texture);
+        ModelPath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/model.dae");
+        TexturePath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/texture.png");
+        LocalScale = 0.04f;
+        LocalTranslation = new Vector3(0, -5, 0);
     }
 
-    public void Run() => Model.Animator.Play(0);
+    public CowboyModel() : base(ModelPath, TexturePath, LocalScale, LocalTranslation)
+    { }
 
-    public void Idle() => Model.Animator.Reset();
+    public void Run() => Animator.Play(0);
+
+    public void Idle() => Animator.Reset();
 }
