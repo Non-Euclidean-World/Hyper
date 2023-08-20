@@ -21,12 +21,22 @@ internal class Projectile
         _lifeTime = lifeTime;
     }
 
+    /// <summary>
+    /// Creates a lightweight projectile.
+    /// </summary>
+    /// <param name="simulation"></param>
+    /// <param name="properties"></param>
+    /// <param name="initialPose"></param>
+    /// <param name="initialVelocity"></param>
+    /// <param name="mesh"></param>
+    /// <param name="lifeTime">Lifetime threshold in seconds</param>
+    /// <returns></returns>
     public static Projectile CreateStandardProjectile(Simulation simulation, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh)
+        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh, float lifeTime)
     {
         var projectileShape = new Box(mesh.Size.X, mesh.Size.Y, mesh.Size.Z);
 
-        var projectile = new Projectile(mesh, 5);
+        var projectile = new Projectile(mesh, lifeTime);
         projectile._shape = simulation.Shapes.Add(projectileShape);
         var inertia = projectileShape.ComputeInertia(0.01f);
 
@@ -37,6 +47,13 @@ internal class Projectile
         return projectile;
     }
 
+    /// <summary>
+    /// Updates the projectile's position.
+    /// Removes the projectile from the simulation once it's been existing longer than the lifetime threshold.
+    /// </summary>
+    /// <param name="simulation"></param>
+    /// <param name="dt"></param>
+    /// <param name="pool"></param>
     public void Update(Simulation simulation, float dt, BufferPool pool)
     {
         var body = new BodyReference(Body, simulation.Bodies);

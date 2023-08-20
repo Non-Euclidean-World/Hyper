@@ -50,7 +50,7 @@ internal class Scene : IInputSubscriber
 
     private readonly Player _player;
 
-    private readonly List<Bot> _bots;
+    private readonly List<Humanoid> _bots;
 
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -87,7 +87,7 @@ internal class Scene : IInputSubscriber
         int botsCount = 3;
         _bots = Enumerable.Range(0, botsCount) // initialize them however you like
             .Select(i => new Vector3(i * 4 - botsCount * 2, _scalarFieldGenerator.AvgElevation + 5, i * 4 - botsCount * 2))
-            .Select(pos => new Bot(CreatePhysicalHumanoid(pos)))
+            .Select(pos => new Humanoid(CreatePhysicalHumanoid(pos)))
             .ToList();
 
         var carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 5, 12);
@@ -240,7 +240,7 @@ internal class Scene : IInputSubscriber
             {
                 movementDirection += new Vector2(1, 0);
             }
-            _player.UpdateCharacterGoals(_simulationManager.Simulation, Camera, (float)e.Time,
+            _player.UpdateCharacterGoals(_simulationManager.Simulation, Camera.Front, (float)e.Time,
                 tryJump: context.HeldKeys[Keys.Space], sprint: context.HeldKeys[Keys.LeftShift],
                 movementDirection);
             foreach (var bot in _bots)
@@ -287,7 +287,7 @@ internal class Scene : IInputSubscriber
                 _properties,
                 new RigidPose(_player.GetCharacterRay(Camera.Front, 2), q),
                 Conversions.ToNumericsVector(Camera.Front) * 15,
-                new ProjectileMesh(2, 0.5f, 0.5f)); // let's throw some refrigerators
+                new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
             _projectiles.Add(projectile);
         });
     }

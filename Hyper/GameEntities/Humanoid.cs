@@ -5,13 +5,13 @@ using Hyper.TypingUtils;
 using OpenTK.Mathematics;
 
 namespace Hyper.GameEntities;
-internal class Bot
+internal class Humanoid
 {
     public CowboyModel Character { get; init; }
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
 
-    public Bot(PhysicalCharacter physicalCharacter)
+    public Humanoid(PhysicalCharacter physicalCharacter)
     {
         Character = new CowboyModel();
         PhysicalCharacter = physicalCharacter;
