@@ -8,13 +8,13 @@ namespace Hyper.GameEntities;
 
 internal class Player
 {
-    public Cowboy Character { get; init; }
+    public CowboyModel Character { get; init; }
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
 
     public Player(PhysicalCharacter physicalCharacter)
     {
-        Character = new Cowboy(scale: 0.04f);
+        Character = new CowboyModel();
         PhysicalCharacter = physicalCharacter;
     }
 
@@ -29,14 +29,21 @@ internal class Player
             UpdateMovementAnimation(Animation.Characters.CharacterAnimationType.Stand);
         }
 
-        Character.RigidPose = PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(camera.Front), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
+        PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(camera.Front), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
     }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition, bool isFirstPerson)
     {
         if (!isFirstPerson)
-            Character.Render(shader, scale, cameraPosition, Cowboy.LocalTranslation);
+            Character.Render(PhysicalCharacter.Pose, shader, scale, cameraPosition);
     }
+
+    // in general this can depend on the properties of the character e.g. size etc
+    public Vector3 GetThirdPersonCameraOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
+
+    public System.Numerics.Vector3 GetCharacterRay(Vector3 viewDirection, float length)
+        => PhysicalCharacter.Pose.Position + Conversions.ToNumericsVector(viewDirection) * length;
 
     private void UpdateMovementAnimation(Animation.Characters.CharacterAnimationType animationType)
     {

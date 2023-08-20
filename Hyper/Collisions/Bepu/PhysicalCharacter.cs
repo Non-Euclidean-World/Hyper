@@ -11,6 +11,8 @@ using OpenTK.Graphics.OpenGL4;
 namespace Hyper.Collisions.Bepu;
 internal class PhysicalCharacter
 {
+    public RigidPose Pose { get; private set; }
+
 #if BOUNDING_BOXES
     public Meshes.Mesh BoundingBoxMesh { get; private set; }
 #endif
@@ -52,7 +54,7 @@ internal class PhysicalCharacter
 #endif
     }
 
-    public RigidPose UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
+    public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
     {
         var movementDirectionLengthSquared = movementDirection.LengthSquared();
         if (movementDirectionLengthSquared > 0)
@@ -118,7 +120,7 @@ internal class PhysicalCharacter
 #if BOUNDING_BOXES
         BoundingBoxMesh.RigidPose = body.Pose;
 #endif
-        return body.Pose;
+        Pose = body.Pose;
     }
 
     /// <summary>

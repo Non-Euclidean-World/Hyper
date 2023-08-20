@@ -7,13 +7,13 @@ using OpenTK.Mathematics;
 namespace Hyper.GameEntities;
 internal class Bot
 {
-    public Cowboy Character { get; init; }
+    public CowboyModel Character { get; init; }
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
 
     public Bot(PhysicalCharacter physicalCharacter)
     {
-        Character = new Cowboy(scale: 0.04f);
+        Character = new CowboyModel();
         PhysicalCharacter = physicalCharacter;
     }
 
@@ -28,11 +28,11 @@ internal class Bot
             UpdateMovementAnimation(Animation.Characters.CharacterAnimationType.Stand);
         }
 
-        Character.RigidPose = PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
+        PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
     }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition)
-        => Character.Render(shader, scale, cameraPosition, Cowboy.LocalTranslation);
+        => Character.Render(PhysicalCharacter.Pose, shader, scale, cameraPosition);
 
     private void UpdateMovementAnimation(Animation.Characters.CharacterAnimationType animationType)
     {

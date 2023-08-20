@@ -1,23 +1,29 @@
-﻿
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
 namespace Hyper.Animation.Characters.Cowboy;
 
-internal class Cowboy : CharacterModel
+internal class CowboyModel : Model
 {
-    private static Model CreateModel()
-    {
-        string model = Path.GetFullPath("Animation/Characters/Cowboy/Resources/model.dae");
-        string texture = Path.GetFullPath("Animation/Characters/Cowboy/Resources/texture.png");
+    private static readonly string ModelPath;
 
-        return new Model(model, texture);
+    private static readonly string TexturePath;
+
+    private static readonly float LocalScale;
+
+    private static readonly Vector3 LocalTranslation;
+
+    static CowboyModel()
+    {
+        ModelPath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/model.dae");
+        TexturePath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/texture.png");
+        LocalScale = 0.04f;
+        LocalTranslation = new Vector3(0, -5, 0);
     }
 
-    public static Vector3 LocalTranslation => new(0, -5f, 0); // make sure the middle point is in (0, 0, 0)
+    public CowboyModel() : base(ModelPath, TexturePath, LocalScale, LocalTranslation)
+    { }
 
-    public Cowboy(float scale) : base(scale, CreateModel()) { }
+    public void Run() => Animator.Play(0);
 
-    public void Run() => Model.Animator.Play(0);
-
-    public void Idle() => Model.Animator.Reset();
+    public void Idle() => Animator.Reset();
 }

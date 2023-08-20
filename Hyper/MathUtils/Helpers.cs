@@ -11,7 +11,7 @@ internal class Helpers
     /// <param name="source">Rotated vector</param>
     /// <param name="target">Vector which the <c>source</c> should be aligned with</param>
     /// <returns>Quaternion representing</returns>
-    public static Quaternion CreateFromTwoVectors(Vector3 source, Vector3 target)
+    public static Quaternion CreateQuaternionFromTwoVectors(Vector3 source, Vector3 target)
     {
         float angle = MathF.Acos(Vector3.Dot(source, target));
         Vector3 axis = Vector3.Normalize(Vector3.Cross(source, target));

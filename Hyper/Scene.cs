@@ -3,6 +3,7 @@ using BepuPhysics;
 using BepuUtilities.Memory;
 using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
+using Hyper.GameEntities;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.Meshes;
@@ -47,13 +48,9 @@ internal class Scene : IInputSubscriber
 
     private readonly SimpleCar _simpleCar;
 
-    private readonly Vector3 _carInitialPosition;
+    private readonly Player _player;
 
-    private readonly Vector3 _characterInitialPosition;
-
-    private readonly GameEntities.Player _player;
-
-    private readonly List<GameEntities.Bot> _bots;
+    private readonly List<Bot> _bots;
 
     private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -65,9 +62,6 @@ internal class Scene : IInputSubscriber
         _chunks = GetChunks(chunkFactory);
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
-
-        _carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 5, 12);
-        _characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
 
         Hud = new HudManager(aspectRatio);
 
@@ -87,11 +81,17 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1), bufferPool);
 
-        _player = new GameEntities.Player(CreatePhysicalHumanoid(_characterInitialPosition));
+        var characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
+        _player = new Player(CreatePhysicalHumanoid(characterInitialPosition));
 
-        _bots = new List<GameEntities.Bot>() { new GameEntities.Bot(CreatePhysicalHumanoid(new Vector3(-3, _scalarFieldGenerator.AvgElevation + 8, -3))) };
+        int botsCount = 3;
+        _bots = Enumerable.Range(0, botsCount) // initialize them however you like
+            .Select(i => new Vector3(i * 4 - botsCount * 2, _scalarFieldGenerator.AvgElevation + 5, i * 4 - botsCount * 2))
+            .Select(pos => new Bot(CreatePhysicalHumanoid(pos)))
+            .ToList();
 
-        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, Conversions.ToNumericsVector(_carInitialPosition));
+        var carInitialPosition = new Vector3(5, _scalarFieldGenerator.AvgElevation + 5, 12);
+        _simpleCar = SimpleCar.CreateStandardCar(_simulationManager.Simulation, _simulationManager.BufferPool, _properties, Conversions.ToNumericsVector(carInitialPosition));
 
         Camera = GetCamera(aspectRatio);
 
@@ -246,12 +246,12 @@ internal class Scene : IInputSubscriber
             foreach (var bot in _bots)
             {
                 float tMs = _stopwatch.ElapsedMilliseconds;
-                Vector3 movement = new Vector3(MathF.Sin(tMs / 3000), 0, MathF.Cos(tMs / 3000)); // this poor fella is cursed with eternal running in circles
+                Vector3 movement = new Vector3(MathF.Sin(tMs / 3000), 0, MathF.Cos(tMs / 3000)); // these poor fellas are cursed with eternal running in circles
                 bot.UpdateCharacterGoals(_simulationManager.Simulation, movement, (float)e.Time,
                     tryJump: false, sprint: false, movementDirection: Vector2.UnitY);
             }
 
-            Camera.UpdateWithCharacter(_player.Character);
+            Camera.UpdateWithCharacter(_player);
 
             _simulationManager.Simulation.Timestep((float)e.Time, _simulationManager.ThreadDispatcher);
         });
@@ -260,7 +260,7 @@ internal class Scene : IInputSubscriber
         {
             foreach (var chunk in _chunks)
             {
-                if (chunk.Mine(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
+                if (chunk.Mine(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     return;
@@ -272,7 +272,7 @@ internal class Scene : IInputSubscriber
         {
             foreach (var chunk in _chunks)
             {
-                if (chunk.Build(Conversions.ToOpenTKVector(_player.Character.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
+                if (chunk.Build(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     return;
@@ -282,10 +282,10 @@ internal class Scene : IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.P, () =>
         {
-            var q = MathUtils.Helpers.CreateFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(Camera.Front));
+            var q = MathUtils.Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(Camera.Front));
             var projectile = Projectile.CreateStandardProjectile(_simulationManager.Simulation,
                 _properties,
-                new RigidPose(_player.Character.GetCharacterRay(Camera.Front, 2), q),
+                new RigidPose(_player.GetCharacterRay(Camera.Front, 2), q),
                 Conversions.ToNumericsVector(Camera.Front) * 15,
                 new ProjectileMesh(2, 0.5f, 0.5f)); // let's throw some refrigerators
             _projectiles.Add(projectile);

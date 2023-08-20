@@ -1,5 +1,5 @@
-using Hyper.Animation.Characters;
 using Hyper.Command;
+using Hyper.GameEntities;
 using Hyper.MathUtils;
 using Hyper.TypingUtils;
 using Hyper.UserInput;
@@ -33,8 +33,6 @@ internal class Camera : Commandable, IInputSubscriber
 
     private readonly float _far;
 
-    private readonly Vector3 _position;
-
     private bool _firstMove = true;
 
     private Vector2 _lastPos;
@@ -45,14 +43,14 @@ internal class Camera : Commandable, IInputSubscriber
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public Vector3 ViewPosition { get => _position; }
+    public Vector3 ViewPosition { get; private init; }
 
     public Camera(float aspectRatio, float near, float far, float scale)
     {
         AspectRatio = aspectRatio;
         _near = near;
         _far = far;
-        _position = Vector3.UnitY * scale;
+        ViewPosition = Vector3.UnitY * scale;
 
         RegisterCallbacks();
     }
@@ -92,7 +90,7 @@ internal class Camera : Commandable, IInputSubscriber
 
     public Matrix4 GetViewMatrix()
     {
-        return Matrices.ViewMatrix(_position, Front, Up, Curve);
+        return Matrices.ViewMatrix(ViewPosition, Front, Up, Curve);
     }
 
     public Matrix4 GetProjectionMatrix()
@@ -133,10 +131,10 @@ internal class Camera : Commandable, IInputSubscriber
         }
     }
 
-    public void UpdateWithCharacter(CharacterModel character)
+    public void UpdateWithCharacter(Player player)
     {
-        ReferencePointPosition = Conversions.ToOpenTKVector(character.RigidPose.Position)
-            + (FirstPerson ? Vector3.Zero : character.GetThirdPersonCameraOffset(this));
+        ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
+            + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this));
     }
 
     protected override void SetCommand(string[] args)
