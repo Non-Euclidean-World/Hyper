@@ -10,7 +10,7 @@ internal class Texture
     private readonly int _handle;
 
     /// <summary>
-    /// Creates a shader from a file.
+    /// Loads a texture from a file.
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
@@ -42,7 +42,7 @@ internal class Texture
     }
 
     /// <summary>
-    /// Creates a texture from a bitmap.
+    /// Loads a texture from a bitmap.
     /// </summary>
     /// <param name="bitmap"></param>
     /// <returns></returns>

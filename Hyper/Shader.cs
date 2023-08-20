@@ -49,7 +49,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform int on this shader.
+    /// Sets a uniform int on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -60,7 +60,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform float on this shader.
+    /// Sets a uniform float on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -71,7 +71,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform Matrix4 on this shader
+    /// Sets a uniform Matrix4 on this shader
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -87,7 +87,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform Vector3 on this shader.
+    /// Sets a uniform Vector3 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -98,7 +98,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform Vector4 on this shader.
+    /// Sets a uniform Vector4 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -109,7 +109,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform bool on this shader.
+    /// Sets a uniform bool on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -120,7 +120,7 @@ internal class Shader
     }
     
     /// <summary>
-    /// Set a uniform array of Vector3 on this shader.
+    /// Sets a uniform array of Vector3 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -138,7 +138,7 @@ internal class Shader
     }
     
     /// <summary>
-    /// Set a uniform array of Vector4 on this shader.
+    /// Sets a uniform array of Vector4 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -157,7 +157,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform array of Matrix4 on this shader.
+    /// Sets a uniform array of Matrix4 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>

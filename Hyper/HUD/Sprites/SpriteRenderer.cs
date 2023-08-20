@@ -50,7 +50,7 @@ internal class SpriteRenderer
     /// </summary>
     /// <param name="shader"></param>
     /// <param name="spriteName">Name of the sprite we want to print.</param>
-    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
+    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If the parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
     /// <param name="parentPosition">The position at which the parent is rendered.</param>
     /// <param name="parentSizeY"></param>
     /// <param name="parentSpriteName"></param>
@@ -69,7 +69,7 @@ internal class SpriteRenderer
     /// <summary>
     /// Gets the position of a sprite which is rendered based on the position of its parent in world coordinates.
     /// </summary>
-    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
+    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If the parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
     /// <param name="parentPosition">The position at which the parent is rendered.</param>
     /// <param name="parentSpriteName"></param>
     /// <returns></returns>

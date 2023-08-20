@@ -5,10 +5,10 @@ namespace Hyper.MathUtiils;
 internal static class GeomPorting
 {
     /// <summary>
-    /// Gets the position of a point in euclidean space from a point in non-euclidean space.
+    /// Ports a point in euclidean space to non-euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
-    /// <param name="curve"></param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
     /// <returns></returns>
     public static Vector4 EucToCurved(Vector3 eucPoint, float curve)
     {
@@ -16,10 +16,10 @@ internal static class GeomPorting
     }
 
     /// <summary>
-    /// Gets the position of a point in non-euclidean space from a point in euclidean space.
+    /// Ports a point in non-euclidean space to euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
-    /// <param name="curve"></param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
     /// <returns></returns>
     public static Vector4 EucToCurved(Vector4 eucPoint, float curve)
     {

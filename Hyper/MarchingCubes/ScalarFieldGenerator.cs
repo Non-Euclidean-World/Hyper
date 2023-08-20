@@ -37,10 +37,10 @@ internal class ScalarFieldGenerator
     /// <summary>
     /// Generates a 3d scalar field of voxels.
     /// </summary>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
-    /// <param name="depth"></param>
-    /// <param name="position"></param>
+    /// <param name="width">The size in X dimension.</param>
+    /// <param name="height">The size in Y dimension.</param>
+    /// <param name="depth">The size in Z dimension.</param>
+    /// <param name="position">The position in the world where the scalar filed will be placed.</param>
     /// <returns></returns>
     public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
     {
