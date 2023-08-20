@@ -4,6 +4,14 @@ namespace Hyper.MathUtils;
 
 internal static class Matrices
 {
+    /// <summary>
+    /// Gets the view matrix.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="front"></param>
+    /// <param name="up"></param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <returns></returns>
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve)
     {
         Matrix4 v = Matrix4.LookAt(position, position + front, up);
@@ -32,6 +40,12 @@ internal static class Matrices
         return nonEuclidView;
     }
 
+    /// <summary>
+    /// Gets the translation matrix.
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="curve"></param>
+    /// <returns>If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</returns>
     public static Matrix4 TranslationMatrix(Vector4 to, float curve)
     {
         Matrix4 t;
@@ -55,6 +69,15 @@ internal static class Matrices
         return t;
     }
 
+    /// <summary>
+    /// Gets the projection matrix.
+    /// </summary>
+    /// <param name="fov"></param>
+    /// <param name="near"></param>
+    /// <param name="far"></param>
+    /// <param name="aspectRatio"></param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <returns></returns>
     public static Matrix4 ProjectionMatrix(float fov, float near, float far, float aspectRatio, float curve)
     {
         Matrix4 p = Matrix4.CreatePerspectiveFieldOfView(fov, aspectRatio, near, far);

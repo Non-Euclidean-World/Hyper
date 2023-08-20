@@ -4,6 +4,12 @@ using BepuUtilities;
 using BepuUtilities.Memory;
 
 namespace Hyper.Collisions;
+
+/// <summary>
+/// Utility class that groups together objects necessary to run the simulation.
+/// </summary>
+/// <typeparam name="TNarrowPhaseCallbacks">Type handling the narrow phase handles</typeparam>
+/// <typeparam name="TPoseIntegratorCallbacks">Type handling pose integration callbacks</typeparam>
 internal class SimulationManager<TNarrowPhaseCallbacks, TPoseIntegratorCallbacks> : IDisposable
     where TNarrowPhaseCallbacks : struct, INarrowPhaseCallbacks
     where TPoseIntegratorCallbacks : struct, IPoseIntegratorCallbacks

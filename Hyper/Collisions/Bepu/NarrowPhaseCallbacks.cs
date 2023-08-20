@@ -9,9 +9,7 @@ using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 
 namespace Hyper.Collisions.Bepu;
-/// <summary>
-/// For the car demo, we want both wheel-body collision filtering and different friction for wheels versus the car body.
-/// </summary>
+
 struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {
     public CollidableProperty<SimulationProperties> Properties;

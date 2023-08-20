@@ -41,6 +41,14 @@ internal static class Printer
         Rectangles = GetRectangles(text, paint);
     }
 
+    /// <summary>
+    /// Renders the text with the top right corner at the given position.
+    /// </summary>
+    /// <param name="shader"></param>
+    /// <param name="text"></param>
+    /// <param name="size"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public static void RenderStringTopRight(Shader shader, string text, float size, float x, float y)
     {
         var centerX = x - (text.Length * size * 2 - size);
@@ -49,6 +57,14 @@ internal static class Printer
         RenderString(shader, text, size, centerX, centerY);
     }
     
+    /// <summary>
+    /// Renders the text with the bottom right corner at the given position.
+    /// </summary>
+    /// <param name="shader"></param>
+    /// <param name="text"></param>
+    /// <param name="size"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public static void RenderStringBottomRight(Shader shader, string text, float size, float x, float y)
     {
         var centerX = x - (text.Length * size * 2 - size);
@@ -57,6 +73,14 @@ internal static class Printer
         RenderString(shader, text, size, centerX, centerY);
     }
 
+    /// <summary>
+    /// Renders the text with the middle at the given position.
+    /// </summary>
+    /// <param name="shader"></param>
+    /// <param name="text"></param>
+    /// <param name="size"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public static void RenderString(Shader shader, string text, float size, float x, float y)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);

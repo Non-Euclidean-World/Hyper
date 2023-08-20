@@ -28,6 +28,13 @@ internal class SpriteRenderer
         _spriteSheet.Use(TextureUnit.Texture0);
     }
     
+    /// <summary>
+    /// Renders a sprite with the middle at a given position.
+    /// </summary>
+    /// <param name="shader"></param>
+    /// <param name="spriteName"></param>
+    /// <param name="position"></param>
+    /// <param name="sizeY"></param>
     public void Render(Shader shader, string spriteName, Vector2 position, float sizeY)
     {
         var rect = _rectangles[spriteName];
@@ -39,14 +46,14 @@ internal class SpriteRenderer
     }
 
     /// <summary>
-    /// Renders a sprite relative to another sprite. Returns the position where it was rendered.
+    /// Renders a sprite which is rendered based on the position of its parent.
     /// </summary>
     /// <param name="shader"></param>
     /// <param name="spriteName">Name of the sprite we want to print.</param>
-    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
+    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If the parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
     /// <param name="parentPosition">The position at which the parent is rendered.</param>
-    /// <param name="parentSizeY">Parents Y size.</param>
-    /// <param name="parentSpriteName">Parent sprite name.</param>
+    /// <param name="parentSizeY"></param>
+    /// <param name="parentSpriteName"></param>
     public void RenderRelative(Shader shader, string spriteName, Vector2i relativePosition, Vector2 parentPosition, float parentSizeY, string parentSpriteName)
     {
         Vector2 position = GetPositionRelative(relativePosition, parentPosition, parentSpriteName);
@@ -59,6 +66,13 @@ internal class SpriteRenderer
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
 
+    /// <summary>
+    /// Gets the position of a sprite which is rendered based on the position of its parent in world coordinates.
+    /// </summary>
+    /// <param name="relativePosition">The cell of the parent in which we want to render the object. If the parent is a 3 by 3 square and we want to render the object in the bottom left we pass [0,2].</param>
+    /// <param name="parentPosition">The position at which the parent is rendered.</param>
+    /// <param name="parentSpriteName"></param>
+    /// <returns></returns>
     public Vector2 GetPositionRelative(Vector2i relativePosition, Vector2 parentPosition, string parentSpriteName)
     {
         var parentRect = _rectangles[parentSpriteName];
@@ -69,6 +83,13 @@ internal class SpriteRenderer
         return new Vector2(positionX, positionY);
     }
 
+    /// <summary>
+    /// Gets sprite size based on the size of the parent.
+    /// </summary>
+    /// <param name="spriteName"></param>
+    /// <param name="parentSizeY"></param>
+    /// <param name="parentSpriteName"></param>
+    /// <returns></returns>
     public Vector2 GetSizeRelative(string spriteName, float parentSizeY, string parentSpriteName)
     {
         var parentRect = _rectangles[parentSpriteName];

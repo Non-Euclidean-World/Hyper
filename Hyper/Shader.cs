@@ -48,13 +48,8 @@ internal class Shader
         GL.UseProgram(_handle);
     }
 
-    public int GetAttribLocation(string attribName)
-    {
-        return GL.GetAttribLocation(_handle, attribName);
-    }
-
     /// <summary>
-    /// Set a uniform int on this shader.
+    /// Sets a uniform int on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -65,7 +60,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform float on this shader.
+    /// Sets a uniform float on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -76,7 +71,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform Matrix4 on this shader
+    /// Sets a uniform Matrix4 on this shader
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -92,7 +87,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform Vector3 on this shader.
+    /// Sets a uniform Vector3 on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -102,6 +97,11 @@ internal class Shader
         GL.Uniform3(_uniformLocations[name], data);
     }
 
+    /// <summary>
+    /// Sets a uniform Vector4 on this shader.
+    /// </summary>
+    /// <param name="name">The name of the uniform</param>
+    /// <param name="data">The data to set</param>
     public void SetVector4(string name, Vector4 data)
     {
         GL.UseProgram(_handle);
@@ -109,7 +109,7 @@ internal class Shader
     }
 
     /// <summary>
-    /// Set a uniform bool on this shader.
+    /// Sets a uniform bool on this shader.
     /// </summary>
     /// <param name="name">The name of the uniform</param>
     /// <param name="data">The data to set</param>
@@ -119,6 +119,11 @@ internal class Shader
         GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
     }
     
+    /// <summary>
+    /// Sets a uniform array of Vector3 on this shader.
+    /// </summary>
+    /// <param name="name">The name of the uniform</param>
+    /// <param name="data">The data to set</param>
     public void SetVector3Array(string name, Vector3[] data)
     {
         float[] vectorData = new float[data.Length * 3];
@@ -132,6 +137,11 @@ internal class Shader
         GL.Uniform3(_uniformLocations[name + "[0]"], data.Length, vectorData);
     }
     
+    /// <summary>
+    /// Sets a uniform array of Vector4 on this shader.
+    /// </summary>
+    /// <param name="name">The name of the uniform</param>
+    /// <param name="data">The data to set</param>
     public void SetVector4Array(string name, Vector4[] data)
     {
         float[] vectorData = new float[data.Length * 4];
@@ -146,6 +156,11 @@ internal class Shader
         GL.Uniform4(_uniformLocations[name + "[0]"], data.Length, vectorData);
     }
 
+    /// <summary>
+    /// Sets a uniform array of Matrix4 on this shader.
+    /// </summary>
+    /// <param name="name">The name of the uniform</param>
+    /// <param name="data">The data to set</param>
     public void SetMatrix4Array(string name, Matrix4[] data)
     {
         float[] matrixData = new float[data.Length * 16];
