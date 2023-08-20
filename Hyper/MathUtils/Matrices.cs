@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MathUtiils;
+namespace Hyper.MathUtils;
 
 internal static class Matrices
 {
@@ -48,10 +48,10 @@ internal static class Matrices
     /// <returns>If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</returns>
     public static Matrix4 TranslationMatrix(Vector4 to, float curve)
     {
-        Matrix4 T;
+        Matrix4 t;
         if (MathHelper.Abs(curve) < Constants.Eps)
         {
-            T = new Matrix4(
+            t = new Matrix4(
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
@@ -60,13 +60,13 @@ internal static class Matrices
         else
         {
             float denom = 1 + to.W;
-            T = new Matrix4(
+            t = new Matrix4(
             1 - curve * to.X * to.X / denom, -curve * to.X * to.Y / denom, -curve * to.X * to.Z / denom, -curve * to.X,
             -curve * to.Y * to.X / denom, 1 - curve * to.Y * to.Y / denom, -curve * to.Y * to.Z / denom, -curve * to.Y,
             -curve * to.Z * to.X / denom, -curve * to.Z * to.Y / denom, 1 - curve * to.Z * to.Z / denom, -curve * to.Z,
             to.X, to.Y, to.Z, to.W);
         }
-        return T;
+        return t;
     }
 
     /// <summary>

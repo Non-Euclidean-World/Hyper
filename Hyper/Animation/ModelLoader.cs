@@ -25,10 +25,10 @@ public static class ModelLoader
             SetupTextureCoords(mesh);
             SetupBones(mesh);
             SetupFaces(mesh);
-        
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
-        
+
             vaos.Add(vao);
         }
 
@@ -39,7 +39,7 @@ public static class ModelLoader
     {
         int vboPositions = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboPositions);
-            
+
         var vertices = mesh.Vertices.SelectMany(v => new[] { v.X, v.Y, v.Z }).ToArray();
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
@@ -58,11 +58,11 @@ public static class ModelLoader
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(1);
     }
-    
+
     private static void SetupTextureCoords(Mesh mesh)
     {
         if (!mesh.HasTextureCoords(0)) return;
-        
+
         int vboTexCoords = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboTexCoords);
 
@@ -76,7 +76,7 @@ public static class ModelLoader
     private static void SetupBones(Mesh mesh)
     {
         const int maxBones = 3;
-        
+
         int[,] vertexBones = new int[mesh.VertexCount, maxBones];
         float[,] vertexWeights = new float[mesh.VertexCount, maxBones];
 
@@ -97,7 +97,7 @@ public static class ModelLoader
                 }
             }
         }
-        
+
         int[] boneIndices = new int[mesh.VertexCount * maxBones];
         System.Buffer.BlockCopy(vertexBones, 0, boneIndices, 0, boneIndices.Length * sizeof(int));
 
@@ -110,7 +110,7 @@ public static class ModelLoader
 
         GL.VertexAttribIPointer(3, maxBones, VertexAttribIntegerType.Int, 0, 0);
         GL.EnableVertexAttribArray(3);
-        
+
         int vboBoneWeights = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboBoneWeights);
         GL.BufferData(BufferTarget.ArrayBuffer, boneWeights.Length * sizeof(float), boneWeights.ToArray(), BufferUsageHint.StaticDraw);
@@ -118,11 +118,11 @@ public static class ModelLoader
         GL.VertexAttribPointer(4, maxBones, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(4);
     }
-    
+
     private static void SetupFaces(Mesh mesh)
     {
         if (!mesh.HasFaces) return;
-        
+
         int ebo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
 
