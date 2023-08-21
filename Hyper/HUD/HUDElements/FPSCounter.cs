@@ -1,20 +1,15 @@
 ﻿using System.Diagnostics;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper.HUD.HUDElements;
 
-internal class FpsCounter : HudElement
+internal class FpsCounter : IHudElement
 {
-    public const float DefaultSize = 0.02f;
-
-    public static readonly Vector2 DefaultPosition = new(0.64f, 0.48f);
+    public bool Visible { get; set; } = true;
+    
+    private readonly Vector2 _size;
 
     private const double FpsTimeFrame = 0.1f;
-
-    private static readonly HUDVertex[] Vertices = InitializeVertices();
-
-    private readonly Texture[] _numberTextures;
 
     private readonly Stopwatch _stopwatch = new();
 
@@ -23,53 +18,21 @@ internal class FpsCounter : HudElement
     private double _elapsedTime = 0;
 
     private int _fps = 0;
+    
+    private readonly Window _window = Window.Instance;
 
-    public FpsCounter(Vector2 position, float size) : base(position, size, Vertices)
+    public FpsCounter()
     {
-        _numberTextures = new[] {
-            Texture.LoadFromText("0"),
-            Texture.LoadFromText("1"),
-            Texture.LoadFromText("2"),
-            Texture.LoadFromText("3"),
-            Texture.LoadFromText("4"),
-            Texture.LoadFromText("5"),
-            Texture.LoadFromText("6"),
-            Texture.LoadFromText("7"),
-            Texture.LoadFromText("8"),
-            Texture.LoadFromText("9"),
-        };
-
+        _size = new Vector2(0.02f);
         _stopwatch.Start();
     }
 
-    public override void Render(Shader shader)
+    public void Render(Shader shader)
     {
-        shader.SetBool("useTexture", true);
-        GL.BindVertexArray(VaoId);
-
+        shader.SetVector4("color", Vector4.One);
         UpdateFps();
-        RenderNumber(shader, _fps);
-    }
 
-    private void RenderNumber(Shader shader, int number)
-    {
-        float offset = 0;
-        while (number > 0)
-        {
-            int digit = number % 10;
-            RenderSingleDigit(shader, digit, offset);
-            offset -= Size * 2;
-            number /= 10;
-        }
-    }
-
-    private void RenderSingleDigit(Shader shader, int digit, float offset)
-    {
-        var model = Matrix4.CreateTranslation(Position.X + offset, Position.Y, 0.0f);
-        model = Matrix4.CreateScale(Size, Size, 1.0f) * model;
-        shader.SetMatrix4("model", model);
-        _numberTextures[digit].Use(TextureUnit.Texture0);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+        Printer.RenderStringTopRight(shader, _fps.ToString(), _size.X, (float)_window.Size.X / _window.Size.Y / 2, 0.5f);
     }
 
     private void UpdateFps()
@@ -82,20 +45,5 @@ internal class FpsCounter : HudElement
             _frameCount = 0;
             _stopwatch.Restart();
         }
-    }
-
-    private static HUDVertex[] InitializeVertices()
-    {
-        HUDVertexBuilder builder = new();
-        Vector3 color = new Vector3(0, 0, 0); // This might come in handy when we implement changing colors when we have texture.
-        return new[]
-        {
-            builder.SetPosition(-1, 1).SetColor(color).SetTextureCoords(0, 0).Build(),
-            builder.SetPosition(1, 1).SetColor(color).SetTextureCoords(1, 0).Build(),
-            builder.SetPosition(1, -1).SetColor(color).SetTextureCoords(1, 1).Build(),
-            builder.SetPosition(1, -1).SetColor(color).SetTextureCoords(1, 1).Build(),
-            builder.SetPosition(-1, -1).SetColor(color).SetTextureCoords(0, 1).Build(),
-            builder.SetPosition(-1, 1).SetColor(color).SetTextureCoords(0, 0).Build()
-        };
     }
 }

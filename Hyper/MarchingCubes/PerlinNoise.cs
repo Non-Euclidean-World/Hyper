@@ -10,6 +10,13 @@ internal class PerlinNoise
         _permutation = Enumerable.Range(0, 256).OrderBy(x => random.Next()).ToArray();
     }
 
+    /// <summary>
+    /// Gets the noise value for the given 3D coordinates.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    /// <returns></returns>
     public float GetNoise3D(float x, float y, float z)
     {
         float px = x * 0.1553f;
@@ -21,7 +28,7 @@ internal class PerlinNoise
         return noise;
     }
 
-    public float GetNoise(float x, float y, float z)
+    private float GetNoise(float x, float y, float z)
     {
         // Calculate the unit cube that contains the point
         int cubeX = (int)Math.Floor(x) & 255;

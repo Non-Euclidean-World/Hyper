@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using BepuPhysics;
+using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -11,6 +13,10 @@ internal class Mesh : IDisposable
     public Vertex[] vertices;
     //Will also have to add rotation and scale
 
+    public RigidPose RigidPose { get; set; }
+
+    public Vector3 Scaling { get; set; }
+
     protected int VaoId;
 
     protected int VboId;
@@ -19,13 +25,17 @@ internal class Mesh : IDisposable
 
     private bool createdVertexArrayObject;
 
+    public Vertex[] Vertices { get; protected set; }
+
     public Mesh(Vertex[] vertices, Vector3 position)
     {
         //CreateVertexArrayObject(vertices);
         createdVertexArrayObject = false;
         this.vertices = vertices;
+        Vertices = vertices;
+        CreateVertexArrayObject();
         Position = position;
-        NumberOfVertices = vertices.Length;
+        NumberOfVertices = Vertices.Length;
     }
 
     public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
@@ -38,6 +48,19 @@ internal class Mesh : IDisposable
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
     }
 
+    public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
+    {
+        var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
+        var scaleMatrix = Matrix4.CreateScale(scale);
+        var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
+
+        shader.SetMatrix4("model", scaleMatrix * rotation * translation);
+
+        GL.BindVertexArray(VaoId);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
+    }
+
+    private void CreateVertexArrayObject()
     public void CreateVertexArrayObject()
     {
         if (createdVertexArrayObject)
@@ -51,7 +74,7 @@ internal class Mesh : IDisposable
 
         int vboId = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<Vertex>(), vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices, BufferUsageHint.StaticDraw);
 
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
         GL.EnableVertexAttribArray(0);

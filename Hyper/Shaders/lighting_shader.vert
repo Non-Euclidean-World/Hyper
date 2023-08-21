@@ -14,12 +14,13 @@ out vec4 Normal;
 out vec4 FragPos; // in world space coordinates
 out vec3 Color;
 
-vec4 port(vec4 ePoint) {
+vec4 port(vec4 ePoint)
+{
     vec3 p = ePoint.xyz;
     float d = length(p);
-    if(d < 0.0001 || curv == 0) return vec4(p, 1);
+    if(d < 0.0001 || curv == 0) return ePoint;
     if(curv > 0) return vec4(p / d * sin(d), cos(d));
-    if(curv < 0) return vec4(p / d * sinh(d), cosh(d));
+    return vec4(p / d * sinh(d), cosh(d));
 }
 
 mat4 TranslateMatrix(vec4 to)

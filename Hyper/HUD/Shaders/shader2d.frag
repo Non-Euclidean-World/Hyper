@@ -2,19 +2,21 @@
 out vec4 FragColor;
 
 in vec2 TexCoord;
-in vec3 OurColor;
 
+uniform vec4 color;
 uniform sampler2D texture0;
 uniform bool useTexture;
+uniform vec4 spriteRect; // x - left, y - bottom, z - width, w - height
 
 void main()
 {             
     if (useTexture)
     {
-        FragColor = texture(texture0, TexCoord);
+        vec2 adjustedCoords = TexCoord * spriteRect.zw + spriteRect.xy;
+        FragColor = texture(texture0, adjustedCoords) * color;
     }
     else
     {
-        FragColor = vec4(OurColor, 1.0); 
+        FragColor = color; 
     }
 }

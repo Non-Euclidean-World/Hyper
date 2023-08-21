@@ -34,6 +34,14 @@ internal class ScalarFieldGenerator
         _maxAmp = AvgElevation = GetMaxAmp();
     }
 
+    /// <summary>
+    /// Generates a 3d scalar field of voxels.
+    /// </summary>
+    /// <param name="width">The size in X dimension.</param>
+    /// <param name="height">The size in Y dimension.</param>
+    /// <param name="depth">The size in Z dimension.</param>
+    /// <param name="position">The position in the world where the scalar filed will be placed.</param>
+    /// <returns></returns>
     public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
     {
         var perlin = new PerlinNoise(_seed);
@@ -71,6 +79,12 @@ internal class ScalarFieldGenerator
         return scalarField;
     }
 
+    /// <summary>
+    /// Generates a 3d scalar field of voxels. Each size is the same.
+    /// </summary>
+    /// <param name="size"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public Voxel[,,] Generate(int size, Vector3i position) => Generate(size, size, size, position);
 
     private float GetMaxAmp()
