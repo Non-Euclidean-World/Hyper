@@ -18,11 +18,11 @@ internal class MeshGenerator
     public Vertex[] GetMesh()
     {
         var vertices = new List<Vertex>();
-        for (int x = 1; x < _scalarField.GetLength(0) - 2; x++)
+        for (int x = 0; x < _scalarField.GetLength(0) - 1; x++)
         {
-            for (int y = 1; y < _scalarField.GetLength(1) - 2; y++)
+            for (int y = 0; y < _scalarField.GetLength(1) - 1; y++)
             {
-                for (int z = 1; z < _scalarField.GetLength(2) - 2; z++)
+                for (int z = 0; z < _scalarField.GetLength(2) - 1; z++)
                 {
                     vertices.AddRange(GetTriangles(x, y, z));
                 }

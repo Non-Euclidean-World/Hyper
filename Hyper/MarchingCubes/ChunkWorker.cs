@@ -2,9 +2,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Hyper.Collisions;
 using Hyper.MarchingCubes;
 using Hyper.Meshes;
 using OpenTK.Mathematics;
+using Hyper.Collisions.Bepu;
 
 namespace Hyper
 {
@@ -16,18 +18,18 @@ namespace Hyper
         private CancellationTokenSource _cancellationTokenSource;
         private ScalarFieldGenerator _scalarFieldGenerator;
         private ChunkFactory _chunkFactory;
+        private SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
 
-        public ChunkWorker(ConcurrentDictionary<Guid, Chunk> existingChunks)
+        public ChunkWorker(ConcurrentDictionary<Guid, Chunk> existingChunks, ScalarFieldGenerator scalarFieldGenerator, 
+            SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _neededChunkPositions = new ConcurrentDictionary<Vector3i, Guid>();
             _existingChunkPositions = new ConcurrentDictionary<Vector3i, Guid>();
             _existingChunks = existingChunks;
-            _scalarFieldGenerator = new ScalarFieldGenerator(1);
+            _scalarFieldGenerator = scalarFieldGenerator;
             _chunkFactory = new ChunkFactory(_scalarFieldGenerator);
-            
-            
-            
+            _simulationManager = simulationManager;
         }
 
         public void StartProcessing()
@@ -52,7 +54,9 @@ namespace Hyper
                     {
                         Console.WriteLine("mk" + kvp.Key.ToString());
                         _existingChunkPositions.TryAdd(kvp.Key, kvp.Value);
-                        _existingChunks.TryAdd(kvp.Value, _chunkFactory.GenerateChunk(kvp.Key));
+                        var chunk = _chunkFactory.GenerateChunk(kvp.Key);
+                        chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                        _existingChunks.TryAdd(kvp.Value, chunk);
                     }
                 }
 
@@ -74,7 +78,7 @@ namespace Hyper
 
         public void UpdateNeededChunksBasedOnPosition(Vector3 position)
         {
-            Func<float, int, int> clampAndAddOffset = (x, offset) => ((int)Math.Round(x) / (Chunk.Size - 4) + offset) * (Chunk.Size - 4);
+            Func<float, int, int> clampAndAddOffset = (x, offset) => ((int)Math.Round(x) / (Chunk.Size - 0) + offset) * (Chunk.Size - 0);
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)

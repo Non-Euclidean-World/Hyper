@@ -121,13 +121,20 @@ internal class Chunk : Mesh
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
-        var position = Position;
-        _shape = simulation.Shapes.Add(mesh);
-        _handle = simulation.Statics.Add(new StaticDescription(
-            new System.Numerics.Vector3(position.X, position.Y, position.Z),
-            QuaternionEx.Identity,
-            _shape));
+        try
+        {
+            var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool); //throws if chunk contains no actual terrain
+            var position = Position;
+            _shape = simulation.Shapes.Add(mesh);
+            _handle = simulation.Statics.Add(new StaticDescription(
+                new System.Numerics.Vector3(position.X, position.Y, position.Z),
+                QuaternionEx.Identity,
+                _shape));
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
     // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.

@@ -23,7 +23,6 @@ internal class Scene : IInputSubscriber
     public readonly ConcurrentDictionary<Guid, Chunk> _existingChunks;
 
     public readonly ChunkWorker _chunkWorker;
-    private readonly List<Chunk> _chunks;
 
     private readonly List<LightSource> _lightSources;
 
@@ -61,17 +60,9 @@ internal class Scene : IInputSubscriber
 
     public Scene(float aspectRatio)
     {
-        _existingChunks = new ConcurrentDictionary<Guid, Chunk>();
-        _chunkWorker = new ChunkWorker(_existingChunks);
-        _chunkWorker.StartProcessing();
-        
-        LightSources = GetLightSources();
-        Projectiles = new List<Projectile>();
         Camera = GetCamera(aspectRatio);
         _scalarFieldGenerator = new ScalarFieldGenerator(1);
-        ChunkFactory chunkFactory = new ChunkFactory(_scalarFieldGenerator);
 
-        _chunks = GetChunks(chunkFactory);
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
 
@@ -90,10 +81,10 @@ internal class Scene : IInputSubscriber
         _characterControllers = new CharacterControllers(bufferPool);
 
         _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, _properties),
-            new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
+            new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -1, 0)),
             new SolveDescription(6, 1), bufferPool);
 
-        var characterInitialPosition = new Vector3(0, _scalarFieldGenerator.AvgElevation + 8, 15);
+        var characterInitialPosition = new Vector3(10, _scalarFieldGenerator.AvgElevation + 8, 20);
         _player = new Player(CreatePhysicalHumanoid(characterInitialPosition));
 
         int botsCount = 3;
@@ -107,37 +98,33 @@ internal class Scene : IInputSubscriber
 
         Camera = GetCamera(aspectRatio);
 
-        foreach (var chunk in _chunks)
-        {
-            chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-        }
+        _existingChunks = new ConcurrentDictionary<Guid, Chunk>();
+        _chunkWorker = new ChunkWorker(_existingChunks, _scalarFieldGenerator, _simulationManager);
+        _chunkWorker.StartProcessing();
+
     }
 
     public void Render()
     {
         ShaderFactory.SetUpObjectShaderParams(_objectShader, Camera, _lightSources, _scale);
 
-        foreach (var chunk in _chunks)
+
+        foreach (var chunk in _existingChunks.Values)
         {
             chunk.Render(_objectShader, _scale, Camera.ReferencePointPosition);
         }
-
-        foreach (var chunk in _existingChunks.Values)
+            
         foreach (var projectile in _projectiles)
         {
-            chunk.CreateVertexArrayObject();
-            chunk.Render(_objectShader, Scale, Camera.ReferencePointPosition);
             projectile.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
         }
-
+        
         _simpleCar.Mesh.Render(_objectShader, _scale, Camera.ReferencePointPosition);
 
         ShaderFactory.SetUpLightingShaderParams(_lightSourceShader, Camera);
 
         foreach (var light in _lightSources)
         {
-            projectile.CreateVertexArrayObject();
-            projectile.Render(_objectShader, Scale, Camera.ReferencePointPosition);
             light.Render(_lightSourceShader, _scale, Camera.ReferencePointPosition);
         }
 
@@ -150,8 +137,6 @@ internal class Scene : IInputSubscriber
 
         foreach (var bot in _bots)
         {
-            light.CreateVertexArrayObject();
-            light.Render(_lightSourceShader, Scale, Camera.ReferencePointPosition);
             bot.Render(_characterShader, _scale, Camera.ReferencePointPosition);
 #if BOUNDING_BOXES
             bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
@@ -170,29 +155,6 @@ internal class Scene : IInputSubscriber
         }
     }
 
-    private List<Chunk> GetChunks(ChunkFactory generator)
-    {
-        return MakeSquare(_chunksPerSide, generator);
-    }
-
-    private static List<Chunk> MakeSquare(int chunksPerSide, ChunkFactory generator)
-    {
-        if (chunksPerSide % 2 != 0)
-            throw new ArgumentException("# of chunks/side must be even");
-
-        List<Chunk> chunks = new List<Chunk>();
-        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
-        {
-            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-            {
-                int offset = Chunk.Size - 1;
-
-                chunks.Add(generator.GenerateChunk(new Vector3i(offset * x, 0, offset * y)));
-            }
-        }
-
-        return chunks;
-    }
 
     private List<LightSource> GetLightSources(int chunksPerSide)
     {
@@ -212,10 +174,6 @@ internal class Scene : IInputSubscriber
                 lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, _scalarFieldGenerator.AvgElevation + 10f, offset * y), new Vector3(1, 1, 1)));
             }
         }
-        var lightSources = new List<LightSource> {
-            new(CubeMesh.Vertices, new Vector3(10f, 7f + 10, 10f), new Vector3(1f, 1f, 1f)),
-            new(CubeMesh.Vertices, new Vector3(4f, 7f + 10, 4f), new Vector3(0f, 1f, 0.5f)),
-        };
 
         return lightSources;
     }
@@ -281,24 +239,20 @@ internal class Scene : IInputSubscriber
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
-            var position = Camera.ReferencePointPosition;
-
             foreach (var chunk in _existingChunks.Values)
-            foreach (var chunk in _chunks)
             {
                 if (chunk.Mine(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     return;
                 }
-            }
+            }  
+                
         });
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
-            var position = Camera.ReferencePointPosition;
             foreach (var chunk in _existingChunks.Values)
-            foreach (var chunk in _chunks)
             {
                 if (chunk.Build(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
                 {

@@ -29,17 +29,21 @@ internal class Mesh : IDisposable
 
     public Mesh(Vertex[] vertices, Vector3 position)
     {
-        //CreateVertexArrayObject(vertices);
         createdVertexArrayObject = false;
         this.vertices = vertices;
         Vertices = vertices;
-        CreateVertexArrayObject();
+        //CreateVertexArrayObject();
         Position = position;
         NumberOfVertices = Vertices.Length;
     }
 
     public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
     {
+        if (!createdVertexArrayObject)
+        {
+            CreateVertexArrayObject();
+            createdVertexArrayObject = true;
+        }
         var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleMatrix * model);
@@ -50,6 +54,11 @@ internal class Mesh : IDisposable
 
     public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
     {
+        if (!createdVertexArrayObject)
+        {
+            CreateVertexArrayObject();
+            createdVertexArrayObject = true;
+        }
         var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
@@ -60,15 +69,8 @@ internal class Mesh : IDisposable
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
     }
 
-    private void CreateVertexArrayObject()
     public void CreateVertexArrayObject()
     {
-        if (createdVertexArrayObject)
-        {
-            return;
-        }
-        createdVertexArrayObject = true;
-        
         int vaoId = GL.GenVertexArray();
         GL.BindVertexArray(vaoId);
 
