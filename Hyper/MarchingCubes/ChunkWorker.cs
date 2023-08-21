@@ -78,7 +78,7 @@ namespace Hyper
 
         public void UpdateNeededChunksBasedOnPosition(Vector3 position)
         {
-            Func<float, int, int> clampAndAddOffset = (x, offset) => ((int)Math.Round(x) / (Chunk.Size - 0) + offset) * (Chunk.Size - 0);
+            Func<float, int, int> clampAndAddOffset = (x, offset) => ((int)Math.Round(x) / (Chunk.Size - 3) + offset) * (Chunk.Size - 3);
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)
