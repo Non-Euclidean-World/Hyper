@@ -66,11 +66,12 @@ namespace Hyper
                     {
                         Console.WriteLine("rm" + kvp.Key.ToString());
                         _existingChunkPositions.TryRemove(kvp.Key, out _);
-                        _existingChunks.TryRemove(kvp.Value, out _);
+                        _existingChunks.TryRemove(kvp.Value, out var chunk);
+                        chunk?.DisposeCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     }
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
             }
 
             Console.WriteLine("Item processing completed.");

@@ -118,6 +118,10 @@ internal class Chunk : Mesh
         _shape = simulation.Shapes.Add(mesh);
         simulation.Statics[_handle].SetShape(_shape);
     }
+    public void DisposeCollisionSurface(Simulation simulation, BufferPool bufferPool)
+    {
+        //simulation.Shapes.RemoveAndDispose(_shape, bufferPool); //datarace, need mutex?
+    }
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
