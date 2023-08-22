@@ -25,8 +25,14 @@ internal class Chunk : Mesh
 
     private TypedIndex _shape;
 
+    private BepuPhysics.Collidables.Mesh? collisionSurface;
+    public Vector3i Center
+    {
+        get { return new Vector3i(Position.X + Size / 2, Position.Y + Size / 2, Position.Z + Size / 2); }
+    }
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
     {
+        collisionSurface = null;
         _voxels = voxels;
         Position = position;
     }
@@ -123,6 +129,11 @@ internal class Chunk : Mesh
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
+        if (collisionSurface == null)
+        {
+            CreateCollisionSurface(simulation, bufferPool);
+            return;
+        }
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
         _shape = simulation.Shapes.Add(mesh);
@@ -136,7 +147,7 @@ internal class Chunk : Mesh
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        if (this.vertices.Length <= 3) return;
+        if (vertices.Length <= 3) return;
         var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool); //throws if chunk contains no actual triangles.
         var position = Position;
         _shape = simulation.Shapes.Add(mesh);
@@ -144,6 +155,7 @@ internal class Chunk : Mesh
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
             _shape));
+        collisionSurface = mesh;
     }
 
     // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
@@ -183,5 +195,10 @@ internal class Chunk : Mesh
     private static float Gaussian(float x, float y, float z, float cx, float cy, float cz, float a = 1f)
     {
         return MathF.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
+    }
+
+    public static float MinStraightDistance(Vector3 a, Vector3 b)
+    {
+        return float.Min(float.Min(float.Abs(a.X - b.X), float.Abs(a.Y - b.Y)), float.Abs(a.Z - b.Z));
     }
 }

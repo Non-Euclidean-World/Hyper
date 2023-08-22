@@ -239,9 +239,11 @@ internal class Scene : IInputSubscriber
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
-            foreach (var chunk in _existingChunks.Values)
+            var target = Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1));
+            var closeChunks = _existingChunks.Values.Where(x => Chunk.MinStraightDistance(x.Center, target) < Chunk.Size);
+            foreach (var chunk in closeChunks)
             {
-                if (chunk.Mine(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
+                if (chunk.Mine(target, 30, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                 }
@@ -251,9 +253,11 @@ internal class Scene : IInputSubscriber
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
-            foreach (var chunk in _existingChunks.Values)
+            var target = Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1));
+            var closeChunks = _existingChunks.Values.Where(x => Chunk.MinStraightDistance(x.Center, target) < Chunk.Size);
+            foreach (var chunk in closeChunks)
             {
-                if (chunk.Build(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
+                if (chunk.Build(target, 30, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                 }
