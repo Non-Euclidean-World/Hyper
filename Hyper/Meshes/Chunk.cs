@@ -43,12 +43,16 @@ internal class Chunk : Mesh
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
-
+        /*
         if (x < 0 || y < 0 || z < 0
             || x > Size - 1 || y > Size - 1 || z > Size - 1
             || _voxels[x, y, z].Value <= 0f)
             return false;
-
+        */
+        if (x < -radius || y < -radius || z < -radius
+            || x > Size - 1 + radius || y > Size - 1 + radius || z > Size - 1 + radius)
+            return false;
+        bool flag = false;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -58,17 +62,18 @@ internal class Chunk : Mesh
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
                         _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        flag = true;
                     }
                 }
             }
         }
 
-        UpdateMesh();
+        if(flag) UpdateMesh();
 
         var error = GL.GetError();
         if (error != ErrorCode.NoError) Logger.Error(error);
 
-        return true;
+        return flag;
     }
 
     /// <summary>
@@ -83,12 +88,16 @@ internal class Chunk : Mesh
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
-
+        /*
         if (x < 0 || y < 0 || z < 0
             || x > Size - 1 || y > Size - 1 || z > Size - 1
             || _voxels[x, y, z].Value >= 1f)
             return false;
-
+        */
+        if (x < -radius || y < -radius || z < -radius
+            || x > Size - 1 + radius || y > Size - 1 + radius || z > Size - 1 + radius)
+            return false;
+        bool flag = false;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -98,17 +107,18 @@ internal class Chunk : Mesh
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
                         _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        flag = true;
                     }
                 }
             }
         }
 
-        UpdateMesh();
+        if(flag) UpdateMesh();
 
         var error = GL.GetError();
         if (error != ErrorCode.NoError) Logger.Error(error);
 
-        return true;
+        return flag;
     }
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
@@ -119,26 +129,21 @@ internal class Chunk : Mesh
         simulation.Statics[_handle].SetShape(_shape);
     }
     public void DisposeCollisionSurface(Simulation simulation, BufferPool bufferPool)
-    {
-        //simulation.Shapes.RemoveAndDispose(_shape, bufferPool); //datarace, need mutex?
+    {        
+        //simulation.Statics.Remove(_handle);
+        //simulation.Shapes.RemoveAndDispose(_shape, bufferPool); //datarace if in other thread
     }
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        try
-        {
-            var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool); //throws if chunk contains no actual terrain
-            var position = Position;
-            _shape = simulation.Shapes.Add(mesh);
-            _handle = simulation.Statics.Add(new StaticDescription(
-                new System.Numerics.Vector3(position.X, position.Y, position.Z),
-                QuaternionEx.Identity,
-                _shape));
-        }
-        catch (Exception ex)
-        {
-            
-        }
+        if (this.vertices.Length <= 3) return;
+        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool); //throws if chunk contains no actual triangles.
+        var position = Position;
+        _shape = simulation.Shapes.Add(mesh);
+        _handle = simulation.Statics.Add(new StaticDescription(
+            new System.Numerics.Vector3(position.X, position.Y, position.Z),
+            QuaternionEx.Identity,
+            _shape));
     }
 
     // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.

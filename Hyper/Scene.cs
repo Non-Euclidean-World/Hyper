@@ -244,7 +244,6 @@ internal class Scene : IInputSubscriber
                 if (chunk.Mine(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1)), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-                    return;
                 }
             }  
                 
@@ -257,7 +256,6 @@ internal class Scene : IInputSubscriber
                 if (chunk.Build(Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 3)), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-                    return;
                 }
             }
         });
