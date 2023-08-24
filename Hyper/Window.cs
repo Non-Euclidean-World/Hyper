@@ -31,6 +31,7 @@ internal class Window : GameWindow, IInputSubscriber
 
     public override void Close()
     {
+        _scene._chunkWorker.StopProcessing();
         StopDebugThread();
         base.Close();
         LogManager.Flush();

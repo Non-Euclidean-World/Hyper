@@ -52,7 +52,6 @@ namespace Hyper
                 {
                     if (!_existingChunkPositions.ContainsKey(kvp.Key))
                     {
-                        Console.WriteLine("mk" + kvp.Key.ToString());
                         _existingChunkPositions.TryAdd(kvp.Key, kvp.Value);
                         var chunk = _chunkFactory.GenerateChunk(kvp.Key);
                         chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
@@ -63,24 +62,20 @@ namespace Hyper
                 {
                     if (!_neededChunkPositions.ContainsKey(kvp.Key))
                     {
-                        Console.WriteLine("rm" + kvp.Key.ToString());
                         _existingChunkPositions.TryRemove(kvp.Key, out _);
                         _existingChunks.TryRemove(kvp.Value, out var chunk);
                         // multithreaded removal might need a mutex?
                         // chunk?.DisposeCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     }
                 });
-
                 Thread.Sleep(100);
             }
-
-            Console.WriteLine("Item processing completed.");
         }
 
         public static void UpdateNeededChunksBasedOnPosition(ChunkWorker chunkWorker, Vector3 position)
         {
             const int chunkCreateRadius = 50;
-            const int chunkRemoveRadius = 50;
+            const int chunkRemoveRadius = 70;
             Func<float, int> snap = (x) => ((int)Math.Round(x) / (Chunk.Size - 3)) * (Chunk.Size - 3);
             for (int i = -chunkCreateRadius; i <= chunkCreateRadius; i += Chunk.Size - 3)
             {
