@@ -60,8 +60,8 @@ internal class Scene : IInputSubscriber
 
     public Scene(float aspectRatio)
     {
-        Camera = GetCamera(aspectRatio);
         _scalarFieldGenerator = new ScalarFieldGenerator(1);
+        Camera = GetCamera(aspectRatio);
 
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
@@ -81,7 +81,7 @@ internal class Scene : IInputSubscriber
         _characterControllers = new CharacterControllers(bufferPool);
 
         _simulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, _properties),
-            new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -1, 0)),
+            new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -9.81f, 0)),
             new SolveDescription(6, 1), bufferPool);
 
         var characterInitialPosition = new Vector3(10, _scalarFieldGenerator.AvgElevation + 8, 20);
@@ -182,7 +182,7 @@ internal class Scene : IInputSubscriber
     {
         var camera = new Camera(aspectRatio, 0.01f, 100f, _scale)
         {
-            ReferencePointPosition = (5f + 10) * Vector3.UnitY
+            ReferencePointPosition = (5f + _scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
 
         return camera;

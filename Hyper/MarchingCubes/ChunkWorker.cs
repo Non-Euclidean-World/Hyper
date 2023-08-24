@@ -26,6 +26,7 @@ namespace Hyper
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _neededChunkPositions = new ConcurrentDictionary<Vector3i, Guid>();
+            _neededChunkPositions.TryAdd(new Vector3i(0, 0, 0), Guid.NewGuid()); // initial chunk...
             _existingChunkPositions = new ConcurrentDictionary<Vector3i, Guid>();
             _existingChunks = existingChunks;
             _scalarFieldGenerator = scalarFieldGenerator;
