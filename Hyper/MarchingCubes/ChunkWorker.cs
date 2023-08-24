@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Threading;
 using Hyper.Collisions;
 using Hyper.MarchingCubes;
@@ -31,7 +32,6 @@ namespace Hyper
             _chunkFactory = new ChunkFactory(_scalarFieldGenerator);
             _simulationManager = simulationManager;
         }
-
         public void StartProcessing()
         {
             var processingThread = new Thread(ProcessItems);
@@ -48,7 +48,7 @@ namespace Hyper
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
-                foreach (var kvp in _neededChunkPositions)
+                Parallel.ForEach(_neededChunkPositions, kvp =>
                 {
                     if (!_existingChunkPositions.ContainsKey(kvp.Key))
                     {
@@ -58,18 +58,18 @@ namespace Hyper
                         chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                         _existingChunks.TryAdd(kvp.Value, chunk);
                     }
-                }
-
-                foreach (var kvp in _existingChunkPositions)
+                });
+                Parallel.ForEach(_existingChunkPositions, kvp =>
                 {
                     if (!_neededChunkPositions.ContainsKey(kvp.Key))
                     {
                         Console.WriteLine("rm" + kvp.Key.ToString());
                         _existingChunkPositions.TryRemove(kvp.Key, out _);
                         _existingChunks.TryRemove(kvp.Value, out var chunk);
-                        chunk?.DisposeCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                        // multithreaded removal might need a mutex?
+                        // chunk?.DisposeCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                     }
-                }
+                });
 
                 Thread.Sleep(100);
             }
@@ -77,31 +77,40 @@ namespace Hyper
             Console.WriteLine("Item processing completed.");
         }
 
-        public void UpdateNeededChunksBasedOnPosition(Vector3 position)
+        public static void UpdateNeededChunksBasedOnPosition(ChunkWorker chunkWorker, Vector3 position)
         {
-            Func<float, int, int> clampAndAddOffset = (x, offset) => ((int)Math.Round(x) / (Chunk.Size - 3) + offset) * (Chunk.Size - 3);
-            for (int i = -1; i < 2; i++)
+            const int chunkCreateRadius = 50;
+            const int chunkRemoveRadius = 50;
+            Func<float, int> snap = (x) => ((int)Math.Round(x) / (Chunk.Size - 3)) * (Chunk.Size - 3);
+            for (int i = -chunkCreateRadius; i <= chunkCreateRadius; i += Chunk.Size - 3)
             {
-                for (int j = -1; j < 2; j++)
+                for (int j = -chunkCreateRadius; j <= chunkCreateRadius; j += Chunk.Size - 3)
                 {
-                    for (int k = -1; k < 2; k++)
+                    for (int k = -chunkCreateRadius; k <= chunkCreateRadius; k += Chunk.Size - 3)
                     {
-                        var vec = new Vector3i(clampAndAddOffset(position.X, i),
-                            clampAndAddOffset(position.Y, j),
-                            clampAndAddOffset(position.Z, k));
-                        _neededChunkPositions.TryAdd(vec, Guid.NewGuid());
-
+                        var vec = new Vector3i(
+                            snap(position.X + i),
+                            snap(position.Y + j),
+                            snap(position.Z + k));
+                        chunkWorker._neededChunkPositions.TryAdd(vec, Guid.NewGuid());
                     }
                 }
             }
 
-            foreach (var pvk in _existingChunkPositions)
+            foreach (var pvk in chunkWorker._existingChunkPositions)
             {
-                var distance = Math.Pow(pvk.Key.X - position.X, 2) + Math.Pow(pvk.Key.Y - position.Y, 2) +
-                    Math.Pow(pvk.Key.Z - position.Z, 2);
-                if (Math.Sqrt(distance) > Chunk.Size * 3)
+                var distance = Math.Max(Math.Max(
+                    Math.Abs(snap(position.X - pvk.Key.X)),
+                    Math.Abs(snap(position.Y - pvk.Key.Y))),
+                    Math.Abs(snap(position.Z - pvk.Key.Z)));
+
+                if (distance > chunkRemoveRadius)
                 {
-                    _neededChunkPositions.TryRemove(pvk.Key, out _);
+                    if (chunkWorker._neededChunkPositions.TryRemove(pvk.Key, out var chunk))
+                    {
+                        // this is an issue i have not resolved yet, singlethreaded removal also creates issues/dataraces
+                        // chunkWorker._existingChunks[chunk].DisposeCollisionSurface(chunkWorker._simulationManager.Simulation, chunkWorker._simulationManager.BufferPool);
+                    }
                 }
             }
         }

@@ -73,6 +73,7 @@ internal class Chunk : Mesh
                 }
             }
         }
+        
 
         if(flag) UpdateMesh();
 
@@ -94,12 +95,7 @@ internal class Chunk : Mesh
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
-        /*
-        if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z].Value >= 1f)
-            return false;
-        */
+        
         if (x < -radius || y < -radius || z < -radius
             || x > Size - 1 + radius || y > Size - 1 + radius || z > Size - 1 + radius)
             return false;
@@ -141,8 +137,8 @@ internal class Chunk : Mesh
     }
     public void DisposeCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {        
-        //simulation.Statics.Remove(_handle);
-        //simulation.Shapes.RemoveAndDispose(_shape, bufferPool); //datarace if in other thread
+        simulation.Statics.Remove(_handle);
+        simulation.Shapes.RemoveAndDispose(_shape, bufferPool); //datarace if in other thread
     }
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
@@ -197,8 +193,8 @@ internal class Chunk : Mesh
         return MathF.Exp(-a * ((x - cx) * (x - cx) + (y - cy) * (y - cy) + (z - cz) * (z - cz)));
     }
 
-    public static float MinStraightDistance(Vector3 a, Vector3 b)
+    public static float MaxStraightDistance(Vector3 a, Vector3 b)
     {
-        return float.Min(float.Min(float.Abs(a.X - b.X), float.Abs(a.Y - b.Y)), float.Abs(a.Z - b.Z));
+        return float.Max(float.Max(float.Abs(a.X - b.X), float.Abs(a.Y - b.Y)), float.Abs(a.Z - b.Z));
     }
 }

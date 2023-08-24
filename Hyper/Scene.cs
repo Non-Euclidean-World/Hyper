@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using BepuPhysics;
 using BepuUtilities.Memory;
 using Hyper.Collisions;
@@ -240,21 +240,23 @@ internal class Scene : IInputSubscriber
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
             var target = Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1));
-            var closeChunks = _existingChunks.Values.Where(x => Chunk.MinStraightDistance(x.Center, target) < Chunk.Size);
-            foreach (var chunk in closeChunks)
+            
+            var closeChunks = _existingChunks.Values.Where(x => Chunk.MaxStraightDistance(x.Center, target) < Chunk.Size);
+           
+            foreach (var chunk in closeChunks)             
             {
+                
                 if (chunk.Mine(target, 30, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                 }
-            }  
-                
+            }
         });
 
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
             var target = Conversions.ToOpenTKVector(_player.GetCharacterRay(Camera.Front, 1));
-            var closeChunks = _existingChunks.Values.Where(x => Chunk.MinStraightDistance(x.Center, target) < Chunk.Size);
+            var closeChunks = _existingChunks.Values.Where(x => Chunk.MaxStraightDistance(x.Center, target) < Chunk.Size);
             foreach (var chunk in closeChunks)
             {
                 if (chunk.Build(target, 30, (float)e.Time))
