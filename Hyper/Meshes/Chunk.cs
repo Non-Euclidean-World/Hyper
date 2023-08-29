@@ -25,14 +25,13 @@ internal class Chunk : Mesh
 
     private TypedIndex _shape;
 
-    private BepuPhysics.Collidables.Mesh? collisionSurface;
-    public Vector3i Center
-    {
-        get { return new Vector3i(Position.X + Size / 2, Position.Y + Size / 2, Position.Z + Size / 2); }
-    }
+    private BepuPhysics.Collidables.Mesh? _collisionSurface;
+    
+    public Vector3i Center => new(Position.X + Size / 2, Position.Y + Size / 2, Position.Z + Size / 2);
+    
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
     {
-        collisionSurface = null;
+        _collisionSurface = null;
         _voxels = voxels;
         Position = position;
     }
@@ -49,16 +48,11 @@ internal class Chunk : Mesh
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
-        /*
-        if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z].Value <= 0f)
-            return false;
-        */
+        
         if (x < -radius || y < -radius || z < -radius
             || x > Size - 1 + radius || y > Size - 1 + radius || z > Size - 1 + radius)
             return false;
-        bool flag = false;
+        bool isUpdateRequired = false;
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
         {
             for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
@@ -68,19 +62,19 @@ internal class Chunk : Mesh
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
                         _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
-                        flag = true;
+                        isUpdateRequired = true;
                     }
                 }
             }
         }
         
 
-        if(flag) UpdateMesh();
+        if(isUpdateRequired) UpdateMesh();
 
         var error = GL.GetError();
         if (error != ErrorCode.NoError) Logger.Error(error);
 
-        return flag;
+        return isUpdateRequired;
     }
 
     /// <summary>
@@ -125,7 +119,7 @@ internal class Chunk : Mesh
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        if (collisionSurface == null)
+        if (_collisionSurface == null)
         {
             CreateCollisionSurface(simulation, bufferPool);
             return;
@@ -143,7 +137,7 @@ internal class Chunk : Mesh
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        if (vertices.Length <= 3) return;
+        if (Vertices.Length <= 3) return;
         var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool); //throws if chunk contains no actual triangles.
         var position = Position;
         _shape = simulation.Shapes.Add(mesh);
@@ -151,7 +145,7 @@ internal class Chunk : Mesh
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
             _shape));
-        collisionSurface = mesh;
+        _collisionSurface = mesh;
     }
 
     // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.

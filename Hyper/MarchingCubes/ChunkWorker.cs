@@ -93,22 +93,22 @@ namespace Hyper
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 var threads = new List<Thread>();
-                foreach (var kvp in _neededChunkPositions)
-                {
-                    if (!_existingChunkPositions.ContainsKey(kvp.Key))
-                    {
-                        _existingChunkPositions.TryAdd(kvp.Key, kvp.Value);
-                        var thread = new Thread(() => InsertChunk(kvp, _cancellationTokenSource.Token));
-                        threads.Add(thread);
-                        thread.Start();
-                    }
-                }
                 foreach (var kvp in _existingChunkPositions)
                 {
                     if (!_neededChunkPositions.ContainsKey(kvp.Key))
                     {
                         _existingChunkPositions.TryRemove(kvp.Key, out _);
                         var thread = new Thread(() => RemoveChunk(kvp, _cancellationTokenSource.Token));
+                        threads.Add(thread);
+                        thread.Start();
+                    }
+                }
+                foreach (var kvp in _neededChunkPositions)
+                {
+                    if (!_existingChunkPositions.ContainsKey(kvp.Key))
+                    {
+                        _existingChunkPositions.TryAdd(kvp.Key, kvp.Value);
+                        var thread = new Thread(() => InsertChunk(kvp, _cancellationTokenSource.Token));
                         threads.Add(thread);
                         thread.Start();
                     }
@@ -128,8 +128,8 @@ namespace Hyper
 
         private void UpdateNeededChunksBasedOnPosition()
         {
-            const int chunkCreateRadius = 50;
-            const int chunkRemoveRadius = 70;
+            const int chunkCreateRadius = 150;
+            const int chunkRemoveRadius = 170;
             Func<float, int> snap = (x) => ((int)Math.Round(x) / (Chunk.Size - 3)) * (Chunk.Size - 3);
             for (int i = -chunkCreateRadius; i <= chunkCreateRadius; i += Chunk.Size - 3)
             {

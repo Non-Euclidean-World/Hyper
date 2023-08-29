@@ -10,9 +10,6 @@ internal class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
 
-    public Vertex[] vertices;
-    //Will also have to add rotation and scale
-
     public RigidPose RigidPose { get; set; }
 
     public Vector3 Scaling { get; set; }
@@ -23,26 +20,24 @@ internal class Mesh : IDisposable
 
     protected int NumberOfVertices;
 
-    private bool createdVertexArrayObject;
+    private bool _createdVertexArrayObject;
 
     public Vertex[] Vertices { get; protected set; }
 
     public Mesh(Vertex[] vertices, Vector3 position)
     {
-        createdVertexArrayObject = false;
-        this.vertices = vertices;
+        _createdVertexArrayObject = false;
         Vertices = vertices;
-        //CreateVertexArrayObject();
         Position = position;
         NumberOfVertices = Vertices.Length;
     }
 
     public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
     {
-        if (!createdVertexArrayObject)
+        if (!_createdVertexArrayObject)
         {
             CreateVertexArrayObject();
-            createdVertexArrayObject = true;
+            _createdVertexArrayObject = true;
         }
         var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
@@ -54,10 +49,10 @@ internal class Mesh : IDisposable
 
     public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
     {
-        if (!createdVertexArrayObject)
+        if (!_createdVertexArrayObject)
         {
             CreateVertexArrayObject();
-            createdVertexArrayObject = true;
+            _createdVertexArrayObject = true;
         }
         var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
@@ -69,7 +64,7 @@ internal class Mesh : IDisposable
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
     }
 
-    public void CreateVertexArrayObject()
+    private void CreateVertexArrayObject()
     {
         int vaoId = GL.GenVertexArray();
         GL.BindVertexArray(vaoId);

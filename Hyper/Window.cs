@@ -31,7 +31,7 @@ internal class Window : GameWindow, IInputSubscriber
 
     public override void Close()
     {
-        _scene._chunkWorker.StopProcessing();
+        _scene.ChunkWorker.StopProcessing();
         StopDebugThread();
         base.Close();
         LogManager.Flush();
@@ -57,7 +57,7 @@ internal class Window : GameWindow, IInputSubscriber
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         
-        ChunkWorker.UpdateChunkWorkerPosition(_scene._chunkWorker, _scene.Camera.ReferencePointPosition);
+        ChunkWorker.UpdateChunkWorkerPosition(_scene.ChunkWorker, _scene.Camera.ReferencePointPosition);
         _scene.Render();
 
         SwapBuffers();

@@ -20,9 +20,9 @@ namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly ConcurrentDictionary<Guid, Chunk> _existingChunks;
+    private readonly ConcurrentDictionary<Guid, Chunk> _existingChunks;
 
-    public readonly ChunkWorker _chunkWorker;
+    public readonly ChunkWorker ChunkWorker;
 
     private readonly List<LightSource> _lightSources;
 
@@ -99,8 +99,8 @@ internal class Scene : IInputSubscriber
         Camera = GetCamera(aspectRatio);
 
         _existingChunks = new ConcurrentDictionary<Guid, Chunk>();
-        _chunkWorker = new ChunkWorker(_existingChunks, _scalarFieldGenerator, _simulationManager);
-        _chunkWorker.StartProcessing();
+        ChunkWorker = new ChunkWorker(_existingChunks, _scalarFieldGenerator, _simulationManager);
+        ChunkWorker.StartProcessing();
 
     }
 
