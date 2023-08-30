@@ -4,7 +4,7 @@ Procedural terrain generation in non-euclidean spaces.
 
 ## Used Technologies
 [Rider](https://www.jetbrains.com/rider/) \
-[VisualStudio](https://visualstudio.microsoft.com/) \
+[Visual Studio](https://visualstudio.microsoft.com/) \
 [Blender](https://www.blender.org/) \
 [InkScape](https://inkscape.org/) \
 [Gimp](https://www.gimp.org/)
