@@ -2,6 +2,7 @@
 using Hyper.MathUtils;
 using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace Hyper.Shaders;
 internal static class ShaderFactory
@@ -34,6 +35,17 @@ internal static class ShaderFactory
             ("../../../../Character/Shaders/model_shader.vert", ShaderType.VertexShader),
             ("../../../../Character/Shaders/model_shader.frag", ShaderType.FragmentShader)
         };
+        return new Shader(shader);
+    }
+    
+    public static Shader CreateHudShader()
+    {
+        var shader = new []
+        {
+            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
+            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
+        };
+
         return new Shader(shader);
     }
 
@@ -73,5 +85,12 @@ internal static class ShaderFactory
         characterShader.SetVector3Array("lightColor", lightSources.Select(x => x.Color).ToArray());
         characterShader.SetVector4Array("lightPos", lightSources.Select(x =>
             GeomPorting.EucToCurved((x.Position - camera.ReferencePointPosition) * globalScale, camera.Curve)).ToArray());
+    }
+
+    public static void SetUpHudShaderParams(Shader shader, float aspectRatio)
+    {
+        shader.Use();
+        var projection = Matrix4.CreateOrthographic(aspectRatio, 1, -1.0f, 1.0f);
+        shader.SetMatrix4("projection", projection);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Common;
 using Hud;
 using Hud.Sprites;
+using Hyper.Controllers;
 using Hyper.PlayerData.InventorySystem;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -153,6 +154,6 @@ internal class InventoryRenderer : IHudElement
     {
         if (_inventory.InHandItem.Item is null) return;
 
-        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, HudManager.GetMousePosition(), HotbarSizeY);
+        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, HudController.GetMousePosition(), HotbarSizeY);
     }
 }

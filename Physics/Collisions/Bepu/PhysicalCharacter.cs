@@ -5,8 +5,6 @@ using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
-using Common;
-using OpenTK.Graphics.OpenGL4;
 
 namespace Physics.Collisions.Bepu;
 

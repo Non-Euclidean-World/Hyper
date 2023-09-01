@@ -10,7 +10,6 @@ using Hyper.MarchingCubes.Voxels;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Physics.Collisions;
 using Mesh = Common.Meshes.Mesh;
 
 namespace Hyper.Meshes;

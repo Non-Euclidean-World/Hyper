@@ -1,5 +1,5 @@
 ﻿using Common.UserInput;
-using Hyper.HUD;
+using Hyper.Controllers;
 using Hyper.HUD.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Tools;
@@ -125,7 +125,7 @@ public class Inventory : IInputSubscriber
 
     private bool TryGetPosition(out int x, out int y)
     {
-        var mousePosition = HudManager.GetMousePosition();
+        var mousePosition = HudController.GetMousePosition();
 
         if (TryGetHotbarPosition(mousePosition, out x, out y)) return true;
         if (TryGetInventoryPosition(mousePosition, out x, out y)) return true;

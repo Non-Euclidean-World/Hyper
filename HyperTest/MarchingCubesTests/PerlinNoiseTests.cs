@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Hyper.MarchingCubes;
-using NUnit.Framework.Internal;
 
 namespace HyperTest.MarchingCubesTests;
 

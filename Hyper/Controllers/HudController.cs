@@ -1,15 +1,15 @@
 ﻿using Common;
-using Common.Command;
 using Hud;
 using Hud.HUDElements;
 using Hyper.HUD.InventoryRendering;
+using Hyper.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 
-namespace Hyper.HUD;
+namespace Hyper.Controllers;
 
-internal class HudManager : Commandable
+internal class HudController : IController
 {
     private readonly Shader _shader;
 
@@ -18,10 +18,10 @@ internal class HudManager : Commandable
     private readonly GameWindow _window;
 
     // TODO fix fps counter and fix the offset on item moving.
-    public HudManager(GameWindow window)
+    public HudController(GameWindow window, Shader shader)
     {
         _window = window;
-        _shader = CreateShader();
+        _shader = shader;
         _elements = new IHudElement[]
         {
             new Crosshair(),
@@ -33,11 +33,7 @@ internal class HudManager : Commandable
     public void Render()
     {
         GL.Disable(EnableCap.DepthTest);
-        var projection = Matrix4.CreateOrthographic(_window.Size.X / (float)_window.Size.Y, 1, -1.0f, 1.0f);
-
-        _shader.Use();
-
-        _shader.SetMatrix4("projection", projection);
+        ShaderFactory.SetUpHudShaderParams(_shader, _window.Size.X / (float)_window.Size.Y);
 
         foreach (var element in _elements)
         {
@@ -46,17 +42,6 @@ internal class HudManager : Commandable
         GL.Enable(EnableCap.DepthTest);
     }
 
-    private Shader CreateShader()
-    {
-        var shader = new []
-        {
-            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
-            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
-        };
-
-        return new Shader(shader);
-    }
-    
     public static Vector2 GetMousePosition()
     {
         var window = Window.Instance;

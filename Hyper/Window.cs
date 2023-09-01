@@ -1,4 +1,6 @@
 ﻿using Common.UserInput;
+using Hyper.Controllers;
+using Hyper.Shaders;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
@@ -16,6 +18,8 @@ internal class Window : GameWindow, IInputSubscriber
     private CancellationTokenSource _debugCancellationTokenSource = null!;
 
     private Scene _scene = null!;
+
+    private IController[] _controllers = null!;
 
     private readonly Context _context = Common.UserInput.Context.Instance;
 
@@ -46,6 +50,22 @@ internal class Window : GameWindow, IInputSubscriber
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         _scene = new Scene(Size.X / (float)Size.Y);
+        var objectShader = ShaderFactory.CreateObjectShader();
+        var modelShader = ShaderFactory.CreateModelShader();
+        var lightSourceShader = ShaderFactory.CreateLightSourceShader();
+        var hudShader = ShaderFactory.CreateHudShader();
+        
+        _controllers = new IController[]
+        {
+            new PlayerController(_scene, modelShader),
+            new BotController(_scene, modelShader),
+            new ChunkController(_scene, objectShader),
+            new ProjectileController(_scene, objectShader),
+            new VehicleController(_scene, objectShader),
+            new LightSourceController(_scene, lightSourceShader),
+            new HudController(this, hudShader),
+        };
+        
 
         CursorState = CursorState.Grabbed;
     }
@@ -56,7 +76,10 @@ internal class Window : GameWindow, IInputSubscriber
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-        _scene.Render();
+        foreach (var controller in _controllers)
+        {
+            controller.Render();
+        }
 
         SwapBuffers();
     }
@@ -186,9 +209,6 @@ internal class Window : GameWindow, IInputSubscriber
                 {
                     case "camera":
                         _scene.Camera.Command(args);
-                        break;
-                    case "hud":
-                        _scene.Hud.Command(args);
                         break;
                 }
             }
