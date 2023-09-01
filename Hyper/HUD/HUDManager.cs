@@ -50,8 +50,8 @@ internal class HudManager : Commandable
     {
         var shader = new []
         {
-            (@"..\\..\\..\\..\\..\\Hyper\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
-            (@"..\\..\\..\\..\\..\\Hyper\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
+            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
+            (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
         };
 
         return new Shader(shader);

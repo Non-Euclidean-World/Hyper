@@ -1,8 +1,8 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.Animation.Characters.Cowboy;
+namespace Character.Characters.Cowboy;
 
-internal class CowboyModel : Model
+public class CowboyModel : Model
 {
     private static readonly string ModelPath;
 
@@ -14,8 +14,8 @@ internal class CowboyModel : Model
 
     static CowboyModel()
     {
-        ModelPath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/model.dae");
-        TexturePath = Path.GetFullPath("Animation/Characters/Cowboy/Resources/texture.png");
+        ModelPath = Path.GetFullPath("../../../../Character/Characters/Cowboy/Resources/model.dae");
+        TexturePath = Path.GetFullPath("../../../../Character/Characters/Cowboy/Resources/texture.png");
         LocalScale = 0.04f;
         LocalTranslation = new Vector3(0, -5, 0);
     }

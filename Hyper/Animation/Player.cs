@@ -1,9 +1,10 @@
-﻿using Common;
+﻿using Character.GameEntities;
+using Common;
 using OpenTK.Mathematics;
 using Physics.Collisions.Bepu;
 using Physics.TypingUtils;
 
-namespace Hyper.GameEntities;
+namespace Hyper.Animation;
 
 internal class Player : Humanoid
 {

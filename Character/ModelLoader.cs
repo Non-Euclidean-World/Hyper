@@ -1,7 +1,7 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Hyper.Animation;
+namespace Character;
 
 public static class ModelLoader
 {

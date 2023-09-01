@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Physics", "Physics\Physics.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hud", "Hud\Hud.csproj", "{A20CBCDC-C55E-4555-8410-C42BB27AF564}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Character", "Character\Character.csproj", "{A889B245-BCD6-4421-8434-061B159EA953}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{A20CBCDC-C55E-4555-8410-C42BB27AF564}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A20CBCDC-C55E-4555-8410-C42BB27AF564}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A20CBCDC-C55E-4555-8410-C42BB27AF564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A889B245-BCD6-4421-8434-061B159EA953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A889B245-BCD6-4421-8434-061B159EA953}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A889B245-BCD6-4421-8434-061B159EA953}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A889B245-BCD6-4421-8434-061B159EA953}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

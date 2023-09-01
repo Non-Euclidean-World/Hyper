@@ -31,8 +31,8 @@ internal static class ShaderFactory
     {
         var shader = new[]
         {
-            ("Animation/Shaders/model_shader.vert", ShaderType.VertexShader),
-            ("Animation/Shaders/model_shader.frag", ShaderType.FragmentShader)
+            ("../../../../Character/Shaders/model_shader.vert", ShaderType.VertexShader),
+            ("../../../../Character/Shaders/model_shader.frag", ShaderType.FragmentShader)
         };
         return new Shader(shader);
     }

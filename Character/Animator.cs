@@ -2,7 +2,7 @@
 using Assimp;
 using Quaternion = Assimp.Quaternion;
 
-namespace Hyper.Animation;
+namespace Character;
 
 public class Animator
 {

@@ -1,6 +1,6 @@
 using Common.Command;
 using Common.UserInput;
-using Hyper.GameEntities;
+using Hyper.Animation;
 using Hyper.MathUtils;
 using NLog;
 using OpenTK.Mathematics;

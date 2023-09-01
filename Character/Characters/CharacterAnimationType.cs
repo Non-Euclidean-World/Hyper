@@ -1,4 +1,4 @@
-﻿namespace Hyper.Animation.Characters;
+﻿namespace Character.Characters;
 internal enum CharacterAnimationType
 {
     Walk,

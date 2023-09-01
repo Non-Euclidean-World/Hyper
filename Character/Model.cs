@@ -5,9 +5,9 @@ using OpenTK.Mathematics;
 using Physics.TypingUtils;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
-namespace Hyper.Animation;
+namespace Character;
 
-internal abstract class Model
+public abstract class Model
 {
     public readonly Animator Animator;
 

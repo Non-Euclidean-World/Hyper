@@ -1,4 +1,4 @@
-﻿namespace Hyper.Animation;
+﻿namespace Character;
 
 public static class Converter
 {

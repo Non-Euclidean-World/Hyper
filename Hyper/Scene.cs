@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using BepuPhysics;
 using BepuUtilities.Memory;
+using Character.GameEntities;
 using Common;
 using Common.UserInput;
+using Hyper.Animation;
 using Hyper.Collisions;
-using Hyper.GameEntities;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.Meshes;
@@ -18,6 +19,7 @@ using Physics.TypingUtils;
 
 namespace Hyper;
 
+// TODO fix this class.
 internal class Scene : IInputSubscriber
 {
     private readonly List<Chunk> _chunks;
