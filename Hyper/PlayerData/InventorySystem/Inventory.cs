@@ -1,6 +1,6 @@
 ﻿using Common.UserInput;
 using Hyper.HUD;
-using Hyper.HUD.HUDElements.InventoryRendering;
+using Hyper.HUD.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Tools;
 using OpenTK.Mathematics;

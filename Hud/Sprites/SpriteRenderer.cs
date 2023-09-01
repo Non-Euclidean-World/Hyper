@@ -3,9 +3,9 @@ using Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.Sprites;
+namespace Hud.Sprites;
 
-internal class SpriteRenderer
+public class SpriteRenderer
 {
     private readonly Texture _spriteSheet;
     

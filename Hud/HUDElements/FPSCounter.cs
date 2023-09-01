@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using Common;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Desktop;
 
-namespace Hyper.HUD.HUDElements;
+namespace Hud.HUDElements;
 
-internal class FpsCounter : IHudElement
+public class FpsCounter : IHudElement
 {
     public bool Visible { get; set; } = true;
     
@@ -20,10 +21,11 @@ internal class FpsCounter : IHudElement
 
     private int _fps = 0;
     
-    private readonly Window _window = Window.Instance;
-
-    public FpsCounter()
+    private readonly GameWindow _window;
+    
+    public FpsCounter(GameWindow window)
     {
+        _window = window;
         _size = new Vector2(0.02f);
         _stopwatch.Start();
     }

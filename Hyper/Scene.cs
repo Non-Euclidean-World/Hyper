@@ -65,7 +65,7 @@ internal class Scene : IInputSubscriber
         _lightSources = GetLightSources(_chunksPerSide);
         _projectiles = new List<Projectile>();
 
-        Hud = new HudManager(aspectRatio);
+        Hud = new HudManager(Window.Instance);
 
         _objectShader = ShaderFactory.CreateObjectShader();
         _lightSourceShader = ShaderFactory.CreateLightSourceShader();
@@ -128,6 +128,7 @@ internal class Scene : IInputSubscriber
 
         ShaderFactory.SetUpCharacterShaderParams(_characterShader, Camera, _lightSources, _scale);
 
+        // TODO uncomment the bounding boxes and fix them
 // #if BOUNDING_BOXES
 //         _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
 // #endif

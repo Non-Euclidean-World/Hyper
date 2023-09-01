@@ -1,4 +1,4 @@
-﻿namespace Hyper.HUD;
+﻿namespace Hud;
 
 internal class HUDVertexBuilder
 {

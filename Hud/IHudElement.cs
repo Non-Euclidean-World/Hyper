@@ -1,8 +1,8 @@
 ﻿using Common;
 
-namespace Hyper.HUD;
+namespace Hud;
 
-internal interface IHudElement
+public interface IHudElement
 {
     public bool Visible { get; set; }
 

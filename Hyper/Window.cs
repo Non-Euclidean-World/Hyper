@@ -153,7 +153,6 @@ internal class Window : GameWindow, IInputSubscriber
 
         GL.Viewport(0, 0, Size.X, Size.Y);
         _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
-        _scene.Hud.AspectRatio = Size.X / (float)Size.Y;
     }
 
     private async Task StartDebugThreadAsync()

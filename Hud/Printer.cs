@@ -4,9 +4,9 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace Hyper.HUD;
+namespace Hud;
 
-internal static class Printer
+public static class Printer
 {
     private static readonly Texture AsciiTexture;
     private static readonly Vector4[] Rectangles;

@@ -34,6 +34,15 @@
     <None Update="HUD\HUDElements\InventoryRendering\Resources\sprite_sheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -89,14 +98,14 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="HUD\Shaders\" />
-  </ItemGroup>
 
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Hud\Hud.csproj" />
     <ProjectReference Include="..\Physics\Physics.csproj" />
   </ItemGroup>
+
+
 
 </Project>

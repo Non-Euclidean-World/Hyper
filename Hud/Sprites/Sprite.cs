@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Hyper.HUD.Sprites;
+namespace Hud.Sprites;
 
 [Serializable]
 public class Sprite

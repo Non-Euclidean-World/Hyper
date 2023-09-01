@@ -1,28 +1,31 @@
 ﻿using Common;
 using Common.Command;
-using Hyper.HUD.HUDElements;
-using Hyper.HUD.HUDElements.InventoryRendering;
+using Hud;
+using Hud.HUDElements;
+using Hyper.HUD.InventoryRendering;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Desktop;
 
 namespace Hyper.HUD;
 
 internal class HudManager : Commandable
 {
-    public float AspectRatio { get; set; }
-
     private readonly Shader _shader;
 
     private readonly IHudElement[] _elements;
+    
+    private readonly GameWindow _window;
 
-    public HudManager(float aspectRatio)
+    // TODO fix fps counter and fix the offset on item moving.
+    public HudManager(GameWindow window)
     {
-        AspectRatio = aspectRatio;
+        _window = window;
         _shader = CreateShader();
         _elements = new IHudElement[]
         {
             new Crosshair(),
-            new FpsCounter(),
+            new FpsCounter(window),
             new InventoryRenderer(),
         };
     }
@@ -30,7 +33,7 @@ internal class HudManager : Commandable
     public void Render()
     {
         GL.Disable(EnableCap.DepthTest);
-        var projection = Matrix4.CreateOrthographic(AspectRatio, 1, -1.0f, 1.0f);
+        var projection = Matrix4.CreateOrthographic(_window.Size.X / (float)_window.Size.Y, 1, -1.0f, 1.0f);
 
         _shader.Use();
 
@@ -47,8 +50,8 @@ internal class HudManager : Commandable
     {
         var shader = new []
         {
-            ("HUD/Shaders/shader2d.vert", ShaderType.VertexShader),
-            ("HUD/Shaders/shader2d.frag", ShaderType.FragmentShader)
+            (@"..\\..\\..\\..\\..\\Hyper\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
+            (@"..\\..\\..\\..\\..\\Hyper\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
         };
 
         return new Shader(shader);

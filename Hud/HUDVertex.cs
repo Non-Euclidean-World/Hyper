@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Hyper.HUD;
+namespace Hud;
 
 [StructLayout(LayoutKind.Explicit)]
 internal struct HUDVertex

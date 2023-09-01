@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.Sprites;
+namespace Hud.Sprites;
 
 [Serializable]
 public class SpriteSheetMetadata

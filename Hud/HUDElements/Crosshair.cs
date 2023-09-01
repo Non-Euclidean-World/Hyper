@@ -3,9 +3,9 @@ using Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.HUDElements;
+namespace Hud.HUDElements;
 
-internal class Crosshair : IHudElement
+public class Crosshair : IHudElement
 {
     public bool Visible { get; set; } = true;
     

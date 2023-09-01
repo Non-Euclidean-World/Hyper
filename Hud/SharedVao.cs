@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Hyper.HUD;
+namespace Hud;
 
 public class SharedVao
 {
