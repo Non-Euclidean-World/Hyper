@@ -41,9 +41,6 @@
     <PackageReference Include="BepuUtilities" Version="2.4.0" />
 	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="NLog" Version="5.2.0" />
-    <PackageReference Include="OpenTK" Version="4.7.7" />
-    <PackageReference Include="SkiaSharp" Version="2.88.3" />
-    <PackageReference Include="StbImageSharp" Version="2.27.13" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,5 +95,9 @@
     <Folder Include="HUD\Shaders\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
 
 </Project>

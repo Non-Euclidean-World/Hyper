@@ -1,4 +1,5 @@
-﻿using Hyper.Command;
+﻿using Common;
+using Common.Command;
 using Hyper.HUD.HUDElements;
 using Hyper.HUD.HUDElements.InventoryRendering;
 using OpenTK.Graphics.OpenGL4;

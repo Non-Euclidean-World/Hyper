@@ -1,4 +1,4 @@
-﻿using Hyper.UserInput;
+﻿using Common.UserInput;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
@@ -17,7 +17,7 @@ internal class Window : GameWindow, IInputSubscriber
 
     private Scene _scene = null!;
 
-    private readonly Context _context = UserInput.Context.Instance;
+    private readonly Context _context = Common.UserInput.Context.Instance;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)

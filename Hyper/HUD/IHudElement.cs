@@ -1,4 +1,6 @@
-﻿namespace Hyper.HUD;
+﻿using Common;
+
+namespace Hyper.HUD;
 
 internal interface IHudElement
 {

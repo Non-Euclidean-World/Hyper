@@ -1,4 +1,5 @@
-﻿using Hyper.HUD.Sprites;
+﻿using Common;
+using Hyper.HUD.Sprites;
 using Hyper.PlayerData.InventorySystem;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

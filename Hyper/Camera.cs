@@ -1,8 +1,8 @@
-using Hyper.Command;
+using Common.Command;
+using Common.UserInput;
 using Hyper.GameEntities;
 using Hyper.MathUtils;
 using Hyper.TypingUtils;
-using Hyper.UserInput;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;

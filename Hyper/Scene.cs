@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using BepuPhysics;
 using BepuUtilities.Memory;
+using Common;
+using Common.UserInput;
 using Hyper.Collisions;
 using Hyper.Collisions.Bepu;
 using Hyper.GameEntities;
@@ -9,7 +11,6 @@ using Hyper.MarchingCubes;
 using Hyper.Meshes;
 using Hyper.Shaders;
 using Hyper.TypingUtils;
-using Hyper.UserInput;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 

@@ -1,4 +1,4 @@
-﻿namespace Hyper.Command;
+﻿namespace Common.Command;
 
 public abstract class Commandable
 {

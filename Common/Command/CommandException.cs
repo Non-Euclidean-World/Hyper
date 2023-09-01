@@ -1,6 +1,6 @@
-﻿namespace Hyper.Command;
+﻿namespace Common.Command;
 
-internal class CommandException : Exception
+public class CommandException : Exception
 {
     public CommandException() { }
 

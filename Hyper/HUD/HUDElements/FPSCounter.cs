@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.HUD.HUDElements;

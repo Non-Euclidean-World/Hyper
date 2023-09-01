@@ -1,9 +1,9 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper.UserInput;
+namespace Common.UserInput;
 
-internal class Context
+public class Context
 {
     private Context() { }
 

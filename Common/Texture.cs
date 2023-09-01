@@ -1,11 +1,10 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using SkiaSharp;
 using StbImageSharp;
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
-namespace Hyper;
+namespace Common;
 
-internal class Texture
+public class Texture
 {
     private readonly int _handle;
 

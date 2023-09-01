@@ -1,11 +1,9 @@
-﻿using System.Drawing;
-using System.Text;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper;
+namespace Common;
 
-internal class Shader
+public class Shader
 {
     private readonly int _handle;
 
