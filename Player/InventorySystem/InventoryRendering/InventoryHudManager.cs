@@ -22,14 +22,15 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     private readonly Inventory _inventory = Inventory.Instance;
     
     private readonly HudHelper _hudHelper;
-    
-    private readonly SpriteRenderer _spriteRenderer = 
-        new("../../../../Player/InventorySystem/InventoryRendering/Resources/sprite_sheet.json", 
-            "../../../../Player/InventorySystem/InventoryRendering/Resources/sprite_sheet.png");
+
+    private readonly SpriteRenderer _spriteRenderer;
 
     public InventoryHudManager(HudHelper hudHelper)
     {
         _hudHelper = hudHelper;
+        _spriteRenderer = new SpriteRenderer(
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.json"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.png"));
         RegisterCallbacks();
     }
     

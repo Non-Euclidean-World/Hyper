@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Hyper;
-using Hyper.MathUtils;
 using OpenTK.Mathematics;
 using Player;
 using Player.Utils;

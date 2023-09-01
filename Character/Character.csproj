@@ -22,12 +22,14 @@
       <None Update="Shaders\model_shader.vert">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Characters\Cowboy\Resources\model.dae">
+      <None Update="Resources\Cowboy\model.dae">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Characters\Cowboy\Resources\texture.png">
+      <None Update="Resources\Cowboy\texture.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+
 
 </Project>

@@ -89,7 +89,8 @@ public unsafe class CharacterControllers : IDisposable
     /// Gets the simulation to which this set of chracters belongs.
     /// </summary>
     public Simulation Simulation { get; private set; } = null!;
-    BufferPool _pool;
+
+    readonly BufferPool _pool;
 
     Buffer<int> _bodyHandleToCharacterIndex;
     QuickList<CharacterController> _characters;
@@ -107,7 +108,7 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="initialBodyHandleCapacity">Number of body handles to initially allocate space for in the body handle->character mapping.</param>
     public CharacterControllers(BufferPool pool, int initialCharacterCapacity = 4096, int initialBodyHandleCapacity = 4096)
     {
-        this._pool = pool;
+        _pool = pool;
         _characters = new QuickList<CharacterController>(initialCharacterCapacity, pool);
         ResizeBodyHandleCapacity(initialBodyHandleCapacity);
         _analyzeContactsWorker = AnalyzeContactsWorker;
@@ -434,7 +435,7 @@ public unsafe class CharacterControllers : IDisposable
     }
 
     int _boundingBoxExpansionJobIndex;
-    Action<int> _expandBoundingBoxesWorker;
+    readonly Action<int> _expandBoundingBoxesWorker;
     unsafe void ExpandBoundingBoxesWorker(int workerIndex)
     {
         while (true)
@@ -736,7 +737,7 @@ public unsafe class CharacterControllers : IDisposable
     int _analysisJobIndex;
     int _analysisJobCount;
     Buffer<AnalyzeContactsJob> _jobs;
-    Action<int> _analyzeContactsWorker;
+    readonly Action<int> _analyzeContactsWorker;
     unsafe void AnalyzeContactsWorker(int workerIndex)
     {
         int jobIndex;

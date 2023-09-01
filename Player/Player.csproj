@@ -13,15 +13,17 @@
 
 
     <ItemGroup>
-      <None Update="InventorySystem\InventoryRendering\Resources\sprite_sheet.json">
+      <None Update="Resources\Inventory\sprite_sheet.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="InventorySystem\InventoryRendering\Resources\sprite_sheet.png">
+      <None Update="Resources\Inventory\sprite_sheet.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="InventorySystem\InventoryRendering\Resources\sprite_sheet.svg">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <None Update="Resources\Inventory\sprite_sheet.svg">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+
 
 </Project>

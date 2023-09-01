@@ -7,9 +7,9 @@ public class Context
 {
     private Context() { }
 
-    private static Context? _instance;
+    private static readonly Lazy<Context> _instance = new Lazy<Context>(() => new Context());
 
-    public static Context Instance { get => _instance ??= new Context(); }
+    public static Context Instance => _instance.Value;
 
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
     public Dictionary<MouseButton, List<Action<FrameEventArgs>>> ButtonHeldCallbacks = new();

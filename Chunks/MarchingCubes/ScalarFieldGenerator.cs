@@ -1,7 +1,7 @@
 ﻿using Chunks.Voxels;
 using OpenTK.Mathematics;
 
-namespace Chunks;
+namespace Chunks.MarchingCubes;
 
 public class ScalarFieldGenerator
 {

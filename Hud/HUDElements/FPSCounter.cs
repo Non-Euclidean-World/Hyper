@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Common;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Desktop;
 
 namespace Hud.HUDElements;
 
@@ -35,7 +34,7 @@ public class FpsCounter : IHudElement
         shader.SetVector4("color", Vector4.One);
         UpdateFps();
 
-        Printer.RenderStringTopRight(shader, _fps.ToString(), _size.X, _hudHelper.GetAspectRatio() / 2, 0.5f);
+        Printer.RenderStringTopRight(shader, _fps.ToString(), _size.X, _hudHelper.GetAspectRatio() / 2 - 0.05f, 0.45f);
     }
 
     private void UpdateFps()

@@ -1,5 +1,4 @@
 ﻿using Common;
-using Hyper.MathUtils;
 using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

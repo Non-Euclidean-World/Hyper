@@ -3,6 +3,7 @@ using BepuPhysics;
 using BepuUtilities.Memory;
 using Character.GameEntities;
 using Chunks;
+using Chunks.MarchingCubes;
 using Common.UserInput;
 using Hyper.Collisions;
 using Hyper.Meshes;

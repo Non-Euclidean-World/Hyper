@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-
-namespace HyperTest.MarchingCubesTests;
+﻿namespace HyperTest.MarchingCubesTests;
 
 [TestFixture]
 public class PerlinNoiseTests

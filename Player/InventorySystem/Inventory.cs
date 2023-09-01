@@ -1,7 +1,5 @@
 ﻿using Common.UserInput;
-using Hud;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Player.InventorySystem.InventoryRendering;
 using Player.InventorySystem.Items;
@@ -11,8 +9,8 @@ namespace Player.InventorySystem;
 
 public class Inventory : IInputSubscriber
 {
-    private static Inventory? _instance;
-    public static Inventory Instance { get => _instance ??= new Inventory(); }
+    private static readonly Lazy<Inventory> _instance = new(() => new Inventory());
+    public static Inventory Instance => _instance.Value;
     
     public const int Columns = 10;
     
@@ -22,13 +20,13 @@ public class Inventory : IInputSubscriber
     
     public bool IsOpen = false;
     
-    public readonly (Items.Item? Item, int Count)[,] Items;
+    public readonly (Item? Item, int Count)[,] Items;
     
-    public (Items.Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
+    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
     
-    public Items.Item? SelectedItem => Items[0, SelectedItemIndex].Item;
+    public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
 
-    public (Items.Item? Item, int Count) InHandItem;
+    public (Item? Item, int Count) InHandItem;
 
     private Inventory()
     {

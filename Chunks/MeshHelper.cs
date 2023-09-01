@@ -11,7 +11,7 @@ internal static class MeshHelper
     /// <param name="chunk"></param>
     /// <param name="pool"></param>
     /// <returns></returns>
-    public static BepuPhysics.Collidables.Mesh CreateMeshFromChunk(Chunk chunk, BufferPool pool)
+    public static Mesh CreateMeshFromChunk(Chunk chunk, BufferPool pool)
     {
         int triangleCount = chunk.Vertices.Length / 3;
         pool.Take<Triangle>(triangleCount, out var triangles);
@@ -25,6 +25,6 @@ internal static class MeshHelper
             triangle.C = Conversions.ToNumericsVector(chunk.Vertices[3 * i + 2].Position);
         }
 
-        return new BepuPhysics.Collidables.Mesh(triangles, new System.Numerics.Vector3(1f, 1f, 1f), pool);
+        return new Mesh(triangles, new System.Numerics.Vector3(1f, 1f, 1f), pool);
     }
 }

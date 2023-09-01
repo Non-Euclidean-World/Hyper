@@ -1,4 +1,4 @@
-﻿namespace Chunks;
+﻿namespace Chunks.MarchingCubes;
 
 internal class PerlinNoise
 {

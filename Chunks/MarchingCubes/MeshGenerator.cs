@@ -2,7 +2,7 @@
 using Common.Meshes;
 using OpenTK.Mathematics;
 
-namespace Chunks;
+namespace Chunks.MarchingCubes;
 
 internal class MeshGenerator
 {

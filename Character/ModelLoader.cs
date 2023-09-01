@@ -5,13 +5,13 @@ namespace Character;
 
 public static class ModelLoader
 {
-    public static Assimp.Scene GetModel(string path)
+    public static Scene GetModel(string path)
     {
         AssimpContext importer = new AssimpContext();
         return importer.ImportFile(path);
     }
 
-    public static int[] GetVaos(Assimp.Scene model)
+    public static int[] GetVaos(Scene model)
     {
         var vaos = new List<int>();
 

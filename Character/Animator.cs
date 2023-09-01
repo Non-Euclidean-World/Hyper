@@ -18,7 +18,7 @@ public class Animator
         _stopwatch.Start();
     }
 
-    public Matrix4x4[] GetBoneTransforms(Assimp.Scene model, int meshIndex)
+    public Matrix4x4[] GetBoneTransforms(Scene model, int meshIndex)
     {
         if (!_isAnimationRunning)
             return Enumerable.Repeat(model.RootNode.Transform, model.Meshes[meshIndex].BoneCount).ToArray();
@@ -41,7 +41,7 @@ public class Animator
         }
     }
 
-    public void Animate(Assimp.Scene model)
+    public void Animate(Scene model)
     {
         if (!_isAnimationRunning) return;
 
@@ -76,7 +76,7 @@ public class Animator
         _stopwatch.Restart();
     }
 
-    private double GetCurrentTime(Assimp.Scene model)
+    private double GetCurrentTime(Scene model)
     {
         var seconds = _stopwatch.ElapsedMilliseconds / 1000.0;
         var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond / 2;
