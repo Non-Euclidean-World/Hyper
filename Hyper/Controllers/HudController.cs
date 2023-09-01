@@ -1,7 +1,7 @@
 ﻿using Common;
 using Hud;
 using Hud.HUDElements;
-using Hyper.HUD.InventoryRendering;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

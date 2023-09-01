@@ -2,11 +2,10 @@
 using Hud;
 using Hud.Sprites;
 using Hyper.Controllers;
-using Hyper.PlayerData.InventorySystem;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.HUD.InventoryRendering;
+namespace Hyper.PlayerData.InventorySystem.InventoryRendering;
 
 internal class InventoryRenderer : IHudElement
 {
@@ -21,8 +20,8 @@ internal class InventoryRenderer : IHudElement
     private readonly Inventory _inventory = Inventory.Instance;
     
     private readonly SpriteRenderer _spriteRenderer = 
-        new("HUD/InventoryRendering/Resources/sprite_sheet.json", 
-            "HUD/InventoryRendering/Resources/sprite_sheet.png");
+        new("PlayerData/InventorySystem/InventoryRendering/Resources/sprite_sheet.json", 
+            "PlayerData/InventorySystem/InventoryRendering/Resources/sprite_sheet.png");
 
     public void Render(Shader shader)
     {
