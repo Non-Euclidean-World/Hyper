@@ -2,10 +2,10 @@ using Common.Command;
 using Common.UserInput;
 using Hyper.GameEntities;
 using Hyper.MathUtils;
-using Hyper.TypingUtils;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.TypingUtils;
 
 namespace Hyper;
 

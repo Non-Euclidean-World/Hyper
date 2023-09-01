@@ -1,7 +1,7 @@
 ﻿using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
 using Hyper.Meshes;
-using Hyper.TypingUtils;
+using Physics.TypingUtils;
 
 namespace Hyper.Collisions;
 internal static class MeshHelper

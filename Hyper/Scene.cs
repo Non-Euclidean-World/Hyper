@@ -4,15 +4,16 @@ using BepuUtilities.Memory;
 using Common;
 using Common.UserInput;
 using Hyper.Collisions;
-using Hyper.Collisions.Bepu;
 using Hyper.GameEntities;
 using Hyper.HUD;
 using Hyper.MarchingCubes;
 using Hyper.Meshes;
 using Hyper.Shaders;
-using Hyper.TypingUtils;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.Collisions;
+using Physics.Collisions.Bepu;
+using Physics.TypingUtils;
 
 
 namespace Hyper;
@@ -127,17 +128,17 @@ internal class Scene : IInputSubscriber
 
         ShaderFactory.SetUpCharacterShaderParams(_characterShader, Camera, _lightSources, _scale);
 
-#if BOUNDING_BOXES
-        _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
-#endif
+// #if BOUNDING_BOXES
+//         _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+// #endif
         _player.Render(_characterShader, _scale, Camera.ReferencePointPosition, Camera.FirstPerson);
 
         foreach (var bot in _bots)
         {
             bot.Render(_characterShader, _scale, Camera.ReferencePointPosition);
-#if BOUNDING_BOXES
-            bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
-#endif
+// #if BOUNDING_BOXES
+//             bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+// #endif
         }
 
         Hud.Render();

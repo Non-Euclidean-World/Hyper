@@ -37,8 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepuPhysics" Version="2.4.0" />
-    <PackageReference Include="BepuUtilities" Version="2.4.0" />
 	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="NLog" Version="5.2.0" />
   </ItemGroup>
@@ -98,6 +96,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Physics\Physics.csproj" />
   </ItemGroup>
 
 </Project>

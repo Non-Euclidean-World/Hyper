@@ -1,4 +1,5 @@
-﻿using Hyper.MarchingCubes.Voxels;
+﻿using Common.Meshes;
+using Hyper.MarchingCubes.Voxels;
 using Hyper.Meshes;
 using OpenTK.Mathematics;
 

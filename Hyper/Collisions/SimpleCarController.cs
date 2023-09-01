@@ -2,7 +2,7 @@
 
 using BepuPhysics;
 
-namespace Hyper.Collisions.Bepu;
+namespace Hyper.Collisions;
 internal class SimpleCarController
 {
     private float _steeringAngle;

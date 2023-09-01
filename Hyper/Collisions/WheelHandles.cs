@@ -2,7 +2,7 @@
 
 using BepuPhysics;
 
-namespace Hyper.Collisions.Bepu;
+namespace Hyper.Collisions;
 struct WheelHandles
 {
     public BodyHandle Wheel;

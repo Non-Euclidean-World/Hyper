@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Common.Meshes;
+using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
 internal class BoxMesh

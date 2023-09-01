@@ -6,17 +6,15 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using Common;
-using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Hyper.Collisions.Bepu;
-internal class PhysicalCharacter
+namespace Physics.Collisions.Bepu;
+
+public class PhysicalCharacter
 {
     public RigidPose Pose { get; private set; }
 
-#if BOUNDING_BOXES
-    public Meshes.Mesh BoundingBoxMesh { get; private set; }
-#endif
+    public Body BoundingBox { get; private set; }
 
     private BodyHandle _bodyHandle;
     private readonly CharacterControllers _characters;
@@ -133,12 +131,12 @@ internal class PhysicalCharacter
         _characters.Simulation.Bodies.Remove(_bodyHandle);
         _characters.RemoveCharacterByBodyHandle(_bodyHandle);
     }
-
-#if BOUNDING_BOXES
+    
+#if BOUNDING_BOXES 
     public void RenderBoundingBox(Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
     {
         TurnOnWireframe();
-        BoundingBoxMesh.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
+        BoundingBox.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
         TurnOffWireframe();
     }
 

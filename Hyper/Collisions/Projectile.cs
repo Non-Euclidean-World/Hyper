@@ -1,8 +1,8 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
-using Hyper.Collisions.Bepu;
 using Hyper.Meshes;
+using Physics.Collisions.Bepu;
 
 namespace Hyper.Collisions;
 internal class Projectile

@@ -1,7 +1,7 @@
 ﻿// Copyright The Authors of bepuphysics2
 
-namespace Hyper.Collisions.Bepu;
-internal struct SimulationProperties
+namespace Physics.Collisions.Bepu;
+public struct SimulationProperties
 {
     public SubgroupCollisionFilter Filter;
     public float Friction;

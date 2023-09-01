@@ -1,25 +1,20 @@
 ﻿using System.Runtime.InteropServices;
-using BepuPhysics;
-using Common;
-using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.Meshes;
+namespace Common.Meshes;
 
-internal class Mesh : IDisposable
+public class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
-
-    public RigidPose RigidPose { get; set; }
-
+    
     public Vector3 Scaling { get; set; }
 
-    protected int VaoId;
+    public int VaoId;
 
     protected int VboId;
 
-    protected int NumberOfVertices;
+    public int NumberOfVertices;
 
     public Vertex[] Vertices { get; protected set; }
 
@@ -36,18 +31,6 @@ internal class Mesh : IDisposable
         var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
         var scaleMatrix = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleMatrix * model);
-
-        GL.BindVertexArray(VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
-    }
-
-    public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
-    {
-        var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
-        var scaleMatrix = Matrix4.CreateScale(scale);
-        var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
-
-        shader.SetMatrix4("model", scaleMatrix * rotation * translation);
 
         GL.BindVertexArray(VaoId);
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);

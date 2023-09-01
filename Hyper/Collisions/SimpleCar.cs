@@ -9,8 +9,9 @@ using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Hyper.Meshes;
+using Physics.Collisions.Bepu;
 
-namespace Hyper.Collisions.Bepu;
+namespace Hyper.Collisions;
 internal class SimpleCar
 {
     public BodyHandle Body { get; private set; }

@@ -1,10 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 
-namespace Hyper.Meshes;
+namespace Common.Meshes;
 
 [StructLayout(LayoutKind.Explicit)]
-internal struct Vertex
+public struct Vertex
 {
     [FieldOffset(0)]
     public float X;

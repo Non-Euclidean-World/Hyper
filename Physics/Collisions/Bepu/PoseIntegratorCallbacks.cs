@@ -4,7 +4,7 @@ using System.Numerics;
 using BepuPhysics;
 using BepuUtilities;
 
-namespace Hyper.Collisions.Bepu;
+namespace Physics.Collisions.Bepu;
 
 public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
 {

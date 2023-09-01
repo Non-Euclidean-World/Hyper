@@ -1,8 +1,8 @@
 ﻿using BepuPhysics;
 using Common;
-using Hyper.TypingUtils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using Physics.TypingUtils;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace Hyper.Animation;
@@ -48,7 +48,7 @@ internal abstract class Model
 
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
-            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(Conversions.ToOpenTKMatrix).ToArray();
+            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(Converter.ToOpenTKMatrix).ToArray();
             shader.SetMatrix4Array("boneTransforms", boneTransforms);
 
             GL.BindVertexArray(_vaos[i]);

@@ -1,15 +1,17 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.Meshes;
 using OpenTK.Mathematics;
+using Physics;
 
 namespace Hyper.Meshes;
 internal class CarMesh
 {
-    public Mesh LowerPart { get; private set; }
-    public Mesh BackLeftWheel { get; private set; }
-    public Mesh BackRightWheel { get; private set; }
-    public Mesh FrontLeftWheel { get; private set; }
-    public Mesh FrontRightWheel { get; private set; }
+    public Body LowerPart { get; private set; }
+    public Body BackLeftWheel { get; private set; }
+    public Body BackRightWheel { get; private set; }
+    public Body FrontLeftWheel { get; private set; }
+    public Body FrontRightWheel { get; private set; }
     public float WheelRadius { get; private set; }
     public float WheelWidth { get; private set; }
 
@@ -17,12 +19,12 @@ internal class CarMesh
     {
         WheelRadius = wheelRadius;
         WheelWidth = wheelWidth;
-        LowerPart = BoxMesh.Create(lowerPart);
+        LowerPart = new Body(BoxMesh.Create(lowerPart));
         float wheelDiameter = 2 * wheelRadius;
-        BackLeftWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
-        BackRightWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
-        FrontLeftWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
-        FrontRightWheel = BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter));
+        BackLeftWheel = new Body(BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter)));
+        BackRightWheel = new Body(BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter)));
+        FrontLeftWheel = new Body(BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter)));
+        FrontRightWheel = new Body(BoxMesh.Create(new Vector3(wheelDiameter, wheelWidth, wheelDiameter)));
     }
 
     public void Update(RigidPose bodyPose, RigidPose rearLeftWheelPose, RigidPose rearRightWheelPose, RigidPose frontLeftWheelPose, RigidPose frontRightWheelPose)

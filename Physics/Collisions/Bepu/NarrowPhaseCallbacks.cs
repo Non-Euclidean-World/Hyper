@@ -8,9 +8,9 @@ using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 
-namespace Hyper.Collisions.Bepu;
+namespace Physics.Collisions.Bepu;
 
-struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
+public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {
     public CollidableProperty<SimulationProperties> Properties;
     public CharacterControllers Characters;

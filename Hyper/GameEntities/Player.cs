@@ -1,7 +1,7 @@
 ﻿using Common;
-using Hyper.Collisions.Bepu;
-using Hyper.TypingUtils;
 using OpenTK.Mathematics;
+using Physics.Collisions.Bepu;
+using Physics.TypingUtils;
 
 namespace Hyper.GameEntities;
 

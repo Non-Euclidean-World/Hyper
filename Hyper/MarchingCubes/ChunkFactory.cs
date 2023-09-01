@@ -1,4 +1,5 @@
-﻿using Hyper.Meshes;
+﻿using Common.Meshes;
+using Hyper.Meshes;
 using OpenTK.Mathematics;
 
 namespace Hyper.MarchingCubes;

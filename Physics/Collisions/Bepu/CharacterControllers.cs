@@ -10,7 +10,7 @@ using BepuUtilities;
 using BepuUtilities.Collections;
 using BepuUtilities.Memory;
 
-namespace Hyper.Collisions.Bepu;
+namespace Physics.Collisions.Bepu;
 
 
 /// <summary>

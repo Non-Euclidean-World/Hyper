@@ -3,12 +3,16 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
+using Common.Meshes;
 using Hyper.Collisions;
 using Hyper.MarchingCubes;
 using Hyper.MarchingCubes.Voxels;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using Physics.Collisions;
+using Mesh = Common.Meshes.Mesh;
+
 namespace Hyper.Meshes;
 
 internal class Chunk : Mesh

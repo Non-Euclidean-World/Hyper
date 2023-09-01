@@ -1,17 +1,19 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.Meshes;
 using OpenTK.Mathematics;
+using Physics;
 
 namespace Hyper.Meshes;
 internal class ProjectileMesh : IDisposable
 {
-    public Mesh Body { get; private set; }
+    public Body Body { get; private set; }
     public Vector3 Size { get; private set; }
 
     public ProjectileMesh(Vector3 size)
     {
         Size = size;
-        Body = BoxMesh.Create(size);
+        Body = new Body(BoxMesh.Create(size));
     }
 
     public ProjectileMesh(float sizeX, float sizeY, float sizeZ)
