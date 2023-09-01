@@ -1,4 +1,5 @@
 ﻿using Common.UserInput;
+using Hud;
 using Hyper.Controllers;
 using Hyper.Shaders;
 using NLog;
@@ -55,6 +56,8 @@ internal class Window : GameWindow, IInputSubscriber
         var lightSourceShader = ShaderFactory.CreateLightSourceShader();
         var hudShader = ShaderFactory.CreateHudShader();
         
+        var hudHelper = new HudHelper(this);
+        
         _controllers = new IController[]
         {
             new PlayerController(_scene, modelShader),
@@ -63,7 +66,7 @@ internal class Window : GameWindow, IInputSubscriber
             new ProjectileController(_scene, objectShader),
             new VehicleController(_scene, objectShader),
             new LightSourceController(_scene, lightSourceShader),
-            new HudController(this, hudShader),
+            new HudController(hudHelper, hudShader),
         };
         
 

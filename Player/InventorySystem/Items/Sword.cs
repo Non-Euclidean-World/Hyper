@@ -1,4 +1,4 @@
-﻿namespace Hyper.PlayerData.InventorySystem.Items;
+﻿namespace Player.InventorySystem.Items;
 
 public class Sword : Item
 {

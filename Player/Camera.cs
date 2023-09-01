@@ -1,15 +1,14 @@
 using Common.Command;
 using Common.UserInput;
-using Hyper.Animation;
-using Hyper.MathUtils;
 using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
+using Player.Utils;
 
-namespace Hyper;
+namespace Player;
 
-internal class Camera : Commandable, IInputSubscriber
+public class Camera : Commandable, IInputSubscriber
 {
     public float Curve { get; set; } = 0f;
 

@@ -3,6 +3,8 @@ using Hyper.MathUtils;
 using Hyper.Meshes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using Player;
+using Player.Utils;
 
 namespace Hyper.Shaders;
 internal static class ShaderFactory

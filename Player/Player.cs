@@ -4,9 +4,9 @@ using OpenTK.Mathematics;
 using Physics.Collisions.Bepu;
 using Physics.TypingUtils;
 
-namespace Hyper.Animation;
+namespace Player;
 
-internal class Player : Humanoid
+public class Player : Humanoid
 {
     public Player(PhysicalCharacter physicalCharacter) : base(physicalCharacter)
     { }

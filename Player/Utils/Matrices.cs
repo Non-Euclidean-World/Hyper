@@ -1,8 +1,8 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MathUtils;
+namespace Player.Utils;
 
-internal static class Matrices
+public static class Matrices
 {
     /// <summary>
     /// Gets the view matrix.

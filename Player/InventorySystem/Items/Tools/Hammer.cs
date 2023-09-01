@@ -1,4 +1,4 @@
-﻿namespace Hyper.PlayerData.InventorySystem.Items.Tools;
+﻿namespace Player.InventorySystem.Items.Tools;
 
 public class Hammer : Item
 {

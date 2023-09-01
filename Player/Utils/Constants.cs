@@ -1,4 +1,4 @@
-﻿namespace Hyper.MathUtils;
+﻿namespace Player.Utils;
 
 public static class Constants
 {

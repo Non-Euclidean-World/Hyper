@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Character", "Character\Char
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunks", "Chunks\Chunks.csproj", "{97482968-A73E-422B-9CF4-4B1E351956FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player", "Player\Player.csproj", "{0997C674-888D-4ABB-94DC-10391EBE504A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{97482968-A73E-422B-9CF4-4B1E351956FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97482968-A73E-422B-9CF4-4B1E351956FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97482968-A73E-422B-9CF4-4B1E351956FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0997C674-888D-4ABB-94DC-10391EBE504A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0997C674-888D-4ABB-94DC-10391EBE504A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0997C674-888D-4ABB-94DC-10391EBE504A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0997C674-888D-4ABB-94DC-10391EBE504A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

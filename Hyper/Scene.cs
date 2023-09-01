@@ -4,13 +4,13 @@ using BepuUtilities.Memory;
 using Character.GameEntities;
 using Chunks;
 using Common.UserInput;
-using Hyper.Animation;
 using Hyper.Collisions;
 using Hyper.Meshes;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.Collisions.Bepu;
 using Physics.TypingUtils;
+using Player;
 
 
 namespace Hyper;
@@ -28,7 +28,7 @@ internal class Scene : IInputSubscriber
     
     public readonly SimpleCar SimpleCar; // TODO change it to a list of vehicles.
 
-    public readonly Player Player;
+    public readonly Player.Player Player;
     
     public Camera Camera { get; set; }
     
@@ -61,7 +61,7 @@ internal class Scene : IInputSubscriber
             new SolveDescription(6, 1), bufferPool);
 
         var characterInitialPosition = new Vector3(0, scalarFieldGenerator.AvgElevation + 8, 15);
-        Player = new Player(CreatePhysicalHumanoid(characterInitialPosition));
+        Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like

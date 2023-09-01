@@ -1,8 +1,8 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MathUtils;
+namespace Player.Utils;
 
-internal static class GeomPorting
+public static class GeomPorting
 {
     /// <summary>
     /// Ports a point in euclidean space to non-euclidean space.

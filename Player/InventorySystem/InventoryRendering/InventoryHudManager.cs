@@ -1,13 +1,15 @@
 ﻿using Common;
+using Common.UserInput;
 using Hud;
 using Hud.Sprites;
-using Hyper.Controllers;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper.PlayerData.InventorySystem.InventoryRendering;
+namespace Player.InventorySystem.InventoryRendering;
 
-internal class InventoryRenderer : IHudElement
+public class InventoryHudManager : IHudElement, IInputSubscriber
 {
     public bool Visible { get; set; } = true;
 
@@ -19,10 +21,18 @@ internal class InventoryRenderer : IHudElement
     
     private readonly Inventory _inventory = Inventory.Instance;
     
+    private readonly HudHelper _hudHelper;
+    
     private readonly SpriteRenderer _spriteRenderer = 
-        new("PlayerData/InventorySystem/InventoryRendering/Resources/sprite_sheet.json", 
-            "PlayerData/InventorySystem/InventoryRendering/Resources/sprite_sheet.png");
+        new("../../../../Player/InventorySystem/InventoryRendering/Resources/sprite_sheet.json", 
+            "../../../../Player/InventorySystem/InventoryRendering/Resources/sprite_sheet.png");
 
+    public InventoryHudManager(HudHelper hudHelper)
+    {
+        _hudHelper = hudHelper;
+        RegisterCallbacks();
+    }
+    
     public void Render(Shader shader)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
@@ -153,6 +163,26 @@ internal class InventoryRenderer : IHudElement
     {
         if (_inventory.InHandItem.Item is null) return;
 
-        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, HudController.GetMousePosition(), HotbarSizeY);
+        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, _hudHelper.GetMousePosition(), HotbarSizeY);
+    }
+
+    public void RegisterCallbacks()
+    {
+        var context = Context.Instance;
+        
+        context.RegisterKeyDownCallback(Keys.E, () =>
+        {
+            _inventory.IsOpen = !_inventory.IsOpen;
+            _hudHelper.CursorState = _inventory.IsOpen ? CursorState.Normal : CursorState.Grabbed;
+            _inventory.DropItem();
+        });
+        
+        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
+        {
+            if (!_inventory.IsOpen) return;
+
+            var isMouseOnInventory = _inventory.TryGetPosition(out int x, out int y, _hudHelper.GetMousePosition());
+            if (isMouseOnInventory) _inventory.SwapWithHand(x, y);
+        });
     }
 }
