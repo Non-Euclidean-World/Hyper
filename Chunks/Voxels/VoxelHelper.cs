@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MarchingCubes.Voxels;
+namespace Chunks.Voxels;
 
 public static class VoxelHelper
 {

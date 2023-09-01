@@ -1,10 +1,9 @@
-﻿using Hyper.MarchingCubes.Voxels;
-using Hyper.Meshes;
+﻿using Chunks.Voxels;
 using OpenTK.Mathematics;
 
-namespace Hyper.MarchingCubes;
+namespace Chunks;
 
-internal class ScalarFieldGenerator
+public class ScalarFieldGenerator
 {
     private readonly int _seed;
 

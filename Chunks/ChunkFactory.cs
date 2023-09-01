@@ -1,10 +1,9 @@
 ﻿using Common.Meshes;
-using Hyper.Meshes;
 using OpenTK.Mathematics;
 
-namespace Hyper.MarchingCubes;
+namespace Chunks;
 
-internal class ChunkFactory
+public class ChunkFactory
 {
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 

@@ -1,9 +1,8 @@
 ﻿using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
-using Hyper.Meshes;
 using Physics.TypingUtils;
 
-namespace Hyper.Collisions;
+namespace Chunks;
 internal static class MeshHelper
 {
     /// <summary>

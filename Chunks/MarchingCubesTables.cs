@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.MarchingCubes;
+namespace Chunks;
 
 internal static class MarchingCubesTables
 {

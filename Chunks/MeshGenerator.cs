@@ -1,8 +1,8 @@
-﻿using Common.Meshes;
-using Hyper.MarchingCubes.Voxels;
+﻿using Chunks.Voxels;
+using Common.Meshes;
 using OpenTK.Mathematics;
 
-namespace Hyper.MarchingCubes;
+namespace Chunks;
 
 internal class MeshGenerator
 {

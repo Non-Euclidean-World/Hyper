@@ -46,13 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\awesomeface.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -95,6 +88,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Character\Character.csproj" />
+    <ProjectReference Include="..\Chunks\Chunks.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Hud\Hud.csproj" />
     <ProjectReference Include="..\Physics\Physics.csproj" />
@@ -102,6 +96,12 @@
 
 
 
+
+
+
+  <ItemGroup>
+    <Folder Include="MarchingCubes\" />
+  </ItemGroup>
 
 
 

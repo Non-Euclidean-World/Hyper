@@ -3,18 +3,16 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
+using Chunks.Voxels;
 using Common.Meshes;
-using Hyper.Collisions;
-using Hyper.MarchingCubes;
-using Hyper.MarchingCubes.Voxels;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Mesh = Common.Meshes.Mesh;
 
-namespace Hyper.Meshes;
+namespace Chunks;
 
-internal class Chunk : Mesh
+public class Chunk : Mesh
 {
     public const int Size = 32;
 
@@ -22,6 +20,7 @@ internal class Chunk : Mesh
 
     private readonly Voxel[,,] _voxels;
 
+    // TODO No clue if logging works after moving it to Common project. Need to check.
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private StaticHandle _handle;

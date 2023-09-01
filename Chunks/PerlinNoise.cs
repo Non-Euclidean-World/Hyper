@@ -1,4 +1,4 @@
-﻿namespace Hyper.MarchingCubes;
+﻿namespace Chunks;
 
 internal class PerlinNoise
 {

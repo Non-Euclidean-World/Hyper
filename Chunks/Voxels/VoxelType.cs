@@ -1,4 +1,4 @@
-﻿namespace Hyper.MarchingCubes.Voxels;
+﻿namespace Chunks.Voxels;
 
 public enum VoxelType
 {

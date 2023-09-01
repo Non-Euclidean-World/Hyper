@@ -1,6 +1,6 @@
-﻿namespace Hyper.MarchingCubes.Voxels;
+﻿namespace Chunks.Voxels;
 
-internal struct Voxel
+public struct Voxel
 {
     public float Value;
 
