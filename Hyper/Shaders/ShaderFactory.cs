@@ -33,8 +33,8 @@ internal static class ShaderFactory
     {
         var shader = new[]
         {
-            ("../../../../Character/Shaders/model_shader.vert", ShaderType.VertexShader),
-            ("../../../../Character/Shaders/model_shader.frag", ShaderType.FragmentShader)
+            ("../../../../Characters/Shaders/model_shader.vert", ShaderType.VertexShader),
+            ("../../../../Characters/Shaders/model_shader.frag", ShaderType.FragmentShader)
         };
         return new Shader(shader);
     }

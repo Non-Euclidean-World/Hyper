@@ -57,11 +57,11 @@ internal class Window : GameWindow, IInputSubscriber
         _controllers = new IController[]
         {
             new PlayerController(_scene, modelShader),
-            new BotController(_scene, modelShader),
-            new ChunkController(_scene, objectShader),
-            new ProjectileController(_scene, objectShader),
-            new VehicleController(_scene, objectShader),
-            new LightSourceController(_scene, lightSourceShader),
+            new BotsController(_scene, modelShader),
+            new ChunksController(_scene, objectShader),
+            new ProjectilesController(_scene, objectShader),
+            new VehiclesController(_scene, objectShader),
+            new LightSourcesController(_scene, lightSourceShader),
             new HudController(hudHelper, hudShader),
         };
 

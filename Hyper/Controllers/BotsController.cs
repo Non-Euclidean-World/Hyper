@@ -5,13 +5,13 @@ using OpenTK.Mathematics;
 
 namespace Hyper.Controllers;
 
-internal class BotController : IController, IInputSubscriber
+internal class BotsController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
     private readonly Shader _shader;
 
-    public BotController(Scene scene, Shader shader)
+    public BotsController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;

@@ -17,7 +17,6 @@ using Player;
 
 namespace Hyper;
 
-// TODO fix this class.
 internal class Scene : IInputSubscriber
 {
     public readonly List<Chunk> Chunks;
@@ -28,11 +27,11 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots;
 
-    public readonly SimpleCar SimpleCar; // TODO change it to a list of vehicles.
+    public readonly List<SimpleCar> Cars;
 
     public readonly Player.Player Player;
 
-    public Camera Camera { get; set; }
+    public readonly Camera Camera;
 
     public readonly float Scale = 0.1f;
 
@@ -72,7 +71,11 @@ internal class Scene : IInputSubscriber
             .ToList();
 
         var carInitialPosition = new Vector3(5, scalarFieldGenerator.AvgElevation + 5, 12);
-        SimpleCar = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, Properties, Conversions.ToNumericsVector(carInitialPosition));
+        Cars = new List<SimpleCar>()
+        {
+            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, Properties,
+                Conversions.ToNumericsVector(carInitialPosition))
+        };
 
         Camera = GetCamera(aspectRatio, scalarFieldGenerator.AvgElevation);
 

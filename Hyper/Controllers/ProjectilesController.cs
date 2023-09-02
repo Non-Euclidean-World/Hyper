@@ -8,13 +8,13 @@ using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
-internal class ProjectileController : IController, IInputSubscriber
+internal class ProjectilesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
     private readonly Shader _shader;
 
-    public ProjectileController(Scene scene, Shader shader)
+    public ProjectilesController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;

@@ -6,13 +6,13 @@ using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
-internal class ChunkController : IController, IInputSubscriber
+internal class ChunksController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
     private readonly Shader _shader;
 
-    public ChunkController(Scene scene, Shader shader)
+    public ChunksController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;

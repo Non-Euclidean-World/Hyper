@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Physics", "Physics\Physics.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hud", "Hud\Hud.csproj", "{A20CBCDC-C55E-4555-8410-C42BB27AF564}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Character", "Character\Character.csproj", "{A889B245-BCD6-4421-8434-061B159EA953}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Characters", "Characters\Characters.csproj", "{A889B245-BCD6-4421-8434-061B159EA953}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunks", "Chunks\Chunks.csproj", "{97482968-A73E-422B-9CF4-4B1E351956FC}"
 EndProject

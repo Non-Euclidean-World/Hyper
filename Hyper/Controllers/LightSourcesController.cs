@@ -4,13 +4,13 @@ using Hyper.Shaders;
 namespace Hyper.Controllers;
 
 // TODO There should be no separate light source controller. Those should be parts of other bodies.
-internal class LightSourceController : IController
+internal class LightSourcesController : IController
 {
     private readonly Scene _scene;
 
     private readonly Shader _shader;
 
-    public LightSourceController(Scene scene, Shader shader)
+    public LightSourcesController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;

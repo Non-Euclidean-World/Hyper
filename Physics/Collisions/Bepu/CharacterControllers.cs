@@ -38,7 +38,7 @@ public struct CharacterController
     /// </summary>
     public BodyHandle BodyHandle;
     /// <summary>
-    /// Character's up direction in the local space of the character's body.
+    /// Characters's up direction in the local space of the character's body.
     /// </summary>
     public Vector3 LocalUp;
     /// <summary>
@@ -198,10 +198,10 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="characterIndex">Index of the character to remove.</param>
     public void RemoveCharacterByIndex(int characterIndex)
     {
-        Debug.Assert(characterIndex >= 0 && characterIndex < _characters.Count, "Character index must exist in the set of characters.");
+        Debug.Assert(characterIndex >= 0 && characterIndex < _characters.Count, "Characters index must exist in the set of characters.");
         ref var character = ref _characters[characterIndex];
         Debug.Assert(character.BodyHandle.Value >= 0 && character.BodyHandle.Value < _bodyHandleToCharacterIndex.Length && _bodyHandleToCharacterIndex[character.BodyHandle.Value] == characterIndex,
-            "Character must exist in the set of characters.");
+            "Characters must exist in the set of characters.");
         _bodyHandleToCharacterIndex[character.BodyHandle.Value] = -1;
         _characters.FastRemoveAt(characterIndex);
         //If the removal moved a character, update the body handle mapping.
