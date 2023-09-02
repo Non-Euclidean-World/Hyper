@@ -1,11 +1,9 @@
-﻿using Common;
-using Common.Meshes;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hyper.Meshes;
+namespace Common.Meshes;
 
-internal class LightSource : Mesh
+public class LightSource : Mesh
 {
     public Vector3 Color { get; set; }
 

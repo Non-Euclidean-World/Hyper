@@ -1,8 +1,7 @@
 ﻿using BepuPhysics;
+using Character.Projectiles;
 using Common;
 using Common.UserInput;
-using Hyper.Collisions;
-using Hyper.Meshes;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
@@ -33,7 +32,7 @@ internal class ProjectileController : IController, IInputSubscriber
     
     private void CreateProjectile()
     {
-        var q = MathUtils.Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(_scene.Camera.Front));
+        var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(_scene.Camera.Front));
         var projectile = Projectile.CreateStandardProjectile(_scene.SimulationManager.Simulation,
             _scene.Properties,
             new RigidPose(_scene.Player.GetCharacterRay(_scene.Camera.Front, 2), q),

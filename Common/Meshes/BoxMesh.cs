@@ -1,8 +1,7 @@
-﻿using Common.Meshes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
-namespace Hyper.Meshes;
-internal static class BoxMesh
+namespace Common.Meshes;
+public static class BoxMesh
 {
     public static Mesh Create(Vector3 size, Vector3 position)
     {

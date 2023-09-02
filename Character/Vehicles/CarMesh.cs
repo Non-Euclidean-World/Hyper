@@ -1,10 +1,12 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.Meshes;
 using OpenTK.Mathematics;
 using Physics;
 
-namespace Hyper.Meshes;
-internal class CarMesh
+namespace Character.Vehicles;
+
+public class CarMesh
 {
     public Body LowerPart { get; private set; }
     public Body BackLeftWheel { get; private set; }

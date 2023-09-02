@@ -1,10 +1,11 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.Meshes;
 using OpenTK.Mathematics;
 using Physics;
 
-namespace Hyper.Meshes;
-internal class ProjectileMesh : IDisposable
+namespace Character.Projectiles;
+public class ProjectileMesh : IDisposable
 {
     public Body Body { get; private set; }
     public Vector3 Size { get; private set; }

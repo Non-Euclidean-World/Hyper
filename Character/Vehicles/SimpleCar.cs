@@ -8,11 +8,10 @@ using BepuPhysics.Collidables;
 using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Hyper.Meshes;
 using Physics.Collisions.Bepu;
 
-namespace Hyper.Collisions;
-internal class SimpleCar
+namespace Character.Vehicles;
+public class SimpleCar
 {
     public BodyHandle Body { get; private set; }
     public WheelHandles FrontLeftWheel { get; private set; }

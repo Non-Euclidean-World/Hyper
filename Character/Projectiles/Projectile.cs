@@ -1,11 +1,10 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
-using Hyper.Meshes;
 using Physics.Collisions.Bepu;
 
-namespace Hyper.Collisions;
-internal class Projectile
+namespace Character.Projectiles;
+public class Projectile
 {
     public BodyHandle Body { get; private set; }
     public bool IsDead { get; private set; }

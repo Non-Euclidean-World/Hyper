@@ -28,7 +28,9 @@
       <None Update="Resources\Cowboy\texture.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+
     </ItemGroup>
+
 
 
 

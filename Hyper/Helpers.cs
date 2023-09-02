@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using BepuUtilities;
 
-namespace Hyper.MathUtils;
+namespace Hyper;
 internal static class Helpers
 {
     /// <summary>

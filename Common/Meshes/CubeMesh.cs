@@ -1,9 +1,8 @@
-﻿using Common.Meshes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
-namespace Hyper.Meshes;
+namespace Common.Meshes;
 
-internal static class CubeMesh
+public static class CubeMesh
 {
     public static Mesh Create(Vector3 position)
     {

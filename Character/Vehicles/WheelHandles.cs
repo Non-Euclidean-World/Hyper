@@ -2,8 +2,8 @@
 
 using BepuPhysics;
 
-namespace Hyper.Collisions;
-struct WheelHandles
+namespace Character.Vehicles;
+public struct WheelHandles
 {
     public BodyHandle Wheel;
     public ConstraintHandle SuspensionSpring;

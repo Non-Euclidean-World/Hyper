@@ -2,11 +2,12 @@
 using BepuPhysics;
 using BepuUtilities.Memory;
 using Character.GameEntities;
+using Character.Projectiles;
+using Character.Vehicles;
 using Chunks;
 using Chunks.MarchingCubes;
+using Common.Meshes;
 using Common.UserInput;
-using Hyper.Collisions;
-using Hyper.Meshes;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.Collisions.Bepu;
