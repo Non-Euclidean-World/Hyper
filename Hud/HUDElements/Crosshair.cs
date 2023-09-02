@@ -16,7 +16,7 @@ public class Crosshair : IHudElement
     public void Render(Shader shader)
     {
         var model = Matrix4.CreateTranslation(0, 0, 0.0f);
-        model *= Matrix4.CreateScale(Size.X, Size.Y, 1.0f);
+        model = Matrix4.CreateScale(Size.X, Size.Y, 1.0f) * model;
 
         shader.SetMatrix4("model", model);
         shader.SetBool("useTexture", false);

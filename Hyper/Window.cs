@@ -12,8 +12,6 @@ namespace Hyper;
 
 internal class Window : GameWindow, IInputSubscriber
 {
-    public static Window Instance = null!;
-    
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private CancellationTokenSource _debugCancellationTokenSource = null!;
@@ -27,8 +25,6 @@ internal class Window : GameWindow, IInputSubscriber
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        Instance = this;
-        
         StartDebugThreadAsync().ConfigureAwait(false);
 
         RegisterCallbacks();

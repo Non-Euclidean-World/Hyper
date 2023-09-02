@@ -41,7 +41,7 @@ internal static class ShaderFactory
     
     public static Shader CreateHudShader()
     {
-        var shader = new []
+        var shader = new[]
         {
             (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.vert", ShaderType.VertexShader),
             (@"..\\..\\..\\..\\Hud\\bin\\Debug\\net7.0\\Shaders\\shader2d.frag", ShaderType.FragmentShader)
