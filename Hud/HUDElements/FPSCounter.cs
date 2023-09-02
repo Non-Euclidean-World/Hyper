@@ -34,7 +34,7 @@ public class FpsCounter : IHudElement
         shader.SetVector4("color", Vector4.One);
         UpdateFps();
 
-        Printer.RenderString(shader, _fps.ToString(), _size, _hudHelper.GetAspectRatio() / 2 - 0.05f, 0.4f);
+        Printer.RenderStringTopRight(shader, _fps.ToString(), _size, _hudHelper.GetAspectRatio() / 2, 0.5f);
     }
 
     private void UpdateFps()

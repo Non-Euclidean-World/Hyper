@@ -13,7 +13,7 @@ var nativeWindowSettings = new NativeWindowSettings()
 
 using (var window = new Window(GameWindowSettings.Default, nativeWindowSettings))
 {
-    window.UpdateFrequency = 60.0f; // TODO we *really* need to rein this thing in. My CPU fries otherwise
+    window.RenderFrequency = 60.0f; // TODO we *really* need to rein this thing in. My CPU fries otherwise
     window.Run();
 }
 

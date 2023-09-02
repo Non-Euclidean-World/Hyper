@@ -64,7 +64,6 @@ internal class Window : GameWindow, IInputSubscriber
             new LightSourceController(_scene, lightSourceShader),
             new HudController(hudHelper, hudShader),
         };
-        
 
         CursorState = CursorState.Grabbed;
     }
