@@ -34,7 +34,7 @@ public class Shader
 
         for (var i = 0; i < numberOfUniforms; i++)
         {
-            var key = GL.GetActiveUniform(_handle, i, out int size, out _);
+            var key = GL.GetActiveUniform(_handle, i, out int _, out _);
             
             var location = GL.GetUniformLocation(_handle, key);
             _uniformLocations.Add(key, location);

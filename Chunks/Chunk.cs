@@ -39,6 +39,7 @@ public class Chunk : Mesh
     /// </summary>
     /// <param name="location"></param>
     /// <param name="deltaTime"></param>
+    /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was mined. false otherwise.</returns>
     public bool Mine(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
@@ -79,6 +80,7 @@ public class Chunk : Mesh
     /// </summary>
     /// <param name="location"></param>
     /// <param name="deltaTime"></param>
+    /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was built. false otherwise.</returns>
     public bool Build(Vector3 location, float deltaTime, float brushWeight, int radius = 5)

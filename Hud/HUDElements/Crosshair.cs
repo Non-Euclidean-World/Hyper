@@ -34,12 +34,12 @@ public class Crosshair : IHudElement
 
         int vbo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HudVertex>(), vertices, BufferUsageHint.StaticDraw);
 
-        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
+        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HudVertex>(), 0);
         GL.EnableVertexAttribArray(0);
 
-        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
+        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HudVertex>(), 2 * sizeof(float));
         GL.EnableVertexAttribArray(1);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -48,9 +48,9 @@ public class Crosshair : IHudElement
         return vao;
     }
 
-    private static HUDVertex[] GetVertices()
+    private static HudVertex[] GetVertices()
     {
-        HUDVertexBuilder builder = new();
+        HudVertexBuilder builder = new();
         return new[]
         {
             builder.SetPosition(-1, 0).Build(),

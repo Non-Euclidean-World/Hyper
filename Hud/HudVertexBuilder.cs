@@ -1,10 +1,10 @@
 ﻿namespace Hud;
 
-internal class HUDVertexBuilder
+internal class HudVertexBuilder
 {
-    private HUDVertex _vertex = new();
+    private HudVertex _vertex = new();
 
-    public HUDVertexBuilder SetPosition(float x, float y)
+    public HudVertexBuilder SetPosition(float x, float y)
     {
         _vertex.X = x;
         _vertex.Y = y;
@@ -12,7 +12,7 @@ internal class HUDVertexBuilder
         return this;
     }
 
-    public HUDVertexBuilder SetTextureCoords(float u, float v)
+    public HudVertexBuilder SetTextureCoords(float u, float v)
     {
         _vertex.U = u;
         _vertex.V = v;
@@ -20,7 +20,7 @@ internal class HUDVertexBuilder
         return this;
     }
 
-    public HUDVertex Build()
+    public HudVertex Build()
     {
         var result = _vertex;
 
@@ -31,6 +31,6 @@ internal class HUDVertexBuilder
 
     private void Reset()
     {
-        _vertex = new HUDVertex();
+        _vertex = new HudVertex();
     }
 }

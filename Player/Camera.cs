@@ -26,8 +26,6 @@ public class Camera : Commandable, IInputSubscriber
 
     private float _fov = MathHelper.PiOver2;
 
-    private float _cameraSpeed = 10f;
-
     private readonly float _near;
 
     private readonly float _far;
@@ -152,9 +150,6 @@ public class Camera : Commandable, IInputSubscriber
                     Curve = 0f;
                 else
                     Curve = float.Parse(args[1]);
-                break;
-            case "speed":
-                _cameraSpeed = float.Parse(args[1]);
                 break;
             case "position":
                 if (args.Length != 4)

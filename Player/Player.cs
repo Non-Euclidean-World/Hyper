@@ -8,8 +8,7 @@ namespace Player;
 
 public class Player : Humanoid
 {
-    public Player(PhysicalCharacter physicalCharacter) : base(physicalCharacter)
-    { }
+    public Player(PhysicalCharacter physicalCharacter) : base(physicalCharacter) { }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition, bool isFirstPerson)
     {

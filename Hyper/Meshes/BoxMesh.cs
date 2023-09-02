@@ -2,7 +2,7 @@
 using OpenTK.Mathematics;
 
 namespace Hyper.Meshes;
-internal class BoxMesh
+internal static class BoxMesh
 {
     public static Mesh Create(Vector3 size, Vector3 position)
     {

@@ -1,5 +1,5 @@
 ﻿namespace Physics.TypingUtils;
-public class Conversions
+public static class Conversions
 {
     public static System.Numerics.Vector2 ToNumericsVector(OpenTK.Mathematics.Vector2 v)
         => new(v.X, v.Y);

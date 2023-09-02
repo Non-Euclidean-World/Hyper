@@ -3,7 +3,7 @@
 namespace Hud;
 
 [StructLayout(LayoutKind.Explicit)]
-internal struct HUDVertex
+internal struct HudVertex
 {
     [FieldOffset(0)]
     public float X;
@@ -18,7 +18,7 @@ internal struct HUDVertex
     public float V;
 
 
-    public HUDVertex(float x, float y, float u, float v)
+    public HudVertex(float x, float y, float u, float v)
     {
         X = x;
         Y = y;

@@ -18,7 +18,7 @@ public class SharedVao
 
     private static int GetVao()
     {
-        HUDVertexBuilder builder = new();
+        HudVertexBuilder builder = new();
         var vertices = new[]
         {
             builder.SetPosition(-1, -1).SetTextureCoords(0, 0).Build(),
@@ -36,13 +36,13 @@ public class SharedVao
         GL.BindVertexArray(vao);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HUDVertex>(), vertices, BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf<HudVertex>(), vertices, BufferUsageHint.StaticDraw);
 
 
-        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 0);
+        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HudVertex>(), 0);
         GL.EnableVertexAttribArray(0);
 
-        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HUDVertex>(), 2 * sizeof(float));
+        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<HudVertex>(), 2 * sizeof(float));
         GL.EnableVertexAttribArray(1);
 
         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

@@ -2,7 +2,7 @@
 using BepuUtilities;
 
 namespace Hyper.MathUtils;
-internal class Helpers
+internal static class Helpers
 {
     /// <summary>
     /// Creates a quaternion representing a rotation which rotates one vector onto another

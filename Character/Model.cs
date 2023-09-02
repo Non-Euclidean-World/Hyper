@@ -39,7 +39,6 @@ public abstract class Model
         var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(rigidPose.Position) - cameraPosition) * globalScale);
         var localScaleMatrix = Matrix4.CreateScale(_localScale);
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(rigidPose.Orientation));
-        var globalScaleMatrix = Matrix4.CreateScale(globalScale);
 
         shader.SetMatrix4("model", localTranslationMatrix * localScaleMatrix * rotation * translation * globalScale);
         shader.SetMatrix4("normalRotation", rotation);
