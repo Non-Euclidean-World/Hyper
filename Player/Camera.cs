@@ -95,7 +95,7 @@ public class Camera : Commandable, IInputSubscriber
         return Matrices.ProjectionMatrix(_fov, _near, _far, AspectRatio, Curve);
     }
 
-    public Matrix4 TranslateMatrix(Vector4 to)
+    public Matrix4 GetTranslationMatrix(Vector4 to)
     {
         return Matrices.TranslationMatrix(to, Curve);
     }

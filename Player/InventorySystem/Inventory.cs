@@ -9,7 +9,7 @@ namespace Player.InventorySystem;
 
 public class Inventory : IInputSubscriber
 {
-    private static readonly Lazy<Inventory> _instance = new(() => new Inventory());
+    private static readonly Lazy<Inventory> _instance = new(() => new Inventory(true));
     public static Inventory Instance => _instance.Value;
 
     public const int Columns = 10;
@@ -28,21 +28,24 @@ public class Inventory : IInputSubscriber
 
     public (Item? Item, int Count) InHandItem;
 
-    private Inventory()
+    public Inventory(bool starterItems = false)
     {
         Items = new (Item? Item, int Count)[Columns, Rows];
         RegisterCallbacks();
 
-        for (int i = 0; i < 12; i++)
+        if (starterItems)
         {
-            AddItem(new Sword());
+            for (int i = 0; i < 12; i++)
+            {
+                AddItem(new Sword());
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                AddItem(new Hammer());
+            }
+            AddItem(new Rock(), 23);
+            AddItem(new Rock(), 7);
         }
-        for (int i = 0; i < 3; i++)
-        {
-            AddItem(new Hammer());
-        }
-        AddItem(new Rock(), 23);
-        AddItem(new Rock(), 7);
     }
 
     public void UseItem() => SelectedItem?.Use();
@@ -116,6 +119,19 @@ public class Inventory : IInputSubscriber
 
     public void SwapWithHand(int x, int y)
     {
+        if (InHandItem.Item is not null && Items[x, y].Item is not null)
+        {
+            if (InHandItem.Item.IsStackable)
+            {
+                if (InHandItem.Item.ID == Items[x, y].Item.ID)
+                {
+                    Items[x, y].Count += InHandItem.Count;
+                    InHandItem.Item = null;
+                    InHandItem.Count = 0;
+                    return;
+                }
+            }
+        }
         var temp = InHandItem;
         InHandItem = RemoveItem(x, y);
         Items[x, y] = temp;

@@ -1,12 +1,13 @@
 ﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using OpenTK.Mathematics;
 using Player;
-using Player.Utils;
+using Constants = Player.Utils.Constants;
 
-namespace HyperTest.CameraTests;
+namespace PlayerTest;
 
 [TestFixture]
-public class EuclidMatrixTests
+public class MatricesTests
 {
     [Test]
     public void ViewMatrixShouldWorkForEuclid()
@@ -31,7 +32,7 @@ public class EuclidMatrixTests
         // Assert
         AreMatricesEqual(view, expected).Should().Be(true);
     }
-
+    
     [Test]
     public void ProjMatrixShouldWorkForEuclid()
     {
@@ -51,31 +52,42 @@ public class EuclidMatrixTests
         // Assert
         AreMatricesEqual(projection, expected).Should().Be(true);
     }
-
+    
     [Test]
     public void TranslateMatrixShouldWorkForEuclid()
     {
         // Arrange
         var camera = new Camera(1f, 0.1f, 100f, 1f);
         camera.Curve = 0f;
-        var to = new Vector3(0.5f, 1f, -0.5f);
-        var expected = Matrix4.CreateTranslation(to);
-
+        camera.ReferencePointPosition = new Vector3(0f, 0f, 0f);
+        camera.Pitch = 0f;
+        camera.Yaw = 0f;
+        camera.Curve = 0f;
+        var to = new Vector4(0.5f, 1f, -0.5f, 1f);
+    
+        var expected = new Matrix4(
+            1f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f,
+            0f, 0f, 1f, 0f,
+            to.X, to.Y, to.Z, 1f);
+    
         // Act
-        var to4 = GeomPorting.EucToCurved(to, camera.Curve);
-        var translation = camera.TranslateMatrix(to4);
-
+        var translate = camera.GetTranslationMatrix(to);
+    
         // Assert
-        AreMatricesEqual(translation, expected).Should().Be(true);
+        AreMatricesEqual(translate, expected).Should().Be(true);
     }
 
-    private bool AreMatricesEqual(Matrix4 a, Matrix4 b, float epsilon = Constants.Eps)
+    private bool AreMatricesEqual(Matrix4 a, Matrix4 b)
     {
-        for (int y = 0; y < 4; y++)
+        for (int row = 0; row < 4; row++)
         {
-            for (int x = 0; x < 4; x++)
+            for (int col = 0; col < 4; col++)
             {
-                if (Math.Abs(a[x, y] - b[x, y]) > epsilon)
+                float valA = a[row, col];
+                float valB = b[row, col];
+
+                if (Math.Abs(valA - valB) > Constants.Eps)
                 {
                     return false;
                 }
