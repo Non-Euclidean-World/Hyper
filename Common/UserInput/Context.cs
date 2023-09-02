@@ -7,7 +7,7 @@ public class Context
 {
     private Context() { }
 
-    private static readonly Lazy<Context> _instance = new (() => new Context());
+    private static readonly Lazy<Context> _instance = new(() => new Context());
 
     public static Context Instance => _instance.Value;
 

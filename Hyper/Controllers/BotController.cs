@@ -8,16 +8,16 @@ namespace Hyper.Controllers;
 internal class BotController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
-    
+
     private readonly Shader _shader;
-    
+
     public BotController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;
         RegisterCallbacks();
     }
-    
+
     public void Render()
     {
         ShaderFactory.SetUpCharacterShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
@@ -26,16 +26,16 @@ internal class BotController : IController, IInputSubscriber
         {
             bot.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
             // TODO uncomment the bounding boxes and fix them
-// #if BOUNDING_BOXES
-//             bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
-// #endif
-        }    
+            // #if BOUNDING_BOXES
+            //             bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+            // #endif
+        }
     }
 
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterUpdateFrameCallback((e) =>
         {
             foreach (var bot in _scene.Bots)

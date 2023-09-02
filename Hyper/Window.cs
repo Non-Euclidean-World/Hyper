@@ -51,9 +51,9 @@ internal class Window : GameWindow, IInputSubscriber
         var modelShader = ShaderFactory.CreateModelShader();
         var lightSourceShader = ShaderFactory.CreateLightSourceShader();
         var hudShader = ShaderFactory.CreateHudShader();
-        
+
         var hudHelper = new HudHelper(this);
-        
+
         _controllers = new IController[]
         {
             new PlayerController(_scene, modelShader),

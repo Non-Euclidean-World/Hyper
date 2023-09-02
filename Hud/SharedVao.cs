@@ -6,11 +6,11 @@ namespace Hud;
 public class SharedVao
 {
     private static readonly Lazy<SharedVao> _instance = new(() => new SharedVao());
-    
+
     public static SharedVao Instance => _instance.Value;
 
     public readonly int Vao;
-    
+
     private SharedVao()
     {
         Vao = GetVao();

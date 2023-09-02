@@ -8,13 +8,13 @@ namespace Hud.Sprites;
 public class SpriteRenderer
 {
     private readonly Texture _spriteSheet;
-    
+
     private readonly Dictionary<string, Vector4> _rectangles;
 
     private readonly int _spriteSheetWidth;
-    
+
     private readonly int _spriteSheetHeight;
-    
+
     public SpriteRenderer(string metadataPath, string spriteSheetPath)
     {
         using FileStream stream = File.OpenRead(metadataPath);
@@ -22,13 +22,13 @@ public class SpriteRenderer
         (_rectangles, _spriteSheetWidth, _spriteSheetHeight) = data!.GetRectangles();
         _spriteSheet = Texture.LoadFromFile(spriteSheetPath);
     }
-    
+
     public void UseTexture(Shader shader)
     {
         shader.SetBool("useTexture", true);
         _spriteSheet.Use(TextureUnit.Texture0);
     }
-    
+
     /// <summary>
     /// Renders a sprite with the middle at a given position.
     /// </summary>
@@ -59,7 +59,7 @@ public class SpriteRenderer
     {
         Vector2 position = GetPositionRelative(relativePosition, parentPosition, parentSpriteName);
         Vector2 size = GetSizeRelative(spriteName, parentSizeY, parentSpriteName);
-        
+
         var model = Matrix4.CreateTranslation(position.X, position.Y, 0.0f);
         model = Matrix4.CreateScale(size.X, size.Y, 1.0f) * model;
         shader.SetMatrix4("model", model);
@@ -77,7 +77,7 @@ public class SpriteRenderer
     public Vector2 GetPositionRelative(Vector2i relativePosition, Vector2 parentPosition, string parentSpriteName)
     {
         var parentRect = _rectangles[parentSpriteName];
-        
+
         var positionX = parentPosition.X + ((2.0f * relativePosition.X + 1) / _spriteSheetWidth - parentRect.Z) / 2;
         var positionY = parentPosition.Y + ((2.0f * relativePosition.Y + 1) / _spriteSheetHeight - parentRect.W) / 2;
 
@@ -95,7 +95,7 @@ public class SpriteRenderer
     {
         var parentRect = _rectangles[parentSpriteName];
         var rect = _rectangles[spriteName];
-        
+
         var sizeY = parentSizeY * rect.W / parentRect.W;
         var sizeX = sizeY * rect.Z / rect.W;
 

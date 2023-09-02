@@ -18,9 +18,9 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     public static readonly Vector2 HotbarPosition = new(0.0f, -0.38f);
 
     public static readonly Vector2 InventoryPosition = new(0.0f, 0.0f);
-    
+
     private readonly Inventory _inventory = Inventory.Instance;
-    
+
     private readonly HudHelper _hudHelper;
 
     private readonly SpriteRenderer _spriteRenderer;
@@ -33,18 +33,18 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.png"));
         RegisterCallbacks();
     }
-    
+
     public void Render(Shader shader)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
         _spriteRenderer.UseTexture(shader);
-        
+
         shader.SetVector4("color", Vector4.One);
 
         RenderHotbar(shader);
         RenderInventory(shader);
         RenderInHandItem(shader);
-        
+
         shader.SetVector4("color", new Vector4(0, 0, 0, 1));
         RenderItemCounts(shader);
     }
@@ -60,11 +60,11 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     private void RenderHotbarSelectedSlot(Shader shader)
     {
         _spriteRenderer.RenderRelative(
-            shader, 
-            "selectedSlot", 
+            shader,
+            "selectedSlot",
             new Vector2i(_inventory.SelectedItemIndex, 0),
-            HotbarPosition, 
-            HotbarSizeY, 
+            HotbarPosition,
+            HotbarSizeY,
             "hotbar");
     }
 
@@ -78,22 +78,22 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
                 RenderHotbarItem(shader, item.ID, i);
         }
     }
-    
+
     private void RenderHotbarItem(Shader shader, string itemId, int index)
     {
         _spriteRenderer.RenderRelative(
-            shader, 
-            itemId, 
-            new Vector2i(index, 0), 
-            HotbarPosition, 
-            HotbarSizeY, 
+            shader,
+            itemId,
+            new Vector2i(index, 0),
+            HotbarPosition,
+            HotbarSizeY,
             "hotbar");
     }
-    
+
     private void RenderInventory(Shader shader)
     {
         if (!_inventory.IsOpen) return;
-        
+
         _spriteRenderer.Render(shader, "inventory", InventoryPosition, 3 * HotbarSizeY);
         RenderInventoryItems(shader);
     }
@@ -115,14 +115,14 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     private void RenderInventoryItem(Shader shader, string itemId, int x, int y)
     {
         _spriteRenderer.RenderRelative(
-            shader, 
-            itemId, 
-            new Vector2i(x, y), 
-            Vector2.Zero, 
-            3 * HotbarSizeY, 
+            shader,
+            itemId,
+            new Vector2i(x, y),
+            Vector2.Zero,
+            3 * HotbarSizeY,
             "inventory");
     }
-    
+
     private void RenderItemCounts(Shader shader)
     {
         RenderHotbarItemCounts(shader);
@@ -136,7 +136,7 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
         {
             var item = hotbar[i].Item;
             if (item is not null && item.IsStackable)
-                RenderItemCount(shader, hotbar[i].Count,new Vector2i(i, 0), HotbarPosition, "hotbar");
+                RenderItemCount(shader, hotbar[i].Count, new Vector2i(i, 0), HotbarPosition, "hotbar");
         }
     }
 
@@ -149,7 +149,7 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
             {
                 var item = inventory[i, j].Item;
                 if (item is not null && item.IsStackable)
-                    RenderItemCount(shader, inventory[i, j].Count ,new Vector2i(i, Inventory.Rows - j - 1), InventoryPosition, "inventory");
+                    RenderItemCount(shader, inventory[i, j].Count, new Vector2i(i, Inventory.Rows - j - 1), InventoryPosition, "inventory");
             }
         }
     }
@@ -170,14 +170,14 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterKeyDownCallback(Keys.E, () =>
         {
             _inventory.IsOpen = !_inventory.IsOpen;
             _hudHelper.CursorState = _inventory.IsOpen ? CursorState.Normal : CursorState.Grabbed;
             _inventory.DropItem();
         });
-        
+
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
             if (!_inventory.IsOpen) return;

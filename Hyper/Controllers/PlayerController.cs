@@ -25,16 +25,16 @@ internal class PlayerController : IController, IInputSubscriber
         ShaderFactory.SetUpCharacterShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
 
         // TODO uncomment the bounding boxes and fix them
-// #if BOUNDING_BOXES
-//         _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
-// #endif
+        // #if BOUNDING_BOXES
+        //         _player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
+        // #endif
         _scene.Player.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
     }
 
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
         context.RegisterUpdateFrameCallback((e) =>
         {

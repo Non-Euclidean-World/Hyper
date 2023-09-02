@@ -7,7 +7,7 @@ namespace Common.Meshes;
 public class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
-    
+
     public Vector3 Scaling { get; set; }
 
     public int VaoId;

@@ -129,8 +129,8 @@ public class PhysicalCharacter
         _characters.Simulation.Bodies.Remove(_bodyHandle);
         _characters.RemoveCharacterByBodyHandle(_bodyHandle);
     }
-    
-#if BOUNDING_BOXES 
+
+#if BOUNDING_BOXES
     public void RenderBoundingBox(Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
     {
         TurnOnWireframe();

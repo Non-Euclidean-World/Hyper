@@ -8,9 +8,9 @@ namespace Hud.HUDElements;
 public class Crosshair : IHudElement
 {
     public bool Visible { get; set; } = true;
-    
-    private static readonly Vector2 Size = new (0.02f);
-    
+
+    private static readonly Vector2 Size = new(0.02f);
+
     private readonly int _vao = GetVao();
 
     public void Render(Shader shader)
@@ -28,7 +28,7 @@ public class Crosshair : IHudElement
     private static int GetVao()
     {
         var vertices = GetVertices();
-        
+
         int vao = GL.GenVertexArray();
         GL.BindVertexArray(vao);
 

@@ -38,7 +38,7 @@ internal static class ShaderFactory
         };
         return new Shader(shader);
     }
-    
+
     public static Shader CreateHudShader()
     {
         var shader = new[]

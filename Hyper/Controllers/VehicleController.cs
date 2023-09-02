@@ -16,18 +16,18 @@ internal class VehicleController : IController, IInputSubscriber
         _shader = shader;
         RegisterCallbacks();
     }
-    
+
     public void Render()
     {
         ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
-        
+
         _scene.SimpleCar.Mesh.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
     }
 
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        context.RegisterUpdateFrameCallback((e) => 
+        context.RegisterUpdateFrameCallback((e) =>
             _scene.SimpleCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, 0, 0f, false, false));
     }
 }

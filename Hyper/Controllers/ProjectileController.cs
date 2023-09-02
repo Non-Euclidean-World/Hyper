@@ -13,14 +13,14 @@ internal class ProjectileController : IController, IInputSubscriber
     private readonly Scene _scene;
 
     private readonly Shader _shader;
-    
+
     public ProjectileController(Scene scene, Shader shader)
     {
         _scene = scene;
         _shader = shader;
         RegisterCallbacks();
     }
-    
+
     private void UpdateProjectiles(float dt)
     {
         _scene.Projectiles.RemoveAll(x => x.IsDead);
@@ -29,7 +29,7 @@ internal class ProjectileController : IController, IInputSubscriber
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
         }
     }
-    
+
     private void CreateProjectile()
     {
         var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(_scene.Camera.Front));
@@ -40,7 +40,7 @@ internal class ProjectileController : IController, IInputSubscriber
             new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
         _scene.Projectiles.Add(projectile);
     }
-    
+
     public void Render()
     {
         ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
@@ -54,7 +54,7 @@ internal class ProjectileController : IController, IInputSubscriber
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterKeyDownCallback(Keys.P, CreateProjectile);
     }

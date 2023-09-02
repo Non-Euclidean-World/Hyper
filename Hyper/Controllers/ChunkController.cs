@@ -18,7 +18,7 @@ internal class ChunkController : IController, IInputSubscriber
         _shader = shader;
         RegisterCallbacks();
     }
-    
+
     public void Render()
     {
         ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
@@ -32,7 +32,7 @@ internal class ChunkController : IController, IInputSubscriber
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {

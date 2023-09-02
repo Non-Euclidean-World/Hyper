@@ -35,7 +35,7 @@ public class Shader
         for (var i = 0; i < numberOfUniforms; i++)
         {
             var key = GL.GetActiveUniform(_handle, i, out int _, out _);
-            
+
             var location = GL.GetUniformLocation(_handle, key);
             _uniformLocations.Add(key, location);
         }
@@ -116,7 +116,7 @@ public class Shader
         GL.UseProgram(_handle);
         GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
     }
-    
+
     /// <summary>
     /// Sets a uniform array of Vector3 on this shader.
     /// </summary>
@@ -134,7 +134,7 @@ public class Shader
         GL.UseProgram(_handle);
         GL.Uniform3(_uniformLocations[name + "[0]"], data.Length, vectorData);
     }
-    
+
     /// <summary>
     /// Sets a uniform array of Vector4 on this shader.
     /// </summary>

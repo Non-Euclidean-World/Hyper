@@ -25,19 +25,19 @@ internal class Scene : IInputSubscriber
     public readonly List<LightSource> LightSources;
 
     public readonly List<Projectile> Projectiles;
-    
+
     public readonly List<Humanoid> Bots;
-    
+
     public readonly SimpleCar SimpleCar; // TODO change it to a list of vehicles.
 
     public readonly Player.Player Player;
-    
+
     public Camera Camera { get; set; }
-    
+
     public readonly float Scale = 0.1f;
-    
+
     private readonly CharacterControllers _characterControllers;
-    
+
     public readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> SimulationManager;
 
     public readonly CollidableProperty<SimulationProperties> Properties;
@@ -53,7 +53,7 @@ internal class Scene : IInputSubscriber
         Chunks = GetChunks(chunksPerSide, chunkFactory);
         LightSources = GetLightSources(chunksPerSide, scalarFieldGenerator.AvgElevation);
         Projectiles = new List<Projectile>();
-        
+
         var bufferPool = new BufferPool();
         Properties = new CollidableProperty<SimulationProperties>();
         _characterControllers = new CharacterControllers(bufferPool);
@@ -80,10 +80,10 @@ internal class Scene : IInputSubscriber
         {
             chunk.CreateCollisionSurface(SimulationManager.Simulation, SimulationManager.BufferPool);
         }
-        
+
         RegisterCallbacks();
     }
-    
+
     private List<LightSource> GetLightSources(int chunksPerSide, float elevation)
     {
         if (chunksPerSide % 2 != 0)
@@ -105,7 +105,7 @@ internal class Scene : IInputSubscriber
 
         return lightSources;
     }
-    
+
     private static List<Chunk> GetChunks(int chunksPerSide, ChunkFactory generator)
     {
         return MakeSquare(chunksPerSide, generator);
@@ -144,7 +144,7 @@ internal class Scene : IInputSubscriber
         => new(_characterControllers, Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
-    
+
     public void RegisterCallbacks()
     {
         Context context = Context.Instance;

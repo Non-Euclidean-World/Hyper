@@ -10,14 +10,14 @@ namespace Physics;
 public class Body : IDisposable
 {
     public Mesh Mesh { get; set; }
-    
+
     public RigidPose RigidPose { get; set; }
 
     public Body(Mesh mesh)
     {
         Mesh = mesh;
     }
-    
+
     public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
     {
         var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);

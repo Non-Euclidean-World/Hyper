@@ -15,7 +15,7 @@ internal class LightSourceController : IController
         _scene = scene;
         _shader = shader;
     }
-    
+
     public void Render()
     {
         ShaderFactory.SetUpLightingShaderParams(_shader, _scene.Camera);

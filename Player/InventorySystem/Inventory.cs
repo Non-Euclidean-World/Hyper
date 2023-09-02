@@ -11,19 +11,19 @@ public class Inventory : IInputSubscriber
 {
     private static readonly Lazy<Inventory> _instance = new(() => new Inventory());
     public static Inventory Instance => _instance.Value;
-    
+
     public const int Columns = 10;
-    
+
     public const int Rows = 4;
-    
+
     public int SelectedItemIndex = 0;
-    
+
     public bool IsOpen = false;
-    
+
     public readonly (Item? Item, int Count)[,] Items;
-    
+
     public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
-    
+
     public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
 
     public (Item? Item, int Count) InHandItem;
@@ -32,7 +32,7 @@ public class Inventory : IInputSubscriber
     {
         Items = new (Item? Item, int Count)[Columns, Rows];
         RegisterCallbacks();
-        
+
         for (int i = 0; i < 12; i++)
         {
             AddItem(new Sword());
@@ -46,7 +46,7 @@ public class Inventory : IInputSubscriber
     }
 
     public void UseItem() => SelectedItem?.Use();
-    
+
     public void AddItem(Item item, int count = 1)
     {
         int x, y;
@@ -59,7 +59,7 @@ public class Inventory : IInputSubscriber
                 return;
             }
         }
-        
+
         bool isEmptySlot = TryGetFirstEmptySlot(out x, out y);
         if (isEmptySlot) Items[x, y] = (item, count);
     }
@@ -81,7 +81,7 @@ public class Inventory : IInputSubscriber
         (x, y) = (-1, -1);
         return false;
     }
-    
+
     private bool TryGetFirstSlotWithItem(Item item, out int x, out int y)
     {
         for (int i = 0; i < Columns; i++)
@@ -110,10 +110,10 @@ public class Inventory : IInputSubscriber
     {
         var item = Items[x, y];
         Items[x, y] = (null, 0);
-        
+
         return item;
     }
-    
+
     public void SwapWithHand(int x, int y)
     {
         var temp = InHandItem;
@@ -137,7 +137,7 @@ public class Inventory : IInputSubscriber
 
         x = (int)((mousePosition.X - gridTopLeftX) / cellSize);
         y = (int)((mousePosition.Y - gridTopLeftY) / cellSize);
-        
+
         return x is >= 0 and < Columns && y == 0;
     }
 
@@ -150,7 +150,7 @@ public class Inventory : IInputSubscriber
 
         x = (int)((mousePosition.X - gridTopLeftX) / cellSize);
         y = Rows - (int)((mousePosition.Y - gridTopLeftY) / cellSize) - 1;
-        
+
         return x is >= 0 and < Columns && y is > 0 and < Rows;
     }
 

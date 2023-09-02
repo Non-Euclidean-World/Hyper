@@ -7,7 +7,7 @@ namespace Hud.HUDElements;
 public class FpsCounter : IHudElement
 {
     public bool Visible { get; set; } = true;
-    
+
     private readonly float _size;
 
     private const double FpsTimeFrame = 0.1f;
@@ -19,9 +19,9 @@ public class FpsCounter : IHudElement
     private double _elapsedTime;
 
     private int _fps;
-    
+
     private readonly HudHelper _hudHelper;
-    
+
     public FpsCounter(HudHelper hudHelper)
     {
         _hudHelper = hudHelper;
