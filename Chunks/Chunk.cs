@@ -135,7 +135,6 @@ public class Chunk : Mesh
             _shape));
     }
 
-    // Right now this method recreates the whole VAO. This is slow but easier to implement. Will need to be changed to just updating VBO.
     private void UpdateMesh()
     {
         var renderer = new MeshGenerator(_voxels);
@@ -143,25 +142,16 @@ public class Chunk : Mesh
         NumberOfVertices = Vertices.Length;
 
         GL.BindVertexArray(VaoId);
-        GL.DeleteBuffer(VboId);
-        VboId = GL.GenBuffer();
-
         GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices, BufferUsageHint.StaticDraw);
-
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-        GL.EnableVertexAttribArray(0);
-
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 3 * sizeof(float));
-        GL.EnableVertexAttribArray(1);
-
-        GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 6 * sizeof(float));
-        GL.EnableVertexAttribArray(2);
-
-        GL.BindVertexArray(0);
-
-        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
+        unsafe
+        {
+            fixed (Vertex* source = Vertices)
+            {
+                System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
+            }
+        }
+        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
     }
 
     private static float DistanceSquared(float x1, float y1, float z1, float x2, float y2, float z2)
