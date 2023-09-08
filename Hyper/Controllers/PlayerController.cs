@@ -12,7 +12,7 @@ internal class PlayerController : IController, IInputSubscriber
     private readonly Scene _scene;
 
     private readonly Shader _shader;
-    
+
     private readonly Shader _objectShader;
 
     public PlayerController(Scene scene, Shader shader, Shader objectShader)

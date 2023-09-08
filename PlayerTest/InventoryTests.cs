@@ -39,7 +39,7 @@ public class InventoryTests
         inventory.Items[0, 0].Item!.ID.Should().Be(item2.ID);
         inventory.InHandItem.Item!.ID.Should().Be(item.ID);
     }
-    
+
     [Test]
     public void SwapWithHandShouldStackItems()
     {

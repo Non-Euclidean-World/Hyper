@@ -32,7 +32,7 @@ public class MatricesTests
         // Assert
         AreMatricesEqual(view, expected).Should().Be(true);
     }
-    
+
     [Test]
     public void ProjMatrixShouldWorkForEuclid()
     {
@@ -52,7 +52,7 @@ public class MatricesTests
         // Assert
         AreMatricesEqual(projection, expected).Should().Be(true);
     }
-    
+
     [Test]
     public void TranslateMatrixShouldWorkForEuclid()
     {
@@ -64,16 +64,16 @@ public class MatricesTests
         camera.Yaw = 0f;
         camera.Curve = 0f;
         var to = new Vector4(0.5f, 1f, -0.5f, 1f);
-    
+
         var expected = new Matrix4(
             1f, 0f, 0f, 0f,
             0f, 1f, 0f, 0f,
             0f, 0f, 1f, 0f,
             to.X, to.Y, to.Z, 1f);
-    
+
         // Act
         var translate = camera.GetTranslationMatrix(to);
-    
+
         // Assert
         AreMatricesEqual(translate, expected).Should().Be(true);
     }

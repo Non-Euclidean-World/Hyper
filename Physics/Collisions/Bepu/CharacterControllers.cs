@@ -38,7 +38,7 @@ public struct CharacterController
     /// </summary>
     public BodyHandle BodyHandle;
     /// <summary>
-    /// Characters's up direction in the local space of the character's body.
+    /// Character's up direction in the local space of the character's body.
     /// </summary>
     public Vector3 LocalUp;
     /// <summary>
@@ -89,8 +89,7 @@ public unsafe class CharacterControllers : IDisposable
     /// Gets the simulation to which this set of chracters belongs.
     /// </summary>
     public Simulation Simulation { get; private set; } = null!;
-
-    readonly BufferPool _pool;
+    BufferPool _pool;
 
     Buffer<int> _bodyHandleToCharacterIndex;
     QuickList<CharacterController> _characters;
@@ -108,7 +107,7 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="initialBodyHandleCapacity">Number of body handles to initially allocate space for in the body handle->character mapping.</param>
     public CharacterControllers(BufferPool pool, int initialCharacterCapacity = 4096, int initialBodyHandleCapacity = 4096)
     {
-        _pool = pool;
+        this._pool = pool;
         _characters = new QuickList<CharacterController>(initialCharacterCapacity, pool);
         ResizeBodyHandleCapacity(initialBodyHandleCapacity);
         _analyzeContactsWorker = AnalyzeContactsWorker;
@@ -198,10 +197,10 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="characterIndex">Index of the character to remove.</param>
     public void RemoveCharacterByIndex(int characterIndex)
     {
-        Debug.Assert(characterIndex >= 0 && characterIndex < _characters.Count, "Characters index must exist in the set of characters.");
+        Debug.Assert(characterIndex >= 0 && characterIndex < _characters.Count, "Character index must exist in the set of characters.");
         ref var character = ref _characters[characterIndex];
         Debug.Assert(character.BodyHandle.Value >= 0 && character.BodyHandle.Value < _bodyHandleToCharacterIndex.Length && _bodyHandleToCharacterIndex[character.BodyHandle.Value] == characterIndex,
-            "Characters must exist in the set of characters.");
+            "Character must exist in the set of characters.");
         _bodyHandleToCharacterIndex[character.BodyHandle.Value] = -1;
         _characters.FastRemoveAt(characterIndex);
         //If the removal moved a character, update the body handle mapping.
@@ -435,7 +434,7 @@ public unsafe class CharacterControllers : IDisposable
     }
 
     int _boundingBoxExpansionJobIndex;
-    readonly Action<int> _expandBoundingBoxesWorker;
+    Action<int> _expandBoundingBoxesWorker;
     unsafe void ExpandBoundingBoxesWorker(int workerIndex)
     {
         while (true)
@@ -737,7 +736,7 @@ public unsafe class CharacterControllers : IDisposable
     int _analysisJobIndex;
     int _analysisJobCount;
     Buffer<AnalyzeContactsJob> _jobs;
-    readonly Action<int> _analyzeContactsWorker;
+    Action<int> _analyzeContactsWorker;
     unsafe void AnalyzeContactsWorker(int workerIndex)
     {
         int jobIndex;

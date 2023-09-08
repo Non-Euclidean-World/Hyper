@@ -15,12 +15,14 @@ public class PhysicalCharacter
 {
     public RigidPose Pose { get; private set; }
 
+#if BOUNDING_BOXES
     public Body BoundingBox { get; private set; }
+#endif
 
-    private readonly BodyHandle _bodyHandle;
+    private BodyHandle _bodyHandle;
     private readonly CharacterControllers _characters;
     private readonly float _speed;
-    private readonly Capsule _shape;
+    private Capsule _shape;
 
     public PhysicalCharacter(CharacterControllers characters, CollidableProperty<SimulationProperties> properties, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
