@@ -47,7 +47,7 @@ public abstract class Model
 
         for (int i = 0; i < _model.Meshes.Count; i++)
         {
-            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(Converter.ToOpenTKMatrix).ToArray();
+            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(AssimpConversions.ToOpenTKMatrix).ToArray();
             shader.SetMatrix4Array("boneTransforms", boneTransforms);
 
             GL.BindVertexArray(_vaos[i]);

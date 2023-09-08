@@ -1,5 +1,7 @@
-﻿using Common.UserInput;
+﻿using Character.Shaders;
+using Common.UserInput;
 using Hud;
+using Hud.Shaders;
 using Hyper.Controllers;
 using Hyper.Shaders;
 using NLog;
@@ -47,10 +49,10 @@ internal class Window : GameWindow, IInputSubscriber
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         _scene = new Scene(Size.X / (float)Size.Y);
-        var objectShader = ShaderFactory.CreateObjectShader();
-        var modelShader = ShaderFactory.CreateModelShader();
-        var lightSourceShader = ShaderFactory.CreateLightSourceShader();
-        var hudShader = ShaderFactory.CreateHudShader();
+        var objectShader = ObjectShader.Create();
+        var modelShader = ModelShader.Create();
+        var lightSourceShader = LightSourceShader.Create();
+        var hudShader = HudShader.Create();
 
         var hudHelper = new HudHelper(this);
 

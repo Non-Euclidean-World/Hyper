@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.UserInput;
+﻿using Common.UserInput;
 using Hyper.Shaders;
 
 namespace Hyper.Controllers;
@@ -8,9 +7,9 @@ internal class VehiclesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly ObjectShader _shader;
 
-    public VehiclesController(Scene scene, Shader shader)
+    public VehiclesController(Scene scene, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
@@ -19,7 +18,7 @@ internal class VehiclesController : IController, IInputSubscriber
 
     public void Render()
     {
-        ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
 
         foreach (var car in _scene.Cars)
         {

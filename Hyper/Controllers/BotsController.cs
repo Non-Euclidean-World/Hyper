@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using Character.Shaders;
+using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
@@ -9,11 +10,11 @@ internal class BotsController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly ModelShader _shader;
 
     private readonly Shader _objectShader;
 
-    public BotsController(Scene scene, Shader shader, Shader objectShader)
+    public BotsController(Scene scene, ModelShader shader, Shader objectShader)
     {
         _scene = scene;
         _shader = shader;
@@ -23,7 +24,7 @@ internal class BotsController : IController, IInputSubscriber
 
     public void Render()
     {
-        ShaderFactory.SetUpCharacterShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
 
         foreach (var bot in _scene.Bots)
         {

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using OpenTK.Mathematics;
 using Player;
 using Constants = Player.Utils.Constants;

@@ -2,24 +2,26 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Character.Shaders;
+namespace Hyper.Shaders;
 
-public class ModelShader : Shader
+public class ObjectShader : Shader
 {
-    private ModelShader((string path, ShaderType shaderType)[] shaders) : base(shaders) { }
+    private ObjectShader((string path, ShaderType shaderType)[] shaders) : base(shaders) { }
 
-    public static ModelShader Create()
+    public static ObjectShader Create()
     {
         var shader = new[]
         {
-            ("Shaders/model_shader.vert", ShaderType.VertexShader),
-            ("Shaders/model_shader.frag", ShaderType.FragmentShader)
+            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+            ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
         };
 
-        return new ModelShader(shader);
+        return new ObjectShader(shader);
     }
 
     public void SetCurv(float curv) => SetFloat("curv", curv);
+
+    public void SetAnti(float anti) => SetFloat("anti", 1.0f);
 
     public void SetView(Matrix4 view) => SetMatrix4("view", view);
 

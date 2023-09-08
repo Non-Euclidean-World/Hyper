@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using Character.Shaders;
+using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
@@ -6,16 +7,15 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Controllers;
 
-// TODO Chould merge this and the BotController into CharacterController.
 internal class PlayerController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly ModelShader _shader;
 
     private readonly Shader _objectShader;
 
-    public PlayerController(Scene scene, Shader shader, Shader objectShader)
+    public PlayerController(Scene scene, ModelShader shader, Shader objectShader)
     {
         _scene = scene;
         _shader = shader;
@@ -25,7 +25,7 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void Render()
     {
-        ShaderFactory.SetUpCharacterShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
 
 #if BOUNDING_BOXES
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);

@@ -1,6 +1,5 @@
 ﻿using BepuPhysics;
 using Character.Projectiles;
-using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -12,9 +11,9 @@ internal class ProjectilesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly ObjectShader _shader;
 
-    public ProjectilesController(Scene scene, Shader shader)
+    public ProjectilesController(Scene scene, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
@@ -43,7 +42,7 @@ internal class ProjectilesController : IController, IInputSubscriber
 
     public void Render()
     {
-        ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
 
         foreach (var projectile in _scene.Projectiles)
         {

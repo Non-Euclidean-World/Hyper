@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.UserInput;
+﻿using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
@@ -10,9 +9,9 @@ internal class ChunksController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly ObjectShader _shader;
 
-    public ChunksController(Scene scene, Shader shader)
+    public ChunksController(Scene scene, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
@@ -21,7 +20,7 @@ internal class ChunksController : IController, IInputSubscriber
 
     public void Render()
     {
-        ShaderFactory.SetUpObjectShaderParams(_shader, _scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
 
         foreach (var chunk in _scene.Chunks)
         {

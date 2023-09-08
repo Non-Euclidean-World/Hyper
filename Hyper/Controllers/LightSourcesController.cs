@@ -1,5 +1,4 @@
-﻿using Common;
-using Hyper.Shaders;
+﻿using Hyper.Shaders;
 
 namespace Hyper.Controllers;
 
@@ -8,9 +7,9 @@ internal class LightSourcesController : IController
 {
     private readonly Scene _scene;
 
-    private readonly Shader _shader;
+    private readonly LightSourceShader _shader;
 
-    public LightSourcesController(Scene scene, Shader shader)
+    public LightSourcesController(Scene scene, LightSourceShader shader)
     {
         _scene = scene;
         _shader = shader;
@@ -18,7 +17,7 @@ internal class LightSourcesController : IController
 
     public void Render()
     {
-        ShaderFactory.SetUpLightingShaderParams(_shader, _scene.Camera);
+        _shader.SetUp(_scene.Camera);
 
         foreach (var light in _scene.LightSources)
         {
