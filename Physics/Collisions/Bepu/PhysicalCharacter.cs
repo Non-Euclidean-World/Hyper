@@ -5,6 +5,9 @@ using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
+using Common;
+using Common.Meshes;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Physics.Collisions.Bepu;
 
@@ -47,7 +50,7 @@ public class PhysicalCharacter
 
         _speed = speed;
 #if BOUNDING_BOXES
-        BoundingBoxMesh = BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2));
+        BoundingBox = new Body(BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2)));
 #endif
     }
 
@@ -115,7 +118,7 @@ public class PhysicalCharacter
         body.Pose.Orientation = QuaternionEx.CreateFromAxisAngle(Vector3.UnitY, angle);
 
 #if BOUNDING_BOXES
-        BoundingBoxMesh.RigidPose = body.Pose;
+        BoundingBox.RigidPose = body.Pose;
 #endif
         Pose = body.Pose;
     }

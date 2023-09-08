@@ -10,11 +10,14 @@ internal class BotsController : IController, IInputSubscriber
     private readonly Scene _scene;
 
     private readonly Shader _shader;
+    
+    private readonly Shader _objectShader;
 
-    public BotsController(Scene scene, Shader shader)
+    public BotsController(Scene scene, Shader shader, Shader objectShader)
     {
         _scene = scene;
         _shader = shader;
+        _objectShader = objectShader;
         RegisterCallbacks();
     }
 
@@ -25,10 +28,10 @@ internal class BotsController : IController, IInputSubscriber
         foreach (var bot in _scene.Bots)
         {
             bot.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
-            // TODO uncomment the bounding boxes and fix them
-            // #if BOUNDING_BOXES
-            //             bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scale, Camera.ReferencePointPosition);
-            // #endif
+            
+#if BOUNDING_BOXES
+            bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+#endif
         }
     }
 

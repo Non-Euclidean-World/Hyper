@@ -1,6 +1,6 @@
 ﻿namespace Character;
 
-public static class Converter
+internal static class Converter
 {
     public static System.Numerics.Vector3 ToNumericsVector(Assimp.Vector3D v)
         => new(v.X, v.Y, v.Z);
