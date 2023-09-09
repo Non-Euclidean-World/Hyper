@@ -43,9 +43,9 @@ internal class Scene : IInputSubscriber
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
-    public Scene(float aspectRatio)
+    public Scene(float aspectRatio, int seed)
     {
-        var scalarFieldGenerator = new ScalarFieldGenerator(1);
+        var scalarFieldGenerator = new ScalarFieldGenerator(seed);
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
         int chunksPerSide = 2;
 

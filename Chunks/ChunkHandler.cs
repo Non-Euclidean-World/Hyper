@@ -9,10 +9,10 @@ public static class ChunkHandler
 {
     public const string SaveLocation = "Chunks";
     
-    public static void SaveChunk(Chunk chunk)
+    public static void SaveChunkData(Voxel[,,] voxels, Vector3i position)
     {
-        string filePath = $"{SaveLocation}/{(chunk.Position / Chunk.Size).ToString()}.voxels";
-        SaveVoxels(filePath, chunk.Voxels);
+        string filePath = $"{SaveLocation}/{(position / Chunk.Size).ToString()}.voxels";
+        SaveVoxels(filePath, voxels);
     }
     
     public static Chunk LoadChunk(Vector3i position)

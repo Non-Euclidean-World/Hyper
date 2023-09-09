@@ -16,7 +16,7 @@ internal class Window : GameWindow, IInputSubscriber
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private CancellationTokenSource _debugCancellationTokenSource = null!;
+    private Thread _console = null!; 
 
     private Scene _scene = null!;
 
@@ -27,7 +27,7 @@ internal class Window : GameWindow, IInputSubscriber
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        StartDebugThreadAsync().ConfigureAwait(false);
+        StartDebugThreadAsync();
 
         RegisterCallbacks();
     }
@@ -48,7 +48,8 @@ internal class Window : GameWindow, IInputSubscriber
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        _scene = new Scene(Size.X / (float)Size.Y);
+        var seed = new Random().Next();
+        _scene = new Scene(Size.X / (float)Size.Y, seed);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -60,7 +61,7 @@ internal class Window : GameWindow, IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader),
+            new ChunksController(_scene, objectShader, seed),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
@@ -178,45 +179,42 @@ internal class Window : GameWindow, IInputSubscriber
         _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
     }
 
-    private async Task StartDebugThreadAsync()
+    private void StartDebugThreadAsync()
     {
-        _debugCancellationTokenSource = new CancellationTokenSource();
-        await Task.Run(() => Command(_debugCancellationTokenSource.Token));
+        _console = new Thread(Command)
+        {
+            IsBackground = true
+        };
+        _console.Start();
     }
 
     private void StopDebugThread()
     {
-        _debugCancellationTokenSource.Cancel();
+        _console.Interrupt();
     }
 
-    private void Command(CancellationToken cancellationToken)
+    private void Command()
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            string? command = Console.ReadLine();
-            if (command == null)
-                return;
-
-            Logger.Info($"[Command]{command}");
-
-            try
+            while (true)
             {
-                var args = command.Split(' ');
-                var key = args[0];
-                args = args.Skip(1).ToArray();
+                string? command = Console.ReadLine();
+                if (command is null)
+                    return;
 
-                switch (key)
+                Logger.Info($"[Command]{command}");
+                var args = command.Split(' ');
+                
+                foreach (var callback in _context.ConsoleInputCallbacks)
                 {
-                    case "camera":
-                        _scene.Camera.Command(args);
-                        break;
+                    callback(args);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                Console.WriteLine(ex.Message);
-            }
+        }
+        catch (ThreadInterruptedException ex)
+        {
+            Logger.Info($"[Command]Thread interrupted: {ex.Message}");
         }
     }
 
@@ -225,5 +223,10 @@ internal class Window : GameWindow, IInputSubscriber
         _context.RegisterKeys(new List<Keys> { Keys.Escape });
 
         _context.RegisterKeyDownCallback(Keys.Escape, Close);
+        _context.RegisterKeyDownCallback(Keys.T, () =>
+        {
+            if (_console.IsAlive) StopDebugThread();
+            else StartDebugThreadAsync();
+        });
     }
 }
