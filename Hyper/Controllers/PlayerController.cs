@@ -1,5 +1,4 @@
 ﻿using Character.Shaders;
-using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
@@ -13,9 +12,9 @@ internal class PlayerController : IController, IInputSubscriber
 
     private readonly ModelShader _shader;
 
-    private readonly Shader _objectShader;
+    private readonly ObjectShader _objectShader;
 
-    public PlayerController(Scene scene, ModelShader shader, Shader objectShader)
+    public PlayerController(Scene scene, ModelShader shader, ObjectShader objectShader)
     {
         _scene = scene;
         _shader = shader;
@@ -26,11 +25,11 @@ internal class PlayerController : IController, IInputSubscriber
     public void Render()
     {
         _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
-
+        _scene.Player.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 #if BOUNDING_BOXES
+        _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
 #endif
-        _scene.Player.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
     }
 
     public void RegisterCallbacks()
