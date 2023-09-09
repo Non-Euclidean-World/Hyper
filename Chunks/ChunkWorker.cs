@@ -43,14 +43,14 @@ public class ChunkWorker
         }
 
         Directory.CreateDirectory(ChunkHandler.SaveLocation);
-        var thread = new Thread(LoadChunks)
+        var thread = new Thread(ManageChunks)
         {
             IsBackground = true
         };
         thread.Start();
     }
     
-    private void LoadChunks()
+    private void ManageChunks()
     {
         while (true)
         {
