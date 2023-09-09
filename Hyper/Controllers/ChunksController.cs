@@ -1,4 +1,5 @@
-﻿using Common.UserInput;
+﻿using Chunks;
+using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
@@ -10,11 +11,14 @@ internal class ChunksController : IController, IInputSubscriber
     private readonly Scene _scene;
 
     private readonly ObjectShader _shader;
-
+    
+    private readonly ChunkWorker _chunkWorker;
+    
     public ChunksController(Scene scene, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
+        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager);
         RegisterCallbacks();
     }
 
@@ -56,5 +60,7 @@ internal class ChunksController : IController, IInputSubscriber
                 }
             }
         });
+        
+        context.RegisterUpdateFrameCallback(_ => _chunkWorker.OnUpdateFrame(_scene.Camera.ReferencePointPosition));
     }
 }

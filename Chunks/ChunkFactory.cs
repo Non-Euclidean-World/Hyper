@@ -21,4 +21,13 @@ public class ChunkFactory
 
         return new Chunk(data, position, scalarField);
     }
+    
+    public Chunk GenerateChunkWithoutVao(Vector3i position)
+    {
+        var scalarField = _scalarFieldGenerator.Generate(Chunk.Size, position);
+        var meshGenerator = new MeshGenerator(scalarField);
+        Vertex[] data = meshGenerator.GetMesh();
+
+        return new Chunk(data, position, scalarField, false);
+    }
 }

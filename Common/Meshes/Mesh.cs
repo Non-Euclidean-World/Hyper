@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -7,7 +8,7 @@ namespace Common.Meshes;
 public class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
-
+    
     public Vector3 Scaling { get; set; }
 
     public int VaoId;
@@ -17,11 +18,11 @@ public class Mesh : IDisposable
     public int NumberOfVertices;
 
     public Vertex[] Vertices { get; protected set; }
-
-    public Mesh(Vertex[] vertices, Vector3 position)
+    
+    public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
     {
         Vertices = vertices;
-        CreateVertexArrayObject();
+        if (createVertexArrayObject) CreateVertexArrayObject();
         Position = position;
         NumberOfVertices = Vertices.Length;
     }
@@ -36,7 +37,7 @@ public class Mesh : IDisposable
         GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
     }
 
-    private void CreateVertexArrayObject()
+    public void CreateVertexArrayObject()
     {
         int vaoId = GL.GenVertexArray();
         GL.BindVertexArray(vaoId);

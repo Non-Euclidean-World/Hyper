@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
@@ -19,7 +20,7 @@ public class Chunk : Mesh
 
     public new Vector3i Position { get; set; }
 
-    private readonly Voxel[,,] _voxels;
+    public readonly Voxel[,,] Voxels;
 
     // TODO No clue if logging works after moving it to Common project. Need to check.
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -28,9 +29,9 @@ public class Chunk : Mesh
 
     private TypedIndex _shape;
 
-    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true) : base(vertices, position, createVao)
     {
-        _voxels = voxels;
+        Voxels = voxels;
         Position = position;
     }
 
@@ -50,7 +51,7 @@ public class Chunk : Mesh
 
         if (x < 0 || y < 0 || z < 0
             || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z].Value <= 0f)
+            || Voxels[x, y, z].Value <= 0f)
             return false;
 
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
@@ -61,7 +62,7 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
@@ -91,7 +92,7 @@ public class Chunk : Mesh
 
         if (x < 0 || y < 0 || z < 0
             || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || _voxels[x, y, z].Value >= 1f)
+            || Voxels[x, y, z].Value >= 1f)
             return false;
 
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
@@ -102,7 +103,7 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
@@ -135,9 +136,19 @@ public class Chunk : Mesh
             _shape));
     }
 
+    public void Dispose(Simulation simulation, BufferPool bufferPool)
+    {
+        if (_shape.Exists)
+        {
+            simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+            simulation.Statics.Remove(_handle);
+        }
+        base.Dispose();
+    }
+
     private void UpdateMesh()
     {
-        var renderer = new MeshGenerator(_voxels);
+        var renderer = new MeshGenerator(Voxels);
         Vertices = renderer.GetMesh();
         NumberOfVertices = Vertices.Length;
 

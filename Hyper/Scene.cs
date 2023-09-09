@@ -124,9 +124,7 @@ internal class Scene : IInputSubscriber
         {
             for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
             {
-                int offset = Chunk.Size - 1;
-
-                chunks.Add(generator.GenerateChunk(new Vector3i(offset * x, 0, offset * y)));
+                chunks.Add(generator.GenerateChunk(new Vector3i(Chunk.Size * x, 0, Chunk.Size * y)));
             }
         }
 
