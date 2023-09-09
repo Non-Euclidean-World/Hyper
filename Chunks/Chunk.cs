@@ -143,6 +143,7 @@ public class Chunk : Mesh
 
         GL.BindVertexArray(VaoId);
         GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
         IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
         unsafe
         {
