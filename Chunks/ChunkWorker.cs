@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Chunks.MarchingCubes;
 using OpenTK.Mathematics;
 using Physics.Collisions;
@@ -22,11 +20,9 @@ public class ChunkWorker
     
     private readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
 
-    private const int RenderDistance = 1;
+    private const int RenderDistance = 3;
 
     private readonly ChunkFactory _chunkFactory;
-
-    private const string SaveLocation = "Chunks";
 
     public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager)
     {
@@ -39,6 +35,8 @@ public class ChunkWorker
         {
             _existingChunks.TryAdd(chunk.Position / Chunk.Size, 0); // TODO this should fork for (Chunk.Size not Chunk.Size - 1). fix it.
         }
+
+        Directory.CreateDirectory(ChunkHandler.SaveLocation);
         var thread = new Thread(LoadChunks);
         thread.Start();
     }
@@ -51,9 +49,8 @@ public class ChunkWorker
             if (_chunksToLoad.TryDequeue(out var position))
             {
                 Chunk chunk;
-                // if (_savedChunks.Contains(position)) chunk = LoadChunk(position);
-                // else
-                    chunk = _chunkFactory.GenerateChunkWithoutVao(position * Chunk.Size);
+                if (_savedChunks.Contains(position)) chunk = ChunkHandler.LoadChunk(position);
+                else chunk = _chunkFactory.GenerateChunkWithoutVao(position * Chunk.Size);
                 
                 _loadedChunks.Enqueue(chunk);
             }
@@ -87,7 +84,8 @@ public class ChunkWorker
         {
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
             
-            // SaveChunk(chunk);
+            ChunkHandler.SaveChunk(chunk);
+            _savedChunks.Add(chunk.Position / Chunk.Size);
             chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
             return true;
         });
@@ -120,19 +118,6 @@ public class ChunkWorker
             if (chunk.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             _chunks.Add(chunk);
         }
-    }
-
-    private void SaveChunk(Chunk chunk)
-    {
-        string json = JsonSerializer.Serialize(chunk);
-        File.WriteAllText(Path.Combine(SaveLocation, chunk.Position.ToString()), json);
-        _savedChunks.Add(chunk.Position);
-    }
-
-    private Chunk LoadChunk(Vector3i position)
-    {
-        string readJson = File.ReadAllText(Path.Combine(SaveLocation, position.ToString()));
-        return JsonSerializer.Deserialize<Chunk>(readJson);
     }
 
     private Vector3i GetCurrentChunk(Vector3 position)
