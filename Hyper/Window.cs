@@ -1,4 +1,9 @@
-﻿using Hyper.UserInput;
+﻿using Character.Shaders;
+using Common.UserInput;
+using Hud;
+using Hud.Shaders;
+using Hyper.Controllers;
+using Hyper.Shaders;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
@@ -9,21 +14,19 @@ namespace Hyper;
 
 internal class Window : GameWindow, IInputSubscriber
 {
-    public static Window Instance = null!;
-    
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private CancellationTokenSource _debugCancellationTokenSource = null!;
 
     private Scene _scene = null!;
 
-    private readonly Context _context = UserInput.Context.Instance;
+    private IController[] _controllers = null!;
+
+    private readonly Context _context = Common.UserInput.Context.Instance;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        Instance = this;
-        
         StartDebugThreadAsync().ConfigureAwait(false);
 
         RegisterCallbacks();
@@ -46,6 +49,23 @@ internal class Window : GameWindow, IInputSubscriber
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         _scene = new Scene(Size.X / (float)Size.Y);
+        var objectShader = ObjectShader.Create();
+        var modelShader = ModelShader.Create();
+        var lightSourceShader = LightSourceShader.Create();
+        var hudShader = HudShader.Create();
+
+        var hudHelper = new HudHelper(this);
+
+        _controllers = new IController[]
+        {
+            new PlayerController(_scene, modelShader, objectShader),
+            new BotsController(_scene, modelShader, objectShader),
+            new ChunksController(_scene, objectShader),
+            new ProjectilesController(_scene, objectShader),
+            new VehiclesController(_scene, objectShader),
+            new LightSourcesController(_scene, lightSourceShader),
+            new HudController(hudHelper, hudShader),
+        };
 
         CursorState = CursorState.Grabbed;
     }
@@ -56,7 +76,10 @@ internal class Window : GameWindow, IInputSubscriber
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-        _scene.Render();
+        foreach (var controller in _controllers)
+        {
+            controller.Render();
+        }
 
         SwapBuffers();
     }
@@ -153,7 +176,6 @@ internal class Window : GameWindow, IInputSubscriber
 
         GL.Viewport(0, 0, Size.X, Size.Y);
         _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
-        _scene.Hud.AspectRatio = Size.X / (float)Size.Y;
     }
 
     private async Task StartDebugThreadAsync()
@@ -187,9 +209,6 @@ internal class Window : GameWindow, IInputSubscriber
                 {
                     case "camera":
                         _scene.Camera.Command(args);
-                        break;
-                    case "hud":
-                        _scene.Hud.Command(args);
                         break;
                 }
             }

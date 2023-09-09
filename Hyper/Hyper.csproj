@@ -34,22 +34,27 @@
     <None Update="HUD\HUDElements\InventoryRendering\Resources\sprite_sheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BepuPhysics" Version="2.4.0" />
-    <PackageReference Include="BepuUtilities" Version="2.4.0" />
-	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
-    <PackageReference Include="NLog" Version="5.2.0" />
-    <PackageReference Include="OpenTK" Version="4.7.7" />
-    <PackageReference Include="SkiaSharp" Version="2.88.3" />
-    <PackageReference Include="StbImageSharp" Version="2.27.13" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="HUD\InventoryRendering\Resources\sprite_sheet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PlayerData\InventorySystem\InventoryRendering\Resources\sprite_sheet.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PlayerData\InventorySystem\InventoryRendering\Resources\sprite_sheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PlayerData\InventorySystem\InventoryRendering\Resources\sprite_sheet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\awesomeface.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -80,12 +85,6 @@
     <None Update="HUD\Shaders\shader2d.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Animation\Shaders\model_shader.vert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Animation\Shaders\model_shader.frag">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -94,9 +93,24 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+
+
   <ItemGroup>
-    <Folder Include="HUD\Shaders\" />
+    <ProjectReference Include="..\Characters\Characters.csproj" />
+    <ProjectReference Include="..\Chunks\Chunks.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Hud\Hud.csproj" />
+    <ProjectReference Include="..\Physics\Physics.csproj" />
+    <ProjectReference Include="..\Player\Player.csproj" />
   </ItemGroup>
+
+
+
+
+
+
+
+
 
 
 </Project>
