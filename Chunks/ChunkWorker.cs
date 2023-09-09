@@ -23,7 +23,7 @@ public class ChunkWorker
     private const int RenderDistance = 3;
 
     private readonly ChunkFactory _chunkFactory;
-
+    
     public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager)
     {
         _chunks = chunks;
@@ -33,7 +33,7 @@ public class ChunkWorker
         _chunkFactory = new ChunkFactory(scalarFieldGenerator);
         foreach (var chunk in _chunks)
         {
-            _existingChunks.TryAdd(chunk.Position / Chunk.Size, 0); // TODO this should fork for (Chunk.Size not Chunk.Size - 1). fix it.
+            _existingChunks.TryAdd(chunk.Position / Chunk.Size, 0);
         }
 
         Directory.CreateDirectory(ChunkHandler.SaveLocation);
@@ -61,7 +61,7 @@ public class ChunkWorker
         }
     }
 
-    public void OnUpdateFrame(Vector3 currentPosition)
+    public void Update(Vector3 currentPosition)
     {
         var currentChunk = GetCurrentChunk(currentPosition);
         
@@ -95,9 +95,9 @@ public class ChunkWorker
     {
         for (int x = -RenderDistance; x <= RenderDistance; x++)
         {
-            for (int y = -RenderDistance; y <= RenderDistance; y++) // TODO change this
+            for (int y = -RenderDistance; y <= RenderDistance; y++)
             {
-                for (int z = -RenderDistance; z <= RenderDistance; z++) // TODO update
+                for (int z = -RenderDistance; z <= RenderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
                     if (_existingChunks.ContainsKey(chunk)) continue;

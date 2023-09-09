@@ -61,6 +61,6 @@ internal class ChunksController : IController, IInputSubscriber
             }
         });
         
-        context.RegisterUpdateFrameCallback(_ => _chunkWorker.OnUpdateFrame(_scene.Camera.ReferencePointPosition));
+        context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
     }
 }
