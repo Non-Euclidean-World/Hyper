@@ -3,7 +3,7 @@ using Chunks.Voxels;
 using Common.Meshes;
 using OpenTK.Mathematics;
 
-namespace Chunks;
+namespace Chunks.ChunkManagement;
 
 public static class ChunkHandler
 {

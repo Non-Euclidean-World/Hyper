@@ -1,34 +1,33 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
-using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.Collisions.Bepu;
 
-namespace Chunks;
+namespace Chunks.ChunkManagement;
 
 public class ChunkWorker
 {
-    private readonly ConcurrentQueue<Vector3i> _chunksToLoad = new();
+    private readonly ConcurrentQueue<Vector3i> _chunksToLoad = new(); // Queue of chunks to load. Main thread writes. ManageChunks thread reads.
     
-    private readonly ConcurrentQueue<(Voxel[,,] Voxels, Vector3i Position)> _chunksToSave = new();
+    private readonly ConcurrentQueue<(Voxel[,,] Voxels, Vector3i Position)> _chunksToSave = new(); // Queue of chunks to load. Main thread writes. ManageChunks thread reads.
     
-    private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
+    private readonly ConcurrentQueue<Chunk> _loadedChunks = new(); // Queue of loaded chunks. ManageChunks thread writes. Main thread reads.
     
-    private readonly ConcurrentHashSet<Vector3i> _existingChunks = new();
+    private readonly HashSet<Vector3i> _existingChunks = new(); // Set of chunks that are already created or are being created (are in _chunksToLoad).
 
-    private readonly HashSet<Vector3i> _savedChunks = new();
+    private readonly HashSet<Vector3i> _savedChunks = new(); // Set of chunks that were save to the disk.
     
     private readonly List<Chunk> _chunks;
     
     private readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
 
-    private const int RenderDistance = 3;
-
     private readonly ChunkFactory _chunkFactory;
-    
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    private const int RenderDistance = 2;
+
+    private const int NumberOfThreads = 1; // We can change this number to boost performance.
     
     public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager, int seed)
     {
@@ -39,15 +38,19 @@ public class ChunkWorker
         _chunkFactory = new ChunkFactory(scalarFieldGenerator);
         foreach (var chunk in _chunks)
         {
-            _existingChunks.TryAdd(chunk.Position / Chunk.Size);
+            _existingChunks.Add(chunk.Position / Chunk.Size);
         }
 
         Directory.CreateDirectory(ChunkHandler.SaveLocation);
-        var thread = new Thread(ManageChunks)
+
+        for (int i = 0; i < NumberOfThreads; i++)
         {
-            IsBackground = true
-        };
-        thread.Start();
+            var thread = new Thread(ManageChunks)
+            {
+                IsBackground = true
+            };
+            thread.Start();
+        }
     }
     
     private void ManageChunks()
@@ -59,12 +62,14 @@ public class ChunkWorker
                 Chunk chunk;
                 if (_savedChunks.Contains(position)) chunk = ChunkHandler.LoadChunk(position);
                 else chunk = _chunkFactory.GenerateChunkWithoutVao(position * Chunk.Size);
+                if (chunk.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
                 
                 _loadedChunks.Enqueue(chunk);
             }
             else if (_chunksToSave.TryDequeue(out var chunkData))
             {
                 ChunkHandler.SaveChunkData(chunkData.Voxels, chunkData.Position);
+                _savedChunks.Add(chunkData.Position / Chunk.Size);
             }
             else
             {
@@ -90,8 +95,7 @@ public class ChunkWorker
         
         foreach (var position in toRemove)
         {
-            _existingChunks.TryRemove(position);
-            Logger.Info($"Removed chunk at {position * Chunk.Size}");
+            _existingChunks.Remove(position);
         }
         
         _chunks.RemoveAll(chunk =>
@@ -99,7 +103,6 @@ public class ChunkWorker
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
             
             _chunksToSave.Enqueue((chunk.Voxels, chunk.Position));
-            _savedChunks.Add(chunk.Position / Chunk.Size);
             chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
             
             return true;
@@ -117,7 +120,7 @@ public class ChunkWorker
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
                     if (_existingChunks.Contains(chunk)) continue;
 
-                    _existingChunks.TryAdd(chunk);
+                    _existingChunks.Add(chunk);
                     _chunksToLoad.Enqueue(chunk);
                 }
             }
@@ -128,9 +131,7 @@ public class ChunkWorker
     {
         while (_loadedChunks.TryDequeue(out var chunk))
         {
-            Logger.Info($"Created chunk at {chunk.Position}");
             chunk.CreateVertexArrayObject();
-            if (chunk.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             _chunks.Add(chunk);
         }
     }
