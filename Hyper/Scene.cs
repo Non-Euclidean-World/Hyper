@@ -11,6 +11,7 @@ using Common.UserInput;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.Collisions.Bepu;
+using Physics.RayCasting;
 using Physics.TypingUtils;
 using Player;
 
@@ -40,6 +41,10 @@ internal class Scene : IInputSubscriber
     public readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> SimulationManager;
 
     public readonly CollidableProperty<SimulationProperties> Properties;
+
+    private HitHandler _hitHandler;
+
+    public readonly Buffer<RayHit> RayCastingResults;
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
@@ -83,6 +88,9 @@ internal class Scene : IInputSubscriber
         {
             chunk.CreateCollisionSurface(SimulationManager.Simulation, SimulationManager.BufferPool);
         }
+
+        bufferPool.Take(1, out RayCastingResults);
+        _hitHandler = new HitHandler { Hits = RayCastingResults };
 
         RegisterCallbacks();
     }
@@ -155,6 +163,14 @@ internal class Scene : IInputSubscriber
         context.RegisterUpdateFrameCallback((e) =>
         {
             SimulationManager.Simulation.Timestep((float)e.Time, SimulationManager.ThreadDispatcher);
+            ResetRayCastingResult(ref RayCastingResults[0], Player);
+            SimulationManager.Simulation.RayCast(Player.RayOrigin, Player.RayDirection, Player.RayMaximumT, ref _hitHandler, 0);
         });
+    }
+
+    private static void ResetRayCastingResult(ref RayHit hit, IRayCaster rayCaster)
+    {
+        hit.T = rayCaster.RayMaximumT;
+        hit.Hit = false;
     }
 }
