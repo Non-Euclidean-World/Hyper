@@ -59,7 +59,7 @@ internal class Window : GameWindow, IInputSubscriber
 
         _controllers = new IController[]
         {
-            new PlayerController(_scene, modelShader, objectShader),
+            new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
             new ChunksController(_scene, objectShader, seed),
             new ProjectilesController(_scene, objectShader),

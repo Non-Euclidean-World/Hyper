@@ -34,7 +34,7 @@ internal class ProjectilesController : IController, IInputSubscriber
         var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(_scene.Camera.Front));
         var projectile = Projectile.CreateStandardProjectile(_scene.SimulationManager.Simulation,
             _scene.Properties,
-            new RigidPose(_scene.Player.GetCharacterRay(_scene.Camera.Front, 2), q),
+            new RigidPose(_scene.Player.RayOrigin, q),
             Conversions.ToNumericsVector(_scene.Camera.Front) * 15,
             new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
         _scene.Projectiles.Add(projectile);

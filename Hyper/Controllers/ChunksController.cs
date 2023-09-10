@@ -3,7 +3,6 @@ using Chunks.ChunkManagement;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
@@ -42,7 +41,7 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Mine(Conversions.ToOpenTKVector(_scene.Player.GetCharacterRay(_scene.Camera.Front, 1)), 3, (float)e.Time))
+                if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                     return;
@@ -54,7 +53,7 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Build(Conversions.ToOpenTKVector(_scene.Player.GetCharacterRay(_scene.Camera.Front, 3)), 3, (float)e.Time))
+                if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                     return;
