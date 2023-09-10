@@ -10,22 +10,29 @@ internal class PlayerController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly ModelShader _shader;
+    private readonly ModelShader _modelShader;
 
     private readonly ObjectShader _objectShader;
 
-    public PlayerController(Scene scene, ModelShader shader, ObjectShader objectShader)
+    private readonly LightSourceShader _rayMarkerShader;
+
+    public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
         _scene = scene;
-        _shader = shader;
+        _modelShader = modelShader;
         _objectShader = objectShader;
+        _rayMarkerShader = rayMarkerShader;
         RegisterCallbacks();
     }
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
-        _scene.Player.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
+        _scene.Player.Render(_modelShader, _scene.Scale, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
+
+        _rayMarkerShader.SetUp(_scene.Camera);
+        _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+
 #if BOUNDING_BOXES
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);

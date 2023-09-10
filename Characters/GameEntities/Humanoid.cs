@@ -13,6 +13,8 @@ public class Humanoid
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
 
+    protected Vector3 ViewDirection;
+
     public Humanoid(PhysicalCharacter physicalCharacter)
     {
         Character = new CowboyModel();
@@ -31,6 +33,7 @@ public class Humanoid
         }
 
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
+        ViewDirection = viewDirection;
     }
 
     public void Render(Shader shader, float scale, Vector3 cameraPosition)

@@ -154,7 +154,9 @@ internal class Scene : IInputSubscriber
 
         context.RegisterUpdateFrameCallback((e) =>
         {
-            SimulationManager.Simulation.Timestep((float)e.Time, SimulationManager.ThreadDispatcher);
+            SimulationManager.Timestep((float)e.Time);
+            SimulationManager.ResetRayCastingResult(Player, Player.RayId);
+            SimulationManager.RayCast(Player, Player.RayId);
         });
     }
 }
