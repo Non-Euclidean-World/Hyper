@@ -13,21 +13,12 @@ public class ChunkFactory
         _scalarFieldGenerator = scalarFieldGenerator;
     }
 
-    public Chunk GenerateChunk(Vector3i position)
+    public Chunk GenerateChunk(Vector3i position, bool generateVao = true)
     {
         var scalarField = _scalarFieldGenerator.Generate(Chunk.Size, position);
         var meshGenerator = new MeshGenerator(scalarField);
         Vertex[] data = meshGenerator.GetMesh();
 
-        return new Chunk(data, position, scalarField);
-    }
-
-    public Chunk GenerateChunkWithoutVao(Vector3i position)
-    {
-        var scalarField = _scalarFieldGenerator.Generate(Chunk.Size, position);
-        var meshGenerator = new MeshGenerator(scalarField);
-        Vertex[] data = meshGenerator.GetMesh();
-
-        return new Chunk(data, position, scalarField, false);
+        return new Chunk(data, position, scalarField, generateVao);
     }
 }

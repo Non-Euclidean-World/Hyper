@@ -11,7 +11,7 @@ public class ChunkWorker
 {
     private readonly ConcurrentQueue<Vector3i> _chunksToLoad = new(); // Queue of chunks to load. Main thread writes. ManageChunks thread reads.
 
-    private readonly ConcurrentQueue<(Voxel[,,] Voxels, Vector3i Position)> _chunksToSave = new(); // Queue of chunks to load. Main thread writes. ManageChunks thread reads.
+    private readonly ConcurrentQueue<(Voxel[,,] Voxels, Vector3i Position)> _chunksToSave = new(); // Queue of chunks to save. Main thread writes. ManageChunks thread reads.
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new(); // Queue of loaded chunks. ManageChunks thread writes. Main thread reads.
 
@@ -61,7 +61,8 @@ public class ChunkWorker
             {
                 Chunk chunk;
                 if (_savedChunks.Contains(position)) chunk = ChunkHandler.LoadChunk(position);
-                else chunk = _chunkFactory.GenerateChunkWithoutVao(position * Chunk.Size);
+                else 
+                    chunk = _chunkFactory.GenerateChunk(position * Chunk.Size, false);
                 if (chunk.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
 
                 _loadedChunks.Enqueue(chunk);
@@ -80,7 +81,7 @@ public class ChunkWorker
 
     public void Update(Vector3 currentPosition)
     {
-        var currentChunk = GetCurrentChunk(currentPosition);
+        var currentChunk = GetCurrentChunkId(currentPosition);
 
         DeleteChunks(currentChunk);
         EnqueueLoadingChunks(currentChunk);
@@ -89,19 +90,11 @@ public class ChunkWorker
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        var toRemove = _chunks.Where(x =>
-                GetDistance(x.Position / Chunk.Size, currentChunk) > RenderDistance)
-            .Select(x => x.Position / Chunk.Size);
-
-        foreach (var position in toRemove)
-        {
-            _existingChunks.Remove(position);
-        }
-
         _chunks.RemoveAll(chunk =>
         {
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
 
+            _existingChunks.Remove(chunk.Position / Chunk.Size);
             _chunksToSave.Enqueue((chunk.Voxels, chunk.Position));
             chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
 
@@ -136,7 +129,7 @@ public class ChunkWorker
         }
     }
 
-    private static Vector3i GetCurrentChunk(Vector3 position)
+    private static Vector3i GetCurrentChunkId(Vector3 position)
     {
         return new Vector3i((int)MathF.Floor(position.X / Chunk.Size), (int)MathF.Floor(position.Y / Chunk.Size), (int)MathF.Floor(position.Z / Chunk.Size));
     }

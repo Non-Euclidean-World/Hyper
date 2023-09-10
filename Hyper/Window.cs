@@ -49,6 +49,8 @@ internal class Window : GameWindow, IInputSubscriber
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         var seed = new Random().Next();
+        Logger.Info($"Seed: {seed}");
+        
         _scene = new Scene(Size.X / (float)Size.Y, seed);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
