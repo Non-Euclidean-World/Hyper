@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
@@ -22,7 +21,6 @@ public class Chunk : Mesh
 
     public readonly Voxel[,,] Voxels;
 
-    // TODO No clue if logging works after moving it to Common project. Need to check.
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private StaticHandle _handle;
@@ -50,8 +48,7 @@ public class Chunk : Mesh
         var z = (int)location.Z - Position.Z;
 
         if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || Voxels[x, y, z].Value <= 0f)
+            || x > Size - 1 || y > Size - 1 || z > Size - 1)
             return false;
 
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
@@ -91,8 +88,7 @@ public class Chunk : Mesh
         var z = (int)location.Z - Position.Z;
 
         if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1
-            || Voxels[x, y, z].Value >= 1f)
+            || x > Size - 1 || y > Size - 1 || z > Size - 1)
             return false;
 
         for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
@@ -119,8 +115,8 @@ public class Chunk : Mesh
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         _shape = simulation.Shapes.Add(mesh);
         simulation.Statics[_handle].SetShape(_shape);
     }
