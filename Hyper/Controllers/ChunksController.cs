@@ -12,9 +12,9 @@ internal class ChunksController : IController, IInputSubscriber
     private readonly Scene _scene;
 
     private readonly ObjectShader _shader;
-    
+
     private readonly ChunkWorker _chunkWorker;
-    
+
     public ChunksController(Scene scene, ObjectShader shader, int seed)
     {
         _scene = scene;
@@ -61,7 +61,7 @@ internal class ChunksController : IController, IInputSubscriber
                 }
             }
         });
-        
+
         context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
     }
 }

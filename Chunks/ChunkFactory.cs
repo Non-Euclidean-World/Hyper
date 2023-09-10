@@ -21,7 +21,7 @@ public class ChunkFactory
 
         return new Chunk(data, position, scalarField);
     }
-    
+
     public Chunk GenerateChunkWithoutVao(Vector3i position)
     {
         var scalarField = _scalarFieldGenerator.Generate(Chunk.Size, position);

@@ -8,7 +8,7 @@ namespace Common.Meshes;
 public class Mesh : IDisposable
 {
     public Vector3 Position { get; set; }
-    
+
     public Vector3 Scaling { get; set; }
 
     public int VaoId;
@@ -18,7 +18,7 @@ public class Mesh : IDisposable
     public int NumberOfVertices;
 
     public Vertex[] Vertices { get; protected set; }
-    
+
     public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
     {
         Vertices = vertices;

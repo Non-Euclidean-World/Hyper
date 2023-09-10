@@ -116,7 +116,7 @@ public class Context
     {
         FrameUpdateCallbacks.Add(callback);
     }
-    
+
     public void RegisterConsoleInputCallback(Action<string[]> callback)
     {
         ConsoleInputCallbacks.Add(callback);

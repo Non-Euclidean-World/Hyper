@@ -16,7 +16,7 @@ internal class Window : GameWindow, IInputSubscriber
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private Thread _console = null!; 
+    private Thread _console = null!;
 
     private Scene _scene = null!;
 
@@ -205,7 +205,7 @@ internal class Window : GameWindow, IInputSubscriber
 
                 Logger.Info($"[Command]{command}");
                 var args = command.Split(' ');
-                
+
                 foreach (var callback in _context.ConsoleInputCallbacks)
                 {
                     callback(args);

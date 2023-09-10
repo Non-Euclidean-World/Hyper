@@ -8,13 +8,13 @@ namespace Chunks.ChunkManagement;
 public static class ChunkHandler
 {
     public const string SaveLocation = "Chunks";
-    
+
     public static void SaveChunkData(Voxel[,,] voxels, Vector3i position)
     {
         string filePath = $"{SaveLocation}/{(position / Chunk.Size).ToString()}.voxels";
         SaveVoxels(filePath, voxels);
     }
-    
+
     public static Chunk LoadChunk(Vector3i position)
     {
         string filePath = $"{SaveLocation}/{(position).ToString()}.voxels";
@@ -24,7 +24,7 @@ public static class ChunkHandler
 
         return new Chunk(data, position * Chunk.Size, scalarField, false);
     }
-    
+
     public static void SaveVoxels(string filePath, Voxel[,,] voxels)
     {
         using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Create)))
