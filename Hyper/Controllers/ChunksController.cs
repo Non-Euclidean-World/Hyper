@@ -36,7 +36,7 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.RayCastingResults[0]), 3, (float)e.Time))
+                if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                     return;
@@ -48,7 +48,7 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.RayCastingResults[0]), 3, (float)e.Time))
+                if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
                     chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                     return;

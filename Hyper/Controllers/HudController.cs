@@ -22,7 +22,7 @@ internal class HudController : IController
         _shader = shader;
         _elements = new IHudElement[]
         {
-            new Crosshair(),
+            new Crosshair(){ Visible = false},
             new FpsCounter(_hudHelper),
             new InventoryHudManager(_hudHelper),
         };

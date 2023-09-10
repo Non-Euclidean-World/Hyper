@@ -17,4 +17,9 @@ public interface IRayCaster
     /// Origin of the ray
     /// </summary>
     public Vector3 RayOrigin { get; }
+
+    /// <summary>
+    /// Id of the ray cast by this ray caster
+    /// </summary>
+    public int RayId { get; }
 }

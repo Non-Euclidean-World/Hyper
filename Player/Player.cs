@@ -22,6 +22,8 @@ public class Player : Humanoid, IRayCaster
     public System.Numerics.Vector3 RayOrigin => PhysicalCharacter.Pose.Position
             + Conversions.ToNumericsVector(ViewDirection) * _rayOffset;
 
+    public int RayId => 0;
+
     public Player(PhysicalCharacter physicalCharacter) : base(physicalCharacter)
     {
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
