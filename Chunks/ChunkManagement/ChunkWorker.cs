@@ -8,9 +8,9 @@ namespace Chunks.ChunkManagement;
 // The explanation of how this class works is in the GitHub repository wiki.
 public class ChunkWorker
 {
-    private readonly ConcurrentQueue<Vector3i> _chunksToLoad = new();
+    private readonly BlockingCollection<Vector3i> _chunksToLoad = new(new ConcurrentQueue<Vector3i>());
 
-    private readonly ConcurrentQueue<Vector3i> _chunksToSaveQueue = new();
+    private readonly BlockingCollection<Vector3i> _chunksToSaveQueue = new(new ConcurrentQueue<Vector3i>());
 
     private readonly ConcurrentDictionary<Vector3i, int> _chunksToSaveDictionary = new();
     
@@ -29,7 +29,9 @@ public class ChunkWorker
     public const int RenderDistance = 2;
 
     private const int NumberOfThreads = 1;
-
+    
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    
     public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
     {
         _chunks = chunks;
@@ -44,37 +46,37 @@ public class ChunkWorker
 
         for (int i = 0; i < NumberOfThreads; i++)
         {
-            var thread = new Thread(ManageChunks)
-            {
-                IsBackground = true
-            };
-            thread.Start();
+            Task.Run(() => LoadChunks(_cancellationTokenSource.Token));
         }
+
+        Task.Run(() => SaveChunks(_cancellationTokenSource.Token));
     }
 
-    private void ManageChunks()
+    private void LoadChunks(CancellationToken cancellationToken)
     {
-        while (true)
+        while (!cancellationToken.IsCancellationRequested)
         {
-            if (_chunksToLoad.TryDequeue(out var position) && !_chunkFactory.FreeVoxels.IsEmpty)
+            foreach (var position in _chunksToLoad.GetConsumingEnumerable(cancellationToken))
             {
                 Chunk chunk;
                 if (_savedChunks.Contains(position)) chunk = _chunkFactory.LoadChunk(position);
-                else 
-                    chunk = _chunkFactory.GenerateChunk(position * Chunk.Size, false);
+                else chunk = _chunkFactory.GenerateChunk(position * Chunk.Size, false);
 
                 _loadedChunks.Enqueue(chunk);
             }
-            else if (_chunksToSaveQueue.TryDequeue(out var chunkPosition))
+        }
+    }
+    
+    private void SaveChunks(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            foreach (var chunkPosition in _chunksToSaveQueue.GetConsumingEnumerable(cancellationToken))
             {
                 _chunksToSaveDictionary.TryRemove(chunkPosition, out int index);
                 _chunkFactory.SaveChunkData(index, chunkPosition);
                 _savedChunks.Add(chunkPosition / Chunk.Size);
-                _chunkFactory.FreeVoxels.Enqueue(index);
-            }
-            else
-            {
-                Thread.Sleep(100);
+                _chunkFactory.FreeVoxels.Add(index, cancellationToken);
             }
         }
     }
@@ -97,13 +99,13 @@ public class ChunkWorker
             _existingChunks.Remove(chunk.Position / Chunk.Size);
             if (_chunksToSaveDictionary.ContainsKey(chunk.Position))
             {
-                _chunkFactory.FreeVoxels.Enqueue(_chunksToSaveDictionary[chunk.Position]);
+                _chunkFactory.FreeVoxels.Add(_chunksToSaveDictionary[chunk.Position], _cancellationTokenSource.Token);
                 _chunksToSaveDictionary[chunk.Position] = chunk.VoxelsPoolIndex;
             }
             else
             {
                 _chunksToSaveDictionary.TryAdd(chunk.Position, chunk.VoxelsPoolIndex);
-                _chunksToSaveQueue.Enqueue(chunk.Position);
+                _chunksToSaveQueue.Add(chunk.Position, _cancellationTokenSource.Token);
             }
             chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
 
@@ -123,7 +125,7 @@ public class ChunkWorker
                     if (_existingChunks.Contains(chunk)) continue;
 
                     _existingChunks.Add(chunk);
-                    _chunksToLoad.Enqueue(chunk);
+                    _chunksToLoad.Add(chunk, _cancellationTokenSource.Token);
                 }
             }
         }

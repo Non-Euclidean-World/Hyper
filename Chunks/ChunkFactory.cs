@@ -13,7 +13,7 @@ public class ChunkFactory
 
     private readonly Voxel[][,,] _voxelPool;
     
-    public readonly ConcurrentQueue<int> FreeVoxels;
+    public readonly BlockingCollection<int> FreeVoxels;
     
     public const string SaveLocation = "Chunks";
     
@@ -28,21 +28,21 @@ public class ChunkFactory
         {
             _voxelPool[i] = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
         }
-        FreeVoxels = new ConcurrentQueue<int>();
+        FreeVoxels = new BlockingCollection<int>(new ConcurrentQueue<int>());
         for (int i = 0; i < _voxelPool.Length; i++)
         {
-            FreeVoxels.Enqueue(i);
+            FreeVoxels.Add(i);
         }
     }
 
     public Chunk GenerateChunk(Vector3i position, bool generateVao = true)
     {
-        FreeVoxels.TryDequeue(out int index);
+        int index = FreeVoxels.Take();
         _scalarFieldGenerator.Generate(Chunk.Size, position, _voxelPool[index]);
         var meshGenerator = new MeshGenerator(_voxelPool[index]);
         Vertex[] data = meshGenerator.GetMesh();
         
-        if (FreeVoxels.IsEmpty) Logger.Warn("FreeVoxels queue is empty!");
+        if (FreeVoxels.Count == 0) Logger.Warn("FreeVoxels queue is empty!");
 
         return new Chunk(data, position, _voxelPool[index], index, generateVao);
     }
@@ -55,13 +55,13 @@ public class ChunkFactory
 
     public Chunk LoadChunk(Vector3i position)
     {
-        FreeVoxels.TryDequeue(out int index);
+        int index = FreeVoxels.Take();
         string filePath = GetFileName(position);
         LoadVoxels(filePath, _voxelPool[index]);
         var meshGenerator = new MeshGenerator(_voxelPool[index]);
         Vertex[] data = meshGenerator.GetMesh();
         
-        if (FreeVoxels.IsEmpty) Logger.Warn("FreeVoxels queue is empty!");
+        if (FreeVoxels.Count == 0) Logger.Warn("FreeVoxels queue is empty!");
         
         return new Chunk(data, position * Chunk.Size, _voxelPool[index], index, false);
     }
@@ -69,10 +69,6 @@ public class ChunkFactory
     private static void SaveVoxels(string filePath, Voxel[,,] voxels)
     {
         using BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Create));
-        
-        writer.Write(voxels.GetLength(0));
-        writer.Write(voxels.GetLength(1));
-        writer.Write(voxels.GetLength(2));
 
         for (int i = 0; i < voxels.GetLength(0); i++)
         {
@@ -88,24 +84,19 @@ public class ChunkFactory
         }
     }
 
-    private static void LoadVoxels(string filePath, Voxel[,,] readVoxels)
+    private static void LoadVoxels(string filePath, Voxel[,,] voxels)
     {
         using BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open));
         
-        // TODO Check if dimensions match
-        int xLength = reader.ReadInt32();
-        int yLength = reader.ReadInt32();
-        int zLength = reader.ReadInt32();
-
-        for (int i = 0; i < xLength; i++)
+        for (int i = 0; i < voxels.GetLength(0); i++)
         {
-            for (int j = 0; j < yLength; j++)
+            for (int j = 0; j < voxels.GetLength(1); j++)
             {
-                for (int k = 0; k < zLength; k++)
+                for (int k = 0; k < voxels.GetLength(2); k++)
                 {
                     float value = reader.ReadSingle();
                     VoxelType type = (VoxelType)reader.ReadInt32();
-                    readVoxels[i, j, k] = new Voxel { Value = value, Type = type };
+                    voxels[i, j, k] = new Voxel { Value = value, Type = type };
                 }
             }
         }
