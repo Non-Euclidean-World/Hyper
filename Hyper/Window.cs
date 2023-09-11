@@ -1,4 +1,7 @@
 ﻿using Character.Shaders;
+using Chunks;
+using Chunks.ChunkManagement;
+using Chunks.MarchingCubes;
 using Common.UserInput;
 using Hud;
 using Hud.Shaders;
@@ -51,7 +54,9 @@ internal class Window : GameWindow, IInputSubscriber
         var seed = new Random().Next();
         Logger.Info($"Seed: {seed}");
         
-        _scene = new Scene(Size.X / (float)Size.Y, seed);
+        var scalarFieldGenerator = new ScalarFieldGenerator(seed);
+        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator, ChunkWorker.RenderDistance);
+        _scene = new Scene(Size.X / (float)Size.Y, chunkFactory, scalarFieldGenerator);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -63,7 +68,7 @@ internal class Window : GameWindow, IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader, seed),
+            new ChunksController(_scene, objectShader, chunkFactory),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),

@@ -27,10 +27,13 @@ public class Chunk : Mesh
 
     private TypedIndex _shape;
 
-    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true) : base(vertices, position, createVao)
+    public int VoxelsPoolIndex;
+
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int voxelPoolIndex, bool createVao = true) : base(vertices, position, createVao)
     {
         Voxels = voxels;
         Position = position;
+        VoxelsPoolIndex = voxelPoolIndex;
     }
 
     /// <summary>

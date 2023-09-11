@@ -14,11 +14,11 @@ internal class ChunksController : IController, IInputSubscriber
 
     private readonly ChunkWorker _chunkWorker;
 
-    public ChunksController(Scene scene, ObjectShader shader, int seed)
+    public ChunksController(Scene scene, ObjectShader shader, ChunkFactory chunkFactory)
     {
         _scene = scene;
         _shader = shader;
-        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, seed);
+        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory);
         RegisterCallbacks();
     }
 

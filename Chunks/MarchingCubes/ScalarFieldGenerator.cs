@@ -41,10 +41,9 @@ public class ScalarFieldGenerator
     /// <param name="depth">The size in Z dimension.</param>
     /// <param name="position">The position in the world where the scalar filed will be placed.</param>
     /// <returns></returns>
-    public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
+    public void Generate(int width, int height, int depth, Vector3i position, Voxel[,,] scalarField)
     {
         var perlin = new PerlinNoise(_seed);
-        Voxel[,,] scalarField = new Voxel[width + 1, height + 1, depth + 1];
 
         for (int x = position.X; x < width + 1 + position.X; x++)
         {
@@ -74,8 +73,6 @@ public class ScalarFieldGenerator
                 }
             }
         }
-
-        return scalarField;
     }
 
     /// <summary>
@@ -84,7 +81,7 @@ public class ScalarFieldGenerator
     /// <param name="size"></param>
     /// <param name="position"></param>
     /// <returns></returns>
-    public Voxel[,,] Generate(int size, Vector3i position) => Generate(size, size, size, position);
+    public void Generate(int size, Vector3i position, Voxel[,,] scalarField) => Generate(size, size, size, position, scalarField);
 
     private float GetMaxAmp()
     {
