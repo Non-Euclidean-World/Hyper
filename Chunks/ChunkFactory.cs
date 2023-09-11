@@ -2,6 +2,7 @@
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
 using Common.Meshes;
+using NLog;
 using OpenTK.Mathematics;
 
 namespace Chunks;
@@ -15,12 +16,14 @@ public class ChunkFactory
     public readonly ConcurrentQueue<int> FreeVoxels;
     
     private const string SaveLocation = "Chunks";
+    
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator, int renderDistance)
     {
         _scalarFieldGenerator = scalarFieldGenerator;
         int size = 2 * renderDistance + 1;
-        _voxelPool = new Voxel[3 * size * size * size][,,]; // 3 * should work but maybe we can do better.
+        _voxelPool = new Voxel[3 * size * size * size][,,];
         for (int i = 0; i < _voxelPool.Length; i++)
         {
             _voxelPool[i] = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
@@ -38,6 +41,8 @@ public class ChunkFactory
         _scalarFieldGenerator.Generate(Chunk.Size, position, _voxelPool[index]);
         var meshGenerator = new MeshGenerator(_voxelPool[index]);
         Vertex[] data = meshGenerator.GetMesh();
+        
+        if (FreeVoxels.IsEmpty) Logger.Warn("FreeVoxels queue is empty!");
 
         return new Chunk(data, position, _voxelPool[index], index, generateVao);
     }
@@ -55,7 +60,9 @@ public class ChunkFactory
         LoadVoxels(filePath, _voxelPool[index]);
         var meshGenerator = new MeshGenerator(_voxelPool[index]);
         Vertex[] data = meshGenerator.GetMesh();
-
+        
+        if (FreeVoxels.IsEmpty) Logger.Warn("FreeVoxels queue is empty!");
+        
         return new Chunk(data, position * Chunk.Size, _voxelPool[index], index, false);
     }
 
