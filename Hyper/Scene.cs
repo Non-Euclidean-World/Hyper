@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using BepuPhysics;
-using BepuUtilities.Memory;
 using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
@@ -35,11 +34,7 @@ internal class Scene : IInputSubscriber
 
     public readonly float Scale = 0.1f;
 
-    private readonly CharacterControllers _characterControllers;
-
-    public readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> SimulationManager;
-
-    public readonly CollidableProperty<SimulationProperties> Properties;
+    public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
@@ -53,16 +48,13 @@ internal class Scene : IInputSubscriber
         LightSources = GetLightSources(chunksPerSide, scalarFieldGenerator.AvgElevation);
         Projectiles = new List<Projectile>();
 
-        var bufferPool = new BufferPool();
-        Properties = new CollidableProperty<SimulationProperties>();
-        _characterControllers = new CharacterControllers(bufferPool);
-
-        SimulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, Properties),
+        SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
-            new SolveDescription(6, 1), bufferPool);
+            new SolveDescription(6, 1));
 
         var characterInitialPosition = new Vector3(0, scalarFieldGenerator.AvgElevation + 8, 15);
         Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
+        SimulationManager.RegisterContactCallback(Player.PhysicalCharacter.BodyHandle, Player.CollisionCallback);
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like
@@ -73,7 +65,7 @@ internal class Scene : IInputSubscriber
         var carInitialPosition = new Vector3(5, scalarFieldGenerator.AvgElevation + 5, 12);
         Cars = new List<SimpleCar>()
         {
-            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, Properties,
+            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
@@ -144,7 +136,7 @@ internal class Scene : IInputSubscriber
     }
 
     private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
-        => new(_characterControllers, Properties, Conversions.ToNumericsVector(initialPosition),
+        => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
 
@@ -155,6 +147,7 @@ internal class Scene : IInputSubscriber
         context.RegisterUpdateFrameCallback((e) =>
         {
             SimulationManager.Timestep((float)e.Time);
+            SimulationManager.FlushContactEvents();
             SimulationManager.ResetRayCastingResult(Player, Player.RayId);
             SimulationManager.RayCast(Player, Player.RayId);
         });

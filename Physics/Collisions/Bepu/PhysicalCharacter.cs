@@ -15,6 +15,8 @@ public class PhysicalCharacter
 {
     public RigidPose Pose { get; private set; }
 
+    public BodyHandle BodyHandle { get => _bodyHandle; }
+
 #if BOUNDING_BOXES
     public Body BoundingBox { get; private set; }
 #endif

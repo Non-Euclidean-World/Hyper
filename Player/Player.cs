@@ -1,9 +1,11 @@
-﻿using Character.GameEntities;
+﻿using BepuPhysics.Collidables;
+using Character.GameEntities;
 using Character.Shaders;
 using Common;
 using Common.Meshes;
 using OpenTK.Mathematics;
 using Physics.Collisions.Bepu;
+using Physics.ContactCallbacks;
 using Physics.RayCasting;
 using Physics.TypingUtils;
 
@@ -47,4 +49,17 @@ public class Player : Humanoid, IRayCaster
 
     public Vector3 GetRayEndpoint(in RayHit hit)
         => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
+
+    // TODO in order to get ore detailed information about the object we collided with
+    // we could store bodyHandles of objects of different types in sets, then capture those sets
+    public void CollisionCallback(CollisionInfo collisionInfo)
+    {
+        var pair = collisionInfo.CollidablePair;
+        var collidableReference
+            = pair.A.BodyHandle == PhysicalCharacter.BodyHandle ? pair.B : pair.A;
+        if (collidableReference.Mobility == CollidableMobility.Dynamic)
+        {
+            Console.WriteLine("Player was just hit by something!");
+        }
+    }
 }
