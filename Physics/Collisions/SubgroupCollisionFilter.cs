@@ -3,7 +3,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Physics.Collisions.Bepu;
+namespace Physics.Collisions;
 
 /// <summary>
 /// Bit masks which control whether different members of a group of objects can collide with each other.

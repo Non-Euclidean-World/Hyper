@@ -9,7 +9,6 @@ using Common.Meshes;
 using Common.UserInput;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 using Physics.TypingUtils;
 using Player;
 

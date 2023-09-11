@@ -1,7 +1,6 @@
 ﻿using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Physics.Collisions.Bepu;
 using Physics.ContactCallbacks;
 using Physics.RayCasting;
 
@@ -27,9 +26,13 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
     public Dictionary<BodyHandle, ContactCallback> ContactCallbacks { get; private init; }
 
     public readonly Buffer<RayHit> RayCastingResults;
+
     private readonly ContactEventHandler _contactEventHandler;
+
     private readonly ThreadDispatcher _threadDispatcher;
+
     private readonly ContactEvents _contactEvents;
+
     private HitHandler _hitHandler;
 
     private bool _disposed = false;

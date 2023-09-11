@@ -8,7 +8,7 @@ using BepuUtilities;
 using BepuUtilities.Memory;
 using static BepuUtilities.GatherScatter;
 
-namespace Physics.Collisions.Bepu;
+namespace Physics.Collisions;
 
 
 public struct CharacterMotionAccumulatedImpulse

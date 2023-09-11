@@ -9,7 +9,6 @@ using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 
 namespace Character.Vehicles;
 public class SimpleCar : ISimulationMember

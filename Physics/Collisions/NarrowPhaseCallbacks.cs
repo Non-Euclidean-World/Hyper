@@ -9,7 +9,7 @@ using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 using Physics.ContactCallbacks;
 
-namespace Physics.Collisions.Bepu;
+namespace Physics.Collisions;
 
 public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {

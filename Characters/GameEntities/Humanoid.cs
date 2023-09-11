@@ -5,7 +5,6 @@ using Character.Characters.Cowboy;
 using Common;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
@@ -19,6 +18,12 @@ public class Humanoid : ISimulationMember, IContactEventListener
     public BodyHandle BodyHandle => PhysicalCharacter.BodyHandle;
 
     protected Vector3 ViewDirection;
+
+    protected DateTime LastContactTime = DateTime.MinValue;
+
+    protected BodyHandle? LastContactBody;
+
+    protected static readonly TimeSpan EpsTime = new(ticks: 10);
 
     public Humanoid(PhysicalCharacter physicalCharacter)
     {
@@ -67,6 +72,13 @@ public class Humanoid : ISimulationMember, IContactEventListener
             = pair.A.BodyHandle == BodyHandle ? pair.B : pair.A;
         if (collidableReference.Mobility != CollidableMobility.Dynamic)
             return;
+
+        if (collidableReference.BodyHandle == LastContactBody
+            && LastContactTime - DateTime.Now < EpsTime)
+            return;
+
+        LastContactTime = DateTime.Now;
+        LastContactBody = collidableReference.BodyHandle;
 #if DEBUG
         // TODO replace with something more sensible
         if (simulationMembers.TryGetValue(collidableReference.BodyHandle, out var otherBody))

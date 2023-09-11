@@ -2,7 +2,6 @@
 using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 
 namespace Character.Projectiles;
 public class Projectile : ISimulationMember
