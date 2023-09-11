@@ -15,7 +15,7 @@ public class ChunkFactory
     
     public readonly ConcurrentQueue<int> FreeVoxels;
     
-    private const string SaveLocation = "Chunks";
+    public const string SaveLocation = "Chunks";
     
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

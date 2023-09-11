@@ -40,7 +40,7 @@ public class ChunkWorker
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
 
-        Directory.CreateDirectory(ChunkHandler.SaveLocation);
+        Directory.CreateDirectory(ChunkFactory.SaveLocation);
 
         for (int i = 0; i < NumberOfThreads; i++)
         {
