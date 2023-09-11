@@ -28,6 +28,8 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
+    public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
+
     public readonly Player.Player Player;
 
     public readonly Camera Camera;
@@ -48,18 +50,26 @@ internal class Scene : IInputSubscriber
         LightSources = GetLightSources(chunksPerSide, scalarFieldGenerator.AvgElevation);
         Projectiles = new List<Projectile>();
 
+        SimulationMembers = new Dictionary<BodyHandle, ISimulationMember>();
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
         var characterInitialPosition = new Vector3(0, scalarFieldGenerator.AvgElevation + 8, 15);
         Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
-        SimulationManager.RegisterContactCallback(Player.PhysicalCharacter.BodyHandle, Player.CollisionCallback);
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like
             .Select(i => new Vector3(i * 4 - botsCount * 2, scalarFieldGenerator.AvgElevation + 5, i * 4 - botsCount * 2))
-            .Select(pos => new Humanoid(CreatePhysicalHumanoid(pos)))
+            .Select(pos =>
+            {
+                var humanoid = new Humanoid(CreatePhysicalHumanoid(pos));
+                SimulationMembers.Add(humanoid.BodyHandle, humanoid);
+                SimulationManager.RegisterContactCallback(humanoid.BodyHandle, contactInfo => humanoid.ContactCallback(contactInfo, SimulationMembers));
+                return humanoid;
+            })
             .ToList();
 
         var carInitialPosition = new Vector3(5, scalarFieldGenerator.AvgElevation + 5, 12);
@@ -79,7 +89,7 @@ internal class Scene : IInputSubscriber
         RegisterCallbacks();
     }
 
-    private List<LightSource> GetLightSources(int chunksPerSide, float elevation)
+    private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
     {
         if (chunksPerSide % 2 != 0)
             throw new ArgumentException("# of chunks/side must be even");

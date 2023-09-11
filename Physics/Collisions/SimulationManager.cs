@@ -5,7 +5,7 @@ using Physics.Collisions.Bepu;
 using Physics.ContactCallbacks;
 using Physics.RayCasting;
 
-using ContactCallback = System.Action<Physics.ContactCallbacks.CollisionInfo>;
+using ContactCallback = System.Action<Physics.ContactCallbacks.ContactInfo>;
 
 namespace Physics.Collisions;
 
@@ -81,7 +81,7 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
         if (!ContactCallbacks.TryAdd(bodyHandle, callback))
             return false;
 
-        _contactEvents.Register(Simulation.Bodies[bodyHandle].CollidableReference, _contactEventHandler);
+        _contactEvents.Register(bodyHandle, _contactEventHandler);
         return true;
     }
 
@@ -90,7 +90,7 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
         if (!ContactCallbacks.Remove(bodyHandle))
             return false;
 
-        _contactEvents.Unregister(Simulation.Bodies[bodyHandle].CollidableReference);
+        _contactEvents.Unregister(bodyHandle);
         return true;
     }
 

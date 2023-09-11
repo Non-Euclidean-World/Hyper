@@ -1,17 +1,22 @@
 ﻿using BepuPhysics;
+using BepuPhysics.Collidables;
 using Character.Characters;
 using Character.Characters.Cowboy;
 using Common;
 using OpenTK.Mathematics;
+using Physics.Collisions;
 using Physics.Collisions.Bepu;
+using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
 namespace Character.GameEntities;
-public class Humanoid
+public class Humanoid : ISimulationMember, IContactEventListener
 {
     public CowboyModel Character { get; init; }
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
+
+    public BodyHandle BodyHandle => PhysicalCharacter.BodyHandle;
 
     protected Vector3 ViewDirection;
 
@@ -53,5 +58,25 @@ public class Humanoid
             default:
                 Character.Idle(); break;
         }
+    }
+
+    public void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    {
+        var pair = collisionInfo.CollidablePair;
+        var collidableReference
+            = pair.A.BodyHandle == BodyHandle ? pair.B : pair.A;
+        if (collidableReference.Mobility != CollidableMobility.Dynamic)
+            return;
+#if DEBUG
+        // TODO replace with something more sensible
+        if (simulationMembers.TryGetValue(collidableReference.BodyHandle, out var otherBody))
+        {
+            Console.WriteLine($"Bot collided with {otherBody}");
+        }
+        else
+        {
+            Console.WriteLine("Bot collided with something");
+        }
+#endif
     }
 }

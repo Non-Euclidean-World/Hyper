@@ -6,7 +6,7 @@ namespace Physics.ContactCallbacks;
 /// <summary>
 /// Information describing the collision
 /// </summary>
-public struct CollisionInfo
+public struct ContactInfo
 {
     /// <summary>
     /// Colliding bodies
@@ -16,9 +16,9 @@ public struct CollisionInfo
     /// <summary>
     /// Location where the collision took place
     /// </summary>
-    public Vector3 CollisionLocation;
+    public Vector3 ContactLocation;
 
 #if DEBUG
-    public ulong CollisionNumber;
+    public ulong ContactNumber;
 #endif
 }

@@ -26,6 +26,10 @@ internal class ProjectilesController : IController, IInputSubscriber
         foreach (var projectile in _scene.Projectiles)
         {
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
+            if (projectile.IsDead)
+            {
+                _scene.SimulationMembers.Remove(projectile.BodyHandle);
+            }
         }
     }
 
@@ -38,6 +42,7 @@ internal class ProjectilesController : IController, IInputSubscriber
             Conversions.ToNumericsVector(_scene.Camera.Front) * 15,
             new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
         _scene.Projectiles.Add(projectile);
+        _scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
     }
 
     public void Render()
