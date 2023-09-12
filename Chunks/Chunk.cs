@@ -17,9 +17,9 @@ public class Chunk : Mesh
 {
     public const int Size = 32;
 
-    public new Vector3i Position { get; set; }
+    public new Vector3i Position { get; }
 
-    public readonly Voxel[,,] Voxels;
+    private readonly Voxel[,,] _voxels;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -27,11 +27,11 @@ public class Chunk : Mesh
 
     private TypedIndex _shape;
 
-    public int VoxelsPoolIndex;
+    public readonly int VoxelsPoolIndex;
 
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int voxelPoolIndex, bool createVao = true) : base(vertices, position, createVao)
     {
-        Voxels = voxels;
+        _voxels = voxels;
         Position = position;
         VoxelsPoolIndex = voxelPoolIndex;
     }
@@ -62,7 +62,7 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
@@ -102,7 +102,7 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
@@ -147,7 +147,7 @@ public class Chunk : Mesh
 
     private void UpdateMesh()
     {
-        var renderer = new MeshGenerator(Voxels);
+        var renderer = new MeshGenerator(_voxels);
         Vertices = renderer.GetMesh();
         NumberOfVertices = Vertices.Length;
 

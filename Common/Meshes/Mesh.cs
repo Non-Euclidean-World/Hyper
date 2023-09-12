@@ -1,15 +1,12 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
-public class Mesh : IDisposable
+public class Mesh
 {
     public Vector3 Position { get; set; }
-
-    public Vector3 Scaling { get; set; }
 
     public int VaoId;
 
@@ -66,6 +63,7 @@ public class Mesh : IDisposable
 
     public void Dispose()
     {
+        GL.DeleteBuffer(VboId);
         GL.DeleteVertexArray(VaoId);
     }
 }
