@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using BepuPhysics;
-using BepuUtilities.Memory;
 using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
@@ -10,7 +9,6 @@ using Common.Meshes;
 using Common.UserInput;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 using Physics.TypingUtils;
 using Player;
 
@@ -29,17 +27,15 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
+    public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
+
     public readonly Player.Player Player;
 
     public readonly Camera Camera;
 
     public readonly float Scale = 0.1f;
 
-    private readonly CharacterControllers _characterControllers;
-
-    public readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> SimulationManager;
-
-    public readonly CollidableProperty<SimulationProperties> Properties;
+    public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
@@ -53,27 +49,32 @@ internal class Scene : IInputSubscriber
         LightSources = GetLightSources(chunksPerSide, scalarFieldGenerator.AvgElevation);
         Projectiles = new List<Projectile>();
 
-        var bufferPool = new BufferPool();
-        Properties = new CollidableProperty<SimulationProperties>();
-        _characterControllers = new CharacterControllers(bufferPool);
-
-        SimulationManager = new SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks>(new NarrowPhaseCallbacks(_characterControllers, Properties),
+        SimulationMembers = new Dictionary<BodyHandle, ISimulationMember>();
+        SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
-            new SolveDescription(6, 1), bufferPool);
+            new SolveDescription(6, 1));
 
         var characterInitialPosition = new Vector3(0, scalarFieldGenerator.AvgElevation + 8, 15);
         Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like
             .Select(i => new Vector3(i * 4 - botsCount * 2, scalarFieldGenerator.AvgElevation + 5, i * 4 - botsCount * 2))
-            .Select(pos => new Humanoid(CreatePhysicalHumanoid(pos)))
+            .Select(pos =>
+            {
+                var humanoid = new Humanoid(CreatePhysicalHumanoid(pos));
+                SimulationMembers.Add(humanoid.BodyHandle, humanoid);
+                SimulationManager.RegisterContactCallback(humanoid.BodyHandle, contactInfo => humanoid.ContactCallback(contactInfo, SimulationMembers));
+                return humanoid;
+            })
             .ToList();
 
         var carInitialPosition = new Vector3(5, scalarFieldGenerator.AvgElevation + 5, 12);
         Cars = new List<SimpleCar>()
         {
-            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, Properties,
+            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
@@ -87,7 +88,7 @@ internal class Scene : IInputSubscriber
         RegisterCallbacks();
     }
 
-    private List<LightSource> GetLightSources(int chunksPerSide, float elevation)
+    private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
     {
         if (chunksPerSide % 2 != 0)
             throw new ArgumentException("# of chunks/side must be even");
@@ -144,7 +145,7 @@ internal class Scene : IInputSubscriber
     }
 
     private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
-        => new(_characterControllers, Properties, Conversions.ToNumericsVector(initialPosition),
+        => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
 
@@ -155,6 +156,7 @@ internal class Scene : IInputSubscriber
         context.RegisterUpdateFrameCallback((e) =>
         {
             SimulationManager.Timestep((float)e.Time);
+            SimulationManager.FlushContactEvents();
             SimulationManager.ResetRayCastingResult(Player, Player.RayId);
             SimulationManager.RayCast(Player, Player.RayId);
         });

@@ -8,12 +8,12 @@ using BepuPhysics.Collidables;
 using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Physics.Collisions.Bepu;
+using Physics.Collisions;
 
 namespace Character.Vehicles;
-public class SimpleCar
+public class SimpleCar : ISimulationMember
 {
-    public BodyHandle Body { get; private set; }
+    public BodyHandle BodyHandle { get; private set; }
     public WheelHandles FrontLeftWheel { get; private set; }
     public WheelHandles FrontRightWheel { get; private set; }
     public WheelHandles BackLeftWheel { get; private set; }
@@ -103,9 +103,9 @@ public class SimpleCar
         SimpleCarController controller, CarMesh mesh)
     {
         SimpleCar car = new SimpleCar(controller, mesh);
-        car.Body = simulation.Bodies.Add(BodyDescription.CreateDynamic(pose, bodyInertia, new(bodyShape, 0.5f), 0.01f));
-        ref var bodyProperties = ref properties.Allocate(car.Body);
-        bodyProperties = new SimulationProperties { Friction = bodyFriction, Filter = new SubgroupCollisionFilter(car.Body.Value, 0) };
+        car.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(pose, bodyInertia, new(bodyShape, 0.5f), 0.01f));
+        ref var bodyProperties = ref properties.Allocate(car.BodyHandle);
+        bodyProperties = new SimulationProperties { Friction = bodyFriction, Filter = new SubgroupCollisionFilter(car.BodyHandle.Value, 0) };
         QuaternionEx.TransformUnitY(localWheelOrientation, out var wheelAxis);
         car._hingeDescription = new AngularHinge
         {
@@ -115,10 +115,10 @@ public class SimpleCar
         };
         car._suspensionDirection = suspensionDirection;
 
-        car.BackLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.Body, ref bodyProperties.Filter, bodyToBackLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
-        car.BackRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.Body, ref bodyProperties.Filter, bodyToBackRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
-        car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.Body, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
-        car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.Body, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+        car.BackLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToBackLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+        car.BackRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToBackRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+        car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+        car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         return car;
     }
 
@@ -192,7 +192,7 @@ public class SimpleCar
     {
         _controller.Update(simulation, this, dt, targetSteeringAngle, targetSpeedFraction, zoom, brake);
 
-        var carBody = new BodyReference(Body, simulation.Bodies);
+        var carBody = new BodyReference(BodyHandle, simulation.Bodies);
         var rearLeftWheel = new BodyReference(BackLeftWheel.Wheel, simulation.Bodies);
         var rearRightWheel = new BodyReference(BackRightWheel.Wheel, simulation.Bodies);
         var frontLeftWheel = new BodyReference(FrontLeftWheel.Wheel, simulation.Bodies);

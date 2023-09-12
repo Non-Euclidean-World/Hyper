@@ -1,12 +1,12 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
-using Physics.Collisions.Bepu;
+using Physics.Collisions;
 
 namespace Character.Projectiles;
-public class Projectile
+public class Projectile : ISimulationMember
 {
-    public BodyHandle Body { get; private set; }
+    public BodyHandle BodyHandle { get; private set; }
     public bool IsDead { get; private set; }
     public ProjectileMesh Mesh { get; private set; }
 
@@ -39,9 +39,9 @@ public class Projectile
         projectile._shape = simulation.Shapes.Add(projectileShape);
         var inertia = projectileShape.ComputeInertia(0.01f);
 
-        projectile.Body = simulation.Bodies.Add(BodyDescription.CreateDynamic(initialPose, initialVelocity, inertia, new CollidableDescription(projectile._shape, 0.5f), 0.01f));
-        ref var bodyProperties = ref properties.Allocate(projectile.Body);
-        bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(projectile.Body.Value, 0) };
+        projectile.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(initialPose, initialVelocity, inertia, new CollidableDescription(projectile._shape, 0.5f), 0.01f));
+        ref var bodyProperties = ref properties.Allocate(projectile.BodyHandle);
+        bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(projectile.BodyHandle.Value, 0) };
 
         return projectile;
     }
@@ -55,13 +55,13 @@ public class Projectile
     /// <param name="pool"></param>
     public void Update(Simulation simulation, float dt, BufferPool pool)
     {
-        var body = new BodyReference(Body, simulation.Bodies);
+        var body = new BodyReference(BodyHandle, simulation.Bodies);
         Mesh.Update(body.Pose);
 
         _lifeTime -= dt;
         if (!_disposed && _lifeTime < 0)
         {
-            simulation.Bodies.Remove(Body);
+            simulation.Bodies.Remove(BodyHandle);
             simulation.Shapes.RemoveAndDispose(_shape, pool);
 
             _disposed = true;
