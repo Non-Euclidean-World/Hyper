@@ -31,7 +31,7 @@ public class PhysicalCharacter
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
     {
         _characters = characters;
-        var capsule = new Capsule(1, 2);
+        Capsule capsule = new Capsule(1, 2);
         _shape = capsule;
         var shapeIndex = characters.Simulation.Shapes.Add(_shape);
 
@@ -76,9 +76,9 @@ public class PhysicalCharacter
         //If you don't explicitly wake the character up, it won't respond to the changed motion goals.
         //(You can also specify a negative deactivation threshold in the BodyActivityDescription to prevent the character from sleeping at all.)
         if (!characterBody.Awake &&
-            (character.TryJump && character.Supported ||
+            ((character.TryJump && character.Supported) ||
             newTargetVelocity != character.TargetVelocity ||
-            newTargetVelocity != Vector2.Zero && character.ViewDirection != viewDirection))
+            (newTargetVelocity != Vector2.Zero && character.ViewDirection != viewDirection)))
         {
             _characters.Simulation.Awakener.AwakenBody(character.BodyHandle);
         }
@@ -118,7 +118,7 @@ public class PhysicalCharacter
 
         var body = new BodyReference(_bodyHandle, simulation.Bodies);
 
-        var angle = MathF.Atan2(viewDirection.X, viewDirection.Z);
+        float angle = MathF.Atan2(viewDirection.X, viewDirection.Z);
         body.Pose.Orientation = QuaternionEx.CreateFromAxisAngle(Vector3.UnitY, angle);
 
 #if BOUNDING_BOXES

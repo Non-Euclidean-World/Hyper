@@ -107,7 +107,7 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="initialBodyHandleCapacity">Number of body handles to initially allocate space for in the body handle->character mapping.</param>
     public CharacterControllers(BufferPool pool, int initialCharacterCapacity = 4096, int initialBodyHandleCapacity = 4096)
     {
-        _pool = pool;
+        this._pool = pool;
         _characters = new QuickList<CharacterController>(initialCharacterCapacity, pool);
         ResizeBodyHandleCapacity(initialBodyHandleCapacity);
         _analyzeContactsWorker = AnalyzeContactsWorker;
@@ -237,7 +237,7 @@ public unsafe class CharacterControllers : IDisposable
         public unsafe ContactCollectionWorkerCache(int maximumCharacterCount, BufferPool pool)
         {
             pool.Take(maximumCharacterCount, out SupportCandidates);
-            for (var i = 0; i < maximumCharacterCount; ++i)
+            for (int i = 0; i < maximumCharacterCount; ++i)
             {
                 //Initialize the depths to a value that guarantees replacement.
                 SupportCandidates[i].Depth = float.MinValue;
@@ -295,7 +295,7 @@ public unsafe class CharacterControllers : IDisposable
                         //Can the maximum depth contact be used as a support?
                         var maximumDepth = convexManifold.Contact0.Depth;
                         var maximumDepthIndex = 0;
-                        for (var i = 1; i < convexManifold.Count; ++i)
+                        for (int i = 1; i < convexManifold.Count; ++i)
                         {
                             ref var candidateDepth = ref Unsafe.Add(ref convexManifold.Contact0, i).Depth;
                             if (candidateDepth > maximumDepth)
@@ -304,7 +304,7 @@ public unsafe class CharacterControllers : IDisposable
                                 maximumDepthIndex = i;
                             }
                         }
-                        if (maximumDepth >= character.MinimumSupportDepth || character.Supported && maximumDepth > character.MinimumSupportContinuationDepth)
+                        if (maximumDepth >= character.MinimumSupportDepth || (character.Supported && maximumDepth > character.MinimumSupportContinuationDepth))
                         {
                             ref var supportCandidate = ref _contactCollectionWorkerCaches[workerIndex].SupportCandidates[characterIndex];
                             if (supportCandidate.Depth < maximumDepth)
@@ -339,7 +339,7 @@ public unsafe class CharacterControllers : IDisposable
                     //Can the maximum depth contact be used as a support?
                     var maximumDepth = float.MinValue;
                     var maximumDepthIndex = -1;
-                    for (var i = 0; i < nonconvexManifold.Count; ++i)
+                    for (int i = 0; i < nonconvexManifold.Count; ++i)
                     {
                         ref var candidate = ref Unsafe.Add(ref nonconvexManifold.Contact0, i);
                         if (candidate.Depth > maximumDepth)
@@ -353,7 +353,7 @@ public unsafe class CharacterControllers : IDisposable
                             }
                         }
                     }
-                    if (maximumDepth >= character.MinimumSupportDepth || character.Supported && maximumDepth > character.MinimumSupportContinuationDepth)
+                    if (maximumDepth >= character.MinimumSupportDepth || (character.Supported && maximumDepth > character.MinimumSupportContinuationDepth))
                     {
                         ref var supportCandidate = ref _contactCollectionWorkerCaches[workerIndex].SupportCandidates[characterIndex];
                         if (supportCandidate.Depth < maximumDepth)
@@ -418,7 +418,7 @@ public unsafe class CharacterControllers : IDisposable
     unsafe void ExpandBoundingBoxes(int start, int count)
     {
         var end = start + count;
-        for (var i = start; i < end; ++i)
+        for (int i = start; i < end; ++i)
         {
             ref var character = ref _characters[i];
             var characterBody = Simulation.Bodies[character.BodyHandle];
@@ -460,7 +460,7 @@ public unsafe class CharacterControllers : IDisposable
         Debug.Assert(!_contactCollectionWorkerCaches.Allocated, "Worker caches were already allocated; did you forget to call AnalyzeContacts after collision detection to flush the previous frame's results?");
         var threadCount = threadDispatcher == null ? 1 : threadDispatcher.ThreadCount;
         _pool.Take(threadCount, out _contactCollectionWorkerCaches);
-        for (var i = 0; i < _contactCollectionWorkerCaches.Length; ++i)
+        for (int i = 0; i < _contactCollectionWorkerCaches.Length; ++i)
         {
             _contactCollectionWorkerCaches[i] = new ContactCollectionWorkerCache(_characters.Count, _pool);
         }
@@ -479,7 +479,7 @@ public unsafe class CharacterControllers : IDisposable
             var remainder = _characters.Count - baseCharacterCount;
             _pool.Take(jobCount, out _boundingBoxExpansionJobs);
             var previousEnd = 0;
-            for (var jobIndex = 0; jobIndex < jobCount; ++jobIndex)
+            for (int jobIndex = 0; jobIndex < jobCount; ++jobIndex)
             {
                 var charactersForJob = jobIndex < remainder ? charactersPerJob + 1 : charactersPerJob;
                 ref var job = ref _boundingBoxExpansionJobs[jobIndex];
@@ -545,7 +545,7 @@ public unsafe class CharacterControllers : IDisposable
     void AnalyzeContactsForCharacterRegion(int start, int exclusiveEnd, int workerIndex)
     {
         ref var analyzeContactsWorkerCache = ref _analyzeContactsWorkerCaches[workerIndex];
-        for (var characterIndex = start; characterIndex < exclusiveEnd; ++characterIndex)
+        for (int characterIndex = start; characterIndex < exclusiveEnd; ++characterIndex)
         {
             //Note that this iterates over both active and inactive characters rather than segmenting inactive characters into their own collection.
             //This demands branching, but the expectation is that the vast majority of characters will be active, so there is less value in copying them into stasis.                
@@ -554,7 +554,7 @@ public unsafe class CharacterControllers : IDisposable
             if (bodyLocation.SetIndex == 0)
             {
                 var supportCandidate = _contactCollectionWorkerCaches[0].SupportCandidates[characterIndex];
-                for (var j = 1; j < _contactCollectionWorkerCaches.Length; ++j)
+                for (int j = 1; j < _contactCollectionWorkerCaches.Length; ++j)
                 {
                     ref var workerCandidate = ref _contactCollectionWorkerCaches[j].SupportCandidates[characterIndex];
                     if (workerCandidate.Depth > supportCandidate.Depth)
@@ -569,8 +569,8 @@ public unsafe class CharacterControllers : IDisposable
                     //If the constraint no longer exists at all, 
                     if (!Simulation.Solver.ConstraintExists(character.MotionConstraintHandle) ||
                         //or if the constraint does exist but is now used by a different constraint type,
-                        Simulation.Solver.HandleToConstraint[character.MotionConstraintHandle.Value].TypeId != DynamicCharacterMotionTypeProcessor.BatchTypeId &&
-                        Simulation.Solver.HandleToConstraint[character.MotionConstraintHandle.Value].TypeId != StaticCharacterMotionTypeProcessor.BatchTypeId)
+                        (Simulation.Solver.HandleToConstraint[character.MotionConstraintHandle.Value].TypeId != DynamicCharacterMotionTypeProcessor.BatchTypeId &&
+                        Simulation.Solver.HandleToConstraint[character.MotionConstraintHandle.Value].TypeId != StaticCharacterMotionTypeProcessor.BatchTypeId))
                     {
                         //then the character isn't actually supported anymore.
                         character.Supported = false;
@@ -770,14 +770,14 @@ public unsafe class CharacterControllers : IDisposable
             {
                 _pool.Take(threadDispatcher.ThreadCount, out _analyzeContactsWorkerCaches);
                 _pool.Take(_analysisJobCount, out _jobs);
-                for (var i = 0; i < threadDispatcher.ThreadCount; ++i)
+                for (int i = 0; i < threadDispatcher.ThreadCount; ++i)
                 {
                     _analyzeContactsWorkerCaches[i] = new AnalyzeContactsWorkerCache(_characters.Count, _pool);
                 }
                 var baseCount = _characters.Count / _analysisJobCount;
                 var remainder = _characters.Count - baseCount * _analysisJobCount;
                 var previousEnd = 0;
-                for (var i = 0; i < _analysisJobCount; ++i)
+                for (int i = 0; i < _analysisJobCount; ++i)
                 {
                     ref var job = ref _jobs[i];
                     job.Start = previousEnd;
@@ -790,7 +790,7 @@ public unsafe class CharacterControllers : IDisposable
             }
         }
         //We're done with all the contact collection worker caches.
-        for (var i = 0; i < _contactCollectionWorkerCaches.Length; ++i)
+        for (int i = 0; i < _contactCollectionWorkerCaches.Length; ++i)
         {
             _contactCollectionWorkerCaches[i].Dispose(_pool);
         }
@@ -800,25 +800,25 @@ public unsafe class CharacterControllers : IDisposable
         {
             //Flush all the worker caches. Note that we perform all removals before moving onto any additions to avoid unnecessary constraint batches
             //caused by the new and old constraint affecting the same bodies.
-            for (var threadIndex = 0; threadIndex < _analyzeContactsWorkerCaches.Length; ++threadIndex)
+            for (int threadIndex = 0; threadIndex < _analyzeContactsWorkerCaches.Length; ++threadIndex)
             {
                 ref var cache = ref _analyzeContactsWorkerCaches[threadIndex];
-                for (var i = 0; i < cache.ConstraintHandlesToRemove.Count; ++i)
+                for (int i = 0; i < cache.ConstraintHandlesToRemove.Count; ++i)
                 {
                     Simulation.Solver.Remove(cache.ConstraintHandlesToRemove[i]);
                 }
             }
-            for (var threadIndex = 0; threadIndex < _analyzeContactsWorkerCaches.Length; ++threadIndex)
+            for (int threadIndex = 0; threadIndex < _analyzeContactsWorkerCaches.Length; ++threadIndex)
             {
                 ref var workerCache = ref _analyzeContactsWorkerCaches[threadIndex];
-                for (var i = 0; i < workerCache.StaticConstraintsToAdd.Count; ++i)
+                for (int i = 0; i < workerCache.StaticConstraintsToAdd.Count; ++i)
                 {
                     ref var pendingConstraint = ref workerCache.StaticConstraintsToAdd[i];
                     ref var character = ref _characters[pendingConstraint.CharacterIndex];
                     Debug.Assert(character.Support.Mobility == CollidableMobility.Static);
                     character.MotionConstraintHandle = Simulation.Solver.Add(character.BodyHandle, pendingConstraint.Description);
                 }
-                for (var i = 0; i < workerCache.DynamicConstraintsToAdd.Count; ++i)
+                for (int i = 0; i < workerCache.DynamicConstraintsToAdd.Count; ++i)
                 {
                     ref var pendingConstraint = ref workerCache.DynamicConstraintsToAdd[i];
                     ref var character = ref _characters[pendingConstraint.CharacterIndex];
@@ -826,7 +826,7 @@ public unsafe class CharacterControllers : IDisposable
                     character.MotionConstraintHandle = Simulation.Solver.Add(character.BodyHandle, character.Support.BodyHandle, pendingConstraint.Description);
                 }
                 ref var activeSet = ref Simulation.Bodies.ActiveSet;
-                for (var i = 0; i < workerCache.Jumps.Count; ++i)
+                for (int i = 0; i < workerCache.Jumps.Count; ++i)
                 {
                     ref var jump = ref workerCache.Jumps[i];
                     activeSet.SolverStates[jump.CharacterBodyIndex].Motion.Velocity.Linear += jump.CharacterVelocityChange;
@@ -865,8 +865,8 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="bodyHandleCapacity">Target number of body handles to allocate space for.</param>
     public void Resize(int characterCapacity, int bodyHandleCapacity)
     {
-        var lastOccupiedIndex = -1;
-        for (var i = _bodyHandleToCharacterIndex.Length - 1; i >= 0; --i)
+        int lastOccupiedIndex = -1;
+        for (int i = _bodyHandleToCharacterIndex.Length - 1; i >= 0; --i)
         {
             if (_bodyHandleToCharacterIndex[i] != -1)
             {
