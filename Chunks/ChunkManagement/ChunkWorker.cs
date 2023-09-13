@@ -13,7 +13,7 @@ public class ChunkWorker
     private readonly BlockingCollection<Vector3i> _chunksToSaveQueue = new(new ConcurrentQueue<Vector3i>());
 
     private readonly ConcurrentDictionary<Vector3i, int> _chunksToSaveDictionary = new();
-    
+
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
 
     private readonly HashSet<Vector3i> _existingChunks = new();
@@ -29,11 +29,11 @@ public class ChunkWorker
     public const int RenderDistance = 2;
 
     private const int NumberOfThreads = 1;
-    
+
     private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
-    
+
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    
+
     public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
     {
         _chunks = chunks;
@@ -68,7 +68,7 @@ public class ChunkWorker
             }
         }
     }
-    
+
     private void SaveChunks(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -95,7 +95,7 @@ public class ChunkWorker
     private void DeleteChunks(Vector3i currentChunk)
     {
         if (_chunksToLoad.Count + _chunks.Count <= CacheNumber) return;
-        
+
         _chunks.RemoveAll(chunk =>
         {
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;

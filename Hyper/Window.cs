@@ -53,7 +53,7 @@ internal class Window : GameWindow, IInputSubscriber
 
         var seed = new Random().Next();
         Logger.Info($"Seed: {seed}");
-        
+
         var scalarFieldGenerator = new ScalarFieldGenerator(seed);
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator, ChunkWorker.RenderDistance);
         _scene = new Scene(Size.X / (float)Size.Y, chunkFactory, scalarFieldGenerator);
