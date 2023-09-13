@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Physics.Collisions.Bepu;
 
 namespace Chunks.ChunkManagement;
 
@@ -22,7 +21,7 @@ public class ChunkWorker
 
     private readonly List<Chunk> _chunks;
 
-    private readonly SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> _simulationManager;
+    private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
     private readonly ChunkFactory _chunkFactory;
 
@@ -34,7 +33,7 @@ public class ChunkWorker
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<NarrowPhaseCallbacks, PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
