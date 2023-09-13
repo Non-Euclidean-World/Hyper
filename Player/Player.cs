@@ -1,15 +1,18 @@
-﻿using Character.GameEntities;
+﻿using BepuPhysics;
+using BepuPhysics.Collidables;
+using Character.GameEntities;
 using Character.Shaders;
 using Common;
 using Common.Meshes;
 using OpenTK.Mathematics;
-using Physics.Collisions.Bepu;
+using Physics.Collisions;
+using Physics.ContactCallbacks;
 using Physics.RayCasting;
 using Physics.TypingUtils;
 
 namespace Player;
 
-public class Player : Humanoid, IRayCaster
+public class Player : Humanoid, IRayCaster, IContactEventListener
 {
     private readonly RayEndpointMarker _rayEndpointMarker;
 
@@ -47,4 +50,31 @@ public class Player : Humanoid, IRayCaster
 
     public Vector3 GetRayEndpoint(in RayHit hit)
         => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
+
+    // TODO add new class for Bot to remove hiding
+    public new void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    {
+        var pair = collisionInfo.CollidablePair;
+        var collidableReference
+            = pair.A.BodyHandle == BodyHandle ? pair.B : pair.A;
+        if (collidableReference.Mobility != CollidableMobility.Dynamic)
+            return;
+        if (collidableReference.BodyHandle == LastContactBody
+            && LastContactTime - DateTime.Now < EpsTime)
+            return;
+
+        LastContactTime = DateTime.Now;
+        LastContactBody = collidableReference.BodyHandle;
+#if DEBUG
+        // TODO replace with something more sensible
+        if (simulationMembers.TryGetValue(collidableReference.BodyHandle, out var otherBody))
+        {
+            Console.WriteLine($"Player collided with {otherBody}");
+        }
+        else
+        {
+            Console.WriteLine("Player collided with something");
+        }
+#endif
+    }
 }

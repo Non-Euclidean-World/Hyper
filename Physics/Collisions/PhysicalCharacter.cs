@@ -9,11 +9,13 @@ using Common;
 using Common.Meshes;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Physics.Collisions.Bepu;
+namespace Physics.Collisions;
 
 public class PhysicalCharacter
 {
     public RigidPose Pose { get; private set; }
+
+    public BodyHandle BodyHandle { get => _bodyHandle; }
 
 #if BOUNDING_BOXES
     public Body BoundingBox { get; private set; }

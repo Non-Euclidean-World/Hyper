@@ -7,24 +7,28 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
+using Physics.ContactCallbacks;
 
-namespace Physics.Collisions.Bepu;
+namespace Physics.Collisions;
 
 public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {
     public CollidableProperty<SimulationProperties> Properties;
     public CharacterControllers Characters;
+    private ContactEvents _contactEvents;
 
     public void Initialize(Simulation simulation)
     {
         Properties.Initialize(simulation);
         Characters.Initialize(simulation);
+        _contactEvents.Initialize(simulation);
     }
 
-    public NarrowPhaseCallbacks(CharacterControllers characters, CollidableProperty<SimulationProperties> properties)
+    public NarrowPhaseCallbacks(CharacterControllers characters, CollidableProperty<SimulationProperties> properties, ContactEvents contactEvents)
     {
         Characters = characters;
         Properties = properties;
+        _contactEvents = contactEvents;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -56,6 +60,7 @@ public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
         pairMaterial.MaximumRecoveryVelocity = 2f;
         pairMaterial.SpringSettings = new SpringSettings(30, 1);
         Characters.TryReportContacts(pair, ref manifold, workerIndex, ref pairMaterial);
+        _contactEvents.HandleManifold(workerIndex, pair, ref manifold);
         return true;
     }
 
