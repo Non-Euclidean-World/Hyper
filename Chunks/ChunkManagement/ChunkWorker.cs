@@ -10,26 +10,26 @@ namespace Chunks.ChunkManagement;
 public class ChunkWorker
 {
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
-    
+
+    private readonly List<Chunk> _chunks;
+
+    private readonly HashSet<Vector3i> _existingChunks = new();
+
     private readonly ConcurrentQueue<Vector3i> _chunksToLoad = new();
 
+    private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
+
     private readonly ConcurrentQueue<Vector3i> _chunksToSaveQueue = new();
+
+    private readonly ConcurrentDictionary<Vector3i, Voxel[,,]> _chunksToSaveDictionary = new();
+
+    private readonly HashSet<Vector3i> _savedChunks = new();
 
     private readonly ConcurrentQueue<Chunk> _chunksToUpdateQueue = new();
 
     private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
-    
+
     private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
-
-    private readonly ConcurrentDictionary<Vector3i, Voxel[,,]> _chunksToSaveDictionary = new();
-
-    private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
-
-    private readonly HashSet<Vector3i> _existingChunks = new();
-
-    private readonly HashSet<Vector3i> _savedChunks = new();
-
-    private readonly List<Chunk> _chunks;
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -53,7 +53,7 @@ public class ChunkWorker
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
 
-        Directory.CreateDirectory(ChunkFactory.SaveLocation);
+        Directory.CreateDirectory(ChunkHandler.SaveLocation);
 
         for (int i = 0; i < NumberOfThreads; i++)
         {
@@ -71,7 +71,7 @@ public class ChunkWorker
                 {
                     UpdateChunks();
                 }
-                
+
                 switch (jobType)
                 {
                     case JobType.Load:
@@ -92,10 +92,9 @@ public class ChunkWorker
     private void LoadChunks()
     {
         if (!_chunksToLoad.TryDequeue(out var position)) return;
-        
-        Chunk chunk;
-        if (_savedChunks.Contains(position)) chunk = _chunkFactory.LoadChunk(position);
-        else chunk = _chunkFactory.GenerateChunk(position * Chunk.Size, false);
+
+        var chunk = _savedChunks.Contains(position) ? ChunkHandler.LoadChunk(position) :
+            _chunkFactory.GenerateChunk(position * Chunk.Size, false);
 
         _loadedChunks.Enqueue(chunk);
     }
@@ -103,9 +102,9 @@ public class ChunkWorker
     private void SaveChunks()
     {
         if (!_chunksToSaveQueue.TryDequeue(out var position)) return;
-        
+
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
-        _chunkFactory.SaveChunkData(voxels!, position);
+        ChunkHandler.SaveChunkData(voxels!, position);
         _savedChunks.Add(position / Chunk.Size);
     }
 
@@ -175,7 +174,7 @@ public class ChunkWorker
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
         if (_chunksToUpdateHashSet.Contains(chunk)) return;
-        
+
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdateQueue.Enqueue(chunk);
         _jobs.Add(JobType.Update);

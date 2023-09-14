@@ -57,7 +57,7 @@ public class Mesh
         VaoId = vaoId;
         VboId = vboId;
     }
-    
+
     public void Update()
     {
         GL.BindVertexArray(VaoId);

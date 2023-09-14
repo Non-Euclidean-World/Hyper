@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using Chunks;
-using Chunks.ChunkManagement;
+﻿using Chunks.ChunkManagement;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;

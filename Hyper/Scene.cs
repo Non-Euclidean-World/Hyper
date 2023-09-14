@@ -4,6 +4,7 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
+using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common.Meshes;
 using Common.UserInput;

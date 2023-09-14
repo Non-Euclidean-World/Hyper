@@ -1,5 +1,4 @@
 ﻿using Character.Shaders;
-using Chunks;
 using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common.UserInput;
