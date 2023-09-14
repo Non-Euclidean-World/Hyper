@@ -2,12 +2,9 @@
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Chunks.MarchingCubes;
 using Chunks.Voxels;
 using Common;
 using Common.Meshes;
-using NLog;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Mesh = Common.Meshes.Mesh;
 
@@ -21,13 +18,11 @@ public class Chunk
 
     public readonly Voxel[,,] Voxels;
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     private StaticHandle _handle;
 
     private TypedIndex _shape;
 
-    public Mesh Mesh;
+    public readonly Mesh Mesh;
 
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true)
     {
@@ -71,12 +66,6 @@ public class Chunk
             }
         }
 
-        var renderer = new MeshGenerator(Voxels);
-        Mesh.Update(renderer.GetMesh());
-
-        var error = GL.GetError();
-        if (error != ErrorCode.NoError) Logger.Error(error);
-
         return true;
     }
 
@@ -111,12 +100,6 @@ public class Chunk
                 }
             }
         }
-
-        var renderer = new MeshGenerator(Voxels);
-        Mesh.Update(renderer.GetMesh());
-
-        var error = GL.GetError();
-        if (error != ErrorCode.NoError) Logger.Error(error);
 
         return true;
     }

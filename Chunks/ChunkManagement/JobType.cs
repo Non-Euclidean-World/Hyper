@@ -4,4 +4,5 @@ public enum JobType
 {
     Load,
     Save,
+    Update
 }

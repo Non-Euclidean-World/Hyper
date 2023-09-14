@@ -12,8 +12,6 @@ public class Mesh
 
     protected int VboId;
 
-    public int NumberOfVertices;
-
     public Vertex[] Vertices { get; set; }
 
     public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
@@ -21,7 +19,6 @@ public class Mesh
         Vertices = vertices;
         if (createVertexArrayObject) CreateVertexArrayObject();
         Position = position;
-        NumberOfVertices = Vertices.Length;
     }
 
     public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
@@ -31,7 +28,7 @@ public class Mesh
         shader.SetMatrix4("model", scaleMatrix * model);
 
         GL.BindVertexArray(VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length);
     }
 
     public void CreateVertexArrayObject()
@@ -61,11 +58,8 @@ public class Mesh
         VboId = vboId;
     }
     
-    public void Update(Vertex[] vertices)
+    public void Update()
     {
-        Vertices = vertices;
-        NumberOfVertices = Vertices.Length;
-
         GL.BindVertexArray(VaoId);
         GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
         GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);

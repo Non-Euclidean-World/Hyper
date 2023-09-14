@@ -44,7 +44,8 @@ internal class ChunksController : IController, IInputSubscriber
             {
                 if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
-                    chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    // chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    _chunkWorker.EnqueueUpdatingChunk(chunk);
                     return;
                 }
             }
@@ -56,7 +57,8 @@ internal class ChunksController : IController, IInputSubscriber
             {
                 if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
-                    chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    // chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    _chunkWorker.EnqueueUpdatingChunk(chunk);
                     return;
                 }
             }

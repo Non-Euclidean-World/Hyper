@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Chunks.MarchingCubes;
 using Chunks.Voxels;
 using OpenTK.Mathematics;
 using Physics.Collisions;
@@ -14,7 +15,11 @@ public class ChunkWorker
 
     private readonly ConcurrentQueue<Vector3i> _chunksToSaveQueue = new();
 
-    public readonly ConcurrentQueue<Chunk> ChunksToUpdate = new();
+    private readonly ConcurrentQueue<Chunk> _chunksToUpdateQueue = new();
+
+    private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
+    
+    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
 
     private readonly ConcurrentDictionary<Vector3i, Voxel[,,]> _chunksToSaveDictionary = new();
 
@@ -30,7 +35,7 @@ public class ChunkWorker
 
     private readonly ChunkFactory _chunkFactory;
 
-    public const int RenderDistance = 2;
+    private const int RenderDistance = 2;
 
     private const int NumberOfThreads = 1;
 
@@ -62,13 +67,20 @@ public class ChunkWorker
         {
             foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
             {
+                while (!_chunksToUpdateQueue.IsEmpty)
+                {
+                    UpdateChunks();
+                }
+                
                 switch (jobType)
                 {
                     case JobType.Load:
-                        LoadChunks(_cancellationTokenSource.Token);
+                        LoadChunks();
                         break;
                     case JobType.Save:
-                        SaveChunks(_cancellationTokenSource.Token);
+                        SaveChunks();
+                        break;
+                    case JobType.Update:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -77,7 +89,7 @@ public class ChunkWorker
         }
     }
 
-    private void LoadChunks(CancellationToken cancellationToken)
+    private void LoadChunks()
     {
         if (!_chunksToLoad.TryDequeue(out var position)) return;
         
@@ -88,13 +100,22 @@ public class ChunkWorker
         _loadedChunks.Enqueue(chunk);
     }
 
-    private void SaveChunks(CancellationToken cancellationToken)
+    private void SaveChunks()
     {
         if (!_chunksToSaveQueue.TryDequeue(out var position)) return;
         
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
         _chunkFactory.SaveChunkData(voxels!, position);
         _savedChunks.Add(position / Chunk.Size);
+    }
+
+    private void UpdateChunks()
+    {
+        if (!_chunksToUpdateQueue.TryDequeue(out var chunk)) return;
+
+        var renderer = new MeshGenerator(chunk.Voxels);
+        chunk.Mesh.Vertices = renderer.GetMesh();
+        _updatedChunks.Enqueue(chunk);
     }
 
     public void Update(Vector3 currentPosition)
@@ -104,6 +125,7 @@ public class ChunkWorker
         DeleteChunks(currentChunk);
         EnqueueLoadingChunks(currentChunk);
         ResolveLoadedChunks();
+        ResolveUpdatedChunks();
     }
 
     private void DeleteChunks(Vector3i currentChunk)
@@ -150,13 +172,32 @@ public class ChunkWorker
         }
     }
 
+    public void EnqueueUpdatingChunk(Chunk chunk)
+    {
+        if (_chunksToUpdateHashSet.Contains(chunk)) return;
+        
+        _chunksToUpdateHashSet.Add(chunk);
+        _chunksToUpdateQueue.Enqueue(chunk);
+        _jobs.Add(JobType.Update);
+    }
+
     private void ResolveLoadedChunks()
     {
         while (_loadedChunks.TryDequeue(out var chunk))
         {
             chunk.Mesh.CreateVertexArrayObject();
-            if (chunk.Mesh.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            if (chunk.Mesh.Vertices.Length > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             _chunks.Add(chunk);
+        }
+    }
+
+    private void ResolveUpdatedChunks()
+    {
+        while (_updatedChunks.TryDequeue(out var chunk))
+        {
+            chunk.Mesh.Update();
+            chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            _chunksToUpdateHashSet.Remove(chunk);
         }
     }
 
