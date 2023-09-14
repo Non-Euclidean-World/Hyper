@@ -55,7 +55,7 @@ internal class Window : GameWindow, IInputSubscriber
         Logger.Info($"Seed: {seed}");
 
         var scalarFieldGenerator = new ScalarFieldGenerator(seed);
-        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator, ChunkWorker.RenderDistance);
+        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
         _scene = new Scene(Size.X / (float)Size.Y, chunkFactory, scalarFieldGenerator);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();

@@ -5,6 +5,7 @@ using BepuUtilities;
 using BepuUtilities.Memory;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
+using Common;
 using Common.Meshes;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
@@ -13,13 +14,13 @@ using Mesh = Common.Meshes.Mesh;
 
 namespace Chunks;
 
-public class Chunk : Mesh
+public class Chunk
 {
     public const int Size = 32;
 
     public new Vector3i Position { get; }
 
-    private readonly Voxel[,,] _voxels;
+    public readonly Voxel[,,] Voxels;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -27,14 +28,17 @@ public class Chunk : Mesh
 
     private TypedIndex _shape;
 
-    public readonly int VoxelsPoolIndex;
+    public Mesh Mesh;
 
-    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int voxelPoolIndex, bool createVao = true) : base(vertices, position, createVao)
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true)
     {
-        _voxels = voxels;
+        Voxels = voxels;
         Position = position;
-        VoxelsPoolIndex = voxelPoolIndex;
+        Mesh = new Mesh(vertices, position, createVao);
     }
+
+    public void Render(Shader shader, float scale, Vector3 cameraPosition) =>
+        Mesh.Render(shader, scale, cameraPosition);
 
     /// <summary>
     /// Mines the selected voxel and all voxels within the radius. Then updates the mesh.
@@ -62,13 +66,14 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
         }
 
-        UpdateMesh();
+        var renderer = new MeshGenerator(Voxels);
+        Mesh.Update(renderer.GetMesh());
 
         var error = GL.GetError();
         if (error != ErrorCode.NoError) Logger.Error(error);
@@ -102,13 +107,14 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
         }
 
-        UpdateMesh();
+        var renderer = new MeshGenerator(Voxels);
+        Mesh.Update(renderer.GetMesh());
 
         var error = GL.GetError();
         if (error != ErrorCode.NoError) Logger.Error(error);
@@ -142,27 +148,7 @@ public class Chunk : Mesh
             simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
             simulation.Statics.Remove(_handle);
         }
-        base.Dispose();
-    }
-
-    private void UpdateMesh()
-    {
-        var renderer = new MeshGenerator(_voxels);
-        Vertices = renderer.GetMesh();
-        NumberOfVertices = Vertices.Length;
-
-        GL.BindVertexArray(VaoId);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
-        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
-        unsafe
-        {
-            fixed (Vertex* source = Vertices)
-            {
-                System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
-            }
-        }
-        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+        Mesh.Dispose();
     }
 
     private static float DistanceSquared(float x1, float y1, float z1, float x2, float y2, float z2)

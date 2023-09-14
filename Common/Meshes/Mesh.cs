@@ -14,7 +14,7 @@ public class Mesh
 
     public int NumberOfVertices;
 
-    public Vertex[] Vertices { get; protected set; }
+    public Vertex[] Vertices { get; set; }
 
     public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
     {
@@ -59,6 +59,25 @@ public class Mesh
 
         VaoId = vaoId;
         VboId = vboId;
+    }
+    
+    public void Update(Vertex[] vertices)
+    {
+        Vertices = vertices;
+        NumberOfVertices = Vertices.Length;
+
+        GL.BindVertexArray(VaoId);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
+        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
+        unsafe
+        {
+            fixed (Vertex* source = Vertices)
+            {
+                System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
+            }
+        }
+        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
     }
 
     public void Dispose()

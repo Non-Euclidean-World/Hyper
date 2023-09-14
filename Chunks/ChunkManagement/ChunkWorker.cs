@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Chunks.Voxels;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
@@ -11,7 +12,7 @@ public class ChunkWorker
 
     private readonly BlockingCollection<Vector3i> _chunksToSaveQueue = new(new ConcurrentQueue<Vector3i>());
 
-    private readonly ConcurrentDictionary<Vector3i, int> _chunksToSaveDictionary = new();
+    private readonly ConcurrentDictionary<Vector3i, Voxel[,,]> _chunksToSaveDictionary = new();
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
 
@@ -74,10 +75,9 @@ public class ChunkWorker
         {
             foreach (var chunkPosition in _chunksToSaveQueue.GetConsumingEnumerable(cancellationToken))
             {
-                _chunksToSaveDictionary.TryRemove(chunkPosition, out int index);
-                _chunkFactory.SaveChunkData(index, chunkPosition);
+                _chunksToSaveDictionary.TryRemove(chunkPosition, out var voxels);
+                _chunkFactory.SaveChunkData(voxels!, chunkPosition);
                 _savedChunks.Add(chunkPosition / Chunk.Size);
-                _chunkFactory.FreeVoxels.Add(index, cancellationToken);
             }
         }
     }
@@ -102,12 +102,11 @@ public class ChunkWorker
             _existingChunks.Remove(chunk.Position / Chunk.Size);
             if (_chunksToSaveDictionary.ContainsKey(chunk.Position))
             {
-                _chunkFactory.FreeVoxels.Add(_chunksToSaveDictionary[chunk.Position], _cancellationTokenSource.Token);
-                _chunksToSaveDictionary[chunk.Position] = chunk.VoxelsPoolIndex;
+                _chunksToSaveDictionary[chunk.Position] = chunk.Voxels;
             }
             else
             {
-                _chunksToSaveDictionary.TryAdd(chunk.Position, chunk.VoxelsPoolIndex);
+                _chunksToSaveDictionary.TryAdd(chunk.Position, chunk.Voxels);
                 _chunksToSaveQueue.Add(chunk.Position, _cancellationTokenSource.Token);
             }
             chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
@@ -138,8 +137,8 @@ public class ChunkWorker
     {
         while (_loadedChunks.TryDequeue(out var chunk))
         {
-            chunk.CreateVertexArrayObject();
-            if (chunk.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            chunk.Mesh.CreateVertexArrayObject();
+            if (chunk.Mesh.NumberOfVertices > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             _chunks.Add(chunk);
         }
     }

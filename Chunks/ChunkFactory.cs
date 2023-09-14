@@ -11,64 +11,45 @@ public class ChunkFactory
 {
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
-    private readonly Voxel[][,,] _voxelPool;
-
-    public readonly BlockingCollection<int> FreeVoxels;
-
     public const string SaveLocation = "Chunks";
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-    public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator, int renderDistance)
+    public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator)
     {
         _scalarFieldGenerator = scalarFieldGenerator;
-        int size = 2 * renderDistance + 1;
-        _voxelPool = new Voxel[3 * size * size * size][,,];
-        for (int i = 0; i < _voxelPool.Length; i++)
-        {
-            _voxelPool[i] = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
-        }
-        FreeVoxels = new BlockingCollection<int>(new ConcurrentQueue<int>());
-        for (int i = 0; i < _voxelPool.Length; i++)
-        {
-            FreeVoxels.Add(i);
-        }
     }
 
     public Chunk GenerateChunk(Vector3i position, bool generateVao = true)
     {
-        int index = FreeVoxels.Take();
-        _scalarFieldGenerator.Generate(Chunk.Size, position, _voxelPool[index]);
-        var meshGenerator = new MeshGenerator(_voxelPool[index]);
+        var voxels = _scalarFieldGenerator.Generate(Chunk.Size, position);
+        var meshGenerator = new MeshGenerator(voxels);
         Vertex[] data = meshGenerator.GetMesh();
 
-        if (FreeVoxels.Count == 0) Logger.Warn("FreeVoxels queue is empty!");
-
-        return new Chunk(data, position, _voxelPool[index], index, generateVao);
+        return new Chunk(data, position, voxels, generateVao);
     }
 
-    public void SaveChunkData(int index, Vector3i position)
+    public void SaveChunkData(Voxel[,,] voxels, Vector3i position)
     {
         string filePath = GetFileName(position / Chunk.Size);
-        SaveVoxels(filePath, _voxelPool[index]);
+        SaveVoxels(filePath, voxels);
     }
 
     public Chunk LoadChunk(Vector3i position)
     {
-        int index = FreeVoxels.Take();
         string filePath = GetFileName(position);
-        LoadVoxels(filePath, _voxelPool[index]);
-        var meshGenerator = new MeshGenerator(_voxelPool[index]);
+        var voxels = LoadVoxels(filePath);
+        var meshGenerator = new MeshGenerator(voxels);
         Vertex[] data = meshGenerator.GetMesh();
 
-        if (FreeVoxels.Count == 0) Logger.Warn("FreeVoxels queue is empty!");
-
-        return new Chunk(data, position * Chunk.Size, _voxelPool[index], index, false);
+        return new Chunk(data, position * Chunk.Size, voxels, false);
     }
 
     private static void SaveVoxels(string filePath, Voxel[,,] voxels)
     {
         using BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Create));
+        
+        writer.Write(voxels.GetLength(0));
+        writer.Write(voxels.GetLength(1));
+        writer.Write(voxels.GetLength(2));
 
         for (int i = 0; i < voxels.GetLength(0); i++)
         {
@@ -84,10 +65,15 @@ public class ChunkFactory
         }
     }
 
-    private static void LoadVoxels(string filePath, Voxel[,,] voxels)
+    private static Voxel[,,] LoadVoxels(string filePath)
     {
         using BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open));
+        
+        int xLength = reader.ReadInt32();
+        int yLength = reader.ReadInt32();
+        int zLength = reader.ReadInt32();
 
+        var voxels = new Voxel[xLength, yLength, zLength];
         for (int i = 0; i < voxels.GetLength(0); i++)
         {
             for (int j = 0; j < voxels.GetLength(1); j++)
@@ -100,6 +86,8 @@ public class ChunkFactory
                 }
             }
         }
+
+        return voxels;
     }
 
     private static string GetFileName(Vector3i position)
