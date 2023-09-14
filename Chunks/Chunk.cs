@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using BepuPhysics;
+﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
@@ -18,7 +17,7 @@ public class Chunk
 {
     public const int Size = 32;
 
-    public new Vector3i Position { get; }
+    public Vector3i Position { get; }
 
     public readonly Voxel[,,] Voxels;
 
@@ -124,17 +123,17 @@ public class Chunk
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-        _shape = simulation.Shapes.Add(mesh);
+        _shape = simulation.Shapes.Add(collisionSurface);
         simulation.Statics[_handle].SetShape(_shape);
     }
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
-        _shape = simulation.Shapes.Add(mesh);
+        _shape = simulation.Shapes.Add(collisionSurface);
         _handle = simulation.Statics.Add(new StaticDescription(
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
