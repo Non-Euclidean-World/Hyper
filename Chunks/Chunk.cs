@@ -115,6 +115,12 @@ public class Chunk
             }
             else return;
         }
+
+        if (!_shape.Exists)
+        {
+            CreateCollisionSurface(simulation, bufferPool);
+            return;
+        }
         
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
