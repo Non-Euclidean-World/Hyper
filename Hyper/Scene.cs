@@ -85,6 +85,7 @@ internal class Scene : IInputSubscriber
             chunk.CreateCollisionSurface(SimulationManager.Simulation, SimulationManager.BufferPool);
         }
 
+        Thread.Sleep(200); // TODO remove
         RegisterCallbacks();
     }
 

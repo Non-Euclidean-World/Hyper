@@ -30,10 +30,6 @@ public class Camera : Commandable, IInputSubscriber
 
     private readonly float _far;
 
-    private bool _firstMove = true;
-
-    private Vector2 _lastPos;
-
     private const float Sensitivity = 0.2f;
 
     public bool FirstPerson { get; set; }
@@ -110,22 +106,10 @@ public class Camera : Commandable, IInputSubscriber
         Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 
-    private void Turn(Vector2 position)
+    private void Turn(Vector2 delta)
     {
-        if (_firstMove)
-        {
-            _lastPos = position;
-            _firstMove = false;
-        }
-        else
-        {
-            var deltaX = position.X - _lastPos.X;
-            var deltaY = position.Y - _lastPos.Y;
-            _lastPos = position;
-
-            Yaw += deltaX * Sensitivity;
-            Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
-        }
+        Yaw += delta.X * Sensitivity;
+        Pitch -= delta.Y * Sensitivity; // Reversed since y-coordinates range from bottom to top
     }
 
     public void UpdateWithCharacter(Player player)
@@ -195,6 +179,6 @@ public class Camera : Commandable, IInputSubscriber
         context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
         context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
 
-        context.RegisterMouseMoveCallback((e) => Turn(e.Position));
+        context.RegisterMouseMoveCallback((e) => Turn(e.Delta));
     }
 }
