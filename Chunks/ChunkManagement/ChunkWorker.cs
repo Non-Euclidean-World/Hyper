@@ -185,7 +185,7 @@ public class ChunkWorker
         while (_loadedChunks.TryDequeue(out var chunk))
         {
             chunk.Mesh.CreateVertexArrayObject();
-            if (chunk.Mesh.Vertices.Length > 0) chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             _chunks.Add(chunk);
         }
     }

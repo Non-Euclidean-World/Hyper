@@ -106,6 +106,16 @@ public class Chunk
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
+        if (Mesh.Vertices.Length == 0)
+        {
+            if (_shape.Exists)
+            {
+                simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+                simulation.Statics.Remove(_handle);
+            }
+            else return;
+        }
+        
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         _shape = simulation.Shapes.Add(collisionSurface);
@@ -114,6 +124,8 @@ public class Chunk
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
+        if (Mesh.Vertices.Length == 0) return;
+        
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
         _shape = simulation.Shapes.Add(collisionSurface);
