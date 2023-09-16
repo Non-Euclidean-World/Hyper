@@ -4,19 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+        xmlns:pages="clr-namespace:WpfMenu.Pages"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <glWpfControl:GLWpfControl
-            x:Name="OpenTkControl"
+        <pages:GameWindow
+            x:Name="GamePage"
             Visibility="Collapsed"
-            Render="OpenTkControl_OnRender"
-            KeyDown="OpenTkControl_OnKeyDown"
-            KeyUp="OpenTkControl_OnKeyUp"
-            MouseDown="OpenTkControl_OnMouseDown"
-            MouseUp="OpenTkControl_OnMouseUp"
-            MouseMove="OpenTkControl_OnMouseMove">
-        </glWpfControl:GLWpfControl>
+            IsVisibleChanged="GamePage_OnIsVisibleChanged">
+        </pages:GameWindow>
 
         <StackPanel
             HorizontalAlignment="Center"
@@ -32,11 +28,6 @@
                 Content="Load Game"
                 Click="LoadGameButton_OnClick">
             </Button>
-            
-            <Button
-                Name="SaveGameButton"
-                Content="Save Game"
-                Click="SaveGameButton_OnClick"></Button>
         </StackPanel>
         
         <Button

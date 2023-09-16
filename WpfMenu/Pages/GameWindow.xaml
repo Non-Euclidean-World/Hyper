@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="WpfMenu.Pages.GameWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfMenu.Pages"
+             xmlns:wpf="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <wpf:GLWpfControl
+            x:Name="OpenTkControl"
+            Visibility="Visible"
+            Render="OpenTkControl_OnRender"
+            SizeChanged="OpenTkControl_OnSizeChanged"
+            KeyDown="OpenTkControl_OnKeyDown"
+            KeyUp="OpenTkControl_OnKeyUp"
+            MouseDown="OpenTkControl_OnMouseDown"
+            MouseUp="OpenTkControl_OnMouseUp"
+            MouseMove="OpenTkControl_OnMouseMove">
+        </wpf:GLWpfControl>
+        
+        <StackPanel
+            Name="MenuPanel"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Collapsed">
+            
+            <Button
+                Name="ResumeButton"
+                Content="Resume"
+                Click="ResumeButton_OnClick"></Button>
+            
+            <Button
+                Name="SaveAndQuitButton"
+                Content="Save &amp; Quit"
+                Click="SaveAndQuitButton_OnClick"></Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

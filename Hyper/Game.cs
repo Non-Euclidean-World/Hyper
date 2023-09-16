@@ -26,11 +26,11 @@ public class Game : IInputSubscriber
 
     private readonly Context _context = Context.Instance;
 
-    public Vector2i Size;
+    private readonly Vector2i _size;
     
     public Game(int width, int height)
     {
-        Size = new Vector2i(width, height);
+        _size = new Vector2i(width, height);
     }
     
     public void Close()
@@ -51,7 +51,7 @@ public class Game : IInputSubscriber
         var scalarFieldGenerator = new ScalarFieldGenerator(seed);
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
 
-        _scene = new Scene(Size.X / (float)Size.Y, 31);
+        _scene = new Scene(_size.X / (float)_size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -150,8 +150,8 @@ public class Game : IInputSubscriber
 
     public void OnResize(ResizeEventArgs e)
     {
-        GL.Viewport(0, 0, Size.X, Size.Y);
-        _scene.Camera.AspectRatio = Size.X / (float)Size.Y;
+        GL.Viewport(0, 0, _size.X, _size.Y);
+        _scene.Camera.AspectRatio = _size.X / (float)_size.Y;
     }
 
     public void RegisterCallbacks()

@@ -3,18 +3,19 @@ using System.Windows.Input;
 using Common;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Wpf;
 
 namespace WpfMenu;
 
 public class WpfWindowHelper : IWindowHelper
 {
-    private readonly MainWindow _window;
+    private readonly GLWpfControl _glControl;
 
     public bool IsCursorGrabbed { get; private set; } = true;
     
-    public WpfWindowHelper(MainWindow window)
+    public WpfWindowHelper(GLWpfControl glControl)
     {
-        _window = window;
+        _glControl = glControl;
     }
 
     public CursorState CursorState
@@ -22,7 +23,7 @@ public class WpfWindowHelper : IWindowHelper
         get
         {
             if (IsCursorGrabbed) return CursorState.Grabbed;
-            if (_window.Cursor == Cursors.None) return CursorState.Hidden;
+            if (_glControl.Cursor == Cursors.None) return CursorState.Hidden;
             return CursorState.Normal;
         }
         set
@@ -30,32 +31,32 @@ public class WpfWindowHelper : IWindowHelper
             if (value == CursorState.Grabbed)
             {
                 IsCursorGrabbed = true;
-                _window.Cursor = Cursors.None;
+                _glControl.Cursor = Cursors.None;
             }
             else if (value == CursorState.Hidden)
             {
                 IsCursorGrabbed = false;
-                _window.Cursor = Cursors.None;
+                _glControl.Cursor = Cursors.None;
             }
             else
             {
                 IsCursorGrabbed = false;
-                _window.Cursor = Cursors.Arrow;
+                _glControl.Cursor = Cursors.Arrow;
             }
         }
     }
 
     public Vector2 GetMousePosition()
     {
-        var mouse = Mouse.GetPosition(_window.OpenTkControl);
-        var aspectRatio = (float)(_window.OpenTkControl.ActualWidth / _window.OpenTkControl.ActualHeight);
+        var mouse = Mouse.GetPosition(_glControl);
+        var aspectRatio = (float)(_glControl.ActualWidth / _glControl.ActualHeight);
 
         return new Vector2(
-            (float)(mouse.X / _window.OpenTkControl.ActualWidth) * aspectRatio - aspectRatio * 0.5f,
-            0.5f - (float)(mouse.Y / _window.OpenTkControl.ActualHeight));
+            (float)(mouse.X / _glControl.ActualWidth) * aspectRatio - aspectRatio * 0.5f,
+            0.5f - (float)(mouse.Y / _glControl.ActualHeight));
     }
 
-    public float GetAspectRatio() => (float)(_window.OpenTkControl.ActualWidth / _window.OpenTkControl.ActualHeight);
+    public float GetAspectRatio() => (float)(_glControl.ActualWidth / _glControl.ActualHeight);
     
     [StructLayout(LayoutKind.Sequential)]
     public struct Point
