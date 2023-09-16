@@ -9,6 +9,13 @@ namespace Chunks.ChunkManagement;
 // The explanation of how this class works is in the GitHub repository wiki.
 public class ChunkWorker
 {
+    private enum JobType
+    {
+        Load,
+        Save,
+        Update
+    }
+    
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
 
     private readonly List<Chunk> _chunks;
