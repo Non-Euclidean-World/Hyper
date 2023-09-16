@@ -1,4 +1,5 @@
-﻿using Common.UserInput;
+﻿using Chunks.ChunkManagement;
+using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -10,10 +11,13 @@ internal class ChunksController : IController, IInputSubscriber
 
     private readonly ObjectShader _shader;
 
-    public ChunksController(Scene scene, ObjectShader shader)
+    private readonly ChunkWorker _chunkWorker;
+
+    public ChunksController(Scene scene, ObjectShader shader, ChunkFactory chunkFactory)
     {
         _scene = scene;
         _shader = shader;
+        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory);
         RegisterCallbacks();
     }
 
@@ -38,7 +42,7 @@ internal class ChunksController : IController, IInputSubscriber
             {
                 if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
-                    chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    _chunkWorker.EnqueueUpdatingChunk(chunk);
                     return;
                 }
             }
@@ -50,10 +54,12 @@ internal class ChunksController : IController, IInputSubscriber
             {
                 if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
                 {
-                    chunk.UpdateCollisionSurface(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                    _chunkWorker.EnqueueUpdatingChunk(chunk);
                     return;
                 }
             }
         });
+
+        context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
     }
 }

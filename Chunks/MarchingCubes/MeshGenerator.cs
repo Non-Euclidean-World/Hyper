@@ -83,16 +83,35 @@ internal class MeshGenerator
             cubeValues[i] = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
             colors[i] = VoxelHelper.GetColor(_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
 
-            if (cubeVertexPos.X == 0 || cubeVertexPos.Y == 0 || cubeVertexPos.Z == 0
-                || cubeVertexPos.X == _scalarField.GetLength(0) - 1 || cubeVertexPos.Y == _scalarField.GetLength(1) - 1 || cubeVertexPos.Z == _scalarField.GetLength(2) - 1)
-            {
-                normals[i] = new Vector3(1, 1, 1); // TODO fix this
-                continue;
-            }
+            if (cubeVertexPos.X == 0)
+                normals[i].X = 2 * (_scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
+            else if (cubeVertexPos.X == _scalarField.GetLength(0) - 1)
+                normals[i].X = 2 * (_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value);
+            else
+                normals[i].X = _scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
 
-            normals[i].X = _scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value - _scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
-            normals[i].Y = _scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
-            normals[i].Z = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
+            if (cubeVertexPos.Y == 0)
+                normals[i].Y = 2 * (_scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
+            else if (cubeVertexPos.Y == _scalarField.GetLength(1) - 1)
+                normals[i].Y = 2 * (_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value);
+            else
+                normals[i].Y = _scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
+                               - _scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
+
+            if (cubeVertexPos.Z == 0)
+                normals[i].Z = 2 * (_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
+                                    - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
+            else if (cubeVertexPos.Z == _scalarField.GetLength(2) - 1)
+                normals[i].Z = 2 * (_scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                                    - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value);
+            else
+                normals[i].Z = _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
+                               - _scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
         }
 
         return (cubeValues, normals, colors);

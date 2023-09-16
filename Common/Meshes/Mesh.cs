@@ -4,26 +4,21 @@ using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
-public class Mesh : IDisposable
+public class Mesh
 {
     public Vector3 Position { get; set; }
-
-    public Vector3 Scaling { get; set; }
 
     public int VaoId;
 
     protected int VboId;
 
-    public int NumberOfVertices;
+    public Vertex[] Vertices { get; set; }
 
-    public Vertex[] Vertices { get; protected set; }
-
-    public Mesh(Vertex[] vertices, Vector3 position)
+    public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
     {
         Vertices = vertices;
-        CreateVertexArrayObject();
+        if (createVertexArrayObject) CreateVertexArrayObject();
         Position = position;
-        NumberOfVertices = Vertices.Length;
     }
 
     public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
@@ -33,10 +28,10 @@ public class Mesh : IDisposable
         shader.SetMatrix4("model", scaleMatrix * model);
 
         GL.BindVertexArray(VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, NumberOfVertices);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length);
     }
 
-    private void CreateVertexArrayObject()
+    public void CreateVertexArrayObject()
     {
         int vaoId = GL.GenVertexArray();
         GL.BindVertexArray(vaoId);
@@ -63,8 +58,25 @@ public class Mesh : IDisposable
         VboId = vboId;
     }
 
+    public void Update()
+    {
+        GL.BindVertexArray(VaoId);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
+        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
+        unsafe
+        {
+            fixed (Vertex* source = Vertices)
+            {
+                System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
+            }
+        }
+        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+    }
+
     public void Dispose()
     {
+        GL.DeleteBuffer(VboId);
         GL.DeleteVertexArray(VaoId);
     }
 }

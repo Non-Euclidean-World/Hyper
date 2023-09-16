@@ -4,6 +4,7 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
+using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common.Meshes;
 using Common.UserInput;
@@ -39,10 +40,8 @@ internal class Scene : IInputSubscriber
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
-    public Scene(float aspectRatio)
+    public Scene(float aspectRatio, ChunkFactory chunkFactory, ScalarFieldGenerator scalarFieldGenerator)
     {
-        var scalarFieldGenerator = new ScalarFieldGenerator(1);
-        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
         int chunksPerSide = 2;
 
         Chunks = GetChunks(chunksPerSide, chunkFactory);
@@ -125,9 +124,7 @@ internal class Scene : IInputSubscriber
         {
             for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
             {
-                int offset = Chunk.Size - 1;
-
-                chunks.Add(generator.GenerateChunk(new Vector3i(offset * x, 0, offset * y)));
+                chunks.Add(generator.GenerateChunk(new Vector3i(Chunk.Size * x, 0, Chunk.Size * y)));
             }
         }
 

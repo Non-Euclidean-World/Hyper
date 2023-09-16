@@ -27,7 +27,7 @@ public class Body : IDisposable
         shader.SetMatrix4("model", scaleMatrix * rotation * translation);
 
         GL.BindVertexArray(Mesh.VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, Mesh.NumberOfVertices);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, Mesh.Vertices.Length);
     }
 
 

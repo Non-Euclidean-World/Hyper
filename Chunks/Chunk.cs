@@ -1,38 +1,38 @@
-﻿using System.Runtime.InteropServices;
-using BepuPhysics;
+﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Chunks.MarchingCubes;
 using Chunks.Voxels;
+using Common;
 using Common.Meshes;
-using NLog;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Mesh = Common.Meshes.Mesh;
 
 namespace Chunks;
 
-public class Chunk : Mesh
+public class Chunk
 {
     public const int Size = 32;
 
-    public new Vector3i Position { get; set; }
+    public Vector3i Position { get; }
 
-    private readonly Voxel[,,] _voxels;
-
-    // TODO No clue if logging works after moving it to Common project. Need to check.
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    public readonly Voxel[,,] Voxels;
 
     private StaticHandle _handle;
 
     private TypedIndex _shape;
 
-    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels) : base(vertices, position)
+    public readonly Mesh Mesh;
+
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true)
     {
-        _voxels = voxels;
+        Voxels = voxels;
         Position = position;
+        Mesh = new Mesh(vertices, position, createVao);
     }
+
+    public void Render(Shader shader, float scale, Vector3 cameraPosition) =>
+        Mesh.Render(shader, scale, cameraPosition);
 
     /// <summary>
     /// Mines the selected voxel and all voxels within the radius. Then updates the mesh.
@@ -60,16 +60,11 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
         }
-
-        UpdateMesh();
-
-        var error = GL.GetError();
-        if (error != ErrorCode.NoError) Logger.Error(error);
 
         return true;
     }
@@ -100,57 +95,60 @@ public class Chunk : Mesh
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        _voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
         }
-
-        UpdateMesh();
-
-        var error = GL.GetError();
-        if (error != ErrorCode.NoError) Logger.Error(error);
 
         return true;
     }
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
+        if (Mesh.Vertices.Length == 0)
+        {
+            if (_shape.Exists)
+            {
+                simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+                simulation.Statics.Remove(_handle);
+            }
+            else return;
+        }
+
+        if (!_shape.Exists)
+        {
+            CreateCollisionSurface(simulation, bufferPool);
+            return;
+        }
+        
+        var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
-        _shape = simulation.Shapes.Add(mesh);
+        _shape = simulation.Shapes.Add(collisionSurface);
         simulation.Statics[_handle].SetShape(_shape);
     }
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        var mesh = MeshHelper.CreateMeshFromChunk(this, bufferPool);
+        if (Mesh.Vertices.Length == 0) return;
+        
+        var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
-        _shape = simulation.Shapes.Add(mesh);
+        _shape = simulation.Shapes.Add(collisionSurface);
         _handle = simulation.Statics.Add(new StaticDescription(
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
             _shape));
     }
 
-    private void UpdateMesh()
+    public void Dispose(Simulation simulation, BufferPool bufferPool)
     {
-        var renderer = new MeshGenerator(_voxels);
-        Vertices = renderer.GetMesh();
-        NumberOfVertices = Vertices.Length;
-
-        GL.BindVertexArray(VaoId);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
-        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
-        unsafe
+        if (_shape.Exists)
         {
-            fixed (Vertex* source = Vertices)
-            {
-                System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
-            }
+            simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+            simulation.Statics.Remove(_handle);
         }
-        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+        Mesh.Dispose();
     }
 
     private static float DistanceSquared(float x1, float y1, float z1, float x2, float y2, float z2)

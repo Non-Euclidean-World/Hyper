@@ -15,7 +15,6 @@ internal class HudController : IController
 
     private readonly HudHelper _hudHelper;
 
-    // TODO fix fps counter and fix the offset on item moving.
     public HudController(HudHelper hudHelper, HudShader shader)
     {
         _hudHelper = hudHelper;
