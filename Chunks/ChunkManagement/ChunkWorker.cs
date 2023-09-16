@@ -6,7 +6,6 @@ using Physics.Collisions;
 
 namespace Chunks.ChunkManagement;
 
-// The explanation of how this class works is in the GitHub repository wiki.
 public class ChunkWorker
 {
     private enum JobType
