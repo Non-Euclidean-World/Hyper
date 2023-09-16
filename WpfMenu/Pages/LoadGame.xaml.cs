@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Hyper;
 
 namespace WpfMenu.Pages;
 
 public partial class LoadGame : UserControl
 {
     private readonly ObservableCollection<string> _saves = new();
+
+    public string selectedSave = null!;
     
     public LoadGame()
     {
@@ -25,11 +27,11 @@ public partial class LoadGame : UserControl
     
     private void RefreshList()
     {
-        string directoryPath = @"C:\path\to\directory";
+        string directoryPath = Game.SavesLocation;
 
         _saves.Clear();
 
-        var files = Directory.GetFiles(directoryPath)
+        var files = Directory.GetDirectories(directoryPath)
             .Select(f => new FileInfo(f))
             .OrderByDescending(f => f.LastWriteTime)
             .Select(f => f.Name)
@@ -39,5 +41,11 @@ public partial class LoadGame : UserControl
         {
             _saves.Add(file);
         }
+    }
+
+    private void Saves_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        selectedSave = (string)Saves.SelectedItem!;
+        Visibility = Visibility.Collapsed;
     }
 }

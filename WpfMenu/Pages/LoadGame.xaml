@@ -9,6 +9,7 @@
     <Grid>
         <ListBox
             Name="Saves"
-            IsVisibleChanged="Saves_OnIsVisibleChanged"></ListBox>
+            IsVisibleChanged="Saves_OnIsVisibleChanged"
+            SelectionChanged="Saves_OnSelectionChanged"></ListBox>
     </Grid>
 </UserControl>

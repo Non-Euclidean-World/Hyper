@@ -15,6 +15,8 @@ public partial class GameWindow : UserControl
     private Game _game = null!;
     
     private readonly WpfWindowHelper _windowHelper;
+
+    private string saveName = null!;
     
     public GameWindow()
     {
@@ -26,8 +28,9 @@ public partial class GameWindow : UserControl
         OpenTkControl.Start(settings);
     }
 
-    public void Load(int width, int height)
+    public void Load(int width, int height, string name)
     {
+        saveName = name;
         Visibility = Visibility.Visible;
         _game = new Game(width, height);
         _game.OnLoad(_windowHelper);
@@ -106,6 +109,7 @@ public partial class GameWindow : UserControl
     private void SaveAndQuitButton_OnClick(object sender, RoutedEventArgs e)
     {
         // TODO add save
+        Game.Save(saveName);
         _game.Close();
         MenuPanel.Visibility = Visibility.Collapsed;
         Visibility = Visibility.Collapsed;

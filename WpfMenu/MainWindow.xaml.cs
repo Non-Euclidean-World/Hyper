@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
-using Hyper;
 using Window = System.Windows.Window;
 
 namespace WpfMenu;
@@ -18,12 +16,12 @@ public partial class MainWindow : Window
 
     private void NewGameButton_OnClick(object sender, RoutedEventArgs e)
     {
-        GamePage.Load((int)ActualWidth, (int)ActualHeight);
+        GamePage.Load((int)ActualWidth, (int)ActualHeight, new Guid().ToString());
     }
     
     private void LoadGameButton_OnClick(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        LoadPage.Visibility = Visibility.Visible;
     }
 
     private void QuitButton_OnClick(object sender, RoutedEventArgs e)
@@ -44,7 +42,22 @@ public partial class MainWindow : Window
             NewGameButton.Visibility = Visibility.Visible;
             LoadGameButton.Visibility = Visibility.Visible;
             QuitButton.Visibility = Visibility.Visible;
-            Cursor = Cursors.Arrow;
+        }
+    }
+
+    private void LoadPage_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (LoadPage.Visibility == Visibility.Visible)
+        {
+            NewGameButton.Visibility = Visibility.Collapsed;
+            LoadGameButton.Visibility = Visibility.Collapsed;
+            QuitButton.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            NewGameButton.Visibility = Visibility.Visible;
+            LoadGameButton.Visibility = Visibility.Visible;
+            QuitButton.Visibility = Visibility.Visible;
         }
     }
 }

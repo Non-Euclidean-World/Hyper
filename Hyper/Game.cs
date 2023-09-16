@@ -1,4 +1,5 @@
-﻿using Character.Shaders;
+﻿using System.Resources;
+using Character.Shaders;
 using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common;
@@ -27,6 +28,8 @@ public class Game : IInputSubscriber
     private readonly Context _context = Context.Instance;
 
     private readonly Vector2i _size;
+
+    public static string SavesLocation = Path.GetFullPath("saves");
     
     public Game(int width, int height)
     {
@@ -152,6 +155,34 @@ public class Game : IInputSubscriber
     {
         GL.Viewport(0, 0, _size.X, _size.Y);
         _scene.Camera.AspectRatio = _size.X / (float)_size.Y;
+    }
+
+    public static void Save(string name)
+    {
+        var saveLocation = Path.Combine(SavesLocation, name);
+        Directory.CreateDirectory(saveLocation);
+        var chunkLocation = Path.Combine(saveLocation, "chunks");
+        Directory.CreateDirectory(chunkLocation);
+        foreach (var file in Directory.GetFiles(ChunkHandler.SaveLocation))
+        {
+            var fileName = Path.GetFileName(file);
+            File.Copy(file, Path.Combine(chunkLocation, fileName));
+        }
+    }
+
+    public static void Load(string name)
+    {
+        foreach (var file in Directory.GetFiles(ChunkHandler.SaveLocation))
+        {
+            File.Delete(file);
+        }
+        
+        var saveLocation = Path.Combine(SavesLocation, name);
+        var chunkLocation = Path.Combine(saveLocation, "chunks");
+        foreach (var file in Directory.GetFiles(chunkLocation))
+        {
+            File.Copy(file, ChunkHandler.SaveLocation);
+        }
     }
 
     public void RegisterCallbacks()

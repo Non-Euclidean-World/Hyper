@@ -13,6 +13,12 @@
             Visibility="Collapsed"
             IsVisibleChanged="GamePage_OnIsVisibleChanged">
         </pages:GameWindow>
+        
+        <pages:LoadGame
+            x:Name="LoadPage"
+            Visibility="Collapsed"
+            IsVisibleChanged="LoadPage_OnIsVisibleChanged">
+        </pages:LoadGame>
 
         <StackPanel
             HorizontalAlignment="Center"
