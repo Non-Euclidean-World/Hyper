@@ -1,4 +1,3 @@
-using Common.Command;
 using Common.UserInput;
 using NLog;
 using OpenTK.Mathematics;
@@ -8,7 +7,7 @@ using Player.Utils;
 
 namespace Player;
 
-public class Camera : Commandable, IInputSubscriber
+public class Camera : IInputSubscriber
 {
     public float Curve { get; set; } = 0f;
 
@@ -116,53 +115,6 @@ public class Camera : Commandable, IInputSubscriber
     {
         ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
             + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this));
-    }
-
-    protected override void SetCommand(string[] args)
-    {
-        switch (args[0])
-        {
-            case "fov":
-                Fov = int.Parse(args[1]);
-                break;
-            case "curve":
-                if (args[1] == "h")
-                    Curve = -1f;
-                else if (args[1] == "s")
-                    Curve = 1f;
-                else if (args[1] == "e")
-                    Curve = 0f;
-                else
-                    Curve = float.Parse(args[1]);
-                break;
-            case "position":
-                if (args.Length != 4)
-                    return;
-                float x = float.Parse(args[1]);
-                float y = float.Parse(args[2]);
-                float z = float.Parse(args[3]);
-                ReferencePointPosition = new Vector3(x, y, z);
-                break;
-            default:
-                CommandNotFound();
-                break;
-        }
-    }
-
-    protected override void GetCommand(string[] args)
-    {
-        switch (args[0])
-        {
-            case "fov":
-                Console.WriteLine(Fov);
-                break;
-            case "position":
-                Console.WriteLine(ReferencePointPosition);
-                break;
-            default:
-                CommandNotFound();
-                break;
-        }
     }
 
     public void RegisterCallbacks()

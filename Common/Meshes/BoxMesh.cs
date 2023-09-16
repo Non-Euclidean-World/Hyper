@@ -16,7 +16,6 @@ public static class BoxMesh
         }
 
         Mesh mesh = new Mesh(vertices, position);
-        mesh.Scaling = size;
 
         return mesh;
     }

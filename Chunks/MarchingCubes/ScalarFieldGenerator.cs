@@ -44,13 +44,13 @@ public class ScalarFieldGenerator
     public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
     {
         var perlin = new PerlinNoise(_seed);
-        Voxel[,,] scalarField = new Voxel[width, height, depth];
+        var scalarField = new Voxel[width + 1, height + 1, depth + 1];
 
-        for (int x = position.X; x < width + position.X; x++)
+        for (int x = position.X; x < width + 1 + position.X; x++)
         {
-            for (int y = position.Y; y < height + position.Y; y++)
+            for (int y = position.Y; y < height + 1 + position.Y; y++)
             {
-                for (int z = position.Z; z < depth + position.Z; z++)
+                for (int z = position.Z; z < depth + 1 + position.Z; z++)
                 {
                     float density = y;
                     const float offset = -0.5f;

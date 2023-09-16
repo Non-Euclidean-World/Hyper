@@ -1,4 +1,6 @@
 ﻿using Character.Shaders;
+using Chunks.ChunkManagement;
+using Chunks.MarchingCubes;
 using Common.UserInput;
 using Hud;
 using Hud.Shaders;
@@ -14,10 +16,10 @@ namespace Hyper;
 
 public class Game : IInputSubscriber
 {
-    public bool Loaded { get; private set; } = false;
-    
-    private CancellationTokenSource _debugCancellationTokenSource = null!;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+    public bool Loaded { get; private set; }
+    
     private Scene _scene = null!;
 
     private IController[] _controllers = null!;
@@ -42,8 +44,14 @@ public class Game : IInputSubscriber
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        
+        var seed = new Random().Next();
+        Logger.Info($"Seed: {seed}");
+        
+        var scalarFieldGenerator = new ScalarFieldGenerator(seed);
+        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
 
-        _scene = new Scene(Size.X / (float)Size.Y);
+        _scene = new Scene(Size.X / (float)Size.Y, chunkFactory, scalarFieldGenerator);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -55,7 +63,7 @@ public class Game : IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader),
+            new ChunksController(_scene, objectShader, chunkFactory),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
