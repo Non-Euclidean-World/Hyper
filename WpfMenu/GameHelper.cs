@@ -7,7 +7,7 @@ using WpfButton = System.Windows.Input.MouseButton;
 
 namespace WpfMenu;
 
-public class GameHelper
+public static class GameHelper
 {
     public static readonly Dictionary<Key, Keys> KeysMap;
 
@@ -95,17 +95,4 @@ public class GameHelper
             { WpfButton.Right, MouseButton.Right },
         };
     }
-    
-    [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
-    {
-        public int X;
-        public int Y;
-    }
-    
-    [DllImport("User32.dll")]
-    public static extern bool SetCursorPos(int x, int y);
-    
-    [DllImport("User32.dll")]
-    public static extern bool GetCursorPos(out POINT lpPoint);
 }

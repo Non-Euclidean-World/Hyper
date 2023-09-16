@@ -1,4 +1,5 @@
-﻿using OpenTK.Windowing.Common;
+﻿using Common;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -23,7 +24,7 @@ public class Window : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
-        _game.OnLoad();
+        _game.OnLoad(new WindowHelper(this));
         CursorState = CursorState.Grabbed;
     }
 

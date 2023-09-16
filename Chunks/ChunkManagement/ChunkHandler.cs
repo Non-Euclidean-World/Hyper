@@ -7,7 +7,7 @@ namespace Chunks.ChunkManagement;
 
 public static class ChunkHandler
 {
-    public const string SaveLocation = "Chunks";
+    public static readonly string SaveLocation = Path.GetFullPath("Chunks");
 
     public static void SaveChunkData(Voxel[,,] voxels, Vector3i position)
     {

@@ -1,8 +1,8 @@
 ﻿using Character.Shaders;
 using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
+using Common;
 using Common.UserInput;
-using Hud;
 using Hud.Shaders;
 using Hyper.Controllers;
 using Hyper.Shaders;
@@ -38,7 +38,7 @@ public class Game : IInputSubscriber
         LogManager.Flush();
     }
 
-    public void OnLoad()
+    public void OnLoad(IWindowHelper windowHelper)
     {
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
@@ -51,13 +51,11 @@ public class Game : IInputSubscriber
         var scalarFieldGenerator = new ScalarFieldGenerator(seed);
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
 
-        _scene = new Scene(Size.X / (float)Size.Y, chunkFactory, scalarFieldGenerator);
+        _scene = new Scene(Size.X / (float)Size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
         var hudShader = HudShader.Create();
-
-        var hudHelper = new HudHelper();
 
         _controllers = new IController[]
         {
@@ -67,9 +65,9 @@ public class Game : IInputSubscriber
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
-            new HudController(hudHelper, hudShader),
+            new HudController(windowHelper, hudShader),
         };
-
+        
         Loaded = true;
     }
 

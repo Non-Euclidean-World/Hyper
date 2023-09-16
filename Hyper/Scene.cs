@@ -4,7 +4,6 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
-using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common.Meshes;
 using Common.UserInput;
@@ -18,7 +17,7 @@ namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks;
+    public readonly List<Chunk> Chunks = new();
 
     public readonly List<LightSource> LightSources;
 
@@ -40,12 +39,11 @@ internal class Scene : IInputSubscriber
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
-    public Scene(float aspectRatio, ChunkFactory chunkFactory, ScalarFieldGenerator scalarFieldGenerator)
+    public Scene(float aspectRatio, float elevation)
     {
         int chunksPerSide = 2;
 
-        Chunks = GetChunks(chunksPerSide, chunkFactory);
-        LightSources = GetLightSources(chunksPerSide, scalarFieldGenerator.AvgElevation);
+        LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
 
         SimulationMembers = new Dictionary<BodyHandle, ISimulationMember>();
@@ -53,14 +51,14 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
-        var characterInitialPosition = new Vector3(0, scalarFieldGenerator.AvgElevation + 8, 15);
+        var characterInitialPosition = new Vector3(0, elevation + 8, 15);
         Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
         SimulationMembers.Add(Player.BodyHandle, Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like
-            .Select(i => new Vector3(i * 4 - botsCount * 2, scalarFieldGenerator.AvgElevation + 5, i * 4 - botsCount * 2))
+            .Select(i => new Vector3(i * 4 - botsCount * 2, elevation + 5, i * 4 - botsCount * 2))
             .Select(pos =>
             {
                 var humanoid = new Humanoid(CreatePhysicalHumanoid(pos));
@@ -70,21 +68,15 @@ internal class Scene : IInputSubscriber
             })
             .ToList();
 
-        var carInitialPosition = new Vector3(5, scalarFieldGenerator.AvgElevation + 5, 12);
+        var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
         {
             SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, scalarFieldGenerator.AvgElevation);
+        Camera = GetCamera(aspectRatio, elevation);
 
-        foreach (var chunk in Chunks)
-        {
-            chunk.CreateCollisionSurface(SimulationManager.Simulation, SimulationManager.BufferPool);
-        }
-
-        Thread.Sleep(200); // TODO remove
         RegisterCallbacks();
     }
 
@@ -108,28 +100,6 @@ internal class Scene : IInputSubscriber
         }
 
         return lightSources;
-    }
-
-    private static List<Chunk> GetChunks(int chunksPerSide, ChunkFactory generator)
-    {
-        return MakeSquare(chunksPerSide, generator);
-    }
-
-    private static List<Chunk> MakeSquare(int chunksPerSide, ChunkFactory generator)
-    {
-        if (chunksPerSide % 2 != 0)
-            throw new ArgumentException("# of chunks/side must be even");
-
-        List<Chunk> chunks = new List<Chunk>();
-        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
-        {
-            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-            {
-                chunks.Add(generator.GenerateChunk(new Vector3i(Chunk.Size * x, 0, Chunk.Size * y)));
-            }
-        }
-
-        return chunks;
     }
 
     private Camera GetCamera(float aspectRatio, float elevation)

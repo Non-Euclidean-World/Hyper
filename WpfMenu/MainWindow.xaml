@@ -18,13 +18,26 @@
             MouseMove="OpenTkControl_OnMouseMove">
         </glWpfControl:GLWpfControl>
 
-        <Button 
-            Name="StartGameButton"
+        <StackPanel
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Content="Start"
-            Click="StartGameButton_OnClick">
-        </Button>
+            VerticalAlignment="Center">
+            <Button 
+                Name="NewGameButton"
+                Content="New Game"
+                Click="NewGameButton_OnClick">
+            </Button>
+        
+            <Button
+                Name="LoadGameButton"
+                Content="Load Game"
+                Click="LoadGameButton_OnClick">
+            </Button>
+            
+            <Button
+                Name="SaveGameButton"
+                Content="Save Game"
+                Click="SaveGameButton_OnClick"></Button>
+        </StackPanel>
         
         <Button
             Name="QuitButton"

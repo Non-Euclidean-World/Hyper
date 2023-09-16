@@ -1,4 +1,5 @@
-﻿using Hud;
+﻿using Common;
+using Hud;
 using Hud.HUDElements;
 using Hud.Shaders;
 using Hyper.Shaders;
@@ -13,24 +14,24 @@ internal class HudController : IController
 
     private readonly IHudElement[] _elements;
 
-    private readonly HudHelper _hudHelper;
+    private readonly IWindowHelper _windowHelper;
 
-    public HudController(HudHelper hudHelper, HudShader shader)
+    public HudController(IWindowHelper windowHelper, HudShader shader)
     {
-        _hudHelper = hudHelper;
+        _windowHelper = windowHelper;
         _shader = shader;
         _elements = new IHudElement[]
         {
             new Crosshair(){ Visible = false},
-            new FpsCounter(_hudHelper),
-            new InventoryHudManager(_hudHelper),
+            new FpsCounter(_windowHelper),
+            new InventoryHudManager(_windowHelper),
         };
     }
 
     public void Render()
     {
         GL.Disable(EnableCap.DepthTest);
-        _shader.SetUp(_hudHelper.GetAspectRatio());
+        _shader.SetUp(_windowHelper.GetAspectRatio());
 
         foreach (var element in _elements)
         {

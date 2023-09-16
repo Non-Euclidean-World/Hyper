@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using Hyper;
@@ -18,16 +17,19 @@ public partial class MainWindow : Window
 {
     private readonly Game _game;
     
+    private readonly WpfWindowHelper _windowHelper;
+    
     public MainWindow()
     {
         InitializeComponent();
+        _windowHelper = new WpfWindowHelper(this);
 
         var settings = new GLWpfControlSettings();
         // You can start and rely on the Settings property that may be set in XAML or elsewhere in the codebase.
         OpenTkControl.Start(settings);
 
         _game = new Game((int)Width, (int)Height);
-        _game.OnLoad();
+        _game.OnLoad(_windowHelper);
     }
     
     private void OpenTkControl_OnRender(TimeSpan delta)
@@ -43,7 +45,9 @@ public partial class MainWindow : Window
         if (e.Key == Key.Escape)
         {
             OpenTkControl.Visibility = Visibility.Collapsed;
-            StartGameButton.Visibility = Visibility.Visible;
+            NewGameButton.Visibility = Visibility.Visible;
+            LoadGameButton.Visibility = Visibility.Visible;
+            SaveGameButton.Visibility = Visibility.Visible;
             QuitButton.Visibility = Visibility.Visible;
             Cursor = Cursors.Arrow;
             return;
@@ -67,11 +71,13 @@ public partial class MainWindow : Window
         if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.OnMouseUp(value);
     }
 
-    private void StartGameButton_OnClick(object sender, RoutedEventArgs e)
+    private void NewGameButton_OnClick(object sender, RoutedEventArgs e)
     {
-        if (!_game.Loaded) _game.OnLoad();
+        if (!_game.Loaded) _game.OnLoad(_windowHelper);
         OpenTkControl.Visibility = Visibility.Visible;
-        StartGameButton.Visibility = Visibility.Collapsed;
+        NewGameButton.Visibility = Visibility.Collapsed;
+        LoadGameButton.Visibility = Visibility.Collapsed;
+        SaveGameButton.Visibility = Visibility.Collapsed;
         QuitButton.Visibility = Visibility.Collapsed;
         Cursor = Cursors.None;
     }
@@ -86,19 +92,28 @@ public partial class MainWindow : Window
     {
         int screenX = (int)(Left + Width / 2);
         int screenY = (int)(Top + Height / 2);
-        GameHelper.SetCursorPos(screenX, screenY);
+        WpfWindowHelper.SetCursorPos(screenX, screenY);
     }
 
     private void OpenTkControl_OnMouseMove(object sender, MouseEventArgs e)
     {
-        GameHelper.GetCursorPos(out var newMousePos);
-        CenterMouse();
-        GameHelper.GetCursorPos(out var position);
+        WpfWindowHelper.GetCursorPos(out var newMousePos);
+        if (_windowHelper.IsCursorGrabbed) CenterMouse();
+        WpfWindowHelper.GetCursorPos(out var position);
         Point delta = new Point(newMousePos.X - position.X, newMousePos.Y - position.Y);
 
-        // TODO: Update your in-game camera here
         _game.OnMouseMove(new MouseMoveEventArgs(
-            new Vector2((float)newMousePos.X, (float)newMousePos.Y), 
+            new Vector2(newMousePos.X, newMousePos.Y), 
             new Vector2((float)delta.X, (float)delta.Y)));
+    }
+
+    private void LoadGameButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SaveGameButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }

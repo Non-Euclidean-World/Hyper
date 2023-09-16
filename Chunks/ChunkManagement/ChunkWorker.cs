@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
+using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
@@ -41,9 +42,11 @@ public class ChunkWorker
 
     private readonly ChunkFactory _chunkFactory;
 
-    private const int RenderDistance = 2;
+    private const int RenderDistance = 1;
 
-    private const int NumberOfThreads = 1;
+    private const int NumberOfThreads = 2;
+    
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
 
@@ -64,6 +67,24 @@ public class ChunkWorker
         for (int i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);
+        }
+
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        EnqueueLoadingChunks(Vector3i.Zero);
+        int totalChunks = (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+        int prevNumber = 0;
+        while (_chunks.Count < totalChunks)
+        {
+            ResolveLoadedChunks();
+            if (prevNumber < _chunks.Count && _chunks.Count % 10 == 0)
+            {
+                Logger.Info($"Loaded {_chunks.Count} / {totalChunks} chunks");
+                prevNumber = _chunks.Count;
+            }
         }
     }
 

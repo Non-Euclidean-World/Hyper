@@ -20,11 +20,11 @@ public class FpsCounter : IHudElement
 
     private int _fps;
 
-    private readonly HudHelper _hudHelper;
+    private readonly IWindowHelper _windowHelper;
 
-    public FpsCounter(HudHelper hudHelper)
+    public FpsCounter(IWindowHelper windowHelper)
     {
-        _hudHelper = hudHelper;
+        _windowHelper = windowHelper;
         _size = 0.02f;
         _stopwatch.Start();
     }
@@ -34,7 +34,7 @@ public class FpsCounter : IHudElement
         shader.SetVector4("color", Vector4.One);
         UpdateFps();
 
-        Printer.RenderStringTopRight(shader, _fps.ToString(), _size, _hudHelper.GetAspectRatio() / 2, 0.5f);
+        Printer.RenderStringTopRight(shader, _fps.ToString(), _size, _windowHelper.GetAspectRatio() / 2, 0.5f);
     }
 
     private void UpdateFps()
