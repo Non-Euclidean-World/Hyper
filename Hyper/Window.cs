@@ -24,7 +24,7 @@ public class Window : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
-        _game.OnLoad(new WindowHelper(this));
+        _game.Start("default", new WindowHelper(this));
         CursorState = CursorState.Grabbed;
     }
 

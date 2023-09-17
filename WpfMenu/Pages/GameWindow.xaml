@@ -10,7 +10,6 @@
     <Grid>
         <wpf:GLWpfControl
             x:Name="OpenTkControl"
-            Visibility="Visible"
             Render="OpenTkControl_OnRender"
             SizeChanged="OpenTkControl_OnSizeChanged"
             KeyDown="OpenTkControl_OnKeyDown"

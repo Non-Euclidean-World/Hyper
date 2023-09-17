@@ -23,6 +23,9 @@
         <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
+            
+            <TextBox Name="SaveNameTextBox"/>
+            
             <Button 
                 Name="NewGameButton"
                 Content="New Game"

@@ -1,5 +1,4 @@
-﻿using System.Resources;
-using Character.Shaders;
+﻿using Character.Shaders;
 using Chunks.ChunkManagement;
 using Chunks.MarchingCubes;
 using Common;
@@ -17,9 +16,7 @@ namespace Hyper;
 
 public class Game : IInputSubscriber
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-    public bool Loaded { get; private set; }
+    private bool _initialized;
     
     private Scene _scene = null!;
 
@@ -29,7 +26,7 @@ public class Game : IInputSubscriber
 
     private readonly Vector2i _size;
 
-    public static string SavesLocation = Path.GetFullPath("saves");
+    private readonly Settings _settings = Settings.Instance;
     
     public Game(int width, int height)
     {
@@ -38,20 +35,36 @@ public class Game : IInputSubscriber
     
     public void Close()
     {
+        foreach (var callback in _context.CloseCallbacks)
+        {
+            callback();
+        }
+        
         LogManager.Flush();
     }
+    
+    public void Start(string name, IWindowHelper windowHelper)
+    {
+        _settings.Initialize(0, name);
+        if (!_initialized)
+        {
+            Initialize(windowHelper);
+        }
 
-    public void OnLoad(IWindowHelper windowHelper)
+        foreach (var callback in _context.StartCallbacks)
+        {
+            callback();
+        }
+    }
+
+    private void Initialize(IWindowHelper windowHelper)
     {
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         
-        var seed = new Random().Next();
-        Logger.Info($"Seed: {seed}");
-        
-        var scalarFieldGenerator = new ScalarFieldGenerator(seed);
+        var scalarFieldGenerator = new ScalarFieldGenerator();
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
 
         _scene = new Scene(_size.X / (float)_size.Y, 31);
@@ -71,7 +84,7 @@ public class Game : IInputSubscriber
             new HudController(windowHelper, hudShader),
         };
         
-        Loaded = true;
+        _initialized = true;
     }
 
     public void OnRenderFrame(FrameEventArgs e)
@@ -155,34 +168,6 @@ public class Game : IInputSubscriber
     {
         GL.Viewport(0, 0, _size.X, _size.Y);
         _scene.Camera.AspectRatio = _size.X / (float)_size.Y;
-    }
-
-    public static void Save(string name)
-    {
-        var saveLocation = Path.Combine(SavesLocation, name);
-        Directory.CreateDirectory(saveLocation);
-        var chunkLocation = Path.Combine(saveLocation, "chunks");
-        Directory.CreateDirectory(chunkLocation);
-        foreach (var file in Directory.GetFiles(ChunkHandler.SaveLocation))
-        {
-            var fileName = Path.GetFileName(file);
-            File.Copy(file, Path.Combine(chunkLocation, fileName));
-        }
-    }
-
-    public static void Load(string name)
-    {
-        foreach (var file in Directory.GetFiles(ChunkHandler.SaveLocation))
-        {
-            File.Delete(file);
-        }
-        
-        var saveLocation = Path.Combine(SavesLocation, name);
-        var chunkLocation = Path.Combine(saveLocation, "chunks");
-        foreach (var file in Directory.GetFiles(chunkLocation))
-        {
-            File.Copy(file, ChunkHandler.SaveLocation);
-        }
     }
 
     public void RegisterCallbacks()

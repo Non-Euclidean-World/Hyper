@@ -16,8 +16,6 @@ public partial class GameWindow : UserControl
     
     private readonly WpfWindowHelper _windowHelper;
 
-    private string saveName = null!;
-    
     public GameWindow()
     {
         InitializeComponent();
@@ -30,10 +28,9 @@ public partial class GameWindow : UserControl
 
     public void Load(int width, int height, string name)
     {
-        saveName = name;
         Visibility = Visibility.Visible;
         _game = new Game(width, height);
-        _game.OnLoad(_windowHelper);
+        _game.Start(name, _windowHelper);
         Cursor = Cursors.None;
     }
 
@@ -52,6 +49,8 @@ public partial class GameWindow : UserControl
 
     private void OpenTkControl_OnKeyDown(object sender, KeyEventArgs e)
     {
+        if (Visibility != Visibility.Visible) return;
+        
         if (e.Key == Key.Escape)
         {
             OpenTkControl.Visibility = Visibility.Collapsed;
@@ -65,6 +64,8 @@ public partial class GameWindow : UserControl
 
     private void OpenTkControl_OnKeyUp(object sender, KeyEventArgs e)
     {
+        if (Visibility != Visibility.Visible) return;
+
         if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.OnKeyUp(value);
     }
 
@@ -108,9 +109,8 @@ public partial class GameWindow : UserControl
 
     private void SaveAndQuitButton_OnClick(object sender, RoutedEventArgs e)
     {
-        // TODO add save
-        Game.Save(saveName);
         _game.Close();
+        OpenTkControl.Visibility = Visibility.Visible;
         MenuPanel.Visibility = Visibility.Collapsed;
         Visibility = Visibility.Collapsed;
         Cursor = Cursors.Arrow;

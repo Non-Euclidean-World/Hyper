@@ -4,7 +4,6 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
-using Chunks.MarchingCubes;
 using Common.Meshes;
 using Common.UserInput;
 using OpenTK.Mathematics;

@@ -1,17 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Common;
 using Hyper;
 
 namespace WpfMenu.Pages;
 
 public partial class LoadGame : UserControl
 {
+    public event EventHandler<string> LoadGameEvent = null!;
+    
     private readonly ObservableCollection<string> _saves = new();
-
-    public string selectedSave = null!;
     
     public LoadGame()
     {
@@ -27,7 +29,7 @@ public partial class LoadGame : UserControl
     
     private void RefreshList()
     {
-        string directoryPath = Game.SavesLocation;
+        string directoryPath = Settings.SavesLocation;
 
         _saves.Clear();
 
@@ -45,7 +47,14 @@ public partial class LoadGame : UserControl
 
     private void Saves_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        selectedSave = (string)Saves.SelectedItem!;
+        if (Saves.SelectedItem is null) return;
+        
+        Visibility = Visibility.Collapsed;
+        LoadGameEvent?.Invoke(this, (string)Saves.SelectedItem!);
+    }
+
+    private void ReturnButton_OnClick(object sender, RoutedEventArgs e)
+    {
         Visibility = Visibility.Collapsed;
     }
 }

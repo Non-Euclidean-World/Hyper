@@ -11,5 +11,13 @@
             Name="Saves"
             IsVisibleChanged="Saves_OnIsVisibleChanged"
             SelectionChanged="Saves_OnSelectionChanged"></ListBox>
+        
+        <Button
+            Name="ReturnButton"
+            Content="Return"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Click="ReturnButton_OnClick">
+        </Button>
     </Grid>
 </UserControl>
