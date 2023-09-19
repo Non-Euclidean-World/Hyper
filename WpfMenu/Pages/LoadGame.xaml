@@ -9,15 +9,30 @@
     <Grid>
         <ListBox
             Name="Saves"
-            IsVisibleChanged="Saves_OnIsVisibleChanged"
-            SelectionChanged="Saves_OnSelectionChanged"></ListBox>
+            IsVisibleChanged="Saves_OnIsVisibleChanged">
+        </ListBox>
         
-        <Button
-            Name="ReturnButton"
-            Content="Return"
+        <StackPanel
             HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Click="ReturnButton_OnClick">
-        </Button>
+            VerticalAlignment="Bottom">
+            <Button
+                Name="LoadButton"
+                Content="Load"
+                Click="LoadButton_OnClick">
+            </Button>
+        
+            <Button
+                Name="DeleteButton"
+                Content="Delete"
+                Click="DeleteButton_OnClick">
+            </Button>
+        
+            <Button
+                Name="ReturnButton"
+                Content="Return"
+                Click="ReturnButton_OnClick">
+            </Button>
+        </StackPanel>
+        
     </Grid>
 </UserControl>

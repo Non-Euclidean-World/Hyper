@@ -118,12 +118,12 @@ public class Context
     {
         FrameUpdateCallbacks.Add(callback);
     }
-    
+
     public void RegisterStartCallback(Action callback)
     {
         StartCallbacks.Add(callback);
     }
-    
+
     public void RegisterCloseCallback(Action callback)
     {
         CloseCallbacks.Add(callback);

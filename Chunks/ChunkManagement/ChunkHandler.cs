@@ -9,9 +9,9 @@ namespace Chunks.ChunkManagement;
 public class ChunkHandler
 {
     private string SaveLocation => Path.Combine(_settings.CurrentSaveLocation, "chunks");
-    
+
     private readonly Settings _settings = Settings.Instance;
-    
+
     public ChunkHandler()
     {
         Directory.CreateDirectory(SaveLocation);
@@ -32,7 +32,7 @@ public class ChunkHandler
 
         return new Chunk(data, position * Chunk.Size, voxels, false);
     }
-    
+
     public List<Vector3i> GetSavedChunks()
     {
         return Directory.GetFiles(SaveLocation, "*.voxels")
@@ -90,7 +90,7 @@ public class ChunkHandler
     {
         return $"{SaveLocation}/{position.X}_{position.Y}_{position.Z}.voxels";
     }
-    
+
     private static Vector3i GetPositionFromName(string fileName)
     {
         string[] split = fileName.Substring(0, fileName.IndexOf('.')).Split('_');

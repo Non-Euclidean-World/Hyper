@@ -12,25 +12,25 @@ namespace WpfMenu.Pages;
 
 public partial class GameWindow : UserControl
 {
-    private Game _game = null!;
-    
+    private readonly Game _game;
+
     private readonly WpfWindowHelper _windowHelper;
 
     public GameWindow()
     {
         InitializeComponent();
         _windowHelper = new WpfWindowHelper(OpenTkControl);
+        _game = new Game(1, 1);
 
         var settings = new GLWpfControlSettings();
-        // You can start and rely on the Settings property that may be set in XAML or elsewhere in the codebase.
         OpenTkControl.Start(settings);
     }
 
     public void Load(int width, int height, string name)
     {
         Visibility = Visibility.Visible;
-        _game = new Game(width, height);
         _game.Start(name, _windowHelper);
+        _game.OnResize(new ResizeEventArgs(width, height));
         Cursor = Cursors.None;
     }
 
@@ -41,7 +41,7 @@ public partial class GameWindow : UserControl
         _game.OnRenderFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
         GL.Finish();
     }
-    
+
     private void OpenTkControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
         _game.OnResize(new ResizeEventArgs((int)ActualWidth, (int)ActualHeight));
@@ -50,7 +50,7 @@ public partial class GameWindow : UserControl
     private void OpenTkControl_OnKeyDown(object sender, KeyEventArgs e)
     {
         if (Visibility != Visibility.Visible) return;
-        
+
         if (e.Key == Key.Escape)
         {
             OpenTkControl.Visibility = Visibility.Collapsed;
@@ -58,7 +58,7 @@ public partial class GameWindow : UserControl
             Cursor = Cursors.Arrow;
             return;
         }
-        
+
         if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.OnKeyDown(value);
     }
 
@@ -78,7 +78,7 @@ public partial class GameWindow : UserControl
     {
         if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.OnMouseUp(value);
     }
-    
+
     private void OpenTkControl_OnMouseMove(object sender, MouseEventArgs e)
     {
         WpfWindowHelper.GetCursorPos(out var newMousePos);
@@ -87,10 +87,10 @@ public partial class GameWindow : UserControl
         Point delta = new Point(newMousePos.X - position.X, newMousePos.Y - position.Y);
 
         _game.OnMouseMove(new MouseMoveEventArgs(
-            new Vector2(newMousePos.X, newMousePos.Y), 
+            new Vector2(newMousePos.X, newMousePos.Y),
             new Vector2((float)delta.X, (float)delta.Y)));
     }
-    
+
     private void CenterMouse()
     {
         var point = PointToScreen(new Point(0, 0));

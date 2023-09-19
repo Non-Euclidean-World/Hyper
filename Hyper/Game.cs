@@ -17,35 +17,39 @@ namespace Hyper;
 public class Game : IInputSubscriber
 {
     private bool _initialized;
-    
+
+    public bool IsRunning;
+
     private Scene _scene = null!;
 
     private IController[] _controllers = null!;
 
     private readonly Context _context = Context.Instance;
 
-    private readonly Vector2i _size;
+    private Vector2i _size;
 
     private readonly Settings _settings = Settings.Instance;
-    
+
     public Game(int width, int height)
     {
         _size = new Vector2i(width, height);
     }
-    
+
     public void Close()
     {
         foreach (var callback in _context.CloseCallbacks)
         {
             callback();
         }
-        
+
+        _settings.Save();
         LogManager.Flush();
+        IsRunning = false;
     }
-    
+
     public void Start(string name, IWindowHelper windowHelper)
     {
-        _settings.Initialize(0, name);
+        _settings.Initialize(name);
         if (!_initialized)
         {
             Initialize(windowHelper);
@@ -55,6 +59,8 @@ public class Game : IInputSubscriber
         {
             callback();
         }
+
+        IsRunning = true;
     }
 
     private void Initialize(IWindowHelper windowHelper)
@@ -63,7 +69,7 @@ public class Game : IInputSubscriber
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-        
+
         var scalarFieldGenerator = new ScalarFieldGenerator();
         ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
 
@@ -83,7 +89,7 @@ public class Game : IInputSubscriber
             new LightSourcesController(_scene, lightSourceShader),
             new HudController(windowHelper, hudShader),
         };
-        
+
         _initialized = true;
     }
 
@@ -168,6 +174,7 @@ public class Game : IInputSubscriber
     {
         GL.Viewport(0, 0, _size.X, _size.Y);
         _scene.Camera.AspectRatio = _size.X / (float)_size.Y;
+        _size = e.Size;
     }
 
     public void RegisterCallbacks()

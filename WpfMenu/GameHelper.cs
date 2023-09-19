@@ -12,7 +12,7 @@ public static class GameHelper
     public static readonly Dictionary<Key, Keys> KeysMap;
 
     public static readonly Dictionary<WpfButton, MouseButton> MouseButtonsMap;
-    
+
     static GameHelper()
     {
         KeysMap = new Dictionary<Key, Keys>

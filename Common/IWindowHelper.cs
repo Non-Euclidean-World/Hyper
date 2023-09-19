@@ -8,6 +8,6 @@ public interface IWindowHelper
     CursorState CursorState { get; set; }
 
     Vector2 GetMousePosition();
-    
+
     float GetAspectRatio();
 }

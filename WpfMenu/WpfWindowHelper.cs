@@ -12,7 +12,7 @@ public class WpfWindowHelper : IWindowHelper
     private readonly GLWpfControl _glControl;
 
     public bool IsCursorGrabbed { get; private set; } = true;
-    
+
     public WpfWindowHelper(GLWpfControl glControl)
     {
         _glControl = glControl;
@@ -57,17 +57,17 @@ public class WpfWindowHelper : IWindowHelper
     }
 
     public float GetAspectRatio() => (float)(_glControl.ActualWidth / _glControl.ActualHeight);
-    
+
     [StructLayout(LayoutKind.Sequential)]
     public struct Point
     {
         public int X;
         public int Y;
     }
-    
+
     [DllImport("User32.dll")]
     public static extern bool SetCursorPos(int x, int y);
-    
+
     [DllImport("User32.dll")]
     public static extern bool GetCursorPos(out Point lpPoint);
 }

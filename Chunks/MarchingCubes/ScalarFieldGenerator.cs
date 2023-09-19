@@ -7,7 +7,7 @@ namespace Chunks.MarchingCubes;
 public class ScalarFieldGenerator
 {
     private readonly Settings _settings;
-    
+
     private readonly int _octaves;
 
     private readonly float _initialFreq;

@@ -16,7 +16,7 @@ public class ChunkWorker : IInputSubscriber
         Save,
         Update
     }
-    
+
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
 
     private readonly List<Chunk> _chunks;
@@ -46,9 +46,9 @@ public class ChunkWorker : IInputSubscriber
     private const int RenderDistance = 1;
 
     private const int NumberOfThreads = 2;
-    
+
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    
+
     private ChunkHandler _chunkHandler;
 
     private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
@@ -65,7 +65,7 @@ public class ChunkWorker : IInputSubscriber
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
-        
+
         RegisterCallbacks();
     }
 
@@ -76,7 +76,7 @@ public class ChunkWorker : IInputSubscriber
         {
             Task.Run(RunJobs);
         }
-        
+
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
         int totalChunks = (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
@@ -256,7 +256,7 @@ public class ChunkWorker : IInputSubscriber
             _chunkHandler.SaveChunkData(voxels!, position);
         }
     }
-    
+
     private void GetSavedChunks()
     {
         var savedChunks = _chunkHandler.GetSavedChunks();
@@ -269,9 +269,9 @@ public class ChunkWorker : IInputSubscriber
     public void RegisterCallbacks()
     {
         var context = Context.Instance;
-        
+
         context.RegisterStartCallback(Start);
-        
+
         context.RegisterCloseCallback(() =>
         {
             _cancellationTokenSource.Cancel();
@@ -284,7 +284,7 @@ public class ChunkWorker : IInputSubscriber
             _chunksToUpdateQueue.Clear();
             _chunksToUpdateHashSet.Clear();
             _updatedChunks.Clear();
-            
+
             SaveAllChunks();
             _chunks.Clear();
             _chunksToSaveQueue.Clear();

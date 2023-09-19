@@ -8,11 +8,11 @@ namespace WpfMenu;
 /// </summary>
 public partial class MainWindow : Window
 {
-    
+
     public MainWindow()
     {
         InitializeComponent();
-        
+
         LoadPage.LoadGameEvent += LoadGamePage_OnLoadGameEvent!;
     }
 
@@ -20,7 +20,7 @@ public partial class MainWindow : Window
     {
         GamePage.Load((int)ActualWidth, (int)ActualHeight, SaveNameTextBox.Text);
     }
-    
+
     private void LoadGameButton_OnClick(object sender, RoutedEventArgs e)
     {
         LoadPage.Visibility = Visibility.Visible;
@@ -66,7 +66,7 @@ public partial class MainWindow : Window
             QuitButton.Visibility = Visibility.Visible;
         }
     }
-    
+
     private void LoadGamePage_OnLoadGameEvent(object sender, string e)
     {
         LoadPage.Visibility = Visibility.Collapsed;

@@ -12,13 +12,13 @@ namespace WpfMenu.Pages;
 public partial class LoadGame : UserControl
 {
     public event EventHandler<string> LoadGameEvent = null!;
-    
+
     private readonly ObservableCollection<string> _saves = new();
-    
+
     public LoadGame()
     {
         InitializeComponent();
-        
+
         Saves.ItemsSource = _saves;
     }
 
@@ -26,35 +26,35 @@ public partial class LoadGame : UserControl
     {
         if (e.NewValue is true) RefreshList();
     }
-    
+
     private void RefreshList()
     {
-        string directoryPath = Settings.SavesLocation;
-
         _saves.Clear();
 
-        var files = Directory.GetDirectories(directoryPath)
-            .Select(f => new FileInfo(f))
-            .OrderByDescending(f => f.LastWriteTime)
-            .Select(f => f.Name)
-            .ToList();
-
-        foreach (var file in files)
+        foreach (var file in SaveManager.GetSaves())
         {
             _saves.Add(file);
         }
     }
 
-    private void Saves_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void ReturnButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Visibility = Visibility.Collapsed;
+    }
+
+    private void LoadButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (Saves.SelectedItem is null) return;
-        
+
         Visibility = Visibility.Collapsed;
         LoadGameEvent?.Invoke(this, (string)Saves.SelectedItem!);
     }
 
-    private void ReturnButton_OnClick(object sender, RoutedEventArgs e)
+    private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Visibility = Visibility.Collapsed;
+        if (Saves.SelectedItem is null) return;
+
+        SaveManager.DeleteSave(Saves.SelectedItem.ToString()!);
+        RefreshList();
     }
 }
