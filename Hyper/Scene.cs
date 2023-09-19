@@ -28,7 +28,7 @@ internal class Scene : IInputSubscriber
 
     public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
 
-    public readonly Player.Player Player;
+    public Player.Player Player;
 
     public readonly Camera Camera;
 
@@ -49,11 +49,6 @@ internal class Scene : IInputSubscriber
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
-
-        var characterInitialPosition = new Vector3(0, elevation + 8, 15);
-        Player = new Player.Player(CreatePhysicalHumanoid(characterInitialPosition));
-        SimulationMembers.Add(Player.BodyHandle, Player);
-        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         int botsCount = 3;
         Bots = Enumerable.Range(0, botsCount) // initialize them however you like
@@ -111,7 +106,7 @@ internal class Scene : IInputSubscriber
         return camera;
     }
 
-    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
+    public PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
         => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);

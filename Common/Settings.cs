@@ -1,4 +1,6 @@
-﻿namespace Common;
+﻿using System.Text.Json;
+
+namespace Common;
 
 public class Settings
 {
@@ -16,7 +18,7 @@ public class Settings
 
     public string CurrentSaveLocation => Path.Combine(SavesLocation, SaveName);
 
-    private string SettingsLocation => Path.Combine(CurrentSaveLocation, "settings.txt");
+    private string SettingsLocation => Path.Combine(CurrentSaveLocation, "settings.json");
 
     private Settings()
     {
@@ -46,24 +48,15 @@ public class Settings
             {"saveName", SaveName}
         };
 
-        File.WriteAllLines(SettingsLocation, settings.Select(s => $"{s.Key}={s.Value}"));
+        File.WriteAllText(SettingsLocation, JsonSerializer.Serialize(settings));
     }
 
     private void Load()
     {
-        var settings = File.ReadAllLines(SettingsLocation);
-        foreach (var setting in settings)
-        {
-            var split = setting.Split('=');
-            switch (split[0])
-            {
-                case "seed":
-                    Seed = int.Parse(split[1]);
-                    break;
-                case "saveName":
-                    SaveName = split[1];
-                    break;
-            }
-        }
+        var json = File.ReadAllText(SettingsLocation);
+        var settings = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+
+        Seed = int.Parse(settings["seed"]);
+        SaveName = settings["saveName"];
     }
 }

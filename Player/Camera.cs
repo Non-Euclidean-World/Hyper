@@ -33,8 +33,6 @@ public class Camera : IInputSubscriber
 
     public bool FirstPerson { get; set; }
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     public Vector3 ViewPosition { get; private init; }
 
     public Camera(float aspectRatio, float near, float far, float scale)

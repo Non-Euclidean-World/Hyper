@@ -286,6 +286,10 @@ public class ChunkWorker : IInputSubscriber
             _updatedChunks.Clear();
 
             SaveAllChunks();
+            foreach (var chunk in _chunks)
+            {
+                chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
+            }
             _chunks.Clear();
             _chunksToSaveQueue.Clear();
             _chunksToSaveDictionary.Clear();

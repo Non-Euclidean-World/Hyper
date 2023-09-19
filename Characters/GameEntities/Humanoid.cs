@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using BepuUtilities.Memory;
 using Character.Characters;
 using Character.Characters.Cowboy;
 using Common;
@@ -90,5 +91,11 @@ public class Humanoid : ISimulationMember, IContactEventListener
             Console.WriteLine("Bot collided with something");
         }
 #endif
+    }
+
+    public void Dispose(Simulation simulation)
+    {
+        simulation.Bodies.Remove(BodyHandle);
+        PhysicalCharacter.Dispose();
     }
 }
