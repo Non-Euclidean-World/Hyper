@@ -17,7 +17,7 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this));
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), Guid.NewGuid().ToString());
         CursorState = CursorState.Grabbed;
         _console = new Thread(Command)
         {

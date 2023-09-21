@@ -21,5 +21,26 @@ public class Settings
         Seed = seed;
         SaveName = saveName;
         AspectRatio = aspectRatio;
+        
+        if (!Directory.Exists(AppDataLocation)) Directory.CreateDirectory(AppDataLocation);
+        if (!Directory.Exists(SavesLocation)) Directory.CreateDirectory(SavesLocation);
+        if (!Directory.Exists(CurrentSaveLocation)) Directory.CreateDirectory(CurrentSaveLocation);
+    }
+
+    public static Settings Load(string saveName, float aspectRatio)
+    {
+        if (!Directory.Exists(Path.Combine(SavesLocation, saveName)))
+        {
+            var rand = new Random();
+            return new Settings(rand.Next(), saveName, aspectRatio);
+        }
+        var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, "settings.json"));
+        return JsonSerializer.Deserialize<Settings>(json)!;
+    }
+    
+    public void Save()
+    {
+        var json = JsonSerializer.Serialize(this);
+        File.WriteAllText(Path.Combine(CurrentSaveLocation, "settings.json"), json);
     }
 }

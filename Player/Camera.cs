@@ -1,5 +1,4 @@
 using Common.UserInput;
-using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;

@@ -1,11 +1,8 @@
-﻿using System.Text.Json;
-using Character.Shaders;
-using Common;
+﻿using Character.Shaders;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Player;
 
 namespace Hyper.Controllers;
 

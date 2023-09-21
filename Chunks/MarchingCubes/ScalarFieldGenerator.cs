@@ -1,5 +1,4 @@
 ﻿using Chunks.Voxels;
-using Common;
 using OpenTK.Mathematics;
 
 namespace Chunks.MarchingCubes;

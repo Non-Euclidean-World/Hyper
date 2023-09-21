@@ -28,7 +28,7 @@ public partial class GameWindow : UserControl
     public void Load(int width, int height, string name)
     {
         Visibility = Visibility.Visible;
-        _game = new Game(width, height, _windowHelper);
+        _game = new Game(width, height, _windowHelper, name);
         _game.Resize(new ResizeEventArgs(width, height));
         Cursor = Cursors.None;
     }

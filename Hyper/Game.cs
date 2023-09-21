@@ -23,8 +23,10 @@ public class Game : IInputSubscriber
     private readonly Context _context = Context.Instance;
 
     private Vector2i _size;
+    
+    private readonly Settings _settings;
 
-    public Game(int width, int height, IWindowHelper windowHelper)
+    public Game(int width, int height, IWindowHelper windowHelper, string saveName)
     {
         _size = new Vector2i(width, height);
         
@@ -33,7 +35,7 @@ public class Game : IInputSubscriber
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        var settings = new Settings(0, "test", _size.X / (float)_size.Y);
+        _settings = Settings.Load(saveName, height / (float)width);
         _scene = new Scene(_size.X / (float)_size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
@@ -44,7 +46,7 @@ public class Game : IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader, settings),
+            new ChunksController(_scene, objectShader, _settings),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
@@ -56,7 +58,7 @@ public class Game : IInputSubscriber
     {
         foreach (var callback in _context.CloseCallbacks)
         {
-            callback("test");
+            callback(_settings.SaveName);
         }
 
         _context.Clear();
