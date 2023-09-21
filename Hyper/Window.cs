@@ -17,8 +17,7 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y);
-        _game.Start(Guid.NewGuid().ToString(), new WindowHelper(this));
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this));
         CursorState = CursorState.Grabbed;
         _console = new Thread(Command)
         {
@@ -36,7 +35,7 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        if (_game.IsRunning) _game.OnRenderFrame(e);
+        if (_game.IsRunning) _game.RenderFrame(e);
 
         SwapBuffers();
     }
@@ -50,14 +49,14 @@ public class Window : GameWindow
             return;
         }
 
-        if (_game.IsRunning) _game.OnUpdateFrame(e);
+        if (_game.IsRunning) _game.UpdateFrame(e);
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
         base.OnKeyDown(e);
 
-        if (_game.IsRunning) _game.OnKeyDown(e.Key);
+        if (_game.IsRunning) _game.KeyDown(e.Key);
 
         if (e.Key == Keys.Escape)
         {
@@ -75,42 +74,42 @@ public class Window : GameWindow
     {
         base.OnKeyUp(e);
 
-        if (_game.IsRunning) _game.OnKeyUp(e.Key);
+        if (_game.IsRunning) _game.KeyUp(e.Key);
     }
 
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
         base.OnMouseMove(e);
 
-        if (_game.IsRunning) _game.OnMouseMove(e);
+        if (_game.IsRunning) _game.MouseMove(e);
     }
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         base.OnMouseDown(e);
 
-        if (_game.IsRunning) _game.OnMouseDown(e.Button);
+        if (_game.IsRunning) _game.MouseDown(e.Button);
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)
     {
         base.OnMouseUp(e);
 
-        if (_game.IsRunning) _game.OnMouseUp(e.Button);
+        if (_game.IsRunning) _game.MouseUp(e.Button);
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
 
-        if (_game.IsRunning) _game.OnMouseWheel(e);
+        if (_game.IsRunning) _game.MouseWheel(e);
     }
 
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
 
-        if (_game.IsRunning) _game.OnResize(e);
+        if (_game.IsRunning) _game.Resize(e);
     }
 
     private void StartDebugThreadAsync()
@@ -142,7 +141,7 @@ public class Window : GameWindow
                         Close();
                         return;
                     case "start":
-                        _game.Start(args[1], new WindowHelper(this));
+                        // _game.Start(args[1], new WindowHelper(this));
                         CursorState = CursorState.Grabbed;
                         break;
                     case "save":

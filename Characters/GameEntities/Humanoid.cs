@@ -1,6 +1,5 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
-using BepuUtilities.Memory;
 using Character.Characters;
 using Character.Characters.Cowboy;
 using Common;
@@ -93,9 +92,9 @@ public class Humanoid : ISimulationMember, IContactEventListener
 #endif
     }
 
-    public void Dispose(Simulation simulation)
+    public void Dispose()
     {
-        simulation.Bodies.Remove(BodyHandle);
         PhysicalCharacter.Dispose();
+        // TODO Models should be singletons so we don't need to dispose them. however now they are not so we have to keep that in mind.
     }
 }

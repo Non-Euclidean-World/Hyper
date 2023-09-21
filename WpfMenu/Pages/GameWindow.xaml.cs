@@ -12,7 +12,7 @@ namespace WpfMenu.Pages;
 
 public partial class GameWindow : UserControl
 {
-    private readonly Game _game;
+    private Game _game = null!;
 
     private readonly WpfWindowHelper _windowHelper;
 
@@ -20,7 +20,6 @@ public partial class GameWindow : UserControl
     {
         InitializeComponent();
         _windowHelper = new WpfWindowHelper(OpenTkControl);
-        _game = new Game(1, 1);
 
         var settings = new GLWpfControlSettings();
         OpenTkControl.Start(settings);
@@ -29,22 +28,22 @@ public partial class GameWindow : UserControl
     public void Load(int width, int height, string name)
     {
         Visibility = Visibility.Visible;
-        _game.Start(name, _windowHelper);
-        _game.OnResize(new ResizeEventArgs(width, height));
+        _game = new Game(width, height, _windowHelper);
+        _game.Resize(new ResizeEventArgs(width, height));
         Cursor = Cursors.None;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
         // TODO if game is saved delta still increases. fix it.
-        _game.OnUpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
-        _game.OnRenderFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
+        _game.UpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
+        _game.RenderFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
         GL.Finish();
     }
 
     private void OpenTkControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        _game.OnResize(new ResizeEventArgs((int)ActualWidth, (int)ActualHeight));
+        _game.Resize(new ResizeEventArgs((int)ActualWidth, (int)ActualHeight));
     }
 
     private void OpenTkControl_OnKeyDown(object sender, KeyEventArgs e)
@@ -59,24 +58,24 @@ public partial class GameWindow : UserControl
             return;
         }
 
-        if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.OnKeyDown(value);
+        if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.KeyDown(value);
     }
 
     private void OpenTkControl_OnKeyUp(object sender, KeyEventArgs e)
     {
         if (Visibility != Visibility.Visible) return;
 
-        if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.OnKeyUp(value);
+        if (GameHelper.KeysMap.TryGetValue(e.Key, out var value)) _game.KeyUp(value);
     }
 
     private void OpenTkControl_OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.OnMouseDown(value);
+        if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.MouseDown(value);
     }
 
     private void OpenTkControl_OnMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.OnMouseUp(value);
+        if (GameHelper.MouseButtonsMap.TryGetValue(e.ChangedButton, out var value)) _game.MouseUp(value);
     }
 
     private void OpenTkControl_OnMouseMove(object sender, MouseEventArgs e)
@@ -86,7 +85,7 @@ public partial class GameWindow : UserControl
         WpfWindowHelper.GetCursorPos(out var position);
         Point delta = new Point(newMousePos.X - position.X, newMousePos.Y - position.Y);
 
-        _game.OnMouseMove(new MouseMoveEventArgs(
+        _game.MouseMove(new MouseMoveEventArgs(
             new Vector2(newMousePos.X, newMousePos.Y),
             new Vector2((float)delta.X, (float)delta.Y)));
     }
@@ -109,10 +108,10 @@ public partial class GameWindow : UserControl
 
     private void SaveAndQuitButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _game.Close();
         OpenTkControl.Visibility = Visibility.Visible;
         MenuPanel.Visibility = Visibility.Collapsed;
         Visibility = Visibility.Collapsed;
+        _game.Close();
         Cursor = Cursors.Arrow;
     }
 }

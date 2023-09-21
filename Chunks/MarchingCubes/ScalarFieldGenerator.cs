@@ -6,8 +6,8 @@ namespace Chunks.MarchingCubes;
 
 public class ScalarFieldGenerator
 {
-    private readonly Settings _settings;
-
+    private readonly int _seed;
+    
     private readonly int _octaves;
 
     private readonly float _initialFreq;
@@ -22,9 +22,9 @@ public class ScalarFieldGenerator
 
     public float AvgElevation { get; private set; } = 0f;
 
-    public ScalarFieldGenerator(int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
+    public ScalarFieldGenerator(int seed, int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
     {
-        _settings = Settings.Instance;
+        _seed = seed;
         _octaves = octaves;
         _initialFreq = initialFreq;
         _freqMul = freqMul;
@@ -44,7 +44,7 @@ public class ScalarFieldGenerator
     /// <returns></returns>
     public Voxel[,,] Generate(int width, int height, int depth, Vector3i position)
     {
-        var perlin = new PerlinNoise(_settings.Seed);
+        var perlin = new PerlinNoise(_seed);
         var scalarField = new Voxel[width + 1, height + 1, depth + 1];
 
         for (int x = position.X; x < width + 1 + position.X; x++)

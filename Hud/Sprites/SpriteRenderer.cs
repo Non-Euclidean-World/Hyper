@@ -101,4 +101,9 @@ public class SpriteRenderer
 
         return new Vector2(sizeX, sizeY);
     }
+
+    public void Dispose()
+    {
+        _spriteSheet.Dispose();
+    }
 }

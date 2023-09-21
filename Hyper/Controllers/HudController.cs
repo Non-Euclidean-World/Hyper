@@ -39,4 +39,14 @@ internal class HudController : IController
         }
         GL.Enable(EnableCap.DepthTest);
     }
+
+    public void Dispose()
+    {
+        foreach (var element in _elements)
+        {
+            element.Dispose();
+        }
+        
+        _shader.Dispose();
+    }
 }

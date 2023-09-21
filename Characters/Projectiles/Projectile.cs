@@ -11,8 +11,8 @@ public class Projectile : ISimulationMember
     public ProjectileMesh Mesh { get; private set; }
 
     private TypedIndex _shape;
+    
     private float _lifeTime;
-    private bool _disposed;
 
     private Projectile(ProjectileMesh mesh, float lifeTime)
     {
@@ -59,13 +59,17 @@ public class Projectile : ISimulationMember
         Mesh.Update(body.Pose);
 
         _lifeTime -= dt;
-        if (!_disposed && _lifeTime < 0)
+        if (_lifeTime < 0)
         {
-            simulation.Bodies.Remove(BodyHandle);
-            simulation.Shapes.RemoveAndDispose(_shape, pool);
-
-            _disposed = true;
+            Dispose(simulation, pool);
             IsDead = true;
         }
+    }
+
+    public void Dispose(Simulation simulation, BufferPool bufferPool)
+    {
+        simulation.Bodies.Remove(BodyHandle);
+        simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+        Mesh.Dispose();
     }
 }

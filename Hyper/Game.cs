@@ -1,6 +1,4 @@
 ﻿using Character.Shaders;
-using Chunks.ChunkManagement;
-using Chunks.MarchingCubes;
 using Common;
 using Common.UserInput;
 using Hud.Shaders;
@@ -16,63 +14,26 @@ namespace Hyper;
 
 public class Game : IInputSubscriber
 {
-    private bool _initialized;
+    public bool IsRunning = true;
 
-    public bool IsRunning;
+    private readonly Scene _scene;
 
-    private Scene _scene = null!;
-
-    private IController[] _controllers = null!;
+    private readonly IController[] _controllers;
 
     private readonly Context _context = Context.Instance;
 
     private Vector2i _size;
 
-    private readonly Settings _settings = Settings.Instance;
-
-    public Game(int width, int height)
+    public Game(int width, int height, IWindowHelper windowHelper)
     {
         _size = new Vector2i(width, height);
-    }
-
-    public void Close()
-    {
-        foreach (var callback in _context.CloseCallbacks)
-        {
-            callback();
-        }
-
-        _settings.Save();
-        LogManager.Flush();
-        IsRunning = false;
-    }
-
-    public void Start(string name, IWindowHelper windowHelper)
-    {
-        _settings.Initialize(name);
-        if (!_initialized)
-        {
-            Initialize(windowHelper);
-        }
-
-        foreach (var callback in _context.StartCallbacks)
-        {
-            callback();
-        }
-
-        IsRunning = true;
-    }
-
-    private void Initialize(IWindowHelper windowHelper)
-    {
+        
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        var scalarFieldGenerator = new ScalarFieldGenerator();
-        ChunkFactory chunkFactory = new ChunkFactory(scalarFieldGenerator);
-
+        var settings = new Settings(0, "test", _size.X / (float)_size.Y);
         _scene = new Scene(_size.X / (float)_size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
@@ -83,18 +44,34 @@ public class Game : IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader, chunkFactory),
+            new ChunksController(_scene, objectShader, settings),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
             new HudController(windowHelper, hudShader),
         };
-
-        _initialized = true;
     }
 
-    public void OnRenderFrame(FrameEventArgs e)
+    public void Close()
     {
+        foreach (var callback in _context.CloseCallbacks)
+        {
+            callback("test");
+        }
+
+        _context.Clear();
+        _scene.Dispose();
+        foreach (var controller in _controllers)
+        {
+            controller.Dispose();
+        }
+        LogManager.Flush();
+        IsRunning = false;
+    }
+
+    public void RenderFrame(FrameEventArgs e)
+    {
+        if (!IsRunning) return;
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         foreach (var controller in _controllers)
@@ -103,7 +80,7 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnUpdateFrame(FrameEventArgs e)
+    public void UpdateFrame(FrameEventArgs e)
     {
         foreach (var callback in _context.FrameUpdateCallbacks)
         {
@@ -113,7 +90,7 @@ public class Game : IInputSubscriber
         _context.ExecuteAllHeldCallbacks(InputType.MouseButton, e);
     }
 
-    public void OnKeyDown(Keys key)
+    public void KeyDown(Keys key)
     {
         if (!_context.KeyDownCallbacks.ContainsKey(key))
             return;
@@ -124,7 +101,7 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnKeyUp(Keys key)
+    public void KeyUp(Keys key)
     {
         if (!_context.KeyUpCallbacks.ContainsKey(key))
             return;
@@ -135,7 +112,7 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnMouseMove(MouseMoveEventArgs e)
+    public void MouseMove(MouseMoveEventArgs e)
     {
         foreach (var callback in _context.MouseMoveCallbacks)
         {
@@ -143,7 +120,7 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnMouseDown(MouseButton button)
+    public void MouseDown(MouseButton button)
     {
         if (!_context.ButtonDownCallbacks.ContainsKey(button))
             return;
@@ -154,7 +131,7 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnMouseUp(MouseButton button)
+    public void MouseUp(MouseButton button)
     {
         if (!_context.ButtonUpCallbacks.ContainsKey(button))
             return;
@@ -165,12 +142,12 @@ public class Game : IInputSubscriber
         }
     }
 
-    public void OnMouseWheel(MouseWheelEventArgs e)
+    public void MouseWheel(MouseWheelEventArgs e)
     {
         _scene.Camera.Fov -= e.OffsetY;
     }
 
-    public void OnResize(ResizeEventArgs e)
+    public void Resize(ResizeEventArgs e)
     {
         GL.Viewport(0, 0, _size.X, _size.Y);
         _scene.Camera.AspectRatio = _size.X / (float)_size.Y;

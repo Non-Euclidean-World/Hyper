@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper;
+namespace Common;
 
 public static class SerializationHelper
 {

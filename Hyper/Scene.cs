@@ -26,15 +26,15 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
-    public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
-
-    public Player.Player Player;
+    public readonly Player.Player Player;
 
     public readonly Camera Camera;
 
-    public readonly float Scale = 0.1f;
+    public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
+
+    public readonly float Scale = 0.1f;
 
     public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
@@ -61,6 +61,8 @@ internal class Scene : IInputSubscriber
                 return humanoid;
             })
             .ToList();
+        
+        Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -122,5 +124,32 @@ internal class Scene : IInputSubscriber
             SimulationManager.ResetRayCastingResult(Player, Player.RayId);
             SimulationManager.RayCast(Player, Player.RayId);
         });
+    }
+
+    public void Dispose()
+    {
+        foreach (var chunk in Chunks)
+            chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
+        Chunks.Clear();
+        
+        foreach (var lightSource in LightSources)
+            lightSource.Dispose();
+        LightSources.Clear();
+        
+        foreach (var projectile in Projectiles)
+            projectile.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
+        Projectiles.Clear();
+        
+        foreach (var bot in Bots)
+            bot.Dispose();
+        Bots.Clear();
+        
+        Player.Dispose();
+        
+        SimulationMembers.Clear();
+        
+        SimulationManager.Dispose();
+        
+        Stopwatch.Stop();
     }
 }

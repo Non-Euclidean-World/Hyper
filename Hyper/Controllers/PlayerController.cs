@@ -5,6 +5,7 @@ using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Player;
 
 namespace Hyper.Controllers;
 
@@ -18,10 +19,6 @@ internal class PlayerController : IController, IInputSubscriber
 
     private readonly LightSourceShader _rayMarkerShader;
     
-    private string SaveFile => Path.Combine(_settings.CurrentSaveLocation, "player.json");
-
-    private readonly Settings _settings = Settings.Instance;
-
     public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
         _scene = scene;
@@ -43,35 +40,6 @@ internal class PlayerController : IController, IInputSubscriber
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
 #endif
-    }
-
-    private void Save()
-    {
-        var settings = new Dictionary<string, string>
-        {
-            {"position", SerializationHelper.Serialize(_scene.Player.PhysicalCharacter.Pose.Position)},
-        };
-
-        File.WriteAllText(SaveFile, JsonSerializer.Serialize(settings));
-        
-        _scene.Player.Dispose(_scene.SimulationManager.Simulation);
-    }
-
-    private void Start()
-    {
-        Vector3 characterInitialPosition;
-        if (File.Exists(SaveFile))
-        {
-            var json = File.ReadAllText(SaveFile);
-            var playerData = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-
-            characterInitialPosition = SerializationHelper.Deserialize(playerData["position"]);
-        }
-        else characterInitialPosition = new Vector3(0, 31, 15);
-        
-        _scene.Player = new Player.Player(_scene.CreatePhysicalHumanoid(characterInitialPosition));
-        _scene.SimulationMembers.Add(_scene.Player.BodyHandle, _scene.Player);
-        _scene.SimulationManager.RegisterContactCallback(_scene.Player.BodyHandle, contactInfo => _scene.Player.ContactCallback(contactInfo, _scene.SimulationMembers));
     }
 
     public void RegisterCallbacks()
@@ -112,8 +80,12 @@ internal class PlayerController : IController, IInputSubscriber
 
             _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
-        
-        context.RegisterCloseCallback(Save);
-        context.RegisterStartCallback(Start);
+    }
+    
+    public void Dispose()
+    {
+        _modelShader.Dispose();
+        _objectShader.Dispose();
+        _rayMarkerShader.Dispose();
     }
 }

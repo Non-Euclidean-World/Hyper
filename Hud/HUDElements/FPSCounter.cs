@@ -48,4 +48,9 @@ public class FpsCounter : IHudElement
             _stopwatch.Restart();
         }
     }
+
+    public void Dispose()
+    {
+        
+    }
 }

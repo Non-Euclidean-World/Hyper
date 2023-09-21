@@ -3,4 +3,6 @@
 public interface IController
 {
     void Render();
+
+    void Dispose();
 }

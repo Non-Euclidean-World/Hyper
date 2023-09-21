@@ -28,6 +28,7 @@ internal class ProjectilesController : IController, IInputSubscriber
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
             if (projectile.IsDead)
             {
+                projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                 _scene.SimulationMembers.Remove(projectile.BodyHandle);
             }
         }
@@ -61,5 +62,10 @@ internal class ProjectilesController : IController, IInputSubscriber
 
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterKeyDownCallback(Keys.P, CreateProjectile);
+    }
+    
+    public void Dispose()
+    {
+        _shader.Dispose();
     }
 }

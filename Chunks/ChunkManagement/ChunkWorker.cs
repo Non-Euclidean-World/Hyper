@@ -1,14 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
-using Common.UserInput;
+using Common;
 using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
 namespace Chunks.ChunkManagement;
 
-public class ChunkWorker : IInputSubscriber
+public class ChunkWorker : IDisposable
 {
     private enum JobType
     {
@@ -49,24 +49,24 @@ public class ChunkWorker : IInputSubscriber
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private ChunkHandler _chunkHandler;
+    private readonly ChunkHandler _chunkHandler;
 
     private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, Settings settings)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
-        _chunkFactory = chunkFactory;
-        _chunkHandler = new ChunkHandler();
+        _chunkFactory = new ChunkFactory(new ScalarFieldGenerator(settings.Seed));
+        _chunkHandler = new ChunkHandler(settings.SaveName);
         foreach (var chunk in _chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
 
-        RegisterCallbacks();
+        Start();
     }
 
     private void Start()
@@ -266,33 +266,26 @@ public class ChunkWorker : IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void Dispose()
     {
-        var context = Context.Instance;
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
 
-        context.RegisterStartCallback(Start);
+        _existingChunks.Clear();
+        _chunksToLoad.Clear();
+        _loadedChunks.Clear();
+        _savedChunks.Clear();
+        _chunksToUpdateQueue.Clear();
+        _chunksToUpdateHashSet.Clear();
+        _updatedChunks.Clear();
 
-        context.RegisterCloseCallback(() =>
+        SaveAllChunks();
+        foreach (var chunk in _chunks)
         {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
-
-            _existingChunks.Clear();
-            _chunksToLoad.Clear();
-            _loadedChunks.Clear();
-            _savedChunks.Clear();
-            _chunksToUpdateQueue.Clear();
-            _chunksToUpdateHashSet.Clear();
-            _updatedChunks.Clear();
-
-            SaveAllChunks();
-            foreach (var chunk in _chunks)
-            {
-                chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
-            }
-            _chunks.Clear();
-            _chunksToSaveQueue.Clear();
-            _chunksToSaveDictionary.Clear();
-        });
+            chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
+        }
+        _chunks.Clear();
+        _chunksToSaveQueue.Clear();
+        _chunksToSaveDictionary.Clear();
     }
 }

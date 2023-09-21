@@ -186,4 +186,9 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
             if (isMouseOnInventory) _inventory.SwapWithHand(x, y);
         });
     }
+    
+    public void Dispose()
+    {
+        _spriteRenderer.Dispose();
+    }
 }
