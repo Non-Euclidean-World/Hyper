@@ -38,4 +38,3 @@ jobs:
         fi
         set -e
       shell: bash
-
