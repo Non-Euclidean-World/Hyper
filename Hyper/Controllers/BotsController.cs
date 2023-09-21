@@ -52,7 +52,7 @@ internal class BotsController : IController, IInputSubscriber
             }
         });
     }
-    
+
     public void Dispose()
     {
         _shader.Dispose();

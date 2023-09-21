@@ -63,7 +63,7 @@ internal class ChunksController : IController, IInputSubscriber
 
         context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
     }
-    
+
     public void Dispose()
     {
         _shader.Dispose();

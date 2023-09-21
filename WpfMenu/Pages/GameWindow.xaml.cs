@@ -17,7 +17,7 @@ public partial class GameWindow : UserControl
     private readonly WpfWindowHelper _windowHelper;
 
     private bool _isPaused = true; // This is used so that in OnRender the delta does not increase when the game is paused.
-    
+
     public GameWindow()
     {
         InitializeComponent();

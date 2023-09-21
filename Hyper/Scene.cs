@@ -61,7 +61,7 @@ internal class Scene : IInputSubscriber
                 return humanoid;
             })
             .ToList();
-        
+
         Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
@@ -131,25 +131,25 @@ internal class Scene : IInputSubscriber
         foreach (var chunk in Chunks)
             chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
         Chunks.Clear();
-        
+
         foreach (var lightSource in LightSources)
             lightSource.Dispose();
         LightSources.Clear();
-        
+
         foreach (var projectile in Projectiles)
             projectile.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
         Projectiles.Clear();
-        
+
         foreach (var bot in Bots)
             bot.Dispose();
         Bots.Clear();
-        
+
         Player.Dispose();
-        
+
         SimulationMembers.Clear();
-        
+
         SimulationManager.Dispose();
-        
+
         Stopwatch.Stop();
     }
 }

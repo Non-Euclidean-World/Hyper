@@ -35,7 +35,7 @@ public class ChunkHandler
     public List<Vector3i> GetSavedChunks()
     {
         if (!Directory.Exists(_saveLocation)) return new List<Vector3i>();
-        
+
         return Directory.GetFiles(_saveLocation, "*.voxels")
             .Select(file => GetPositionFromName(Path.GetFileName(file))).ToList();
     }

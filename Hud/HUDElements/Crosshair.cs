@@ -59,7 +59,7 @@ public class Crosshair : IHudElement
             builder.SetPosition(0, -1).Build()
         };
     }
-    
+
     public void Dispose()
     {
         GL.DeleteVertexArray(_vao);

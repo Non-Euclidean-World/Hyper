@@ -46,7 +46,7 @@ internal class HudController : IController
         {
             element.Dispose();
         }
-        
+
         _shader.Dispose();
     }
 }

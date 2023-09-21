@@ -51,6 +51,6 @@ public class FpsCounter : IHudElement
 
     public void Dispose()
     {
-        
+        // Nothing to dispose
     }
 }

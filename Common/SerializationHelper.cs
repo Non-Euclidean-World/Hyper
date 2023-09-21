@@ -8,12 +8,12 @@ public static class SerializationHelper
     {
         return $"{vector.X}_{vector.Y}_{vector.Z}";
     }
-    
+
     public static string Serialize(Vector3 vector)
     {
         return $"{vector.X}_{vector.Y}_{vector.Z}";
     }
-    
+
     public static Vector3 Deserialize(string vector)
     {
         var split = vector.Split('_');

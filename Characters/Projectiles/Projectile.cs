@@ -11,7 +11,7 @@ public class Projectile : ISimulationMember
     public ProjectileMesh Mesh { get; private set; }
 
     private TypedIndex _shape;
-    
+
     private float _lifeTime;
 
     private Projectile(ProjectileMesh mesh, float lifeTime)

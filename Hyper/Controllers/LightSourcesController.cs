@@ -24,7 +24,7 @@ internal class LightSourcesController : IController
             light.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
         }
     }
-    
+
     public void Dispose()
     {
         _shader.Dispose();

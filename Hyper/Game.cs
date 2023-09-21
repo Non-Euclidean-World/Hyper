@@ -23,13 +23,13 @@ public class Game : IInputSubscriber
     private readonly Context _context = Context.Instance;
 
     private Vector2i _size;
-    
+
     private readonly Settings _settings;
 
     public Game(int width, int height, IWindowHelper windowHelper, string saveName)
     {
         _size = new Vector2i(width, height);
-        
+
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
@@ -64,7 +64,7 @@ public class Game : IInputSubscriber
         _context.Clear();
         foreach (var controller in _controllers)
         {
-            controller. Dispose();
+            controller.Dispose();
         }
         _scene.Dispose(); // Scene dispose needs to be after controller dispose.
         _settings.Save();

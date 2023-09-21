@@ -15,7 +15,7 @@ internal class PlayerController : IController, IInputSubscriber
     private readonly ObjectShader _objectShader;
 
     private readonly LightSourceShader _rayMarkerShader;
-    
+
     public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
         _scene = scene;
@@ -78,7 +78,7 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
     }
-    
+
     public void Dispose()
     {
         _modelShader.Dispose();

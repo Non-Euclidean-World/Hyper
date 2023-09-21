@@ -220,7 +220,7 @@ public class Shader
             throw new Exception($"Error occurred whilst linking Program({program}).\n\n{infoLog}");
         }
     }
-    
+
     public void Dispose()
     {
         GL.DeleteProgram(_handle);

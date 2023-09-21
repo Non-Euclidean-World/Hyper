@@ -37,7 +37,7 @@ internal class VehiclesController : IController, IInputSubscriber
             }
         });
     }
-    
+
     public void Dispose()
     {
         _shader.Dispose();
