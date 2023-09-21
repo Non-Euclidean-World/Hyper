@@ -9,6 +9,7 @@
     <Grid>
         <ListBox
             Name="Saves"
+            SelectionMode="Single"
             IsVisibleChanged="Saves_OnIsVisibleChanged">
         </ListBox>
         

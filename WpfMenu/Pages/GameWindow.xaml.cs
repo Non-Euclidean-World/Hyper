@@ -16,6 +16,8 @@ public partial class GameWindow : UserControl
 
     private readonly WpfWindowHelper _windowHelper;
 
+    private bool _isPaused = true; // This is used so that in OnRender the delta does not increase when the game is paused.
+    
     public GameWindow()
     {
         InitializeComponent();
@@ -31,13 +33,18 @@ public partial class GameWindow : UserControl
         _game = new Game(width, height, _windowHelper, name);
         _game.Resize(new ResizeEventArgs(width, height));
         Cursor = Cursors.None;
+        _isPaused = false;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
-        // TODO if game is saved delta still increases. fix it.
-        _game.UpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
-        _game.RenderFrame(new FrameEventArgs(delta.Milliseconds / 1000.0));
+        if (_isPaused)
+        {
+            _isPaused = false;
+            return;
+        }
+        _game.UpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000f));
+        _game.RenderFrame(new FrameEventArgs(delta.Milliseconds / 1000f));
         GL.Finish();
     }
 
@@ -55,6 +62,7 @@ public partial class GameWindow : UserControl
             OpenTkControl.Visibility = Visibility.Collapsed;
             MenuPanel.Visibility = Visibility.Visible;
             Cursor = Cursors.Arrow;
+            _isPaused = true;
             return;
         }
 

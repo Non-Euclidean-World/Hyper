@@ -62,17 +62,19 @@ public class Game : IInputSubscriber
         }
 
         _context.Clear();
-        _scene.Dispose();
         foreach (var controller in _controllers)
         {
-            controller.Dispose();
+            controller. Dispose();
         }
+        _scene.Dispose(); // Scene dispose needs to be after controller dispose.
+        _settings.Save();
         LogManager.Flush();
         IsRunning = false;
     }
 
     public void RenderFrame(FrameEventArgs e)
     {
+        if (e.Time == 0) return;
         if (!IsRunning) return;
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -84,6 +86,7 @@ public class Game : IInputSubscriber
 
     public void UpdateFrame(FrameEventArgs e)
     {
+        if (e.Time == 0) return;
         foreach (var callback in _context.FrameUpdateCallbacks)
         {
             callback(e);

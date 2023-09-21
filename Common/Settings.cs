@@ -1,21 +1,24 @@
 ﻿using System.Text.Json;
+using OpenTK.Mathematics;
 
 namespace Common;
 
 public class Settings
 {
-    public int Seed { get; private set; }
-
-    public string SaveName { get; private set; }
-    
-    public float AspectRatio { get; private set; }
-
     private static readonly string AppDataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyper");
 
     public static readonly string SavesLocation = Path.Combine(AppDataLocation, "saves");
+    
+    public string SaveName { get; private set; }
 
     public string CurrentSaveLocation => Path.Combine(SavesLocation, SaveName);
+    
+    public const string SaveFileName = "settings.json";
+    
+    public int Seed { get; private set; }
 
+    public float AspectRatio { get; private set; }
+    
     public Settings(int seed, string saveName, float aspectRatio)
     {
         Seed = seed;
@@ -34,13 +37,13 @@ public class Settings
             var rand = new Random();
             return new Settings(rand.Next(), saveName, aspectRatio);
         }
-        var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, "settings.json"));
+        var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
         return JsonSerializer.Deserialize<Settings>(json)!;
     }
     
     public void Save()
     {
         var json = JsonSerializer.Serialize(this);
-        File.WriteAllText(Path.Combine(CurrentSaveLocation, "settings.json"), json);
+        File.WriteAllText(Path.Combine(CurrentSaveLocation, SaveFileName), json);
     }
 }

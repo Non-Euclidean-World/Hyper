@@ -8,9 +8,7 @@ namespace Hyper;
 
 public class Window : GameWindow
 {
-    private readonly Game _game;
-
-    private readonly Thread _console;
+    private Game _game;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -19,10 +17,6 @@ public class Window : GameWindow
     {
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), Guid.NewGuid().ToString());
         CursorState = CursorState.Grabbed;
-        _console = new Thread(Command)
-        {
-            IsBackground = true
-        };
     }
 
     public override void Close()
@@ -65,8 +59,9 @@ public class Window : GameWindow
 
         if (e.Key == Keys.T)
         {
-            if (_console.IsAlive) StopDebugThread();
-            else StartDebugThreadAsync();
+            CursorState = CursorState.Normal;
+            Command();
+            CursorState = CursorState.Grabbed;
         }
     }
 
@@ -112,26 +107,16 @@ public class Window : GameWindow
         if (_game.IsRunning) _game.Resize(e);
     }
 
-    private void StartDebugThreadAsync()
-    {
-        _console.Start();
-    }
-
-    private void StopDebugThread()
-    {
-        _console.Interrupt();
-    }
-
     private void Command()
     {
-        try
+        while (true)
         {
-            while (true)
-            {
-                string? command = Console.ReadLine();
-                if (command is null)
-                    return;
+            string? command = Console.ReadLine();
+            if (command is null)
+                return;
 
+            try
+            {
                 Logger.Info($"[Command]{command}");
                 var args = command.Split(' ');
 
@@ -140,12 +125,14 @@ public class Window : GameWindow
                     case "exit":
                         Close();
                         return;
-                    case "start":
-                        // _game.Start(args[1], new WindowHelper(this));
+                    case "load":
+                        if (_game.IsRunning) _game.Close();
+                        _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1]);
                         CursorState = CursorState.Grabbed;
-                        break;
-                    case "save":
-                        _game.Close();
+                        return;
+                    case "close":
+                        if (args[1] == "game") _game.Close();
+                        else if (args[1] == "console") return;
                         break;
                     case "delete":
                         SaveManager.DeleteSave(args[1]);
@@ -161,10 +148,10 @@ public class Window : GameWindow
                         break;
                 }
             }
-        }
-        catch (ThreadInterruptedException ex)
-        {
-            Logger.Info($"[Command]Thread interrupted: {ex.Message}");
+            catch (Exception ex)
+            {
+                Logger.Error($"[Command]Error: {ex.Message}");
+            }
         }
     }
 }

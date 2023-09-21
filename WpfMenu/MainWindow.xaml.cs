@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Hyper;
 using Window = System.Windows.Window;
 
 namespace WpfMenu;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
 
     private void NewGameButton_OnClick(object sender, RoutedEventArgs e)
     {
+        if (SaveNameTextBox.Text == "" || SaveManager.GetSaves().Contains(SaveNameTextBox.Text)) return;
         GamePage.Load((int)ActualWidth, (int)ActualHeight, SaveNameTextBox.Text);
     }
 
