@@ -59,11 +59,7 @@ public class Projectile : ISimulationMember
         Mesh.Update(body.Pose);
 
         _lifeTime -= dt;
-        if (_lifeTime < 0)
-        {
-            Dispose(simulation, pool);
-            IsDead = true;
-        }
+        if (_lifeTime < 0) IsDead = true;
     }
 
     public void Dispose(Simulation simulation, BufferPool bufferPool)

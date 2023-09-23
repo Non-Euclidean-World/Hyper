@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using OpenTK.Mathematics;
 
 namespace Common;
 
@@ -25,8 +24,6 @@ public class Settings
         SaveName = saveName;
         AspectRatio = aspectRatio;
 
-        if (!Directory.Exists(AppDataLocation)) Directory.CreateDirectory(AppDataLocation);
-        if (!Directory.Exists(SavesLocation)) Directory.CreateDirectory(SavesLocation);
         if (!Directory.Exists(CurrentSaveLocation)) Directory.CreateDirectory(CurrentSaveLocation);
     }
 
@@ -38,7 +35,9 @@ public class Settings
             return new Settings(rand.Next(), saveName, aspectRatio);
         }
         var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
-        return JsonSerializer.Deserialize<Settings>(json)!;
+        var settings = JsonSerializer.Deserialize<Settings>(json)!;
+        settings.AspectRatio = aspectRatio;
+        return settings;
     }
 
     public void Save()

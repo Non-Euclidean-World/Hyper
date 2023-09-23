@@ -108,7 +108,7 @@ internal class Scene : IInputSubscriber
         return camera;
     }
 
-    public PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
+    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
         => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
@@ -130,23 +130,17 @@ internal class Scene : IInputSubscriber
     {
         foreach (var chunk in Chunks)
             chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
-        Chunks.Clear();
 
         foreach (var lightSource in LightSources)
             lightSource.Dispose();
-        LightSources.Clear();
 
         foreach (var projectile in Projectiles)
             projectile.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
-        Projectiles.Clear();
 
         foreach (var bot in Bots)
             bot.Dispose();
-        Bots.Clear();
 
         Player.Dispose();
-
-        SimulationMembers.Clear();
 
         SimulationManager.Dispose();
 

@@ -51,7 +51,7 @@ public class ChunkWorker : IDisposable
 
     private readonly ChunkHandler _chunkHandler;
 
-    private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+    private static int TotalChunks => (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
@@ -79,14 +79,13 @@ public class ChunkWorker : IDisposable
 
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
-        int totalChunks = (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
         int prevNumber = 0;
-        while (_chunks.Count < totalChunks)
+        while (_chunks.Count < TotalChunks)
         {
             ResolveLoadedChunks();
             if (prevNumber < _chunks.Count && _chunks.Count % 10 == 0)
             {
-                Logger.Info($"Loaded {_chunks.Count} / {totalChunks} chunks");
+                Logger.Info($"Loaded {_chunks.Count} / {TotalChunks} chunks");
                 prevNumber = _chunks.Count;
             }
         }
@@ -160,7 +159,7 @@ public class ChunkWorker : IDisposable
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        if (_chunksToLoad.Count + _chunks.Count <= CacheNumber) return;
+        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks) return;
 
         _chunks.RemoveAll(chunk =>
         {

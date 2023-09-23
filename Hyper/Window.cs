@@ -15,7 +15,7 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), Guid.NewGuid().ToString());
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss"));
         CursorState = CursorState.Grabbed;
     }
 
