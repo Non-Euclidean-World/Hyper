@@ -21,16 +21,17 @@ public class Window : GameWindow
 
     public override void Close()
     {
-        base.Close();
         if (_game.IsRunning) _game.Close();
+        base.Close();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
 
-        if (_game.IsRunning) _game.RenderFrame(e);
-
+        if (!_game.IsRunning) return;
+        
+        _game.RenderFrame(e);
         SwapBuffers();
     }
 
@@ -38,11 +39,7 @@ public class Window : GameWindow
     {
         base.OnUpdateFrame(e);
 
-        if (!IsFocused)
-        {
-            return;
-        }
-
+        if (!IsFocused) return;
         if (_game.IsRunning) _game.UpdateFrame(e);
     }
 
@@ -105,6 +102,12 @@ public class Window : GameWindow
         base.OnResize(e);
 
         if (_game.IsRunning) _game.Resize(e);
+    }
+
+    protected override void OnFocusedChanged(FocusedChangedEventArgs e)
+    {
+        if (e.IsFocused) _game.IsRunning = true;
+        else _game.IsRunning = false;
     }
 
     private void Command()

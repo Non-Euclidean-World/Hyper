@@ -6,7 +6,8 @@
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         xmlns:pages="clr-namespace:WpfMenu.Pages"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Deactivated="MainWindow_OnDeactivated">
     <Grid>
         <pages:GameWindow
             x:Name="GamePage"

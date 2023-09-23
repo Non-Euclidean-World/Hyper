@@ -59,10 +59,7 @@ public partial class GameWindow : UserControl
 
         if (e.Key == Key.Escape)
         {
-            OpenTkControl.Visibility = Visibility.Collapsed;
-            MenuPanel.Visibility = Visibility.Visible;
-            Cursor = Cursors.Arrow;
-            _isPaused = true;
+            Pause();
             return;
         }
 
@@ -106,12 +103,25 @@ public partial class GameWindow : UserControl
         WpfWindowHelper.SetCursorPos(screenX, screenY);
     }
 
-    private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
+    public void Pause()
+    {
+        OpenTkControl.Visibility = Visibility.Collapsed;
+        MenuPanel.Visibility = Visibility.Visible;
+        Cursor = Cursors.Arrow;
+        _isPaused = true;
+    }
+
+    private void UnPause()
     {
         CenterMouse();
         MenuPanel.Visibility = Visibility.Collapsed;
         OpenTkControl.Visibility = Visibility.Visible;
         Cursor = Cursors.None;
+    }
+
+    private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        UnPause();
     }
 
     private void SaveAndQuitButton_OnClick(object sender, RoutedEventArgs e)

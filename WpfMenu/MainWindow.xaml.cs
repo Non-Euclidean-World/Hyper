@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Hyper;
 using Window = System.Windows.Window;
 
@@ -72,5 +73,10 @@ public partial class MainWindow : Window
     {
         LoadPage.Visibility = Visibility.Collapsed;
         GamePage.Load((int)ActualWidth, (int)ActualHeight, e);
+    }
+
+    private void MainWindow_OnDeactivated(object? sender, EventArgs e)
+    {
+        if (GamePage.Visibility == Visibility.Visible) GamePage.Pause();
     }
 }
