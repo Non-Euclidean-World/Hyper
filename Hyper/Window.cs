@@ -125,6 +125,8 @@ public class Window : GameWindow
 
                 switch (args[0])
                 {
+                    case "resume":
+                        return;
                     case "exit":
                         Close();
                         return;
