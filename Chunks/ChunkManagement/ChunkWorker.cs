@@ -201,6 +201,11 @@ public class ChunkWorker : IDisposable
         }
     }
 
+    public bool IsOnUpdateQueue(Chunk chunk)
+    {
+        return _chunksToUpdateHashSet.Contains(chunk);
+    }
+
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
         if (_chunksToUpdateHashSet.Contains(chunk)) return;

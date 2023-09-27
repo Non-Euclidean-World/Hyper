@@ -104,6 +104,19 @@ public class Chunk
         return true;
     }
 
+    public bool IsInside(Vector3 location)
+    {
+        var x = (int)location.X - Position.X;
+        var y = (int)location.Y - Position.Y;
+        var z = (int)location.Z - Position.Z;
+
+        if (x < 0 || y < 0 || z < 0
+            || x > Size - 1 || y > Size - 1 || z > Size - 1)
+            return false;
+
+        return true;
+    }
+
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
         if (Mesh.Vertices.Length == 0)

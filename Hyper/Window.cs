@@ -100,8 +100,8 @@ public class Window : GameWindow
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
-
-        if (_game.IsRunning) _game.Resize(e);
+        
+        _game.Resize(e);
     }
 
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)

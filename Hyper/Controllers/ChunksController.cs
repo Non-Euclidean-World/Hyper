@@ -14,6 +14,8 @@ internal class ChunksController : IController, IInputSubscriber
 
     private readonly ChunkWorker _chunkWorker;
 
+    private float buildTime = 0;
+
     public ChunksController(Scene scene, ObjectShader shader, Settings settings)
     {
         _scene = scene;
@@ -53,10 +55,23 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
+                var location =
+                    _scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]);
+                if (chunk.IsInside(location))
                 {
-                    _chunkWorker.EnqueueUpdatingChunk(chunk);
-                    return;
+                    if (!_chunkWorker.IsOnUpdateQueue(chunk))
+                    {
+                        chunk.Build(
+                            _scene.Player.GetRayEndpoint(
+                                in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), (float)e.Time + buildTime, 3);
+                        _chunkWorker.EnqueueUpdatingChunk(chunk);
+                        buildTime = 0;
+                        return;
+                    }
+                    else
+                    {
+                        buildTime += (float)e.Time;
+                    }
                 }
             }
         });
