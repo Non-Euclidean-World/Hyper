@@ -42,7 +42,7 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was mined. false otherwise.</returns>
-    public bool Mine(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
+    public bool Mine(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -77,7 +77,7 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was built. false otherwise.</returns>
-    public bool Build(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
+    public bool Build(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
