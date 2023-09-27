@@ -154,8 +154,8 @@ public class Game : IInputSubscriber
 
     public void Resize(ResizeEventArgs e)
     {
-        GL.Viewport(0, 0, _size.X, _size.Y);
-        _scene.Camera.AspectRatio = _size.X / (float)_size.Y;
+        GL.Viewport(0, 0, e.Width, e.Height);
+        _scene.Camera.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
     }
 
