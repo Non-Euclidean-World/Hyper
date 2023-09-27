@@ -16,7 +16,7 @@ public class Settings
 
     public int Seed { get; private set; }
 
-    public float AspectRatio { get; private set; }
+    public float AspectRatio { get; set; }
 
     public Settings(int seed, string saveName, float aspectRatio)
     {
@@ -27,16 +27,16 @@ public class Settings
         if (!Directory.Exists(CurrentSaveLocation)) Directory.CreateDirectory(CurrentSaveLocation);
     }
 
-    public static Settings Load(string saveName, float aspectRatio)
+    public static Settings Load(string saveName)
     {
         if (!Directory.Exists(Path.Combine(SavesLocation, saveName)))
         {
             var rand = new Random();
-            return new Settings(rand.Next(), saveName, aspectRatio);
+            return new Settings(rand.Next(), saveName, 1);
         }
         var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
         var settings = JsonSerializer.Deserialize<Settings>(json)!;
-        settings.AspectRatio = aspectRatio;
+        settings.AspectRatio = 1;
         return settings;
     }
 

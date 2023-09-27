@@ -35,7 +35,8 @@ public class Game : IInputSubscriber
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        _settings = Settings.Load(saveName, height / (float)width);
+        _settings = Settings.Load(saveName);
+        _settings.AspectRatio = (float)width / height;
         _scene = new Scene(_size.X / (float)_size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
@@ -156,6 +157,7 @@ public class Game : IInputSubscriber
     {
         GL.Viewport(0, 0, e.Width, e.Height);
         _scene.Camera.AspectRatio = e.Width / (float)e.Height;
+        _settings.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
     }
 
