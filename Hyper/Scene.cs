@@ -36,8 +36,6 @@ internal class Scene : IInputSubscriber
 
     public readonly float Scale = 0.1f;
 
-    public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
-
     public Scene(float aspectRatio, float elevation)
     {
         int chunksPerSide = 2;
@@ -143,7 +141,5 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
-
-        Stopwatch.Stop();
     }
 }

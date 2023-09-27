@@ -7,10 +7,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);BOUNDING_BOXES</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="HUD\Textures\**" />
     <EmbeddedResource Remove="HUD\Textures\**" />

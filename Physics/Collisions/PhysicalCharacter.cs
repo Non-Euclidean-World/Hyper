@@ -17,9 +17,7 @@ public class PhysicalCharacter
 
     public BodyHandle BodyHandle { get => _bodyHandle; }
 
-#if BOUNDING_BOXES
     public Body BoundingBox { get; private set; }
-#endif
 
     private BodyHandle _bodyHandle;
     private readonly CharacterControllers _characters;
@@ -137,7 +135,6 @@ public class PhysicalCharacter
         _characters.RemoveCharacterByBodyHandle(_bodyHandle);
     }
 
-#if BOUNDING_BOXES
     public void RenderBoundingBox(Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
     {
         TurnOnWireframe();
@@ -154,5 +151,4 @@ public class PhysicalCharacter
     {
         GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
     }
-#endif
 }

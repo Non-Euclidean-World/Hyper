@@ -15,6 +15,8 @@ internal class PlayerController : IController, IInputSubscriber
     private readonly ObjectShader _objectShader;
 
     private readonly LightSourceShader _rayMarkerShader;
+    
+    private bool _showBoundingBoxes = false;
 
     public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
@@ -33,10 +35,9 @@ internal class PlayerController : IController, IInputSubscriber
         _rayMarkerShader.SetUp(_scene.Camera);
         _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
 
-#if BOUNDING_BOXES
+        if (!_showBoundingBoxes) return;
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
-#endif
     }
 
     public void RegisterCallbacks()
@@ -77,6 +78,8 @@ internal class PlayerController : IController, IInputSubscriber
 
             _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
+        
+        context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
     }
 
     public void Dispose()
