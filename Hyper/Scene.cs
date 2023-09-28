@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using BepuPhysics;
+﻿using BepuPhysics;
 using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;

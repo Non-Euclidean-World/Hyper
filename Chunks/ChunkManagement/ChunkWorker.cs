@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
-using Common;
 using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
@@ -55,12 +54,12 @@ public class ChunkWorker : IDisposable
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, Settings settings)
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
-        _chunkFactory = new ChunkFactory(new ScalarFieldGenerator(settings.Seed));
-        _chunkHandler = new ChunkHandler(settings.SaveName);
+        _chunkFactory = chunkFactory;
+        _chunkHandler = chunkHandler;
         foreach (var chunk in _chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);

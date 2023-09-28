@@ -1,4 +1,6 @@
 ﻿using Character.Shaders;
+using Chunks.ChunkManagement;
+using Chunks.MarchingCubes;
 using Common;
 using Common.UserInput;
 using Hud.Shaders;
@@ -37,6 +39,11 @@ public class Game : IInputSubscriber
 
         _settings = Settings.Load(saveName);
         _settings.AspectRatio = (float)width / height;
+        
+        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
+        var chunkFactory = new ChunkFactory(scalarFieldGenerator);
+        var chunkHandler = new ChunkHandler(_settings.SaveName);
+        
         _scene = new Scene(_size.X / (float)_size.Y, 31);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
@@ -47,7 +54,7 @@ public class Game : IInputSubscriber
         {
             new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader, _settings),
+            new ChunksController(_scene, objectShader, chunkFactory, chunkHandler),
             new ProjectilesController(_scene, objectShader),
             new VehiclesController(_scene, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
