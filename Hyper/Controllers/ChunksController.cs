@@ -17,12 +17,12 @@ internal class ChunksController : IController, IInputSubscriber
 
     private float _mineTime = 0;
 
-    public ChunksController(Scene scene, ObjectShader shader, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    public ChunksController(Scene scene, Context context, ObjectShader shader, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
         _scene = scene;
         _shader = shader;
         _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler);
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -35,10 +35,8 @@ internal class ChunksController : IController, IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {

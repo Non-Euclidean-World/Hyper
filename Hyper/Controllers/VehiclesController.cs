@@ -9,11 +9,11 @@ internal class VehiclesController : IController, IInputSubscriber
 
     private readonly ObjectShader _shader;
 
-    public VehiclesController(Scene scene, ObjectShader shader)
+    public VehiclesController(Scene scene, Context context, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -26,9 +26,8 @@ internal class VehiclesController : IController, IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
         context.RegisterUpdateFrameCallback((e) =>
         {
             foreach (var car in _scene.Cars)

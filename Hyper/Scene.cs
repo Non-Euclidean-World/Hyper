@@ -35,7 +35,7 @@ internal class Scene : IInputSubscriber
 
     public readonly float Scale = 0.1f;
 
-    public Scene(float aspectRatio, float elevation)
+    public Scene(float aspectRatio, float elevation, Context context)
     {
         int chunksPerSide = 2;
 
@@ -59,7 +59,7 @@ internal class Scene : IInputSubscriber
             })
             .ToList();
 
-        Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)));
+        Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -68,9 +68,9 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, elevation);
+        Camera = GetCamera(aspectRatio, elevation, context);
 
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
@@ -95,9 +95,9 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private Camera GetCamera(float aspectRatio, float elevation)
+    private Camera GetCamera(float aspectRatio, float elevation, Context context)
     {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale)
+        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale, context)
         {
             ReferencePointPosition = (5f + elevation) * Vector3.UnitY
         };
@@ -110,10 +110,8 @@ internal class Scene : IInputSubscriber
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        Context context = Context.Instance;
-
         context.RegisterUpdateFrameCallback((e) =>
         {
             SimulationManager.Timestep((float)e.Time);

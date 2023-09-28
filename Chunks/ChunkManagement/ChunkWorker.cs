@@ -274,21 +274,6 @@ public class ChunkWorker : IDisposable
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
 
-        _existingChunks.Clear();
-        _chunksToLoad.Clear();
-        _loadedChunks.Clear();
-        _savedChunks.Clear();
-        _chunksToUpdateQueue.Clear();
-        _chunksToUpdateHashSet.Clear();
-        _updatedChunks.Clear();
-
         SaveAllChunks();
-        foreach (var chunk in _chunks)
-        {
-            chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
-        }
-        _chunks.Clear();
-        _chunksToSaveQueue.Clear();
-        _chunksToSaveDictionary.Clear();
     }
 }

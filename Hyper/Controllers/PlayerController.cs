@@ -18,13 +18,13 @@ internal class PlayerController : IController, IInputSubscriber
     
     private bool _showBoundingBoxes = false;
 
-    public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
+    public PlayerController(Scene scene, Context context, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
         _scene = scene;
         _modelShader = modelShader;
         _objectShader = objectShader;
         _rayMarkerShader = rayMarkerShader;
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -40,10 +40,8 @@ internal class PlayerController : IController, IInputSubscriber
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
         context.RegisterUpdateFrameCallback((e) =>
         {

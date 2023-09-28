@@ -5,12 +5,6 @@ namespace Common.UserInput;
 
 public class Context
 {
-    private Context() { }
-
-    private static readonly Lazy<Context> _instance = new(() => new Context());
-
-    public static Context Instance => _instance.Value;
-
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
     public Dictionary<MouseButton, List<Action<FrameEventArgs>>> ButtonHeldCallbacks = new();
 
@@ -161,29 +155,5 @@ public class Context
                 ExecuteAllHeldCallbacks(HeldKeys, KeyHeldCallbacks, UsedKeys, e);
                 break;
         }
-    }
-
-    public void Clear()
-    {
-        KeyHeldCallbacks.Clear();
-        ButtonHeldCallbacks.Clear();
-
-        KeyDownCallbacks.Clear();
-        ButtonDownCallbacks.Clear();
-
-        KeyUpCallbacks.Clear();
-        ButtonUpCallbacks.Clear();
-
-        FrameUpdateCallbacks.Clear();
-        StartCallbacks.Clear();
-        CloseCallbacks.Clear();
-
-        MouseMoveCallbacks.Clear();
-
-        HeldKeys.Clear();
-        HeldButtons.Clear();
-
-        UsedKeys.Clear();
-        UsedMouseButtons.Clear();
     }
 }

@@ -18,12 +18,12 @@ internal class BotsController : IController, IInputSubscriber
     
     private bool _showBoundingBoxes = false;
 
-    public BotsController(Scene scene, ModelShader shader, ObjectShader objectShader)
+    public BotsController(Scene scene, Context context, ModelShader shader, ObjectShader objectShader)
     {
         _scene = scene;
         _shader = shader;
         _objectShader = objectShader;
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -42,10 +42,8 @@ internal class BotsController : IController, IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterUpdateFrameCallback((e) =>
         {
             foreach (var bot in _scene.Bots)

@@ -135,10 +135,6 @@ public class Window : GameWindow
                         _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1]);
                         CursorState = CursorState.Grabbed;
                         return;
-                    case "close":
-                        if (args[1] == "game") _game.Close();
-                        else if (args[1] == "console") return;
-                        break;
                     case "delete":
                         SaveManager.DeleteSave(args[1]);
                         break;

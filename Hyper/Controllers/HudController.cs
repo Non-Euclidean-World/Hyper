@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.UserInput;
 using Hud;
 using Hud.HUDElements;
 using Hud.Shaders;
@@ -16,7 +17,7 @@ internal class HudController : IController
 
     private readonly IWindowHelper _windowHelper;
 
-    public HudController(IWindowHelper windowHelper, HudShader shader)
+    public HudController(Scene scene, Context context, IWindowHelper windowHelper, HudShader shader)
     {
         _windowHelper = windowHelper;
         _shader = shader;
@@ -24,7 +25,7 @@ internal class HudController : IController
         {
             new Crosshair(){ Visible = false},
             new FpsCounter(_windowHelper),
-            new InventoryHudManager(_windowHelper),
+            new InventoryHudManager(_windowHelper, scene.Player.Inventory, context),
         };
     }
 

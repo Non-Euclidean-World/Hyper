@@ -14,7 +14,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper;
 
-public class Game : IInputSubscriber
+public class Game
 {
     public bool IsRunning = true;
 
@@ -22,7 +22,7 @@ public class Game : IInputSubscriber
 
     private readonly IController[] _controllers;
 
-    private readonly Context _context = Context.Instance;
+    private readonly Context _context = new();
 
     private Vector2i _size;
 
@@ -44,7 +44,7 @@ public class Game : IInputSubscriber
         var chunkFactory = new ChunkFactory(scalarFieldGenerator);
         var chunkHandler = new ChunkHandler(_settings.SaveName);
         
-        _scene = new Scene(_size.X / (float)_size.Y, 31);
+        _scene = new Scene(_size.X / (float)_size.Y, scalarFieldGenerator.AvgElevation, _context);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -52,13 +52,13 @@ public class Game : IInputSubscriber
 
         _controllers = new IController[]
         {
-            new PlayerController(_scene, modelShader, objectShader, lightSourceShader),
-            new BotsController(_scene, modelShader, objectShader),
-            new ChunksController(_scene, objectShader, chunkFactory, chunkHandler),
-            new ProjectilesController(_scene, objectShader),
-            new VehiclesController(_scene, objectShader),
+            new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader),
+            new BotsController(_scene, _context, modelShader, objectShader),
+            new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler),
+            new ProjectilesController(_scene, _context, objectShader),
+            new VehiclesController(_scene, _context, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
-            new HudController(windowHelper, hudShader),
+            new HudController(_scene, _context, windowHelper, hudShader),
         };
     }
 
@@ -69,7 +69,6 @@ public class Game : IInputSubscriber
             callback(_settings.SaveName);
         }
 
-        _context.Clear();
         foreach (var controller in _controllers)
         {
             controller.Dispose();
@@ -166,12 +165,5 @@ public class Game : IInputSubscriber
         _scene.Camera.AspectRatio = e.Width / (float)e.Height;
         _settings.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
-    }
-
-    public void RegisterCallbacks()
-    {
-        _context.RegisterKeys(new List<Keys> { Keys.Escape });
-
-        _context.RegisterKeyDownCallback(Keys.Escape, Close);
     }
 }

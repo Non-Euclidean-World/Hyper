@@ -34,14 +34,14 @@ public class Camera : IInputSubscriber
 
     public Vector3 ViewPosition { get; private init; }
 
-    public Camera(float aspectRatio, float near, float far, float scale)
+    public Camera(float aspectRatio, float near, float far, float scale, Context context)
     {
         AspectRatio = aspectRatio;
         _near = near;
         _far = far;
         ViewPosition = Vector3.UnitY * scale;
 
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public float AspectRatio { private get; set; }
@@ -114,9 +114,8 @@ public class Camera : IInputSubscriber
             + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this));
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        Context context = Context.Instance;
         context.RegisterKeys(new List<Keys>() {
             Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
         });

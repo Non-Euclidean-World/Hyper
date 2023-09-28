@@ -19,19 +19,20 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
 
     public static readonly Vector2 InventoryPosition = new(0.0f, 0.0f);
 
-    private readonly Inventory _inventory = Inventory.Instance;
+    private readonly Inventory _inventory;
 
     private readonly IWindowHelper _windowHelper;
 
     private readonly SpriteRenderer _spriteRenderer;
 
-    public InventoryHudManager(IWindowHelper windowHelper)
+    public InventoryHudManager(IWindowHelper windowHelper, Inventory inventory, Context context)
     {
         _windowHelper = windowHelper;
+        _inventory = inventory;
         _spriteRenderer = new SpriteRenderer(
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.json"),
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.png"));
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render(Shader shader)
@@ -167,10 +168,8 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
         _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, _windowHelper.GetMousePosition(), HotbarSizeY);
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterKeyDownCallback(Keys.E, () =>
         {
             _inventory.IsOpen = !_inventory.IsOpen;
