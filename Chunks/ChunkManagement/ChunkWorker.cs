@@ -94,26 +94,33 @@ public class ChunkWorker : IDisposable
     {
         while (!_cancellationTokenSource.IsCancellationRequested)
         {
-            foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
+            try
             {
-                while (!_chunksToUpdateQueue.IsEmpty)
+                foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
                 {
-                    UpdateChunks();
-                }
+                    while (!_chunksToUpdateQueue.IsEmpty)
+                    {
+                        UpdateChunks();
+                    }
 
-                switch (jobType)
-                {
-                    case JobType.Load:
-                        LoadChunks();
-                        break;
-                    case JobType.Save:
-                        SaveChunks();
-                        break;
-                    case JobType.Update:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (jobType)
+                    {
+                        case JobType.Load:
+                            LoadChunks();
+                            break;
+                        case JobType.Save:
+                            SaveChunks();
+                            break;
+                        case JobType.Update:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                break;
             }
         }
     }
