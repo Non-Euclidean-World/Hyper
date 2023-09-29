@@ -44,7 +44,7 @@ public class Game
         var chunkFactory = new ChunkFactory(scalarFieldGenerator);
         var chunkHandler = new ChunkHandler(_settings.SaveName);
         
-        _scene = new Scene(_size.X / (float)_size.Y, scalarFieldGenerator.AvgElevation, _context);
+        _scene = new Scene(_size.X / (float)_size.Y, _context, windowHelper, chunkFactory, chunkHandler);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
@@ -54,11 +54,11 @@ public class Game
         {
             new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader),
             new BotsController(_scene, _context, modelShader, objectShader),
-            new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler),
+            new ChunksController(_scene, _context, objectShader),
             new ProjectilesController(_scene, _context, objectShader),
             new VehiclesController(_scene, _context, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
-            new HudController(_scene, _context, windowHelper, hudShader),
+            new HudController(_scene, windowHelper, hudShader),
         };
     }
 

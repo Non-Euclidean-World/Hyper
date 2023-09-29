@@ -12,18 +12,5 @@
     </ItemGroup>
 
 
-    <ItemGroup>
-      <None Update="Resources\Inventory\sprite_sheet.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\Inventory\sprite_sheet.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\Inventory\sprite_sheet.svg">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-
 
 </Project>

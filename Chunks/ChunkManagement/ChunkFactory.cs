@@ -8,6 +8,7 @@ public class ChunkFactory
 {
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
+    public float Elevation => _scalarFieldGenerator.AvgElevation;
 
     public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator)
     {

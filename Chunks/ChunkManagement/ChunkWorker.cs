@@ -18,7 +18,7 @@ public class ChunkWorker : IDisposable
 
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
 
-    private readonly List<Chunk> _chunks;
+    public readonly List<Chunk> Chunks;
 
     private readonly HashSet<Vector3i> _existingChunks = new();
 
@@ -56,11 +56,11 @@ public class ChunkWorker : IDisposable
 
     public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
-        _chunks = chunks;
+        Chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
@@ -79,13 +79,13 @@ public class ChunkWorker : IDisposable
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
         int prevNumber = 0;
-        while (_chunks.Count < TotalChunks)
+        while (Chunks.Count < TotalChunks)
         {
             ResolveLoadedChunks();
-            if (prevNumber < _chunks.Count && _chunks.Count % 10 == 0)
+            if (prevNumber < Chunks.Count && Chunks.Count % 10 == 0)
             {
-                Logger.Info($"Loaded {_chunks.Count} / {TotalChunks} chunks");
-                prevNumber = _chunks.Count;
+                Logger.Info($"Loaded {Chunks.Count} / {TotalChunks} chunks");
+                prevNumber = Chunks.Count;
             }
         }
     }
@@ -165,9 +165,9 @@ public class ChunkWorker : IDisposable
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks) return;
+        if (_chunksToLoad.Count + Chunks.Count <= 2 * TotalChunks) return;
 
-        _chunks.RemoveAll(chunk =>
+        Chunks.RemoveAll(chunk =>
         {
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
 
@@ -227,7 +227,7 @@ public class ChunkWorker : IDisposable
         {
             chunk.Mesh.CreateVertexArrayObject();
             chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-            _chunks.Add(chunk);
+            Chunks.Add(chunk);
         }
     }
 
@@ -253,7 +253,7 @@ public class ChunkWorker : IDisposable
 
     private void SaveAllChunks()
     {
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
         {
             _chunkHandler.SaveChunkData(chunk.Voxels, chunk.Position);
         }
@@ -280,5 +280,8 @@ public class ChunkWorker : IDisposable
         _cancellationTokenSource.Dispose();
 
         SaveAllChunks();
+        
+        foreach (var chunk in Chunks)
+            chunk.Dispose(_simulationManager.Simulation, _simulationManager.BufferPool);
     }
 }

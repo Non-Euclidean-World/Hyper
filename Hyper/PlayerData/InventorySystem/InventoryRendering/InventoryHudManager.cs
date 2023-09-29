@@ -7,9 +7,9 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Player.InventorySystem.InventoryRendering;
+namespace Hyper.PlayerData.InventorySystem.InventoryRendering;
 
-public class InventoryHudManager : IHudElement, IInputSubscriber
+internal class InventoryHudManager : IHudElement, IInputSubscriber
 {
     public bool Visible { get; set; } = true;
 

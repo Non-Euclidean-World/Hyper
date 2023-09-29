@@ -3,30 +3,26 @@ using Common.UserInput;
 using Hud;
 using Hud.HUDElements;
 using Hud.Shaders;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
+using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.Shaders;
 using OpenTK.Graphics.OpenGL4;
-using Player.InventorySystem.InventoryRendering;
 
 namespace Hyper.Controllers;
 
 internal class HudController : IController
 {
+    private readonly Scene _scene;
+    
     private readonly HudShader _shader;
-
-    private readonly IHudElement[] _elements;
 
     private readonly IWindowHelper _windowHelper;
 
-    public HudController(Scene scene, Context context, IWindowHelper windowHelper, HudShader shader)
+    public HudController(Scene scene, IWindowHelper windowHelper, HudShader shader)
     {
+        _scene = scene;
         _windowHelper = windowHelper;
         _shader = shader;
-        _elements = new IHudElement[]
-        {
-            new Crosshair(){ Visible = false},
-            new FpsCounter(_windowHelper),
-            new InventoryHudManager(_windowHelper, scene.Player.Inventory, context),
-        };
     }
 
     public void Render()
@@ -34,8 +30,9 @@ internal class HudController : IController
         GL.Disable(EnableCap.DepthTest);
         _shader.SetUp(_windowHelper.GetAspectRatio());
 
-        foreach (var element in _elements)
+        foreach (var element in _scene.HudElements)
         {
+            if (element is Crosshair && _scene.Player.Inventory.SelectedItem is Hammer) continue;
             if (element.Visible) element.Render(_shader);
         }
         GL.Enable(EnableCap.DepthTest);
@@ -43,11 +40,6 @@ internal class HudController : IController
 
     public void Dispose()
     {
-        foreach (var element in _elements)
-        {
-            element.Dispose();
-        }
-
         _shader.Dispose();
     }
 }

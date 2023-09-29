@@ -1,9 +1,9 @@
 ﻿using Character.Shaders;
 using Common.Meshes;
 using Hud.Shaders;
+using Hyper.PlayerData;
+using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
-using Player;
-using Player.Utils;
 
 namespace Hyper.Shaders;
 internal static class ShaderExtensionMethods

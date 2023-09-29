@@ -3,19 +3,24 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
+using Chunks.ChunkManagement;
+using Common;
 using Common.Meshes;
 using Common.UserInput;
+using Hud;
+using Hud.HUDElements;
+using Hyper.PlayerData;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
-using Player;
 
 
 namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks = new();
+    public readonly ChunkWorker ChunkWorker;
 
     public readonly List<LightSource> LightSources;
 
@@ -25,19 +30,22 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
-    public readonly Player.Player Player;
+    public readonly Player Player;
 
     public readonly Camera Camera;
 
     public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
+    
+    public readonly IHudElement[] HudElements;
 
     public readonly float Scale = 0.1f;
 
-    public Scene(float aspectRatio, float elevation, Context context)
+    public Scene(float aspectRatio, Context context, IWindowHelper windowHelper, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
         int chunksPerSide = 2;
+        float elevation = chunkFactory.Elevation;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -59,7 +67,7 @@ internal class Scene : IInputSubscriber
             })
             .ToList();
 
-        Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        Player = new Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -69,6 +77,15 @@ internal class Scene : IInputSubscriber
         };
 
         Camera = GetCamera(aspectRatio, elevation, context);
+        
+        HudElements = new IHudElement[]
+        {
+            new Crosshair(),
+            new FpsCounter(windowHelper),
+            new InventoryHudManager(windowHelper, Player.Inventory, context),
+        };
+
+        ChunkWorker = new ChunkWorker(new List<Chunk>(), SimulationManager, chunkFactory, chunkHandler);
 
         RegisterCallbacks(context);
     }
@@ -123,8 +140,7 @@ internal class Scene : IInputSubscriber
 
     public void Dispose()
     {
-        foreach (var chunk in Chunks)
-            chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
+        ChunkWorker.Dispose();
 
         foreach (var lightSource in LightSources)
             lightSource.Dispose();
@@ -138,5 +154,10 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
+        
+        foreach (var element in HudElements)
+        {
+            element.Dispose();
+        }
     }
 }

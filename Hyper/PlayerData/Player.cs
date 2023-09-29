@@ -5,18 +5,18 @@ using Character.Shaders;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
+using Hyper.PlayerData.InventorySystem;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
 using Physics.RayCasting;
 using Physics.TypingUtils;
-using Player.InventorySystem;
 
-namespace Player;
+namespace Hyper.PlayerData;
 
-public class Player : Humanoid, IRayCaster, IContactEventListener
+internal class Player : Humanoid, IRayCaster, IContactEventListener
 {
-    public Inventory Inventory;
+    public readonly Inventory Inventory;
     
     private readonly RayEndpointMarker _rayEndpointMarker;
 
@@ -33,7 +33,7 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
 
     public Player(PhysicalCharacter physicalCharacter, Context context) : base(physicalCharacter)
     {
-        Inventory = new Inventory(context);
+        Inventory = new Inventory(context, true);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 

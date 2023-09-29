@@ -1,13 +1,12 @@
 ﻿using Common.UserInput;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
+using Hyper.PlayerData.InventorySystem.Items;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Player.InventorySystem.InventoryRendering;
-using Player.InventorySystem.Items;
-using Player.InventorySystem.Items.Tools;
 
-namespace Player.InventorySystem;
+namespace Hyper.PlayerData.InventorySystem;
 
-public class Inventory : IInputSubscriber
+internal class Inventory : IInputSubscriber
 {
     public const int Columns = 10;
 
@@ -17,13 +16,13 @@ public class Inventory : IInputSubscriber
 
     public bool IsOpen = false;
 
-    public readonly (Item? Item, int Count)[,] Items;
+    public readonly (Items.Item? Item, int Count)[,] Items;
 
-    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
+    public (Items.Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
 
-    public Item? SelectedItem => Items[0, SelectedItemIndex].Item;
+    public Items.Item? SelectedItem => Items[SelectedItemIndex, 0].Item;
 
-    public (Item? Item, int Count) InHandItem;
+    public (Items.Item? Item, int Count) InHandItem;
 
     public Inventory(Context context, bool starterItems = false)
     {
@@ -32,20 +31,28 @@ public class Inventory : IInputSubscriber
 
         if (starterItems)
         {
-            for (int i = 0; i < 12; i++)
-            {
-                AddItem(new Sword());
-            }
-            for (int i = 0; i < 3; i++)
-            {
-                AddItem(new Hammer());
-            }
-            AddItem(new Rock(), 23);
-            AddItem(new Rock(), 7);
+            AddItem(new Hammer());
+            AddItem(new Gun());
+            AddItem(new Bullet(), 64);
         }
     }
 
-    public void UseItem() => SelectedItem?.Use();
+    public bool TryRemoveItem(string itemId)
+    {
+        for (int i = 0; i < Items.GetLength(0); i++)
+        {
+            for (int j = 0; j < Items.GetLength(1); j++)
+            {
+                if (Items[i, j].Item?.ID == itemId && Items[i, j].Count > 0)
+                {
+                    Items[i, j].Count--;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public void AddItem(Item item, int count = 1)
     {
