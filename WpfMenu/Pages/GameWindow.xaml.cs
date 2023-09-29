@@ -43,6 +43,9 @@ public partial class GameWindow : UserControl
             _isPaused = false;
             return;
         }
+
+        if (delta.Milliseconds == 0) 
+            return;
         _game.UpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000f));
         _game.RenderFrame(new FrameEventArgs(delta.Milliseconds / 1000f));
         GL.Finish();
@@ -129,7 +132,7 @@ public partial class GameWindow : UserControl
         OpenTkControl.Visibility = Visibility.Visible;
         MenuPanel.Visibility = Visibility.Collapsed;
         Visibility = Visibility.Collapsed;
-        _game.Close();
+        _game.SaveAndClose();
         Cursor = Cursors.Arrow;
     }
 }

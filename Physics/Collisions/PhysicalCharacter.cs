@@ -51,9 +51,7 @@ public class PhysicalCharacter
         bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(_bodyHandle.Value, 0) };
 
         _speed = speed;
-#if BOUNDING_BOXES
         BoundingBox = new Body(BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2)));
-#endif
     }
 
     public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
@@ -119,9 +117,7 @@ public class PhysicalCharacter
         float angle = MathF.Atan2(viewDirection.X, viewDirection.Z);
         body.Pose.Orientation = QuaternionEx.CreateFromAxisAngle(Vector3.UnitY, angle);
 
-#if BOUNDING_BOXES
         BoundingBox.RigidPose = body.Pose;
-#endif
         Pose = body.Pose;
     }
 

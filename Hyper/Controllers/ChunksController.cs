@@ -47,9 +47,7 @@ internal class ChunksController : IController, IInputSubscriber
                 if (!chunk.IsInside(location)) continue;
                 if (!_chunkWorker.IsOnUpdateQueue(chunk))
                 {
-                    chunk.Mine(
-                        _scene.Player.GetRayEndpoint(
-                            in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), (float)e.Time + _mineTime);
+                    chunk.Mine(location, (float)e.Time + _mineTime);
                     _chunkWorker.EnqueueUpdatingChunk(chunk);
                     _mineTime = 0;
                 }
@@ -67,9 +65,7 @@ internal class ChunksController : IController, IInputSubscriber
                 if (!chunk.IsInside(location)) continue;
                 if (!_chunkWorker.IsOnUpdateQueue(chunk))
                 {
-                    chunk.Build(
-                        _scene.Player.GetRayEndpoint(
-                            in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), (float)e.Time + _buildTime);
+                    chunk.Build(location, (float)e.Time + _buildTime);
                     _chunkWorker.EnqueueUpdatingChunk(chunk);
                     _buildTime = 0;
                 }

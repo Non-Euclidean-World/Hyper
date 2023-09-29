@@ -62,13 +62,8 @@ public class Game
         };
     }
 
-    public void Close()
+    public void SaveAndClose()
     {
-        foreach (var callback in _context.CloseCallbacks)
-        {
-            callback(_settings.SaveName);
-        }
-
         foreach (var controller in _controllers)
         {
             controller.Dispose();
@@ -81,7 +76,6 @@ public class Game
 
     public void RenderFrame(FrameEventArgs e)
     {
-        if (e.Time == 0) return;
         if (!IsRunning) return;
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 

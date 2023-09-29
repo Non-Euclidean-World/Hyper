@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Common;
 
@@ -16,6 +17,7 @@ public class Settings
 
     public int Seed { get; private set; }
 
+    [JsonIgnore]
     public float AspectRatio { get; set; }
 
     public Settings(int seed, string saveName, float aspectRatio)

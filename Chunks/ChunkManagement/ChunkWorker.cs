@@ -258,10 +258,8 @@ public class ChunkWorker : IDisposable
             _chunkHandler.SaveChunkData(chunk.Voxels, chunk.Position);
         }
 
-        while (true)
+        while (_chunksToSaveQueue.TryDequeue(out var position))
         {
-            if (!_chunksToSaveQueue.TryDequeue(out var position)) return;
-
             _chunksToSaveDictionary.TryRemove(position, out var voxels);
             _chunkHandler.SaveChunkData(voxels!, position);
         }

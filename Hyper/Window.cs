@@ -21,7 +21,7 @@ public class Window : GameWindow
 
     public override void Close()
     {
-        if (_game.IsRunning) _game.Close();
+        if (_game.IsRunning) _game.SaveAndClose();
         base.Close();
     }
 
@@ -131,7 +131,9 @@ public class Window : GameWindow
                         Close();
                         return;
                     case "load":
-                        if (_game.IsRunning) _game.Close();
+                        if (!SaveManager.GetSaves().Contains(args[1]))
+                            throw new FileNotFoundException("This save does not exist.");
+                        if (_game.IsRunning) _game.SaveAndClose();
                         _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1]);
                         CursorState = CursorState.Grabbed;
                         return;

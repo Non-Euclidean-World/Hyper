@@ -15,8 +15,6 @@ public class Context
     public Dictionary<MouseButton, List<Action>> ButtonUpCallbacks = new();
 
     public List<Action<FrameEventArgs>> FrameUpdateCallbacks = new();
-    public List<Action<Settings>> StartCallbacks = new();
-    public List<Action<string>> CloseCallbacks = new();
 
     public List<Action<MouseMoveEventArgs>> MouseMoveCallbacks = new();
 
@@ -110,16 +108,6 @@ public class Context
     public void RegisterUpdateFrameCallback(Action<FrameEventArgs> callback)
     {
         FrameUpdateCallbacks.Add(callback);
-    }
-
-    public void RegisterStartCallback(Action<Settings> callback)
-    {
-        StartCallbacks.Add(callback);
-    }
-
-    public void RegisterCloseCallback(Action<string> callback)
-    {
-        CloseCallbacks.Add(callback);
     }
 
     public void RegisterMouseMoveCallback(Action<MouseMoveEventArgs> callback)
