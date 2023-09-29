@@ -1,12 +1,13 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes;
 using Chunks.Voxels;
+using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
 namespace Chunks.ChunkManagement;
 
-public class ChunkWorker
+public class ChunkWorker : IDisposable
 {
     private enum JobType
     {
@@ -14,7 +15,7 @@ public class ChunkWorker
         Save,
         Update
     }
-    
+
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
 
     private readonly List<Chunk> _chunks;
@@ -41,29 +42,51 @@ public class ChunkWorker
 
     private readonly ChunkFactory _chunkFactory;
 
-    private const int RenderDistance = 2;
+    private const int RenderDistance = 1;
 
-    private const int NumberOfThreads = 1;
+    private const int NumberOfThreads = 2;
 
-    private static int CacheNumber => 2 * (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private readonly ChunkHandler _chunkHandler;
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory)
+    private static int TotalChunks => (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+
+    private CancellationTokenSource _cancellationTokenSource = new();
+
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
+        _chunkHandler = chunkHandler;
         foreach (var chunk in _chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
 
-        Directory.CreateDirectory(ChunkHandler.SaveLocation);
+        Start();
+    }
 
+    private void Start()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
         for (int i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);
+        }
+
+        GetSavedChunks();
+        EnqueueLoadingChunks(Vector3i.Zero);
+        int prevNumber = 0;
+        while (_chunks.Count < TotalChunks)
+        {
+            ResolveLoadedChunks();
+            if (prevNumber < _chunks.Count && _chunks.Count % 10 == 0)
+            {
+                Logger.Info($"Loaded {_chunks.Count} / {TotalChunks} chunks");
+                prevNumber = _chunks.Count;
+            }
         }
     }
 
@@ -71,26 +94,33 @@ public class ChunkWorker
     {
         while (!_cancellationTokenSource.IsCancellationRequested)
         {
-            foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
+            try
             {
-                while (!_chunksToUpdateQueue.IsEmpty)
+                foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
                 {
-                    UpdateChunks();
-                }
+                    while (!_chunksToUpdateQueue.IsEmpty)
+                    {
+                        UpdateChunks();
+                    }
 
-                switch (jobType)
-                {
-                    case JobType.Load:
-                        LoadChunks();
-                        break;
-                    case JobType.Save:
-                        SaveChunks();
-                        break;
-                    case JobType.Update:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (jobType)
+                    {
+                        case JobType.Load:
+                            LoadChunks();
+                            break;
+                        case JobType.Save:
+                            SaveChunks();
+                            break;
+                        case JobType.Update:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                break;
             }
         }
     }
@@ -99,7 +129,7 @@ public class ChunkWorker
     {
         if (!_chunksToLoad.TryDequeue(out var position)) return;
 
-        var chunk = _savedChunks.Contains(position) ? ChunkHandler.LoadChunk(position) :
+        var chunk = _savedChunks.Contains(position) ? _chunkHandler.LoadChunk(position) :
             _chunkFactory.GenerateChunk(position * Chunk.Size, false);
 
         _loadedChunks.Enqueue(chunk);
@@ -110,7 +140,7 @@ public class ChunkWorker
         if (!_chunksToSaveQueue.TryDequeue(out var position)) return;
 
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
-        ChunkHandler.SaveChunkData(voxels!, position);
+        _chunkHandler.SaveChunkData(voxels!, position);
         _savedChunks.Add(position / Chunk.Size);
     }
 
@@ -135,7 +165,7 @@ public class ChunkWorker
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        if (_chunksToLoad.Count + _chunks.Count <= CacheNumber) return;
+        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks) return;
 
         _chunks.RemoveAll(chunk =>
         {
@@ -177,6 +207,11 @@ public class ChunkWorker
         }
     }
 
+    public bool IsOnUpdateQueue(Chunk chunk)
+    {
+        return _chunksToUpdateHashSet.Contains(chunk);
+    }
+
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
         if (_chunksToUpdateHashSet.Contains(chunk)) return;
@@ -214,5 +249,36 @@ public class ChunkWorker
     private static float GetDistance(Vector3i a, Vector3i b)
     {
         return Math.Max(Math.Max(Math.Abs(a.X - b.X), Math.Abs(a.Y - b.Y)), Math.Abs(a.Z - b.Z));
+    }
+
+    private void SaveAllChunks()
+    {
+        foreach (var chunk in _chunks)
+        {
+            _chunkHandler.SaveChunkData(chunk.Voxels, chunk.Position);
+        }
+
+        while (_chunksToSaveQueue.TryDequeue(out var position))
+        {
+            _chunksToSaveDictionary.TryRemove(position, out var voxels);
+            _chunkHandler.SaveChunkData(voxels!, position);
+        }
+    }
+
+    private void GetSavedChunks()
+    {
+        var savedChunks = _chunkHandler.GetSavedChunks();
+        foreach (var position in savedChunks)
+        {
+            _savedChunks.Add(position);
+        }
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+
+        SaveAllChunks();
     }
 }

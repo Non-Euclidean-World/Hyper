@@ -42,33 +42,24 @@ internal class MeshGenerator
 
         for (int i = 0; edges[i] != -1; i += 3)
         {
-            int e00 = MarchingCubesTables.EdgeConnections[edges[i]][0];
-            int e01 = MarchingCubesTables.EdgeConnections[edges[i]][1];
-
-            int e10 = MarchingCubesTables.EdgeConnections[edges[i + 1]][0];
-            int e11 = MarchingCubesTables.EdgeConnections[edges[i + 1]][1];
-
-            int e20 = MarchingCubesTables.EdgeConnections[edges[i + 2]][0];
-            int e21 = MarchingCubesTables.EdgeConnections[edges[i + 2]][1];
-
-            var a = Interpolate(MarchingCubesTables.CubeCorners[e00], cubeValues[e00], MarchingCubesTables.CubeCorners[e01], cubeValues[e01]) + position;
-            var b = Interpolate(MarchingCubesTables.CubeCorners[e10], cubeValues[e10], MarchingCubesTables.CubeCorners[e11], cubeValues[e11]) + position;
-            var c = Interpolate(MarchingCubesTables.CubeCorners[e20], cubeValues[e20], MarchingCubesTables.CubeCorners[e21], cubeValues[e21]) + position;
-
-            var na = Interpolate(normals[e00], cubeValues[e00], normals[e01], cubeValues[e01]);
-            var nb = Interpolate(normals[e10], cubeValues[e10], normals[e11], cubeValues[e11]);
-            var nc = Interpolate(normals[e20], cubeValues[e20], normals[e21], cubeValues[e21]);
-
-            var colorA = Interpolate(colors[e00], cubeValues[e00], colors[e01], cubeValues[e01]);
-            var colorB = Interpolate(colors[e10], cubeValues[e10], colors[e11], cubeValues[e11]);
-            var colorC = Interpolate(colors[e20], cubeValues[e20], colors[e21], cubeValues[e21]);
-
-            vertices.Add(new Vertex(a, na, colorA));
-            vertices.Add(new Vertex(b, nb, colorB));
-            vertices.Add(new Vertex(c, nc, colorC));
+            vertices.Add(CreateVertex(i, edges, cubeValues, normals, colors, position));
+            vertices.Add(CreateVertex(i + 1, edges, cubeValues, normals, colors, position));
+            vertices.Add(CreateVertex(i + 2, edges, cubeValues, normals, colors, position));
         }
 
         return vertices;
+    }
+
+    private Vertex CreateVertex(int index, int[] edges, float[] cubeValues, Vector3[] normals, Vector3[] colors, Vector3 position)
+    {
+        int edge0 = MarchingCubesTables.EdgeConnections[edges[index]][0];
+        int edge1 = MarchingCubesTables.EdgeConnections[edges[index]][1];
+        
+        var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position;
+        var normal = Interpolate(normals[edge0], cubeValues[edge0], normals[edge1], cubeValues[edge1]);
+        var color = Interpolate(colors[edge0], cubeValues[edge0], colors[edge1], cubeValues[edge1]);
+
+        return new Vertex(vertexPosition, normal, color);
     }
 
     private (float[], Vector3[], Vector3[]) GetCubeValues(int x, int y, int z)

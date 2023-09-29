@@ -91,4 +91,10 @@ public class Humanoid : ISimulationMember, IContactEventListener
         }
 #endif
     }
+
+    public void Dispose()
+    {
+        PhysicalCharacter.Dispose();
+        // TODO Models should be singletons so we don't need to dispose them. however now they are not so we have to keep that in mind.
+    }
 }

@@ -13,11 +13,11 @@ internal class ProjectilesController : IController, IInputSubscriber
 
     private readonly ObjectShader _shader;
 
-    public ProjectilesController(Scene scene, ObjectShader shader)
+    public ProjectilesController(Scene scene, Context context, ObjectShader shader)
     {
         _scene = scene;
         _shader = shader;
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     private void UpdateProjectiles(float dt)
@@ -28,6 +28,7 @@ internal class ProjectilesController : IController, IInputSubscriber
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
             if (projectile.IsDead)
             {
+                projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                 _scene.SimulationMembers.Remove(projectile.BodyHandle);
             }
         }
@@ -55,11 +56,14 @@ internal class ProjectilesController : IController, IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterUpdateFrameCallback((e) => UpdateProjectiles((float)e.Time));
         context.RegisterKeyDownCallback(Keys.P, CreateProjectile);
+    }
+
+    public void Dispose()
+    {
+        _shader.Dispose();
     }
 }

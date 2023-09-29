@@ -4,16 +4,20 @@ using Character.GameEntities;
 using Character.Shaders;
 using Common;
 using Common.Meshes;
+using Common.UserInput;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
 using Physics.RayCasting;
 using Physics.TypingUtils;
+using Player.InventorySystem;
 
 namespace Player;
 
 public class Player : Humanoid, IRayCaster, IContactEventListener
 {
+    public Inventory Inventory;
+    
     private readonly RayEndpointMarker _rayEndpointMarker;
 
     private readonly float _rayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
@@ -27,8 +31,9 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
 
     public int RayId => 0;
 
-    public Player(PhysicalCharacter physicalCharacter) : base(physicalCharacter)
+    public Player(PhysicalCharacter physicalCharacter, Context context) : base(physicalCharacter)
     {
+        Inventory = new Inventory(context);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 

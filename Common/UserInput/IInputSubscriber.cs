@@ -2,5 +2,5 @@
 
 public interface IInputSubscriber
 {
-    void RegisterCallbacks();
+    void RegisterCallbacks(Context context);
 }

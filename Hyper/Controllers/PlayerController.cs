@@ -15,14 +15,16 @@ internal class PlayerController : IController, IInputSubscriber
     private readonly ObjectShader _objectShader;
 
     private readonly LightSourceShader _rayMarkerShader;
+    
+    private bool _showBoundingBoxes = false;
 
-    public PlayerController(Scene scene, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
+    public PlayerController(Scene scene, Context context, ModelShader modelShader, ObjectShader objectShader, LightSourceShader rayMarkerShader)
     {
         _scene = scene;
         _modelShader = modelShader;
         _objectShader = objectShader;
         _rayMarkerShader = rayMarkerShader;
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -33,16 +35,13 @@ internal class PlayerController : IController, IInputSubscriber
         _rayMarkerShader.SetUp(_scene.Camera);
         _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
 
-#if BOUNDING_BOXES
+        if (!_showBoundingBoxes) return;
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
-#endif
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
         context.RegisterUpdateFrameCallback((e) =>
         {
@@ -77,5 +76,14 @@ internal class PlayerController : IController, IInputSubscriber
 
             _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
+        
+        context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
+    }
+
+    public void Dispose()
+    {
+        _modelShader.Dispose();
+        _objectShader.Dispose();
+        _rayMarkerShader.Dispose();
     }
 }

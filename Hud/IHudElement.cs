@@ -2,7 +2,7 @@
 
 namespace Hud;
 
-public interface IHudElement
+public interface IHudElement : IDisposable
 {
     public bool Visible { get; set; }
 

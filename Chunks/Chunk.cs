@@ -42,7 +42,7 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was mined. false otherwise.</returns>
-    public bool Mine(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
+    public bool Mine(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -77,7 +77,7 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was built. false otherwise.</returns>
-    public bool Build(Vector3 location, float deltaTime, float brushWeight, int radius = 5)
+    public bool Build(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -104,6 +104,19 @@ public class Chunk
         return true;
     }
 
+    public bool IsInside(Vector3 location)
+    {
+        var x = (int)location.X - Position.X;
+        var y = (int)location.Y - Position.Y;
+        var z = (int)location.Z - Position.Z;
+
+        if (x < 0 || y < 0 || z < 0
+            || x > Size - 1 || y > Size - 1 || z > Size - 1)
+            return false;
+
+        return true;
+    }
+
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
         if (Mesh.Vertices.Length == 0)
@@ -121,7 +134,7 @@ public class Chunk
             CreateCollisionSurface(simulation, bufferPool);
             return;
         }
-        
+
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         _shape = simulation.Shapes.Add(collisionSurface);
@@ -131,7 +144,7 @@ public class Chunk
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
         if (Mesh.Vertices.Length == 0) return;
-        
+
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
         _shape = simulation.Shapes.Add(collisionSurface);

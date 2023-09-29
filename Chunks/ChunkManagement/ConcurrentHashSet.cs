@@ -20,4 +20,9 @@ public class ConcurrentHashSet<T> where T : notnull
     {
         return _dictionary.ContainsKey(item);
     }
+
+    public void Clear()
+    {
+        _dictionary.Clear();
+    }
 }

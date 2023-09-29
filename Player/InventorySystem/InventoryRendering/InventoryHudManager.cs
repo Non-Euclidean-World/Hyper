@@ -19,19 +19,20 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
 
     public static readonly Vector2 InventoryPosition = new(0.0f, 0.0f);
 
-    private readonly Inventory _inventory = Inventory.Instance;
+    private readonly Inventory _inventory;
 
-    private readonly HudHelper _hudHelper;
+    private readonly IWindowHelper _windowHelper;
 
     private readonly SpriteRenderer _spriteRenderer;
 
-    public InventoryHudManager(HudHelper hudHelper)
+    public InventoryHudManager(IWindowHelper windowHelper, Inventory inventory, Context context)
     {
-        _hudHelper = hudHelper;
+        _windowHelper = windowHelper;
+        _inventory = inventory;
         _spriteRenderer = new SpriteRenderer(
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.json"),
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Inventory/sprite_sheet.png"));
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public void Render(Shader shader)
@@ -164,17 +165,15 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
     {
         if (_inventory.InHandItem.Item is null) return;
 
-        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, _hudHelper.GetMousePosition(), HotbarSizeY);
+        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, _windowHelper.GetMousePosition(), HotbarSizeY);
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterKeyDownCallback(Keys.E, () =>
         {
             _inventory.IsOpen = !_inventory.IsOpen;
-            _hudHelper.CursorState = _inventory.IsOpen ? CursorState.Normal : CursorState.Grabbed;
+            _windowHelper.CursorState = _inventory.IsOpen ? CursorState.Normal : CursorState.Grabbed;
             _inventory.DropItem();
         });
 
@@ -182,8 +181,13 @@ public class InventoryHudManager : IHudElement, IInputSubscriber
         {
             if (!_inventory.IsOpen) return;
 
-            var isMouseOnInventory = _inventory.TryGetPosition(out int x, out int y, _hudHelper.GetMousePosition());
+            var isMouseOnInventory = _inventory.TryGetPosition(out int x, out int y, _windowHelper.GetMousePosition());
             if (isMouseOnInventory) _inventory.SwapWithHand(x, y);
         });
+    }
+
+    public void Dispose()
+    {
+        _spriteRenderer.Dispose();
     }
 }

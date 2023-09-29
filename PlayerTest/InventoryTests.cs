@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Common.UserInput;
+using FluentAssertions;
 using Player.InventorySystem;
 using Player.InventorySystem.Items;
 using Player.InventorySystem.Items.Tools;
@@ -12,7 +13,8 @@ public class InventoryTests
     public void AddItemAddsItemToFirstEmptySlot()
     {
         // Arrange
-        var inventory = new Inventory();
+        var context = new Context();
+        var inventory = new Inventory(context);
         var item = new Sword();
 
         // Act
@@ -26,7 +28,8 @@ public class InventoryTests
     public void SwapWithHandShouldSwapDifferentItems()
     {
         // Arrange
-        var inventory = new Inventory();
+        var context = new Context();
+        var inventory = new Inventory(context);
         var item = new Sword();
         var item2 = new Hammer();
 
@@ -44,7 +47,8 @@ public class InventoryTests
     public void SwapWithHandShouldStackItems()
     {
         // Arrange
-        var inventory = new Inventory();
+        var context = new Context();
+        var inventory = new Inventory(context);
         var item = new Rock();
         int count1 = 10;
         int count2 = 5;

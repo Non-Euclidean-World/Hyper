@@ -1,5 +1,4 @@
 using Common.UserInput;
-using NLog;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
@@ -29,26 +28,20 @@ public class Camera : IInputSubscriber
 
     private readonly float _far;
 
-    private bool _firstMove = true;
-
-    private Vector2 _lastPos;
-
     private const float Sensitivity = 0.2f;
 
     public bool FirstPerson { get; set; }
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     public Vector3 ViewPosition { get; private init; }
 
-    public Camera(float aspectRatio, float near, float far, float scale)
+    public Camera(float aspectRatio, float near, float far, float scale, Context context)
     {
         AspectRatio = aspectRatio;
         _near = near;
         _far = far;
         ViewPosition = Vector3.UnitY * scale;
 
-        RegisterCallbacks();
+        RegisterCallbacks(context);
     }
 
     public float AspectRatio { private get; set; }
@@ -109,22 +102,10 @@ public class Camera : IInputSubscriber
         Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 
-    private void Turn(Vector2 position)
+    private void Turn(Vector2 delta)
     {
-        if (_firstMove)
-        {
-            _lastPos = position;
-            _firstMove = false;
-        }
-        else
-        {
-            var deltaX = position.X - _lastPos.X;
-            var deltaY = position.Y - _lastPos.Y;
-            _lastPos = position;
-
-            Yaw += deltaX * Sensitivity;
-            Pitch -= deltaY * Sensitivity; // Reversed since y-coordinates range from bottom to top
-        }
+        Yaw += delta.X * Sensitivity;
+        Pitch -= delta.Y * Sensitivity; // Reversed since y-coordinates range from bottom to top
     }
 
     public void UpdateWithCharacter(Player player)
@@ -133,9 +114,8 @@ public class Camera : IInputSubscriber
             + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this));
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        Context context = Context.Instance;
         context.RegisterKeys(new List<Keys>() {
             Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
         });
@@ -147,6 +127,6 @@ public class Camera : IInputSubscriber
         context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
         context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
 
-        context.RegisterMouseMoveCallback((e) => Turn(e.Position));
+        context.RegisterMouseMoveCallback((e) => Turn(e.Delta));
     }
 }

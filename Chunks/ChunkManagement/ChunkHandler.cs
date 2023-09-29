@@ -1,21 +1,28 @@
 ﻿using Chunks.MarchingCubes;
 using Chunks.Voxels;
+using Common;
 using Common.Meshes;
 using OpenTK.Mathematics;
 
 namespace Chunks.ChunkManagement;
 
-public static class ChunkHandler
+public class ChunkHandler
 {
-    public const string SaveLocation = "Chunks";
+    private readonly string _saveLocation;
 
-    public static void SaveChunkData(Voxel[,,] voxels, Vector3i position)
+    public ChunkHandler(string saveName)
+    {
+        _saveLocation = Path.Combine(Settings.SavesLocation, saveName, "chunks");
+        Directory.CreateDirectory(_saveLocation);
+    }
+
+    public void SaveChunkData(Voxel[,,] voxels, Vector3i position)
     {
         string filePath = GetFileName(position / Chunk.Size);
         SaveVoxels(filePath, voxels);
     }
 
-    public static Chunk LoadChunk(Vector3i position)
+    public Chunk LoadChunk(Vector3i position)
     {
         string filePath = GetFileName(position);
         var voxels = LoadVoxels(filePath);
@@ -23,6 +30,14 @@ public static class ChunkHandler
         Vertex[] data = meshGenerator.GetMesh();
 
         return new Chunk(data, position * Chunk.Size, voxels, false);
+    }
+
+    public List<Vector3i> GetSavedChunks()
+    {
+        if (!Directory.Exists(_saveLocation)) return new List<Vector3i>();
+
+        return Directory.GetFiles(_saveLocation, "*.voxels")
+            .Select(file => GetPositionFromName(Path.GetFileName(file))).ToList();
     }
 
     private static void SaveVoxels(string filePath, Voxel[,,] voxels)
@@ -72,8 +87,14 @@ public static class ChunkHandler
         return voxels;
     }
 
-    private static string GetFileName(Vector3i position)
+    private string GetFileName(Vector3i position)
     {
-        return $"{SaveLocation}/{position.X}_{position.Y}_{position.Z}.voxels";
+        return $"{_saveLocation}/{position.X}_{position.Y}_{position.Z}.voxels";
+    }
+
+    private static Vector3i GetPositionFromName(string fileName)
+    {
+        string[] split = fileName.Substring(0, fileName.IndexOf('.')).Split('_');
+        return new Vector3i(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]));
     }
 }

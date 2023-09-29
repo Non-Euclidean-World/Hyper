@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerTest", "PlayerTest\Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChunksTest", "ChunksTest\ChunksTest.csproj", "{B3F46903-520C-46D7-B9BB-0336E1782BB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfMenu", "WpfMenu\WpfMenu.csproj", "{54C520CA-AB8D-4EFB-81AE-9E01BA25156F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{B3F46903-520C-46D7-B9BB-0336E1782BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3F46903-520C-46D7-B9BB-0336E1782BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3F46903-520C-46D7-B9BB-0336E1782BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C520CA-AB8D-4EFB-81AE-9E01BA25156F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C520CA-AB8D-4EFB-81AE-9E01BA25156F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C520CA-AB8D-4EFB-81AE-9E01BA25156F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C520CA-AB8D-4EFB-81AE-9E01BA25156F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{0997C674-888D-4ABB-94DC-10391EBE504A} = {27E372FD-8581-4E9B-A5DA-80B9E7DB0D53}
 		{38544C79-DF47-4DDA-AABC-B0FFE14B7191} = {6B9A8F10-1BCE-4EE6-B3DA-2A251C9F7DD4}
 		{B3F46903-520C-46D7-B9BB-0336E1782BB7} = {6B9A8F10-1BCE-4EE6-B3DA-2A251C9F7DD4}
+		{54C520CA-AB8D-4EFB-81AE-9E01BA25156F} = {27E372FD-8581-4E9B-A5DA-80B9E7DB0D53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29B3FFBA-ED9E-48A2-A6F0-730647031DB8}

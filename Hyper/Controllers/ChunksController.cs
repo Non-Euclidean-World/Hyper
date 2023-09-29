@@ -13,12 +13,16 @@ internal class ChunksController : IController, IInputSubscriber
 
     private readonly ChunkWorker _chunkWorker;
 
-    public ChunksController(Scene scene, ObjectShader shader, ChunkFactory chunkFactory)
+    private float _buildTime = 0;
+
+    private float _mineTime = 0;
+
+    public ChunksController(Scene scene, Context context, ObjectShader shader, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
     {
         _scene = scene;
         _shader = shader;
-        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory);
-        RegisterCallbacks();
+        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler);
+        RegisterCallbacks(context);
     }
 
     public void Render()
@@ -31,20 +35,24 @@ internal class ChunksController : IController, IInputSubscriber
         }
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        var context = Context.Instance;
-
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Mine(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
+                var location =
+                    _scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]);
+                if (!chunk.IsInside(location)) continue;
+                if (!_chunkWorker.IsOnUpdateQueue(chunk))
                 {
+                    chunk.Mine(location, (float)e.Time + _mineTime);
                     _chunkWorker.EnqueueUpdatingChunk(chunk);
-                    return;
+                    _mineTime = 0;
                 }
+                else _mineTime += (float)e.Time;
+                return;
             }
         });
 
@@ -52,14 +60,26 @@ internal class ChunksController : IController, IInputSubscriber
         {
             foreach (var chunk in _scene.Chunks)
             {
-                if (chunk.Build(_scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]), 3, (float)e.Time))
+                var location =
+                    _scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]);
+                if (!chunk.IsInside(location)) continue;
+                if (!_chunkWorker.IsOnUpdateQueue(chunk))
                 {
+                    chunk.Build(location, (float)e.Time + _buildTime);
                     _chunkWorker.EnqueueUpdatingChunk(chunk);
-                    return;
+                    _buildTime = 0;
                 }
+                else _buildTime += (float)e.Time;
+                return;
             }
         });
 
         context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
+    }
+
+    public void Dispose()
+    {
+        _shader.Dispose();
+        _chunkWorker.Dispose();
     }
 }

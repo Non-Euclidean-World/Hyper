@@ -5,12 +5,6 @@ namespace Common.UserInput;
 
 public class Context
 {
-    private Context() { }
-
-    private static readonly Lazy<Context> _instance = new(() => new Context());
-
-    public static Context Instance => _instance.Value;
-
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
     public Dictionary<MouseButton, List<Action<FrameEventArgs>>> ButtonHeldCallbacks = new();
 
@@ -21,7 +15,6 @@ public class Context
     public Dictionary<MouseButton, List<Action>> ButtonUpCallbacks = new();
 
     public List<Action<FrameEventArgs>> FrameUpdateCallbacks = new();
-    public List<Action<string[]>> ConsoleInputCallbacks = new();
 
     public List<Action<MouseMoveEventArgs>> MouseMoveCallbacks = new();
 
@@ -115,11 +108,6 @@ public class Context
     public void RegisterUpdateFrameCallback(Action<FrameEventArgs> callback)
     {
         FrameUpdateCallbacks.Add(callback);
-    }
-
-    public void RegisterConsoleInputCallback(Action<string[]> callback)
-    {
-        ConsoleInputCallbacks.Add(callback);
     }
 
     public void RegisterMouseMoveCallback(Action<MouseMoveEventArgs> callback)

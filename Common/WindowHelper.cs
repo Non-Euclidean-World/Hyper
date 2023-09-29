@@ -2,9 +2,9 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 
-namespace Hud;
+namespace Common;
 
-public class HudHelper
+public class WindowHelper : IWindowHelper
 {
     private readonly GameWindow _window;
 
@@ -14,7 +14,7 @@ public class HudHelper
         set => _window.CursorState = value;
     }
 
-    public HudHelper(GameWindow window)
+    public WindowHelper(GameWindow window)
     {
         _window = window;
     }

@@ -9,9 +9,6 @@ namespace Player.InventorySystem;
 
 public class Inventory : IInputSubscriber
 {
-    private static readonly Lazy<Inventory> _instance = new(() => new Inventory(true));
-    public static Inventory Instance => _instance.Value;
-
     public const int Columns = 10;
 
     public const int Rows = 4;
@@ -28,10 +25,10 @@ public class Inventory : IInputSubscriber
 
     public (Item? Item, int Count) InHandItem;
 
-    public Inventory(bool starterItems = false)
+    public Inventory(Context context, bool starterItems = false)
     {
         Items = new (Item? Item, int Count)[Columns, Rows];
-        RegisterCallbacks();
+        RegisterCallbacks(context);
 
         if (starterItems)
         {
@@ -170,10 +167,8 @@ public class Inventory : IInputSubscriber
         return x is >= 0 and < Columns && y is > 0 and < Rows;
     }
 
-    public void RegisterCallbacks()
+    public void RegisterCallbacks(Context context)
     {
-        Context context = Context.Instance;
-
         context.RegisterKeyDownCallback(Keys.D0, () => SelectedItemIndex = 9);
         context.RegisterKeyDownCallback(Keys.D1, () => SelectedItemIndex = 0);
         context.RegisterKeyDownCallback(Keys.D2, () => SelectedItemIndex = 1);
