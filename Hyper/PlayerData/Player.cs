@@ -20,14 +20,15 @@ internal class Player : Humanoid, IRayCaster, IContactEventListener
     
     private readonly RayEndpointMarker _rayEndpointMarker;
 
-    private readonly float _rayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
+    private const float RayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
 
     public float RayMaximumT => 20.0f;
 
     public System.Numerics.Vector3 RayDirection => Conversions.ToNumericsVector(ViewDirection);
 
     public System.Numerics.Vector3 RayOrigin => PhysicalCharacter.Pose.Position
-            + Conversions.ToNumericsVector(ViewDirection) * _rayOffset;
+            + Conversions.ToNumericsVector(ViewDirection) * RayOffset
+            + System.Numerics.Vector3.UnitY;
 
     public int RayId => 0;
 

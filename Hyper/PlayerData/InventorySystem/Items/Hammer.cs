@@ -2,7 +2,7 @@
 
 internal class Hammer : Item
 {
-    public override string ID => "hammer";
+    public override string Id => "hammer";
 
     public override bool IsStackable { get; } = false;
     

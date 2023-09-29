@@ -6,7 +6,7 @@ namespace Hyper.PlayerData.InventorySystem.Items;
 
 internal class Gun : Item
 {
-    public override string ID => "gun";
+    public override string Id => "gun";
     
     public override bool IsStackable => false;
     

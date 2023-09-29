@@ -76,7 +76,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
         {
             var item = hotbar[i].Item;
             if (item is not null)
-                RenderHotbarItem(shader, item.ID, i);
+                RenderHotbarItem(shader, item.Id, i);
         }
     }
 
@@ -108,7 +108,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
             {
                 var item = inventory[i, j].Item;
                 if (item is not null)
-                    RenderInventoryItem(shader, item.ID, i, Inventory.Rows - j - 1);
+                    RenderInventoryItem(shader, item.Id, i, Inventory.Rows - j - 1);
             }
         }
     }
@@ -165,7 +165,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
     {
         if (_inventory.InHandItem.Item is null) return;
 
-        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.ID, _windowHelper.GetMousePosition(), HotbarSizeY);
+        _spriteRenderer.Render(shader, _inventory.InHandItem.Item.Id, _windowHelper.GetMousePosition(), HotbarSizeY);
     }
 
     public void RegisterCallbacks(Context context)

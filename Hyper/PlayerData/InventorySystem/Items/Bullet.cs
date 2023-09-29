@@ -2,7 +2,7 @@
 
 internal class Bullet : Item
 {
-    public override string ID => "bullet";
+    public override string Id => "bullet";
 
     public override bool IsStackable => true;
 }

@@ -16,13 +16,13 @@ internal class Inventory : IInputSubscriber
 
     public bool IsOpen = false;
 
-    public readonly (Items.Item? Item, int Count)[,] Items;
+    public readonly (Item? Item, int Count)[,] Items;
 
-    public (Items.Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
+    public (Item? Item, int Count)[] Hotbar => Enumerable.Range(0, Columns).Select(i => Items[i, 0]).ToArray();
 
-    public Items.Item? SelectedItem => Items[SelectedItemIndex, 0].Item;
+    public Item? SelectedItem => Items[SelectedItemIndex, 0].Item;
 
-    public (Items.Item? Item, int Count) InHandItem;
+    public (Item? Item, int Count) InHandItem;
 
     public Inventory(Context context, bool starterItems = false)
     {
@@ -43,7 +43,7 @@ internal class Inventory : IInputSubscriber
         {
             for (int j = 0; j < Items.GetLength(1); j++)
             {
-                if (Items[i, j].Item?.ID == itemId && Items[i, j].Count > 0)
+                if (Items[i, j].Item?.Id == itemId && Items[i, j].Count > 0)
                 {
                     Items[i, j].Count--;
                     return true;
@@ -127,7 +127,7 @@ internal class Inventory : IInputSubscriber
         {
             if (InHandItem.Item.IsStackable)
             {
-                if (InHandItem.Item.ID == Items[x, y].Item.ID)
+                if (InHandItem.Item.Id == Items[x, y].Item.Id)
                 {
                     Items[x, y].Count += InHandItem.Count;
                     InHandItem.Item = null;

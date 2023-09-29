@@ -102,7 +102,6 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Hud\Hud.csproj" />
     <ProjectReference Include="..\Physics\Physics.csproj" />
-    <ProjectReference Include="..\Player\Player.csproj" />
   </ItemGroup>
 
 
