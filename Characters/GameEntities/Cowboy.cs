@@ -1,5 +1,5 @@
 ﻿using BepuPhysics;
-using Character.Characters.Cowboy;
+using Character.Characters;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;

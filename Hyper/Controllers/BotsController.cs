@@ -1,5 +1,6 @@
 ﻿using Character.GameEntities;
 using Character.Shaders;
+using Chunks;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
@@ -95,13 +96,45 @@ internal class BotsController : IController, IInputSubscriber
             var rand = new Random();
             var x = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
             var z = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
-            var position = new Vector3(x + _scene.Player.PhysicalCharacter.Pose.Position.X, 31, z + _scene.Player.PhysicalCharacter.Pose.Position.Z); // TODO remove the magic number
+            var position = new Vector3(x + _scene.Player.PhysicalCharacter.Pose.Position.X, 0, z + _scene.Player.PhysicalCharacter.Pose.Position.Z);
+            position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new Cowboy(_scene.CreatePhysicalHumanoid(position));
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
             _scene.SimulationMembers.Add(bot.BodyHandle, bot);
             _scene.SimulationManager.RegisterContactCallback(bot.BodyHandle, contactInfo => bot.ContactCallback(contactInfo, _scene.SimulationMembers));
             _scene.Bots.Add(bot);
         }
+    }
+
+    private float GetSpawnHeight(int x, int z)
+    {
+        foreach (var chunk in _scene.Chunks)
+        {
+            if (x < chunk.Position.X || x > chunk.Position.X + Chunk.Size ) continue;
+            if (z < chunk.Position.Z || z > chunk.Position.Z + Chunk.Size ) continue;
+            var chunkX = x - chunk.Position.X;
+            var chunkZ = z - chunk.Position.Z;
+            bool negative = !(chunk.Voxels[chunkX, 0, chunkZ].Value >= 0);
+            for (int y = 0; y < Chunk.Size; y++)
+            {
+                if (negative)
+                {
+                    if (chunk.Voxels[chunkX, y, chunkZ].Value >= 0)
+                    {
+                        return y + chunk.Position.Y + 1;
+                    }
+                }
+                else
+                {
+                    if (chunk.Voxels[chunkX, y, chunkZ].Value < 0)
+                    {
+                        return y + chunk.Position.Y + 1;
+                    }
+                }
+            }
+        }
+
+        return Chunk.Size;
     }
 
     public void Dispose()

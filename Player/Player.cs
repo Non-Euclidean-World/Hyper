@@ -1,7 +1,7 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using Character;
-using Character.Characters.Cowboy;
+using Character.Characters;
 using Character.GameEntities;
 using Character.Shaders;
 using Common;
@@ -16,7 +16,7 @@ using Player.InventorySystem;
 
 namespace Player;
 
-public class Player : Humanoid, IRayCaster, IContactEventListener
+public class Player : Humanoid, IRayCaster
 {
     public readonly Inventory Inventory;
     

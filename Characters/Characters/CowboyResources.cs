@@ -1,4 +1,4 @@
-﻿namespace Character.Characters.Cowboy;
+﻿namespace Character.Characters;
 
 public class CowboyResources : ModelResources
 {

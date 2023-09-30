@@ -1,12 +1,9 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
-using Character.Characters;
-using Character.Characters.Cowboy;
 using Common;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
-using Physics.TypingUtils;
 
 namespace Character.GameEntities;
 public abstract class Humanoid : ISimulationMember, IContactEventListener
