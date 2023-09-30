@@ -11,21 +11,15 @@ public abstract class Model
 {
     public readonly Animator Animator;
 
-    private readonly int[] _vaos;
-
-    private readonly Texture _texture;
-
-    private readonly Assimp.Scene _model;
+    private readonly ModelResources _modelResources;
 
     private readonly float _localScale;
 
     private readonly Vector3 _localTranslation;
 
-    public Model(string modelPath, string texturePath, float localScale, Vector3 localTranslation)
+    public Model(ModelResources modelResources, float localScale, Vector3 localTranslation)
     {
-        _model = ModelLoader.GetModel(modelPath);
-        _vaos = ModelLoader.GetVaos(_model);
-        _texture = Texture.LoadFromFile(texturePath);
+        _modelResources = modelResources;
         Animator = new Animator();
         _localScale = localScale;
         _localTranslation = localTranslation;
@@ -33,7 +27,7 @@ public abstract class Model
 
     public void Render(RigidPose rigidPose, Shader shader, float globalScale, Vector3 cameraPosition)
     {
-        _texture.Use(TextureUnit.Texture0);
+        _modelResources.Texture.Use(TextureUnit.Texture0);
 
         var localTranslationMatrix = Matrix4.CreateTranslation(_localTranslation);
         var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(rigidPose.Position) - cameraPosition) * globalScale);
@@ -43,15 +37,15 @@ public abstract class Model
         shader.SetMatrix4("model", localTranslationMatrix * localScaleMatrix * rotation * translation * globalScale);
         shader.SetMatrix4("normalRotation", rotation);
 
-        Animator.Animate(_model);
+        Animator.Animate(_modelResources.Model);
 
-        for (int i = 0; i < _model.Meshes.Count; i++)
+        for (int i = 0; i < _modelResources.Model.Meshes.Count; i++)
         {
-            var boneTransforms = Animator.GetBoneTransforms(_model, i).Select(AssimpConversions.ToOpenTKMatrix).ToArray();
+            var boneTransforms = Animator.GetBoneTransforms(_modelResources.Model, i).Select(AssimpConversions.ToOpenTKMatrix).ToArray();
             shader.SetMatrix4Array("boneTransforms", boneTransforms);
 
-            GL.BindVertexArray(_vaos[i]);
-            GL.DrawElements(PrimitiveType.Triangles, _model.Meshes[i].FaceCount * 3,
+            GL.BindVertexArray(_modelResources.Vaos[i]);
+            GL.DrawElements(PrimitiveType.Triangles, _modelResources.Model.Meshes[i].FaceCount * 3,
                 DrawElementsType.UnsignedInt, 0);
         }
     }
