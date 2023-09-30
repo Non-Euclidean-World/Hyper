@@ -79,7 +79,7 @@ internal class PlayerController : IController, IInputSubscriber
         
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
     }
-
+    
     public void Dispose()
     {
         _modelShader.Dispose();

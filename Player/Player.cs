@@ -1,5 +1,7 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using Character;
+using Character.Characters.Cowboy;
 using Character.GameEntities;
 using Character.Shaders;
 using Common;
@@ -16,7 +18,7 @@ namespace Player;
 
 public class Player : Humanoid, IRayCaster, IContactEventListener
 {
-    public Inventory Inventory;
+    public readonly Inventory Inventory;
     
     private readonly RayEndpointMarker _rayEndpointMarker;
 
@@ -31,7 +33,8 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
 
     public int RayId => 0;
 
-    public Player(PhysicalCharacter physicalCharacter, Context context) : base(physicalCharacter)
+    public Player(PhysicalCharacter physicalCharacter, Context context)  : base(
+        new Model(CowboyResources.Instance, 0.04f, new Vector3(0, -5, 0)), physicalCharacter)
     {
         Inventory = new Inventory(context);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
@@ -56,8 +59,7 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
     public Vector3 GetRayEndpoint(in RayHit hit)
         => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
 
-    // TODO add new class for Bot to remove hiding
-    public new void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    public override void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
     {
         var pair = collisionInfo.CollidablePair;
         var collidableReference
@@ -81,5 +83,20 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
             Console.WriteLine("Player collided with something");
         }
 #endif
+    }
+    
+    public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float time, bool tryJump, bool sprint, Vector2 movementDirection)
+    {
+        if (movementDirection != Vector2.Zero)
+        {
+            Character.Animator.Play(0);
+        }
+        else
+        {
+            Character.Animator.Reset();
+        }
+
+        PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
+        ViewDirection = viewDirection;
     }
 }

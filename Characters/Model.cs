@@ -7,7 +7,7 @@ using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace Character;
 
-public abstract class Model
+public class Model
 {
     public readonly Animator Animator;
 
@@ -49,5 +49,4 @@ public abstract class Model
                 DrawElementsType.UnsignedInt, 0);
         }
     }
-
 }

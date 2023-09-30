@@ -70,9 +70,7 @@ internal class BotsController : IController, IInputSubscriber
         foreach (var bot in _scene.Bots)
         {
             _elapsedSeconds += time;
-            Vector3 movement = new Vector3(MathF.Sin(_elapsedSeconds / 3), 0, MathF.Cos(_elapsedSeconds / 3)); // these poor fellas are cursed with eternal running in circles
-            bot.UpdateCharacterGoals(_scene.SimulationManager.Simulation, movement, time,
-                tryJump: false, sprint: false, movementDirection: Vector2.UnitY);
+            bot.UpdateCharacterGoals(_scene.SimulationManager.Simulation, time);
         }
     }
 
@@ -98,7 +96,7 @@ internal class BotsController : IController, IInputSubscriber
             var x = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
             var z = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
             var position = new Vector3(x + _scene.Player.PhysicalCharacter.Pose.Position.X, 31, z + _scene.Player.PhysicalCharacter.Pose.Position.Z); // TODO remove the magic number
-            var bot = new Humanoid(_scene.CreatePhysicalHumanoid(position));
+            var bot = new Cowboy(_scene.CreatePhysicalHumanoid(position));
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
             _scene.SimulationMembers.Add(bot.BodyHandle, bot);
             _scene.SimulationManager.RegisterContactCallback(bot.BodyHandle, contactInfo => bot.ContactCallback(contactInfo, _scene.SimulationMembers));
