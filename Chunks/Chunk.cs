@@ -42,21 +42,17 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was mined. false otherwise.</returns>
-    public bool Mine(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
+    public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1)
-            return false;
-
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -65,8 +61,6 @@ public class Chunk
                 }
             }
         }
-
-        return true;
     }
 
     /// <summary>
@@ -77,21 +71,17 @@ public class Chunk
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
     /// <returns>true is something was built. false otherwise.</returns>
-    public bool Build(Vector3 location, float deltaTime, float brushWeight = 3, int radius = 5)
+    public void Build(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1)
-            return false;
-
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size - 1, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size - 1, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size - 1, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -100,21 +90,24 @@ public class Chunk
                 }
             }
         }
-
-        return true;
+    }
+    
+    private float Clamp(float value, float min, float max)
+    {
+        return Math.Max(min, Math.Min(max, value));
     }
 
-    public bool IsInside(Vector3 location)
+    public float DistanceFromChunk(Vector3 location)
     {
-        var x = (int)location.X - Position.X;
-        var y = (int)location.Y - Position.Y;
-        var z = (int)location.Z - Position.Z;
+        Vector3 chunkTopLeft = Position + new Vector3(Size, Size, Size);
 
-        if (x < 0 || y < 0 || z < 0
-            || x > Size - 1 || y > Size - 1 || z > Size - 1)
-            return false;
+        float closestX = Clamp(location.X, Position.X, chunkTopLeft.X);
+        float closestY = Clamp(location.Y, Position.Y, chunkTopLeft.Y);
+        float closestZ = Clamp(location.Z, Position.Z, chunkTopLeft.Z);
 
-        return true;
+        Vector3 axisDistances = new Vector3(Math.Abs(closestX - location.X), Math.Abs(closestY - location.Y), Math.Abs(closestZ - location.Z));
+
+        return Math.Max(axisDistances.X, Math.Max(axisDistances.Y, axisDistances.Z));
     }
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
