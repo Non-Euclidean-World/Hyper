@@ -19,12 +19,15 @@ public class Settings
 
     [JsonIgnore]
     public float AspectRatio { get; set; }
+    
+    public int RenderDistance { get; set; } = 1;
 
-    public Settings(int seed, string saveName, float aspectRatio)
+    public Settings(int seed, string saveName, float aspectRatio = 1)
     {
         Seed = seed;
         SaveName = saveName;
         AspectRatio = aspectRatio;
+        
 
         if (!Directory.Exists(CurrentSaveLocation)) Directory.CreateDirectory(CurrentSaveLocation);
     }
@@ -34,7 +37,7 @@ public class Settings
         if (!Directory.Exists(Path.Combine(SavesLocation, saveName)))
         {
             var rand = new Random();
-            return new Settings(rand.Next(), saveName, 1);
+            return new Settings(rand.Next(), saveName);
         }
         var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
         var settings = JsonSerializer.Deserialize<Settings>(json)!;

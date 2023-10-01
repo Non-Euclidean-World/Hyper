@@ -42,7 +42,7 @@ public class ChunkWorker : IDisposable
 
     private readonly ChunkFactory _chunkFactory;
 
-    private const int RenderDistance = 1;
+    private readonly int _renderDistance;
 
     private const int NumberOfThreads = 2;
 
@@ -50,16 +50,17 @@ public class ChunkWorker : IDisposable
 
     private readonly ChunkHandler _chunkHandler;
 
-    private static int TotalChunks => (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+    private int TotalChunks => (2 * _renderDistance + 1) * (2 * _renderDistance + 1) * (2 * _renderDistance + 1);
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, int renderDistance)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
+        _renderDistance = renderDistance;
         foreach (var chunk in _chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
@@ -169,7 +170,7 @@ public class ChunkWorker : IDisposable
 
         _chunks.RemoveAll(chunk =>
         {
-            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
+            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > _renderDistance)) return false;
 
             _existingChunks.Remove(chunk.Position / Chunk.Size);
             if (_chunksToSaveDictionary.ContainsKey(chunk.Position))
@@ -190,11 +191,11 @@ public class ChunkWorker : IDisposable
 
     private void EnqueueLoadingChunks(Vector3i currentChunk)
     {
-        for (int x = -RenderDistance; x <= RenderDistance; x++)
+        for (int x = -_renderDistance; x <= _renderDistance; x++)
         {
-            for (int y = -RenderDistance; y <= RenderDistance; y++)
+            for (int y = -_renderDistance; y <= _renderDistance; y++)
             {
-                for (int z = -RenderDistance; z <= RenderDistance; z++)
+                for (int z = -_renderDistance; z <= _renderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
                     if (_existingChunks.Contains(chunk)) continue;

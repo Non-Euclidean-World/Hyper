@@ -1,6 +1,7 @@
 ﻿using Character.GameEntities;
 using Character.Shaders;
 using Chunks;
+using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Mathematics;
@@ -18,21 +19,25 @@ internal class BotsController : IController, IInputSubscriber
     
     private float _elapsedSeconds = 0;
 
-    private const int MaxBots = 10;
+    private readonly int _maxBots;
 
-    private const int BotsMinSpawnRadius = 10;
+    private readonly int _botsMinSpawnRadius;
     
-    private const int BotsMaxSpawnRadius = 20;
+    private readonly int _botsMaxSpawnRadius;
     
-    private const int BotsDespawnRadius = 30;
+    private readonly int _botsDespawnRadius;
     
     private bool _showBoundingBoxes = false;
 
-    public BotsController(Scene scene, Context context, ModelShader shader, ObjectShader objectShader)
+    public BotsController(Scene scene, Context context, ModelShader shader, ObjectShader objectShader, Settings settings)
     {
         _scene = scene;
         _shader = shader;
         _objectShader = objectShader;
+        _maxBots = 10 * settings.RenderDistance * settings.RenderDistance;
+        _botsMinSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
+        _botsMaxSpawnRadius = Chunk.Size * settings.RenderDistance * 2 / 3;
+        _botsDespawnRadius = Chunk.Size * settings.RenderDistance;
         
         Spawn();
         RegisterCallbacks(context);
@@ -81,7 +86,9 @@ internal class BotsController : IController, IInputSubscriber
         {
             var distance = (bot.PhysicalCharacter.Pose.Position - _scene.Player.PhysicalCharacter.Pose.Position);
 
-            if (!(Math.Abs(distance.X) > BotsDespawnRadius || Math.Abs(distance.Z) > BotsDespawnRadius)) return false;
+            if (!(Math.Abs(distance.X) > _botsDespawnRadius || 
+                  Math.Abs(distance.Z) > _botsDespawnRadius || 
+                  Math.Abs(distance.Z) > _botsDespawnRadius)) return false;
             Console.WriteLine($"Despawning bot {bot.BodyHandle}");
             bot.Dispose();
             _scene.SimulationMembers.Remove(bot.BodyHandle);
@@ -91,11 +98,11 @@ internal class BotsController : IController, IInputSubscriber
 
     private void Spawn()
     {
-        for (int i = 0; i < MaxBots - _scene.Bots.Count; i++)
+        for (int i = 0; i < _maxBots - _scene.Bots.Count; i++)
         {
             var rand = new Random();
-            var x = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
-            var z = rand.Next(0, 2) == 0 ? rand.Next(-BotsMaxSpawnRadius, -BotsMinSpawnRadius) : rand.Next(BotsMinSpawnRadius, BotsMaxSpawnRadius);
+            var x = rand.Next(0, 2) == 0 ? rand.Next(-_botsMaxSpawnRadius, -_botsMinSpawnRadius) : rand.Next(_botsMinSpawnRadius, _botsMaxSpawnRadius);
+            var z = rand.Next(0, 2) == 0 ? rand.Next(-_botsMaxSpawnRadius, -_botsMinSpawnRadius) : rand.Next(_botsMinSpawnRadius, _botsMaxSpawnRadius);
             var position = new Vector3(x + _scene.Player.PhysicalCharacter.Pose.Position.X, 0, z + _scene.Player.PhysicalCharacter.Pose.Position.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new Cowboy(_scene.CreatePhysicalHumanoid(position));

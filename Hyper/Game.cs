@@ -53,8 +53,8 @@ public class Game
         _controllers = new IController[]
         {
             new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader),
-            new BotsController(_scene, _context, modelShader, objectShader),
-            new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler),
+            new BotsController(_scene, _context, modelShader, objectShader, _settings),
+            new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler, _settings),
             new ProjectilesController(_scene, _context, objectShader),
             new VehiclesController(_scene, _context, objectShader),
             new LightSourcesController(_scene, lightSourceShader),

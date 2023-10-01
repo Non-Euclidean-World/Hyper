@@ -1,4 +1,5 @@
 ﻿using Chunks.ChunkManagement;
+using Common;
 using Common.UserInput;
 using Hyper.Shaders;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -17,11 +18,11 @@ internal class ChunksController : IController, IInputSubscriber
 
     private float _mineTime = 0;
 
-    public ChunksController(Scene scene, Context context, ObjectShader shader, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    public ChunksController(Scene scene, Context context, ObjectShader shader, ChunkFactory chunkFactory, ChunkHandler chunkHandler, Settings settings)
     {
         _scene = scene;
         _shader = shader;
-        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler);
+        _chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, settings.RenderDistance);
         RegisterCallbacks(context);
     }
 
