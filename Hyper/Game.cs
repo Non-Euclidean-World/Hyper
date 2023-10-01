@@ -39,23 +39,25 @@ public class Game
 
         _settings = Settings.Load(saveName);
         _settings.AspectRatio = (float)width / height;
-        
+
         var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
         var chunkFactory = new ChunkFactory(scalarFieldGenerator);
         var chunkHandler = new ChunkHandler(_settings.SaveName);
-        
+
         _scene = new Scene(_size.X / (float)_size.Y, scalarFieldGenerator.AvgElevation, _context);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();
         var hudShader = HudShader.Create();
 
+        var sphericalTransporter = new SphericalTransporter(_scene.Scale, _scene.SphereCenters);
+
         _controllers = new IController[]
         {
-            new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader),
+            new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader, sphericalTransporter, spherical: false),
             new BotsController(_scene, _context, modelShader, objectShader),
             new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler),
-            new ProjectilesController(_scene, _context, objectShader),
+            new ProjectilesController(_scene, _context, objectShader, sphericalTransporter, spherical: false),
             new VehiclesController(_scene, _context, objectShader),
             new LightSourcesController(_scene, lightSourceShader),
             new HudController(_scene, _context, windowHelper, hudShader),

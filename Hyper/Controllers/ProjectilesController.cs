@@ -13,10 +13,16 @@ internal class ProjectilesController : IController, IInputSubscriber
 
     private readonly ObjectShader _shader;
 
-    public ProjectilesController(Scene scene, Context context, ObjectShader shader)
+    private readonly SphericalTransporter _sphericalTransporter;
+
+    private bool _spherical;
+
+    public ProjectilesController(Scene scene, Context context, ObjectShader shader, SphericalTransporter sphericalTransporter, bool spherical)
     {
         _scene = scene;
         _shader = shader;
+        _sphericalTransporter = sphericalTransporter;
+        _spherical = spherical;
         RegisterCallbacks(context);
     }
 
@@ -31,6 +37,12 @@ internal class ProjectilesController : IController, IInputSubscriber
                 projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
                 _scene.SimulationMembers.Remove(projectile.BodyHandle);
             }
+
+            if (_spherical)
+            {
+                int targetSphereId = 1 - projectile.CurrentSphereId;
+                _sphericalTransporter.TryTeleportTo(targetSphereId, projectile, _scene.SimulationManager.Simulation, out _);
+            }
         }
     }
 
@@ -41,18 +53,17 @@ internal class ProjectilesController : IController, IInputSubscriber
             _scene.SimulationManager.Properties,
             new RigidPose(_scene.Player.RayOrigin, q),
             Conversions.ToNumericsVector(_scene.Camera.Front) * 15,
-            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
+            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5, _scene.Player.CurrentSphereId); // let's throw some refrigerators
         _scene.Projectiles.Add(projectile);
         _scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
     }
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
-
         foreach (var projectile in _scene.Projectiles)
         {
-            projectile.Mesh.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale, projectile.CurrentSphereId, _scene.LowerSphereCenter);
+            projectile.Mesh.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

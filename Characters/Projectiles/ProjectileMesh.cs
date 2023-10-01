@@ -24,9 +24,9 @@ public class ProjectileMesh : IDisposable
         Body.RigidPose = bodyPose;
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition)
+    public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
-        Body.RenderFullDescription(shader, scale, cameraPosition);
+        Body.RenderFullDescription(shader, scale, curve, cameraPosition);
     }
 
     public void Dispose()

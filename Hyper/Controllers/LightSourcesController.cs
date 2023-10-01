@@ -17,11 +17,11 @@ internal class LightSourcesController : IController
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera);
+        _shader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId, _scene.LowerSphereCenter);
 
         foreach (var light in _scene.LightSources)
         {
-            light.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            light.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

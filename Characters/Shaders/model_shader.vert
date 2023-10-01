@@ -1,7 +1,7 @@
 #version 330 core
 
-const int MAX_BONES = 50; //max bones allowed in a skeleton
-const int MAX_WEIGHTS = 3; //max number of joints that can affect a vertex
+const int MAX_BONES = 50; // max bones allowed in a skeleton
+const int MAX_WEIGHTS = 3; // max number of joints that can affect a vertex
 
 layout(location = 0) in vec3 in_position;
 layout(location = 1) in vec3 in_normal;
@@ -19,14 +19,59 @@ uniform mat4 view;
 uniform mat4 model;
 uniform mat4 normalRotation;
 uniform mat4 boneTransforms[MAX_BONES];
+uniform int sphere; // 0 for upper, 1 for lower
+uniform vec3 lowerSphereCenter;
+uniform int characterSphere;
+
+vec3 flipXZ(vec3 v);
+vec3 flipY(vec3);
 
 vec4 port(vec4 ePoint)
 {
 	vec3 p = ePoint.xyz;
 	float d = length(p);
 	if(d < 0.0001 || curv == 0) return ePoint;
-	if(curv > 0) return vec4(p / d * sin(d), cos(d));
-	return vec4(p / d * sinh(d), cosh(d));
+	if(curv > 0)
+    {
+        if(characterSphere == 0)
+        {
+            if(sphere == 0)
+            {
+                d = length(p);
+                return vec4(p / d * sin(d), cos(d));
+            }
+            if(sphere == 1)
+            {
+                p = p - lowerSphereCenter;
+                d = length(p);
+                return vec4(flipXZ(p) / d * sin(d), -cos(d));
+            }
+        }
+        else
+        {
+            if(sphere == 0)
+            {
+                d = length(p);   
+                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
+            }
+            if(sphere == 1)
+            {
+                p = p - lowerSphereCenter;
+                d = length(p);
+                return vec4(flipY(p) / d * sin(d), cos(d));
+            }
+        }
+    }
+
+    return vec4(p / d * sinh(d), cosh(d));
+}
+
+vec3 flipXZ(vec3 v) {
+    return vec3(-v.x, v.y, -v.z);
+}
+
+vec3 flipY(vec3 v) {
+    return vec3(v.x, -v.y, v.z);
 }
 
 mat4 TranslateMatrix(vec4 to)
@@ -65,8 +110,9 @@ void main(void)
 		totalNormal += worldNormal * in_weights[i];
 	}
 
-	gl_Position = port(totalLocalPos * model) * view * projection;
-	FragPos = port(totalLocalPos * model);
-	Normal = totalNormal * normalRotation * TranslateMatrix(port(totalLocalPos * model));
+	vec4 eucPos = vec4(totalLocalPos.xyz, 1);
+	gl_Position = port(eucPos * model) * view * projection;
+	FragPos = port(eucPos * model);
+	Normal = totalNormal * normalRotation * TranslateMatrix(port(eucPos * model));
 	Texture = in_textureCoords;
 }

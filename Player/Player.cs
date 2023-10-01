@@ -17,7 +17,7 @@ namespace Player;
 public class Player : Humanoid, IRayCaster, IContactEventListener
 {
     public Inventory Inventory;
-    
+
     private readonly RayEndpointMarker _rayEndpointMarker;
 
     private readonly float _rayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
@@ -31,22 +31,22 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
 
     public int RayId => 0;
 
-    public Player(PhysicalCharacter physicalCharacter, Context context) : base(physicalCharacter)
+    public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 
-    public void Render(ModelShader modelShader, float scale, Vector3 cameraPosition, bool isFirstPerson)
+    public void Render(ModelShader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
     {
         if (!isFirstPerson)
-            Character.Render(PhysicalCharacter.Pose, modelShader, scale, cameraPosition);
+            Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);
     }
 
-    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, Vector3 cameraPosition)
+    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, float curve, Vector3 cameraPosition)
     {
         _rayEndpointMarker.Position = GetRayEndpoint(rayHit);
-        _rayEndpointMarker.Render(rayMarkerShader, scale, cameraPosition);
+        _rayEndpointMarker.Render(rayMarkerShader, scale, curve, cameraPosition);
     }
 
     // in general this can depend on the properties of the character e.g. size etc

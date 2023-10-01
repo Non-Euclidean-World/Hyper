@@ -20,6 +20,7 @@ public class SimpleCar : ISimulationMember
     public WheelHandles BackRightWheel { get; private set; }
 
     public CarMesh Mesh { get => _mesh; }
+    public int CurrentSphereId { get; set; }
 
     private Vector3 _suspensionDirection;
     private AngularHinge _hingeDescription;
@@ -28,10 +29,11 @@ public class SimpleCar : ISimulationMember
 
     private readonly CarMesh _mesh;
 
-    private SimpleCar(SimpleCarController controller, CarMesh mesh)
+    private SimpleCar(SimpleCarController controller, CarMesh mesh, int currentSphereId)
     {
         _controller = controller;
         _mesh = mesh;
+        CurrentSphereId = currentSphereId;
     }
 
     public void Steer(Simulation simulation, in WheelHandles wheel, float angle)
@@ -100,9 +102,9 @@ public class SimpleCar : ISimulationMember
         TypedIndex bodyShape, BodyInertia bodyInertia, float bodyFriction, TypedIndex wheelShape, BodyInertia wheelInertia, float wheelFriction,
         Vector3 bodyToFrontLeftSuspension, Vector3 bodyToFrontRightSuspension, Vector3 bodyToBackLeftSuspension, Vector3 bodyToBackRightSuspension,
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
-        SimpleCarController controller, CarMesh mesh)
+        SimpleCarController controller, CarMesh mesh, int currentSphereId = 0)
     {
-        SimpleCar car = new SimpleCar(controller, mesh);
+        SimpleCar car = new SimpleCar(controller, mesh, currentSphereId);
         car.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(pose, bodyInertia, new(bodyShape, 0.5f), 0.01f));
         ref var bodyProperties = ref properties.Allocate(car.BodyHandle);
         bodyProperties = new SimulationProperties { Friction = bodyFriction, Filter = new SubgroupCollisionFilter(car.BodyHandle.Value, 0) };

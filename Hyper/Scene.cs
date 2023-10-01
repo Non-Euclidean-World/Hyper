@@ -33,11 +33,22 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly float Scale = 0.1f;
+    public readonly float Scale = 0.05f;
 
-    public Scene(float aspectRatio, float elevation, Context context)
+    public readonly List<Chunk>[]? Spheres;
+
+    public readonly Vector3i[] SphereCenters;
+
+    public readonly Vector3 LowerSphereCenter;
+
+    public Scene(float aspectRatio, float elevation, Context context, List<Chunk>[]? spheres = null)
     {
+        var sphere0Center = new Vector3i(0, 0, 0);
+        var sphere1Center = new Vector3i((int)(MathF.PI / Scale), 0, 0);
+        SphereCenters = new Vector3i[] { sphere0Center, sphere1Center };
+        LowerSphereCenter = new Vector3(sphere1Center.X, sphere1Center.Y, sphere1Center.Z) * Scale;
         int chunksPerSide = 2;
+        Spheres = spheres;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();

@@ -21,8 +21,6 @@ public class ObjectShader : Shader
 
     public void SetCurv(float curv) => SetFloat("curv", curv);
 
-    public void SetAnti(float anti) => SetFloat("anti", 1.0f);
-
     public void SetView(Matrix4 view) => SetMatrix4("view", view);
 
     public void SetProjection(Matrix4 projection) => SetMatrix4("projection", projection);
@@ -34,4 +32,8 @@ public class ObjectShader : Shader
     public void SetLightColors(Vector3[] lightColors) => SetVector3Array("lightColor", lightColors);
 
     public void SetLightPositions(Vector4[] lightPositions) => SetVector4Array("lightPos", lightPositions);
+
+    public void SetLowerSphereCenter(Vector3 lowerSphereCenter) => SetVector3("lowerSphereCenter", lowerSphereCenter);
+
+    public void SetSphere(int sphere) => SetInt("sphere", sphere);
 }

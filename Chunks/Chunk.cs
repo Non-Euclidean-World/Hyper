@@ -31,8 +31,8 @@ public class Chunk
         Mesh = new Mesh(vertices, position, createVao);
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition) =>
-        Mesh.Render(shader, scale, cameraPosition);
+    public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition) =>
+        Mesh.Render(shader, scale, curve, cameraPosition);
 
     /// <summary>
     /// Mines the selected voxel and all voxels within the radius. Then updates the mesh.

@@ -7,17 +7,22 @@ namespace Character.Projectiles;
 public class Projectile : ISimulationMember
 {
     public BodyHandle BodyHandle { get; private set; }
+
     public bool IsDead { get; private set; }
+
     public ProjectileMesh Mesh { get; private set; }
+
+    public int CurrentSphereId { get; set; }
 
     private TypedIndex _shape;
 
     private float _lifeTime;
 
-    private Projectile(ProjectileMesh mesh, float lifeTime)
+    private Projectile(ProjectileMesh mesh, float lifeTime, int currentSphereId)
     {
         Mesh = mesh;
         _lifeTime = lifeTime;
+        CurrentSphereId = currentSphereId;
     }
 
     /// <summary>
@@ -31,15 +36,25 @@ public class Projectile : ISimulationMember
     /// <param name="lifeTime">Lifetime threshold in seconds</param>
     /// <returns></returns>
     public static Projectile CreateStandardProjectile(Simulation simulation, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh, float lifeTime)
+        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh, float lifeTime, int currentSphereId = 0)
     {
         var projectileShape = new Box(mesh.Size.X, mesh.Size.Y, mesh.Size.Z);
 
-        var projectile = new Projectile(mesh, lifeTime);
+        var projectile = new Projectile(mesh, lifeTime, currentSphereId);
         projectile._shape = simulation.Shapes.Add(projectileShape);
         var inertia = projectileShape.ComputeInertia(0.01f);
 
-        projectile.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(initialPose, initialVelocity, inertia, new CollidableDescription(projectile._shape, 0.5f), 0.01f));
+        RigidPose adjustedInitialPose;
+        var initialPosition = initialPose.Position;
+        if (currentSphereId == 1)
+        {
+            adjustedInitialPose = new RigidPose(new System.Numerics.Vector3(initialPosition.X, initialPosition.Y, initialPosition.Z), initialPose.Orientation);
+        }
+        else
+        {
+            adjustedInitialPose = initialPose;
+        }
+        projectile.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(adjustedInitialPose, initialVelocity, inertia, new CollidableDescription(projectile._shape, 0.5f), 0.01f));
         ref var bodyProperties = ref properties.Allocate(projectile.BodyHandle);
         bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(projectile.BodyHandle.Value, 0) };
 

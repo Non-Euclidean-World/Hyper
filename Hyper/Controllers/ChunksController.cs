@@ -25,13 +25,26 @@ internal class ChunksController : IController, IInputSubscriber
         RegisterCallbacks(context);
     }
 
+    public void RenderSpherical()
+    {
+        for (int sphereId = 0; sphereId <= 1; sphereId++)
+        {
+            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale, sphereId, _scene.LowerSphereCenter);
+
+            foreach (var chunk in _scene.Spheres![sphereId])
+            {
+                chunk.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            }
+        }
+    }
+
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
+        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale, sphere: 0, _scene.LowerSphereCenter);
 
         foreach (var chunk in _scene.Chunks)
         {
-            chunk.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            chunk.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 
