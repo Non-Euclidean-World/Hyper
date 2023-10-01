@@ -39,7 +39,6 @@ internal class BotsController : IController, IInputSubscriber
         _botsMaxSpawnRadius = Chunk.Size * settings.RenderDistance * 2 / 3;
         _botsDespawnRadius = Chunk.Size * settings.RenderDistance;
         
-        Spawn();
         RegisterCallbacks(context);
     }
 
@@ -89,7 +88,9 @@ internal class BotsController : IController, IInputSubscriber
             if (!(Math.Abs(distance.X) > _botsDespawnRadius || 
                   Math.Abs(distance.Z) > _botsDespawnRadius || 
                   Math.Abs(distance.Z) > _botsDespawnRadius)) return false;
+#if DEBUG
             Console.WriteLine($"Despawning bot {bot.BodyHandle}");
+#endif
             bot.Dispose();
             _scene.SimulationMembers.Remove(bot.BodyHandle);
             return true;
@@ -105,8 +106,10 @@ internal class BotsController : IController, IInputSubscriber
             var z = rand.Next(0, 2) == 0 ? rand.Next(-_botsMaxSpawnRadius, -_botsMinSpawnRadius) : rand.Next(_botsMinSpawnRadius, _botsMaxSpawnRadius);
             var position = new Vector3(x + _scene.Player.PhysicalCharacter.Pose.Position.X, 0, z + _scene.Player.PhysicalCharacter.Pose.Position.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
-            var bot = new Cowboy(_scene.CreatePhysicalHumanoid(position));
+            var bot = new Cowboy(Humanoid.CreatePhysicalCharacter(position, _scene.SimulationManager));
+#if DEBUG
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
+#endif
             _scene.SimulationMembers.Add(bot.BodyHandle, bot);
             _scene.SimulationManager.RegisterContactCallback(bot.BodyHandle, contactInfo => bot.ContactCallback(contactInfo, _scene.SimulationMembers));
             _scene.Bots.Add(bot);

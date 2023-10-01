@@ -4,6 +4,7 @@ using Common;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
+using Physics.TypingUtils;
 
 namespace Character.GameEntities;
 public abstract class Humanoid : ISimulationMember, IContactEventListener
@@ -58,10 +59,12 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener
 #endif
     }
 
-    public virtual void UpdateCharacterGoals(Simulation simulation, float time)
-    {
-        
-    }
+    public virtual void UpdateCharacterGoals(Simulation simulation, float time) { }
+    
+    public static PhysicalCharacter CreatePhysicalCharacter(Vector3 position, SimulationManager<PoseIntegratorCallbacks> simulationManager)
+        => new(simulationManager.CharacterControllers, simulationManager.Properties, Conversions.ToNumericsVector(position),
+            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
+            maximumSlope: MathF.PI * 0.4f);
 
     public void Dispose()
     {
