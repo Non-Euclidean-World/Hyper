@@ -32,6 +32,30 @@ internal class MeshGenerator
         return vertices.ToArray();
     }
 
+    public Vertex[] GetSphericalMesh(Vector3i position, Vector3i sphereCenter, float globalScale)
+    {
+        var vertices = new List<Vertex>();
+        float cutoffRadius = MathF.PI / 2 / globalScale;
+        for (int x = 0; x < _scalarField.GetLength(0) - 1; x++)
+        {
+            for (int y = 0; y < _scalarField.GetLength(1) - 1; y++)
+            {
+                for (int z = 0; z < _scalarField.GetLength(2) - 1; z++)
+                {
+                    var xAbs = position.X + x - sphereCenter.X;
+                    var yAbs = position.Y + y - sphereCenter.Y;
+                    var zAbs = position.Z + z - sphereCenter.Z;
+                    if (xAbs * xAbs + yAbs * yAbs + zAbs * zAbs >= cutoffRadius * cutoffRadius)
+                        continue;
+
+                    vertices.AddRange(GetTriangles(x, y, z));
+                }
+            }
+        }
+
+        return vertices.ToArray();
+    }
+
     private List<Vertex> GetTriangles(int x, int y, int z)
     {
         var vertices = new List<Vertex>();
@@ -54,7 +78,7 @@ internal class MeshGenerator
     {
         int edge0 = MarchingCubesTables.EdgeConnections[edges[index]][0];
         int edge1 = MarchingCubesTables.EdgeConnections[edges[index]][1];
-        
+
         var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position;
         var normal = Interpolate(normals[edge0], cubeValues[edge0], normals[edge1], cubeValues[edge1]);
         var color = Interpolate(colors[edge0], cubeValues[edge0], colors[edge1], cubeValues[edge1]);

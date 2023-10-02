@@ -8,7 +8,7 @@ namespace Player;
 
 public class Camera : IInputSubscriber
 {
-    public float Curve { get; set; } = 0f;
+    public float Curve { get; private init; }
 
     public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
 
@@ -60,9 +60,10 @@ public class Camera : IInputSubscriber
 
     public static readonly Func<Vector3, Vector3> IdentityTransform = (Vector3 v) => v;
 
-    public Camera(float aspectRatio, float near, float far, float scale, Context context)
+    public Camera(float aspectRatio, float curve, float near, float far, float scale, Context context)
     {
         AspectRatio = aspectRatio;
+        Curve = curve;
         _near = near;
         _far = far;
         _fixedViewPosition = Vector3.UnitY * scale;
@@ -158,14 +159,9 @@ public class Camera : IInputSubscriber
     public void RegisterCallbacks(Context context)
     {
         context.RegisterKeys(new List<Keys>() {
-            Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
+            Keys.Tab
         });
 
-        context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
-        context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);
-        context.RegisterKeyDownCallback(Keys.D0, () => Curve = -1f);
-        context.RegisterKeyHeldCallback(Keys.Down, (e) => Curve -= 1f * (float)e.Time);
-        context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
         context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
 
         context.RegisterMouseMoveCallback((e) => Turn(e.Delta));

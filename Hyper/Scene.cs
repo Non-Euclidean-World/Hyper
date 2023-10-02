@@ -33,22 +33,20 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly float Scale = 0.05f;
-
-    public readonly List<Chunk>[]? Spheres;
+    public readonly float Scale;
 
     public readonly Vector3i[] SphereCenters;
 
     public readonly Vector3 LowerSphereCenter;
 
-    public Scene(float aspectRatio, float elevation, Context context, List<Chunk>[]? spheres = null)
+    public Scene(Camera camera, float globalScale, float elevation, Context context)
     {
+        Scale = globalScale;
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI / Scale), 0, 0);
         SphereCenters = new Vector3i[] { sphere0Center, sphere1Center };
         LowerSphereCenter = new Vector3(sphere1Center.X, sphere1Center.Y, sphere1Center.Z) * Scale;
         int chunksPerSide = 2;
-        Spheres = spheres;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -79,7 +77,7 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, elevation, context);
+        Camera = camera;
 
         RegisterCallbacks(context);
     }
@@ -104,16 +102,6 @@ internal class Scene : IInputSubscriber
         }
 
         return lightSources;
-    }
-
-    private Camera GetCamera(float aspectRatio, float elevation, Context context)
-    {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale, context)
-        {
-            ReferencePointPosition = (5f + elevation) * Vector3.UnitY
-        };
-
-        return camera;
     }
 
     private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)

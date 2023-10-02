@@ -15,7 +15,7 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss"));
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Euclidean);
         CursorState = CursorState.Grabbed;
     }
 
@@ -30,7 +30,7 @@ public class Window : GameWindow
         base.OnRenderFrame(e);
 
         if (!_game.IsRunning) return;
-        
+
         _game.RenderFrame(e);
         SwapBuffers();
     }
@@ -100,7 +100,7 @@ public class Window : GameWindow
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
-        
+
         _game.Resize(e);
     }
 
@@ -134,7 +134,7 @@ public class Window : GameWindow
                         if (!SaveManager.GetSaves().Contains(args[1]))
                             throw new FileNotFoundException("This save does not exist.");
                         if (_game.IsRunning) _game.SaveAndClose();
-                        _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1]);
+                        _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1], GeometryType.Euclidean);
                         CursorState = CursorState.Grabbed;
                         return;
                     case "delete":
@@ -149,6 +149,14 @@ public class Window : GameWindow
                             }
                         }
                         break;
+                    case "new":
+                        if (args[1] == "spherical")
+                            _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Spherical);
+                        else if (args[1] == "hyperbolic")
+                            _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Hyperbolic);
+                        else
+                            _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Hyperbolic);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -157,4 +165,7 @@ public class Window : GameWindow
             }
         }
     }
+
+    private static string DefaultSaveName()
+        => DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss");
 }

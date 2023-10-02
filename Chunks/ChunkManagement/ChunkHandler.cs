@@ -29,7 +29,7 @@ public class ChunkHandler
         var meshGenerator = new MeshGenerator(voxels);
         Vertex[] data = meshGenerator.GetMesh();
 
-        return new Chunk(data, position * Chunk.Size, voxels, false);
+        return new Chunk(data, position * Chunk.Size, voxels, sphere: 0, false); // TODO should also save/load sphere info
     }
 
     public List<Vector3i> GetSavedChunks()

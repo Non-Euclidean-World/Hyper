@@ -24,11 +24,14 @@ public class Chunk
 
     public readonly Mesh Mesh;
 
-    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, bool createVao = true)
+    public readonly int Sphere;
+
+    public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int sphere = 0, bool createVao = true)
     {
         Voxels = voxels;
         Position = position;
         Mesh = new Mesh(vertices, position, createVao);
+        Sphere = sphere;
     }
 
     public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition) =>
@@ -143,7 +146,8 @@ public class Chunk
 
     public void CreateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        if (Mesh.Vertices.Length == 0) return;
+        if (Mesh.Vertices.Length == 0)
+            return;
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;

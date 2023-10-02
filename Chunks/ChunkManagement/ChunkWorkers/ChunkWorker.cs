@@ -5,9 +5,9 @@ using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
-namespace Chunks.ChunkManagement;
+namespace Chunks.ChunkManagement.ChunkWorkers;
 
-public class ChunkWorker : IDisposable
+public class ChunkWorker : IDisposable, IChunkWorker
 {
     private enum JobType
     {
@@ -71,14 +71,14 @@ public class ChunkWorker : IDisposable
     private void Start()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        for (int i = 0; i < NumberOfThreads; i++)
+        for (var i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);
         }
 
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
-        int prevNumber = 0;
+        var prevNumber = 0;
         while (_chunks.Count < TotalChunks)
         {
             ResolveLoadedChunks();
@@ -127,7 +127,8 @@ public class ChunkWorker : IDisposable
 
     private void LoadChunks()
     {
-        if (!_chunksToLoad.TryDequeue(out var position)) return;
+        if (!_chunksToLoad.TryDequeue(out var position))
+            return;
 
         var chunk = _savedChunks.Contains(position) ? _chunkHandler.LoadChunk(position) :
             _chunkFactory.GenerateChunk(position * Chunk.Size, false);
@@ -137,7 +138,8 @@ public class ChunkWorker : IDisposable
 
     private void SaveChunks()
     {
-        if (!_chunksToSaveQueue.TryDequeue(out var position)) return;
+        if (!_chunksToSaveQueue.TryDequeue(out var position))
+            return;
 
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
         _chunkHandler.SaveChunkData(voxels!, position);
@@ -146,7 +148,8 @@ public class ChunkWorker : IDisposable
 
     private void UpdateChunks()
     {
-        if (!_chunksToUpdateQueue.TryDequeue(out var chunk)) return;
+        if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
+            return;
 
         var renderer = new MeshGenerator(chunk.Voxels);
         chunk.Mesh.Vertices = renderer.GetMesh();
@@ -165,11 +168,13 @@ public class ChunkWorker : IDisposable
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks) return;
+        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks)
+            return;
 
         _chunks.RemoveAll(chunk =>
         {
-            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance)) return false;
+            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance))
+                return false;
 
             _existingChunks.Remove(chunk.Position / Chunk.Size);
             if (_chunksToSaveDictionary.ContainsKey(chunk.Position))
@@ -190,14 +195,15 @@ public class ChunkWorker : IDisposable
 
     private void EnqueueLoadingChunks(Vector3i currentChunk)
     {
-        for (int x = -RenderDistance; x <= RenderDistance; x++)
+        for (var x = -RenderDistance; x <= RenderDistance; x++)
         {
-            for (int y = -RenderDistance; y <= RenderDistance; y++)
+            for (var y = -RenderDistance; y <= RenderDistance; y++)
             {
-                for (int z = -RenderDistance; z <= RenderDistance; z++)
+                for (var z = -RenderDistance; z <= RenderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
-                    if (_existingChunks.Contains(chunk)) continue;
+                    if (_existingChunks.Contains(chunk))
+                        continue;
 
                     _existingChunks.Add(chunk);
                     _chunksToLoad.Enqueue(chunk);
@@ -214,7 +220,8 @@ public class ChunkWorker : IDisposable
 
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
-        if (_chunksToUpdateHashSet.Contains(chunk)) return;
+        if (_chunksToUpdateHashSet.Contains(chunk))
+            return;
 
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdateQueue.Enqueue(chunk);

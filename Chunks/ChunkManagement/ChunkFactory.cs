@@ -20,6 +20,6 @@ public class ChunkFactory
         var meshGenerator = new MeshGenerator(voxels);
         Vertex[] data = meshGenerator.GetMesh();
 
-        return new Chunk(data, position, voxels, generateVao);
+        return new Chunk(data, position, voxels, sphere: 0, generateVao);
     }
 }
