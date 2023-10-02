@@ -65,7 +65,7 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
         if (collidableReference.Mobility != CollidableMobility.Dynamic)
             return;
         if (collidableReference.BodyHandle == LastContactBody
-            && LastContactTime - DateTime.Now < EpsTime)
+            && DateTime.Now - LastContactTime < EpsTime)
             return;
 
         LastContactTime = DateTime.Now;

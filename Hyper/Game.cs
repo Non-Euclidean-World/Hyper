@@ -60,7 +60,7 @@ public class Game
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, _globalScale, scalarFieldGenerator.AvgElevation, _context);
+        _scene = new Scene(camera, _globalScale, geometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
         var objectShader = ObjectShader.Create();
         var modelShader = ModelShader.Create();
         var lightSourceShader = LightSourceShader.Create();

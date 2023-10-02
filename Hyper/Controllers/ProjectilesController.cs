@@ -32,16 +32,17 @@ internal class ProjectilesController : IController, IInputSubscriber
         foreach (var projectile in _scene.Projectiles)
         {
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
-            if (projectile.IsDead)
-            {
-                projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
-                _scene.SimulationMembers.Remove(projectile.BodyHandle);
-            }
 
             if (_spherical)
             {
                 int targetSphereId = 1 - projectile.CurrentSphereId;
                 _sphericalTransporter.TryTeleportTo(targetSphereId, projectile, _scene.SimulationManager.Simulation, out _);
+            }
+
+            if (projectile.IsDead)
+            {
+                projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
+                _scene.SimulationMembers.Remove(projectile.BodyHandle);
             }
         }
     }

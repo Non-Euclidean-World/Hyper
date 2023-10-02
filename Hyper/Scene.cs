@@ -69,6 +69,8 @@ internal class Scene : IInputSubscriber
             .ToList();
 
         Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
