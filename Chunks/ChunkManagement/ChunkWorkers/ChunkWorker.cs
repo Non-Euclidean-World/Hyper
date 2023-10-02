@@ -142,7 +142,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
             return;
 
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
-        _chunkHandler.SaveChunkData(voxels!, position);
+        _chunkHandler.SaveChunkData(position, new ChunkHandler.ChunkData { Voxels = voxels!, SphereId = 0 });
         _savedChunks.Add(position / Chunk.Size);
     }
 
@@ -262,13 +262,13 @@ public class ChunkWorker : IDisposable, IChunkWorker
     {
         foreach (var chunk in _chunks)
         {
-            _chunkHandler.SaveChunkData(chunk.Voxels, chunk.Position);
+            _chunkHandler.SaveChunkData(chunk.Position, new ChunkHandler.ChunkData { Voxels = chunk.Voxels, SphereId = 0 });
         }
 
         while (_chunksToSaveQueue.TryDequeue(out var position))
         {
             _chunksToSaveDictionary.TryRemove(position, out var voxels);
-            _chunkHandler.SaveChunkData(voxels!, position);
+            _chunkHandler.SaveChunkData(position, new ChunkHandler.ChunkData { Voxels = voxels!, SphereId = 0 });
         }
     }
 

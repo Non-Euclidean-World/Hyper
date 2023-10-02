@@ -15,7 +15,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
 
-    private List<Chunk> _chunks;
+    private readonly List<Chunk> _chunks;
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -54,15 +54,24 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
     private void RunJob()
     {
         _chunks.Clear();
-        _chunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
+        _chunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
+        if (_chunks.Count == 0)
+            _chunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
+
         foreach (var chunk in _chunks)
             _loadedChunks.Enqueue(chunk);
-
-        while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
+        try
         {
-            var meshGenerator = new MeshGenerator(chunk.Voxels);
-            chunk.Mesh.Vertices = meshGenerator.GetSphericalMesh(chunk.Position, _sphereCenters[chunk.Sphere], _globalScale);
-            _updatedChunks.Enqueue(chunk);
+            while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
+            {
+                var meshGenerator = new MeshGenerator(chunk.Voxels);
+                chunk.Mesh.Vertices = meshGenerator.GetSphericalMesh(chunk.Position, _sphereCenters[chunk.Sphere], _globalScale);
+                _updatedChunks.Enqueue(chunk);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return;
         }
     }
 
@@ -92,7 +101,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
         foreach (var chunk in _chunks)
         {
-            _chunkHandler.SaveChunkData(chunk.Voxels, chunk.Position);
+            _chunkHandler.SaveChunkData(chunk.Position, new ChunkHandler.ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
         }
     }
 

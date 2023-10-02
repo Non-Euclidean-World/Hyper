@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Hyper;
 
 namespace Common;
 
@@ -17,29 +18,33 @@ public class Settings
 
     public int Seed { get; private set; }
 
+    public GeometryType GeometryType { get; private set; }
+
     [JsonIgnore]
     public float AspectRatio { get; set; }
 
-    public Settings(int seed, string saveName, float aspectRatio)
+    public Settings(int seed, string saveName, float aspectRatio, GeometryType geometryType)
     {
         Seed = seed;
         SaveName = saveName;
         AspectRatio = aspectRatio;
+        GeometryType = geometryType;
 
-        if (!Directory.Exists(CurrentSaveLocation)) Directory.CreateDirectory(CurrentSaveLocation);
+        if (!Directory.Exists(CurrentSaveLocation))
+            Directory.CreateDirectory(CurrentSaveLocation);
+    }
+
+    public static bool SaveExists(string saveName)
+    {
+        return Directory.Exists(Path.Combine(SavesLocation, saveName));
     }
 
     public static Settings Load(string saveName)
     {
-        if (!Directory.Exists(Path.Combine(SavesLocation, saveName)))
-        {
-            var rand = new Random();
-            return new Settings(rand.Next(), saveName, 1);
-        }
         var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
-        var settings = JsonSerializer.Deserialize<Settings>(json)!;
-        settings.AspectRatio = 1;
-        return settings;
+        var retrievedSettings = JsonSerializer.Deserialize<Settings>(json)!;
+
+        return retrievedSettings;
     }
 
     public void Save()

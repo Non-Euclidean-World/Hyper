@@ -8,7 +8,6 @@ public class ChunkFactory
 {
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
-
     public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator)
     {
         _scalarFieldGenerator = scalarFieldGenerator;

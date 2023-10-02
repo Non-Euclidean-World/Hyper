@@ -133,12 +133,17 @@ public class Window : GameWindow
                     case "load":
                         if (!SaveManager.GetSaves().Contains(args[1]))
                             throw new FileNotFoundException("This save does not exist.");
-                        if (_game.IsRunning) _game.SaveAndClose();
+                        if (_game.IsRunning)
+                            _game.SaveAndClose();
+
                         _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1], GeometryType.Euclidean);
                         CursorState = CursorState.Grabbed;
                         return;
                     case "delete":
-                        SaveManager.DeleteSave(args[1]);
+                        if (args[1] == "*")
+                            SaveManager.DeleteAllSaves();
+                        if (args.Length >= 2)
+                            SaveManager.DeleteSaves(args[1..]);
                         break;
                     case "show":
                         if (args[1] == "saves")
@@ -155,7 +160,7 @@ public class Window : GameWindow
                         else if (args[1] == "hyperbolic")
                             _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Hyperbolic);
                         else
-                            _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Hyperbolic);
+                            _game = new Game(Size.X, Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Euclidean);
                         break;
                 }
             }
