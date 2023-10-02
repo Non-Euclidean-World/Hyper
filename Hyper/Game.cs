@@ -68,7 +68,7 @@ public class Game
 
         var sphericalTransporter = new SphericalTransporter(_scene.Scale, _scene.SphereCenters);
         IChunkWorker chunkWorker = geometryType == GeometryType.Spherical
-            ? new NonGenerativeChunkWorker(_scene.Chunks, _scene.SimulationManager, new Chunks.SphericalChunkFactory(scalarFieldGenerator, _scene.SphereCenters, _scene.Scale), chunkHandler)
+            ? new NonGenerativeChunkWorker(_scene.Chunks, _scene.SimulationManager, new Chunks.SphericalChunkFactory(scalarFieldGenerator, _scene.SphereCenters, _scene.Scale), chunkHandler, _scene.Scale, _scene.SphereCenters)
             : new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler);
 
         _controllers = new IController[]

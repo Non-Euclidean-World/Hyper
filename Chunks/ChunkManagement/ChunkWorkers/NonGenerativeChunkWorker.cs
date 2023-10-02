@@ -27,12 +27,18 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
     private readonly SphericalChunkFactory _chunkFactory;
 
-    public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    private readonly float _globalScale;
+
+    private readonly Vector3i[] _sphereCenters;
+
+    public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, float globalScale, Vector3i[] sphereCenters)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
+        _globalScale = globalScale;
+        _sphereCenters = sphereCenters;
 
         Start();
     }
@@ -55,7 +61,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
         {
             var meshGenerator = new MeshGenerator(chunk.Voxels);
-            chunk.Mesh.Vertices = meshGenerator.GetMesh(); // TODO spherical mesh
+            chunk.Mesh.Vertices = meshGenerator.GetSphericalMesh(chunk.Position, _sphereCenters[chunk.Sphere], _globalScale);
             _updatedChunks.Enqueue(chunk);
         }
     }
