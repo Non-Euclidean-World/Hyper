@@ -71,14 +71,14 @@ public class ChunkWorker : IDisposable, IChunkWorker
     private void Start()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        for (var i = 0; i < NumberOfThreads; i++)
+        for (int i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);
         }
 
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
-        var prevNumber = 0;
+        int prevNumber = 0;
         while (_chunks.Count < TotalChunks)
         {
             ResolveLoadedChunks();
@@ -158,7 +158,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     public void Update(Vector3 currentPosition)
     {
-        var currentChunk = GetCurrentChunkId(currentPosition);
+        Vector3i currentChunk = GetCurrentChunkId(currentPosition);
 
         DeleteChunks(currentChunk);
         EnqueueLoadingChunks(currentChunk);
@@ -195,11 +195,11 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     private void EnqueueLoadingChunks(Vector3i currentChunk)
     {
-        for (var x = -RenderDistance; x <= RenderDistance; x++)
+        for (int x = -RenderDistance; x <= RenderDistance; x++)
         {
-            for (var y = -RenderDistance; y <= RenderDistance; y++)
+            for (int y = -RenderDistance; y <= RenderDistance; y++)
             {
-                for (var z = -RenderDistance; z <= RenderDistance; z++)
+                for (int z = -RenderDistance; z <= RenderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
                     if (_existingChunks.Contains(chunk))

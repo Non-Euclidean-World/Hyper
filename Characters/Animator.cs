@@ -83,7 +83,7 @@ public class Animator
         return ticks % model.Animations[_animationIndex].DurationInTicks;
     }
 
-    private static Matrix4x4 CalculateNodeTransform(NodeAnimationChannel channel, float time)
+    private Matrix4x4 CalculateNodeTransform(NodeAnimationChannel channel, float time)
     {
         Matrix4x4 transform = Matrix4x4.Identity;
         transform *= GetScale(channel, time);
