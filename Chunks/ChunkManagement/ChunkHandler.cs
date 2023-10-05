@@ -1,4 +1,4 @@
-﻿using Chunks.MarchingCubes;
+﻿using Chunks.MarchingCubes.MeshGenerators;
 using Chunks.Voxels;
 using Common;
 using Common.Meshes;
@@ -16,16 +16,13 @@ public class ChunkHandler
 
     private readonly string _saveLocation;
 
-    private readonly Vector3i[] _sphereCenters; // TODO the number of places where we're passing these things is ATROCIOUS
+    private readonly AbstractMeshGenerator _meshGenerator;
 
-    private readonly float _globalScale;
-
-    public ChunkHandler(string saveName, Vector3i[] sphereCenters, float globalScale)
+    public ChunkHandler(string saveName, AbstractMeshGenerator meshGenerator)
     {
         _saveLocation = Path.Combine(Settings.SavesLocation, saveName, "chunks");
         Directory.CreateDirectory(_saveLocation);
-        _sphereCenters = sphereCenters;
-        _globalScale = globalScale;
+        _meshGenerator = meshGenerator;
     }
 
     public void SaveChunkData(Vector3i position, ChunkData chunkData, bool spherical = false)
@@ -38,9 +35,8 @@ public class ChunkHandler
     {
         string filePath = GetFileName(chunkId);
         var chunkData = LoadChunkData(filePath);
-        var meshGenerator = new MeshGenerator(chunkData.Voxels);
         Vector3i position = spherical ? chunkId : chunkId * Chunk.Size;
-        Vertex[] data = spherical ? meshGenerator.GetSphericalMesh(position, _sphereCenters[chunkData.SphereId], _globalScale) : meshGenerator.GetMesh();
+        Vertex[] data = _meshGenerator.GetMesh(position, chunkData);
         return new Chunk(data, position, chunkData.Voxels, chunkData.SphereId, createVao: false);
     }
 

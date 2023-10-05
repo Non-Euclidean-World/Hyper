@@ -7,9 +7,9 @@ internal class LightSourcesController : IController
 {
     private readonly Scene _scene;
 
-    private readonly LightSourceShader _shader;
+    private readonly AbstractLightSourceShader _shader;
 
-    public LightSourcesController(Scene scene, LightSourceShader shader)
+    public LightSourcesController(Scene scene, AbstractLightSourceShader shader)
     {
         _scene = scene;
         _shader = shader;
@@ -17,11 +17,11 @@ internal class LightSourcesController : IController
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId, _scene.LowerSphereCenter);
+        _shader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
 
         foreach (var light in _scene.LightSources)
         {
-            light.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            light.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

@@ -9,7 +9,7 @@ internal class ChunksController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly ObjectShader _shader;
+    private readonly AbstractObjectShader _shader;
 
     private readonly IChunkWorker _chunkWorker;
 
@@ -17,7 +17,7 @@ internal class ChunksController : IController, IInputSubscriber
 
     private float _mineTime = 0;
 
-    public ChunksController(Scene scene, Context context, ObjectShader shader, IChunkWorker chunkWorker)
+    public ChunksController(Scene scene, Context context, AbstractObjectShader shader, IChunkWorker chunkWorker)
     {
         _scene = scene;
         _shader = shader;
@@ -29,8 +29,8 @@ internal class ChunksController : IController, IInputSubscriber
     {
         foreach (var chunk in _scene.Chunks)
         {
-            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale, chunk.Sphere, _scene.LowerSphereCenter);
-            chunk.Render(_shader, _scene.Scale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _shader.SetUp(_scene.Camera, _scene.LightSources, chunk.Sphere);
+            chunk.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

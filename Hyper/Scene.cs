@@ -33,19 +33,19 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly float Scale;
+    //public readonly float Scale;
 
-    public readonly Vector3i[] SphereCenters;
+    //public readonly Vector3i[] SphereCenters;
 
-    public readonly Vector3 LowerSphereCenter;
+    //public readonly Vector3 LowerSphereCenter;
 
-    public Scene(Camera camera, float globalScale, float elevation, Context context)
+    public Scene(Camera camera, float elevation, Context context)
     {
-        Scale = globalScale;
-        var sphere0Center = new Vector3i(0, 0, 0);
-        var sphere1Center = new Vector3i((int)(MathF.PI / Scale), 0, 0);
-        SphereCenters = new Vector3i[] { sphere0Center, sphere1Center };
-        LowerSphereCenter = new Vector3(sphere1Center.X, sphere1Center.Y, sphere1Center.Z) * Scale;
+        //Scale = globalScale;
+        //var sphere0Center = new Vector3i(0, 0, 0);
+        //var sphere1Center = new Vector3i((int)(MathF.PI / Scale), 0, 0);
+        //SphereCenters = new Vector3i[] { sphere0Center, sphere1Center };
+        //LowerSphereCenter = new Vector3(sphere1Center.X, sphere1Center.Y, sphere1Center.Z) * Scale;
         int chunksPerSide = 2;
 
         LightSources = GetLightSources(chunksPerSide, elevation);

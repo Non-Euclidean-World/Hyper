@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Chunks.MarchingCubes;
+using Chunks.MarchingCubes.MeshGenerators;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
@@ -27,18 +27,15 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
     private readonly SphericalChunkFactory _chunkFactory;
 
-    private readonly float _globalScale;
+    private readonly SphericalMeshGenerator _meshGenerator;
 
-    private readonly Vector3i[] _sphereCenters;
-
-    public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, float globalScale, Vector3i[] sphereCenters)
+    public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
     {
-        _chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
-        _globalScale = globalScale;
-        _sphereCenters = sphereCenters;
+        _meshGenerator = meshGenerator;
+        _chunks = chunks;
 
         Start();
     }
@@ -64,8 +61,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         {
             while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
             {
-                var meshGenerator = new MeshGenerator(chunk.Voxels);
-                chunk.Mesh.Vertices = meshGenerator.GetSphericalMesh(chunk.Position, _sphereCenters[chunk.Sphere], _globalScale);
+                chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkHandler.ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
             }
         }

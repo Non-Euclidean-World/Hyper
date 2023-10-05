@@ -1,9 +1,10 @@
 ﻿using Chunks.MarchingCubes;
+using Chunks.MarchingCubes.MeshGenerators;
 using Chunks.Voxels;
 using Common.Meshes;
 using OpenTK.Mathematics;
 
-namespace Chunks;
+namespace Chunks.ChunkManagement;
 public class SphericalChunkFactory
 {
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
@@ -12,11 +13,14 @@ public class SphericalChunkFactory
 
     private readonly float _globalScale;
 
-    public SphericalChunkFactory(ScalarFieldGenerator scalarFieldGenerator, Vector3i[] sphereCenters, float globalScale)
+    private readonly SphericalMeshGenerator _meshGenerator;
+
+    public SphericalChunkFactory(ScalarFieldGenerator scalarFieldGenerator, Vector3i[] sphereCenters, float globalScale, SphericalMeshGenerator meshGenerator)
     {
         _scalarFieldGenerator = scalarFieldGenerator;
         _sphereCenters = sphereCenters;
         _globalScale = globalScale;
+        _meshGenerator = meshGenerator;
     }
 
     public List<Chunk> CreateSpheres(int chunksPerSide, bool generateVao = true)
@@ -30,8 +34,8 @@ public class SphericalChunkFactory
         {
             for (int chunkY = -chunksPerSide / 2; chunkY < chunksPerSide / 2; chunkY++)
             {
-                Voxel[,,] averageScalarField0 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
-                Voxel[,,] averageScalarField1 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
+                var averageScalarField0 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
+                var averageScalarField1 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
 
                 int offset = Chunk.Size - 1;
 
@@ -47,11 +51,11 @@ public class SphericalChunkFactory
                     {
                         for (int z = 0; z < Chunk.Size; z++)
                         {
-                            Vector3i position = new Vector3i(x + chunkX * Chunk.Size, y, z + chunkY * Chunk.Size);
-                            float radius = MathF.PI / 2 / _globalScale;
-                            float boundaryValue = GetBoundaryValue(position);
+                            var position = new Vector3i(x + chunkX * Chunk.Size, y, z + chunkY * Chunk.Size);
+                            var radius = MathF.PI / 2 / _globalScale;
+                            var boundaryValue = GetBoundaryValue(position);
 
-                            float d = Vector3.Distance(position, _sphereCenters[0]);
+                            var d = Vector3.Distance(position, _sphereCenters[0]);
                             averageScalarField0[x, y, z].Value = F1(d, radius) * boundaryValue + F2(d, radius) * scalarField0[x, y, z].Value;
                             averageScalarField1[x, y, z].Value = F1(d, radius) * boundaryValue + F2(d, radius) * scalarField1[x, y, z].Value;
 
@@ -64,13 +68,12 @@ public class SphericalChunkFactory
                         }
                     }
                 }
-                var meshGenerator0 = new MeshGenerator(averageScalarField0);
-                var meshGenerator1 = new MeshGenerator(averageScalarField1);
+
                 var sfPos0 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[0] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation, 0);
-                Vertex[] data0 = meshGenerator0.GetSphericalMesh(sfPos0, _sphereCenters[0], _globalScale);
+                Vertex[] data0 = _meshGenerator.GetMesh(sfPos0, new ChunkHandler.ChunkData { SphereId = 0, Voxels = averageScalarField0 });
 
                 var sfPos1 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[1] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation, 0);
-                Vertex[] data1 = meshGenerator1.GetSphericalMesh(sfPos1, _sphereCenters[1], _globalScale);
+                Vertex[] data1 = _meshGenerator.GetMesh(sfPos1, new ChunkHandler.ChunkData { SphereId = 1, Voxels = averageScalarField1 });
 
                 spheres.Add(new Chunk(data0, sfPos0, averageScalarField0, sphere: 0, generateVao));
                 spheres.Add(new Chunk(data1, sfPos1, averageScalarField1, sphere: 1, generateVao));
@@ -82,7 +85,7 @@ public class SphericalChunkFactory
 
     private float GetBoundaryValue(Vector3i p)
     {
-        float m = 1f;
+        var m = 1f;
         return m * p.Y - m * _scalarFieldGenerator.AvgElevation;
     }
 

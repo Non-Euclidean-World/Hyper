@@ -1,7 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using Character.GameEntities;
-using Character.Shaders;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
@@ -37,7 +36,7 @@ public class Player : Humanoid, IRayCaster, IContactEventListener
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 
-    public void Render(ModelShader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
+    public void Render(Shader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
     {
         if (!isFirstPerson)
             Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);

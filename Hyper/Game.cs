@@ -1,12 +1,8 @@
-﻿using Character.Shaders;
-using Chunks.ChunkManagement;
-using Chunks.ChunkManagement.ChunkWorkers;
-using Chunks.MarchingCubes;
+﻿using Chunks.MarchingCubes;
 using Common;
 using Common.UserInput;
-using Hud.Shaders;
 using Hyper.Controllers;
-using Hyper.Shaders;
+using Hyper.Controllers.Factories;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -52,9 +48,6 @@ public class Game
             _settings.AspectRatio = (float)width / height;
         }
 
-        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
-        var chunkFactory = new ChunkFactory(scalarFieldGenerator);
-
         float curve = _settings.GeometryType switch
         {
             GeometryType.Euclidean => 0f,
@@ -63,32 +56,20 @@ public class Game
             _ => throw new NotImplementedException(),
         };
 
+        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
         var camera = new Camera(aspectRatio: _size.X / (float)_size.Y, curve, near: 0.01f, far: 200f, _globalScale, _context)
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, _globalScale, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
-        var chunkHandler = new ChunkHandler(_settings.SaveName, _scene.SphereCenters, _globalScale);
-        var objectShader = ObjectShader.Create();
-        var modelShader = ModelShader.Create();
-        var lightSourceShader = LightSourceShader.Create();
-        var hudShader = HudShader.Create();
-
-        var sphericalTransporter = new SphericalTransporter(_scene.Scale, _scene.SphereCenters);
-        IChunkWorker chunkWorker = _settings.GeometryType == GeometryType.Spherical
-            ? new NonGenerativeChunkWorker(_scene.Chunks, _scene.SimulationManager, new Chunks.SphericalChunkFactory(scalarFieldGenerator, _scene.SphereCenters, _scene.Scale), chunkHandler, _scene.Scale, _scene.SphereCenters)
-            : new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler);
-
-        _controllers = new IController[]
+        _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        IControllerFactory controllerFactory = _settings.GeometryType switch
         {
-            new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader, sphericalTransporter, spherical: _settings.GeometryType == GeometryType.Spherical),
-            new BotsController(_scene, _context, modelShader, objectShader),
-            new ChunksController(_scene, _context, objectShader, chunkWorker),
-            new ProjectilesController(_scene, _context, objectShader, sphericalTransporter, spherical: _settings.GeometryType == GeometryType.Spherical),
-            new VehiclesController(_scene, _context, objectShader),
-            new LightSourcesController(_scene, lightSourceShader),
-            new HudController(_scene, _context, windowHelper, hudShader),
+            GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator),
+            GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator),
+            _ => throw new NotImplementedException(),
         };
+
+        _controllers = controllerFactory.CreateControllers(_settings);
     }
 
     public void SaveAndClose()

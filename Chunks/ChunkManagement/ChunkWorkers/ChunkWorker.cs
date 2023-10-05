@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Chunks.MarchingCubes;
+using Chunks.MarchingCubes.MeshGenerators;
 using Chunks.Voxels;
 using NLog;
 using OpenTK.Mathematics;
@@ -54,12 +54,15 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    private readonly MeshGenerator _meshGenerator;
+
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator)
     {
         _chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
+        _meshGenerator = meshGenerator;
         foreach (var chunk in _chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
@@ -151,8 +154,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
             return;
 
-        var renderer = new MeshGenerator(chunk.Voxels);
-        chunk.Mesh.Vertices = renderer.GetMesh();
+        chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkHandler.ChunkData { SphereId = 0, Voxels = chunk.Voxels });
         _updatedChunks.Enqueue(chunk);
     }
 
