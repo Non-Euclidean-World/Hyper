@@ -58,6 +58,8 @@ internal class ProjectilesController : IController, IInputSubscriber
     {
         foreach (var projectile in _scene.Projectiles)
         {
+            if (projectile.IsDead)
+                continue;
             _shader.SetUp(_scene.Camera, _scene.LightSources, projectile.CurrentSphereId);
             projectile.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
