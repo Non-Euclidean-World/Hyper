@@ -1,28 +1,21 @@
 ﻿using Common.Meshes;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Player;
 
-namespace Hyper.Shaders;
+namespace Hyper.Shaders.ObjectShader;
 public class SphericalObjectShader : AbstractObjectShader
 {
     private Vector3 _lowerSphereCenter;
 
-    private SphericalObjectShader((string path, ShaderType shaderType)[] shaders, float globalScale, Vector3 lowerSphereCenter)
-        : base(shaders, globalScale)
+    private SphericalObjectShader(float globalScale, Vector3 lowerSphereCenter)
+        : base(globalScale)
     {
         _lowerSphereCenter = lowerSphereCenter;
     }
 
     public static SphericalObjectShader Create(float globalScale, Vector3 lowerSphereCenter)
     {
-        var shader = new[]
-        {
-            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-            ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
-        };
-
-        return new SphericalObjectShader(shader, globalScale, lowerSphereCenter);
+        return new SphericalObjectShader(globalScale, lowerSphereCenter);
     }
 
     public void SetLowerSphereCenter(Vector3 lowerSphereCenter) => SetVector3("lowerSphereCenter", lowerSphereCenter);

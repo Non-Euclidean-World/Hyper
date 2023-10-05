@@ -1,5 +1,5 @@
 ﻿using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ObjectShader;
 
 namespace Hyper.Controllers;
 

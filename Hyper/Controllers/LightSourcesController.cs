@@ -1,4 +1,4 @@
-﻿using Hyper.Shaders;
+﻿using Hyper.Shaders.LightSourceShader;
 
 namespace Hyper.Controllers;
 

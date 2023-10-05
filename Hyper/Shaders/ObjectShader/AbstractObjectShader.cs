@@ -1,17 +1,22 @@
-﻿
-using Common;
+﻿using Common;
 using Common.Meshes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Player;
 
-namespace Hyper.Shaders;
-internal class AbstractModelShader : Shader
+namespace Hyper.Shaders.ObjectShader;
+public abstract class AbstractObjectShader : Shader
 {
     public float GlobalScale { get; private init; }
 
-    protected AbstractModelShader((string path, ShaderType shaderType)[] shaders, float globalScale)
-        : base(shaders)
+    private static readonly (string path, ShaderType shaderType)[] ShaderInfo = new[]
+        {
+            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+            ("Shaders/lighting_shader.frag", ShaderType.FragmentShader)
+        };
+
+    protected AbstractObjectShader(float globalScale)
+        : base(ShaderInfo)
     {
         GlobalScale = globalScale;
     }
@@ -36,9 +41,9 @@ internal class AbstractModelShader : Shader
         SetCurv(camera.Curve);
         SetView(camera.GetViewMatrix());
         SetProjection(camera.GetProjectionMatrix());
-
         SetNumLights(lightSources.Count);
         SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
+
         SetLightColors(lightSources.Select(x => x.Color).ToArray());
         SetLightPositions(lightSources.Select(x =>
             GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve)).ToArray());

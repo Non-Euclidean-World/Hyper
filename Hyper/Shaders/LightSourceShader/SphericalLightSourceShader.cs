@@ -1,27 +1,20 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using Player;
 
-namespace Hyper.Shaders;
+namespace Hyper.Shaders.LightSourceShader;
 public class SphericalLightSourceShader : AbstractLightSourceShader
 {
     private Vector3 _lowerSphereCenter;
 
-    private SphericalLightSourceShader((string path, ShaderType shaderType)[] shaders, float globalScale, Vector3 lowerSphereCenter)
-        : base(shaders, globalScale)
+    private SphericalLightSourceShader(float globalScale, Vector3 lowerSphereCenter)
+        : base(globalScale)
     {
         _lowerSphereCenter = lowerSphereCenter;
     }
 
     public static SphericalLightSourceShader Create(float globalScale, Vector3 lowerSphereCenter)
     {
-        var shader = new[]
-        {
-            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
-            ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
-        };
-
-        return new SphericalLightSourceShader(shader, globalScale, lowerSphereCenter);
+        return new SphericalLightSourceShader(globalScale, lowerSphereCenter);
     }
 
     public void SetLowerSphereCenter(Vector3 lowerSphereCenter) => SetVector3("lowerSphereCenter", lowerSphereCenter);

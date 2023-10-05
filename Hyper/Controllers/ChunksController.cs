@@ -1,6 +1,6 @@
 ﻿using Chunks.ChunkManagement.ChunkWorkers;
 using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ObjectShader;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Controllers;

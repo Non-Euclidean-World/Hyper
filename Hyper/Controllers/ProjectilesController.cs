@@ -1,7 +1,7 @@
 ﻿using BepuPhysics;
 using Character.Projectiles;
 using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;

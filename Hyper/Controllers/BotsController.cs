@@ -1,5 +1,6 @@
 ﻿using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ModelShader;
+using Hyper.Shaders.ObjectShader;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 

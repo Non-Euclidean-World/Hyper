@@ -5,13 +5,19 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Player;
 
-namespace Hyper.Shaders;
+namespace Hyper.Shaders.LightSourceShader;
 public class AbstractLightSourceShader : Shader
 {
     public float GlobalScale { get; private init; }
 
-    protected AbstractLightSourceShader((string path, ShaderType shaderType)[] shaders, float globalScale)
-        : base(shaders)
+    private static readonly (string path, ShaderType shaderType)[] ShaderInfo = new[]
+        {
+            ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
+            ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
+        };
+
+    protected AbstractLightSourceShader(float globalScale)
+        : base(ShaderInfo)
     {
         GlobalScale = globalScale;
     }

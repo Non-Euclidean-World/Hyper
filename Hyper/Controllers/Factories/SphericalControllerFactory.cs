@@ -5,7 +5,9 @@ using Chunks.MarchingCubes.MeshGenerators;
 using Common;
 using Common.UserInput;
 using Hud.Shaders;
-using Hyper.Shaders;
+using Hyper.Shaders.LightSourceShader;
+using Hyper.Shaders.ModelShader;
+using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
 using OpenTK.Mathematics;
 
