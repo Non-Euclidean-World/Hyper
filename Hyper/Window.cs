@@ -149,5 +149,5 @@ public class Window : GameWindow
     }
 
     private static string DefaultSaveName()
-        => DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss");
+        => DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
 }
