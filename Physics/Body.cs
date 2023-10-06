@@ -18,9 +18,10 @@ public class Body : IDisposable
         Mesh = mesh;
     }
 
-    public virtual void RenderFullDescription(Shader shader, float scale, Vector3 cameraPosition)
+    public virtual void RenderFullDescription(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
-        var translation = Matrix4.CreateTranslation((Conversions.ToOpenTKVector(RigidPose.Position) - cameraPosition) * scale);
+        var translation = Matrix4.CreateTranslation(
+            GeomPorting.CreateTranslationTarget(Conversions.ToOpenTKVector(RigidPose.Position), cameraPosition, curve, scale));
         var scaleMatrix = Matrix4.CreateScale(scale);
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
 

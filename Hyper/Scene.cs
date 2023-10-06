@@ -33,9 +33,7 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly float Scale = 0.1f;
-
-    public Scene(float aspectRatio, float elevation, Context context)
+    public Scene(Camera camera, float elevation, Context context)
     {
         int chunksPerSide = 2;
 
@@ -60,6 +58,8 @@ internal class Scene : IInputSubscriber
             .ToList();
 
         Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -68,7 +68,7 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, elevation, context);
+        Camera = camera;
 
         RegisterCallbacks(context);
     }
@@ -93,16 +93,6 @@ internal class Scene : IInputSubscriber
         }
 
         return lightSources;
-    }
-
-    private Camera GetCamera(float aspectRatio, float elevation, Context context)
-    {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale, context)
-        {
-            ReferencePointPosition = (5f + elevation) * Vector3.UnitY
-        };
-
-        return camera;
     }
 
     private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)

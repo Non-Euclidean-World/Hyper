@@ -1,7 +1,8 @@
 ﻿using BepuPhysics;
 using Character.Projectiles;
 using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ObjectShader;
+using Hyper.Transporters;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
 
@@ -11,12 +12,15 @@ internal class ProjectilesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly ObjectShader _shader;
+    private readonly AbstractObjectShader _shader;
 
-    public ProjectilesController(Scene scene, Context context, ObjectShader shader)
+    private readonly ITransporter _transporter;
+
+    public ProjectilesController(Scene scene, Context context, AbstractObjectShader shader, ITransporter transporter)
     {
         _scene = scene;
         _shader = shader;
+        _transporter = transporter;
         RegisterCallbacks(context);
     }
 
@@ -26,6 +30,10 @@ internal class ProjectilesController : IController, IInputSubscriber
         foreach (var projectile in _scene.Projectiles)
         {
             projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
+
+            int targetSphereId = 1 - projectile.CurrentSphereId;
+            _transporter.TryTeleportTo(targetSphereId, projectile, _scene.SimulationManager.Simulation, out _);
+
             if (projectile.IsDead)
             {
                 projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
@@ -41,18 +49,19 @@ internal class ProjectilesController : IController, IInputSubscriber
             _scene.SimulationManager.Properties,
             new RigidPose(_scene.Player.RayOrigin, q),
             Conversions.ToNumericsVector(_scene.Camera.Front) * 15,
-            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
+            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5, _scene.Player.CurrentSphereId); // let's throw some refrigerators
         _scene.Projectiles.Add(projectile);
         _scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
     }
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
-
         foreach (var projectile in _scene.Projectiles)
         {
-            projectile.Mesh.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            if (projectile.IsDead)
+                continue;
+            _shader.SetUp(_scene.Camera, _scene.LightSources, projectile.CurrentSphereId);
+            projectile.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

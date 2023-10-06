@@ -436,3 +436,6 @@ Desktop.ini
 .DS_Store
 
 **/.idea
+
+# launch options for Hyper project
+Hyper/Properties/launchSettings.json

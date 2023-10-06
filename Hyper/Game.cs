@@ -1,16 +1,14 @@
-﻿using Character.Shaders;
-using Chunks.ChunkManagement;
-using Chunks.MarchingCubes;
+﻿using Chunks.MarchingCubes;
 using Common;
 using Common.UserInput;
-using Hud.Shaders;
 using Hyper.Controllers;
-using Hyper.Shaders;
+using Hyper.Controllers.Factories;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Player;
 
 namespace Hyper;
 
@@ -28,7 +26,9 @@ public class Game
 
     private readonly Settings _settings;
 
-    public Game(int width, int height, IWindowHelper windowHelper, string saveName)
+    private readonly float _globalScale = 0.05f;
+
+    public Game(int width, int height, IWindowHelper windowHelper, string saveName, GeometryType geometryType) // TODO this is definitely getting out of hand
     {
         _size = new Vector2i(width, height);
 
@@ -37,29 +37,39 @@ public class Game
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-        _settings = Settings.Load(saveName);
-        _settings.AspectRatio = (float)width / height;
-        
-        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
-        var chunkFactory = new ChunkFactory(scalarFieldGenerator);
-        var chunkHandler = new ChunkHandler(_settings.SaveName);
-        
-        _scene = new Scene(_size.X / (float)_size.Y, scalarFieldGenerator.AvgElevation, _context);
-        var objectShader = ObjectShader.Create();
-        var modelShader = ModelShader.Create();
-        var lightSourceShader = LightSourceShader.Create();
-        var hudShader = HudShader.Create();
-
-        _controllers = new IController[]
+        if (!Settings.SaveExists(saveName))
         {
-            new PlayerController(_scene, _context, modelShader, objectShader, lightSourceShader),
-            new BotsController(_scene, _context, modelShader, objectShader),
-            new ChunksController(_scene, _context, objectShader, chunkFactory, chunkHandler),
-            new ProjectilesController(_scene, _context, objectShader),
-            new VehiclesController(_scene, _context, objectShader),
-            new LightSourcesController(_scene, lightSourceShader),
-            new HudController(_scene, _context, windowHelper, hudShader),
+            Random rand = new Random();
+            _settings = new Settings(rand.Next(), saveName, (float)width / height, geometryType);
+        }
+        else
+        {
+            _settings = Settings.Load(saveName); // TODO it's confusing as hell but geometryType variable is INVALID from this point onward
+            _settings.AspectRatio = (float)width / height;
+        }
+
+        float curve = _settings.GeometryType switch
+        {
+            GeometryType.Euclidean => 0f,
+            GeometryType.Hyperbolic => -1f,
+            GeometryType.Spherical => 1f,
+            _ => throw new NotImplementedException(),
         };
+
+        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
+        var camera = new Camera(aspectRatio: _size.X / (float)_size.Y, curve, near: 0.01f, far: 200f, _globalScale, _context)
+        {
+            ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
+        };
+        _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        IControllerFactory controllerFactory = _settings.GeometryType switch
+        {
+            GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            _ => throw new NotImplementedException(),
+        };
+
+        _controllers = controllerFactory.CreateControllers(_settings);
     }
 
     public void SaveAndClose()

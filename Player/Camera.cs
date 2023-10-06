@@ -8,7 +8,7 @@ namespace Player;
 
 public class Camera : IInputSubscriber
 {
-    public float Curve { get; set; } = 0f;
+    public float Curve { get; private init; }
 
     public Vector3 ReferencePointPosition { get; set; } = Vector3.Zero;
 
@@ -28,18 +28,46 @@ public class Camera : IInputSubscriber
 
     private readonly float _far;
 
+    private float _scale;
+
+    private readonly Vector3 _fixedViewPosition;
+
+    public Vector3 ViewPosition
+    {
+        get => Curve >= 0
+            ? ReferencePointPosition * _scale
+            : _fixedViewPosition;
+    }
+
+    /// <summary>
+    /// Sphere the camera is in
+    /// </summary>
+    public int Sphere { get; set; } = 0;
+
+    /// <summary>
+    /// Center of the sphere the camera is in
+    /// </summary>
+    public Vector3 SphereCenter { get; set; }
+
     private const float Sensitivity = 0.2f;
 
     public bool FirstPerson { get; set; }
 
-    public Vector3 ViewPosition { get; private init; }
+    /// <summary>
+    /// Transformation applied to the camera front vector
+    /// </summary>
+    public Func<Vector3, Vector3> FrontTransform { get; set; } = IdentityTransform;
 
-    public Camera(float aspectRatio, float near, float far, float scale, Context context)
+    public static readonly Func<Vector3, Vector3> IdentityTransform = (Vector3 v) => v;
+
+    public Camera(float aspectRatio, float curve, float near, float far, float scale, Context context)
     {
         AspectRatio = aspectRatio;
+        Curve = curve;
         _near = near;
         _far = far;
-        ViewPosition = Vector3.UnitY * scale;
+        _fixedViewPosition = Vector3.UnitY * scale;
+        _scale = scale;
 
         RegisterCallbacks(context);
     }
@@ -92,13 +120,15 @@ public class Camera : IInputSubscriber
         return Matrices.TranslationMatrix(to, Curve);
     }
 
-    private void UpdateVectors()
+    public void UpdateVectors()
     {
-        Front = new Vector3(MathF.Cos(_pitch) * MathF.Cos(_yaw), MathF.Sin(_pitch), MathF.Cos(_pitch) * MathF.Sin(_yaw));
+        float adjustedPitch = Sphere == 0 ? _pitch : _pitch + MathF.PI;
+        float adjustedYaw = _yaw;
+        Front = new Vector3(MathF.Cos(adjustedPitch) * MathF.Cos(adjustedYaw), MathF.Sin(adjustedPitch), MathF.Cos(adjustedPitch) * MathF.Sin(adjustedYaw));
 
-        Front = Vector3.Normalize(Front);
+        Front = FrontTransform(Vector3.Normalize(Front));
 
-        _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
+        _right = Vector3.Normalize(Vector3.Cross(Front, Sphere == 1 ? -Vector3.UnitY : Vector3.UnitY));
         Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 
@@ -110,21 +140,28 @@ public class Camera : IInputSubscriber
 
     public void UpdateWithCharacter(Player player)
     {
-        ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
-            + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this));
+        if (Sphere == 0)
+        {
+            ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
+                + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this))
+                - (Curve > 0 ? SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerPos = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
+            playerPos.Y *= -1;
+            ReferencePointPosition = playerPos
+                + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this))
+                - (Curve > 0 ? SphereCenter : Vector3.Zero);
+        }
     }
 
     public void RegisterCallbacks(Context context)
     {
         context.RegisterKeys(new List<Keys>() {
-            Keys.D8, Keys.D9, Keys.D0, Keys.Down, Keys.Up, Keys.Tab
+            Keys.Tab
         });
 
-        context.RegisterKeyDownCallback(Keys.D8, () => Curve = 0f);
-        context.RegisterKeyDownCallback(Keys.D9, () => Curve = 1f);
-        context.RegisterKeyDownCallback(Keys.D0, () => Curve = -1f);
-        context.RegisterKeyHeldCallback(Keys.Down, (e) => Curve -= 1f * (float)e.Time);
-        context.RegisterKeyHeldCallback(Keys.Up, (e) => Curve += 1f * (float)e.Time);
         context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
 
         context.RegisterMouseMoveCallback((e) => Turn(e.Delta));

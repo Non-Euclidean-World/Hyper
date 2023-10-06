@@ -13,8 +13,24 @@ public static class SaveManager
             .ToList();
     }
 
-    public static void DeleteSave(string saveName)
+    public static void DeleteSaves(string[] saveNames)
     {
-        Directory.Delete(Path.Combine(Settings.SavesLocation, saveName), true);
+        foreach (var saveName in saveNames)
+        {
+            Directory.Delete(Path.Combine(Settings.SavesLocation, saveName), recursive: true);
+        }
+    }
+
+    public static void DeleteAllSaves()
+    {
+        DirectoryInfo di = new DirectoryInfo(Settings.SavesLocation);
+        foreach (FileInfo file in di.GetFiles())
+        {
+            file.Delete();
+        }
+        foreach (DirectoryInfo dir in di.GetDirectories())
+        {
+            dir.Delete(recursive: true);
+        }
     }
 }
