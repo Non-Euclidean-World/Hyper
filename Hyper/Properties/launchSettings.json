@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hyper": {
+      "commandName": "Project",
+      "commandLineArgs": "spherical"
+    }
+  }
+}

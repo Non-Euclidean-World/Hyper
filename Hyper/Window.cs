@@ -9,12 +9,12 @@ public class Window : GameWindow
 {
     private Game _game;
 
-    private CommandInterpreter _interpreter;
+    private readonly CommandInterpreter _interpreter;
 
-    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), GeometryType.Euclidean);
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), geometryType);
         _interpreter = new CommandInterpreter(this);
         CursorState = CursorState.Grabbed;
     }
@@ -23,6 +23,11 @@ public class Window : GameWindow
     {
         if (_game.IsRunning)
             _game.SaveAndClose();
+        base.Close();
+    }
+
+    public void CloseNoSave()
+    {
         base.Close();
     }
 
@@ -56,7 +61,7 @@ public class Window : GameWindow
 
         if (e.Key == Keys.Escape)
         {
-            Close();
+            CloseNoSave();
         }
 
         if (e.Key == Keys.T)
