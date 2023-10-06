@@ -8,17 +8,11 @@ namespace Chunks.ChunkManagement;
 
 public class ChunkHandler
 {
-    public struct ChunkData
-    {
-        public Voxel[,,] Voxels;
-        public int SphereId;
-    }
-
     private readonly string _saveLocation;
 
-    private readonly AbstractMeshGenerator _meshGenerator;
+    private readonly BaseMeshGenerator _meshGenerator;
 
-    public ChunkHandler(string saveName, AbstractMeshGenerator meshGenerator)
+    public ChunkHandler(string saveName, BaseMeshGenerator meshGenerator)
     {
         _saveLocation = Path.Combine(Settings.SavesLocation, saveName, "chunks");
         Directory.CreateDirectory(_saveLocation);

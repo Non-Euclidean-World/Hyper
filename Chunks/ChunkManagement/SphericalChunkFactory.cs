@@ -70,10 +70,10 @@ public class SphericalChunkFactory
                 }
 
                 var sfPos0 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[0] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation, 0);
-                Vertex[] data0 = _meshGenerator.GetMesh(sfPos0, new ChunkHandler.ChunkData { SphereId = 0, Voxels = averageScalarField0 });
+                Vertex[] data0 = _meshGenerator.GetMesh(sfPos0, new ChunkData { SphereId = 0, Voxels = averageScalarField0 });
 
                 var sfPos1 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[1] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation, 0);
-                Vertex[] data1 = _meshGenerator.GetMesh(sfPos1, new ChunkHandler.ChunkData { SphereId = 1, Voxels = averageScalarField1 });
+                Vertex[] data1 = _meshGenerator.GetMesh(sfPos1, new ChunkData { SphereId = 1, Voxels = averageScalarField1 });
 
                 spheres.Add(new Chunk(data0, sfPos0, averageScalarField0, sphere: 0, generateVao));
                 spheres.Add(new Chunk(data1, sfPos1, averageScalarField1, sphere: 1, generateVao));
@@ -89,9 +89,9 @@ public class SphericalChunkFactory
         return m * p.Y - m * _scalarFieldGenerator.AvgElevation;
     }
 
-    private static float F1(float x, float R, float a = 0.5f, float k = .85f)
-        => 0.5f * (MathF.Tanh(a * (x - k * R)) + 1);
+    private static float F1(float x, float r, float a = 0.5f, float k = .85f)
+        => 0.5f * (MathF.Tanh(a * (x - k * r)) + 1);
 
-    private static float F2(float x, float R, float a = 0.5f, float k = .85f)
-        => 0.5f * (-MathF.Tanh(a * (x - k * R)) + 1);
+    private static float F2(float x, float r, float a = 0.5f, float k = .85f)
+        => 0.5f * (-MathF.Tanh(a * (x - k * r)) + 1);
 }

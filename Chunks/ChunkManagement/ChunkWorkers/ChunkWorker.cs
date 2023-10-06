@@ -145,7 +145,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
             return;
 
         _chunksToSaveDictionary.TryRemove(position, out var voxels);
-        _chunkHandler.SaveChunkData(position, new ChunkHandler.ChunkData { Voxels = voxels!, SphereId = 0 });
+        _chunkHandler.SaveChunkData(position, new ChunkData { Voxels = voxels!, SphereId = 0 });
         _savedChunks.Add(position / Chunk.Size);
     }
 
@@ -154,7 +154,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
             return;
 
-        chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkHandler.ChunkData { SphereId = 0, Voxels = chunk.Voxels });
+        chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
         _updatedChunks.Enqueue(chunk);
     }
 
@@ -264,13 +264,13 @@ public class ChunkWorker : IDisposable, IChunkWorker
     {
         foreach (var chunk in _chunks)
         {
-            _chunkHandler.SaveChunkData(chunk.Position, new ChunkHandler.ChunkData { Voxels = chunk.Voxels, SphereId = 0 });
+            _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = 0 });
         }
 
         while (_chunksToSaveQueue.TryDequeue(out var position))
         {
             _chunksToSaveDictionary.TryRemove(position, out var voxels);
-            _chunkHandler.SaveChunkData(position, new ChunkHandler.ChunkData { Voxels = voxels!, SphereId = 0 });
+            _chunkHandler.SaveChunkData(position, new ChunkData { Voxels = voxels!, SphereId = 0 });
         }
     }
 

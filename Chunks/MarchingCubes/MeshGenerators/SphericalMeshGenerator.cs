@@ -4,7 +4,7 @@ using Common.Meshes;
 using OpenTK.Mathematics;
 
 namespace Chunks.MarchingCubes.MeshGenerators;
-public class SphericalMeshGenerator : AbstractMeshGenerator
+public class SphericalMeshGenerator : BaseMeshGenerator
 {
     private readonly float _cutoffRadius;
 
@@ -16,7 +16,7 @@ public class SphericalMeshGenerator : AbstractMeshGenerator
         _sphereCenters = sphereCenters;
     }
 
-    public override Vertex[] GetMesh(Vector3i chunkPosition, ChunkHandler.ChunkData chunkData)
+    public override Vertex[] GetMesh(Vector3i chunkPosition, ChunkData chunkData)
     {
         var vertices = new List<Vertex>();
         Vector3i sphereCenter = _sphereCenters[chunkData.SphereId];

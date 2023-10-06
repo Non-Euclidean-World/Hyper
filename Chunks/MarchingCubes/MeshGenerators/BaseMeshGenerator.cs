@@ -4,16 +4,17 @@ using Common.Meshes;
 using OpenTK.Mathematics;
 
 namespace Chunks.MarchingCubes.MeshGenerators;
-public abstract class AbstractMeshGenerator
+
+public abstract class BaseMeshGenerator
 {
     private readonly float _isoLevel;
 
-    protected AbstractMeshGenerator(float isoLevel)
+    protected BaseMeshGenerator(float isoLevel)
     {
         _isoLevel = isoLevel;
     }
 
-    public abstract Vertex[] GetMesh(Vector3i chunkPosition, ChunkHandler.ChunkData chunkData);
+    public abstract Vertex[] GetMesh(Vector3i chunkPosition, ChunkData chunkData);
 
     protected List<Vertex> GetTriangles(int x, int y, int z, Voxel[,,] scalarField)
     {

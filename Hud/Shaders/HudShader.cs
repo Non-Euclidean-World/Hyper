@@ -20,4 +20,11 @@ public class HudShader : Shader
     }
 
     public void SetProjection(Matrix4 projection) => SetMatrix4("projection", projection);
+
+    public void SetUp(float aspectRatio)
+    {
+        Use();
+        var projection = Matrix4.CreateOrthographic(aspectRatio, 1, -1.0f, 1.0f);
+        SetProjection(projection);
+    }
 }

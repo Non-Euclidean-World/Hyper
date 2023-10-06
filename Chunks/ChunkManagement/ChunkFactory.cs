@@ -20,7 +20,7 @@ public class ChunkFactory
     public Chunk GenerateChunk(Vector3i position, bool generateVao = true)
     {
         var voxels = _scalarFieldGenerator.Generate(Chunk.Size, position);
-        Vertex[] data = _meshGenerator.GetMesh(position, new ChunkHandler.ChunkData { SphereId = 0, Voxels = voxels });
+        Vertex[] data = _meshGenerator.GetMesh(position, new ChunkData { SphereId = 0, Voxels = voxels });
 
         return new Chunk(data, position, voxels, sphere: 0, generateVao);
     }

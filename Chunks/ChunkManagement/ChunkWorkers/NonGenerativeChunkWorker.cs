@@ -61,7 +61,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         {
             while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
             {
-                chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkHandler.ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
+                chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
             }
         }
@@ -97,7 +97,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
         foreach (var chunk in _chunks)
         {
-            _chunkHandler.SaveChunkData(chunk.Position, new ChunkHandler.ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
+            _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
         }
     }
 
