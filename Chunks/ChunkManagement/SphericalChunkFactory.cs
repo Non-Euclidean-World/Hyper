@@ -56,8 +56,8 @@ public class SphericalChunkFactory
                             var boundaryValue = GetBoundaryValue(position);
 
                             var d = Vector3.Distance(position, _sphereCenters[0]);
-                            averageScalarField0[x, y, z].Value = F1(d, radius) * boundaryValue + F2(d, radius) * scalarField0[x, y, z].Value;
-                            averageScalarField1[x, y, z].Value = F1(d, radius) * boundaryValue + F2(d, radius) * scalarField1[x, y, z].Value;
+                            averageScalarField0[x, y, z].Value = SmoothStepUp(d, radius) * boundaryValue + SmoothStepDown(d, radius) * scalarField0[x, y, z].Value;
+                            averageScalarField1[x, y, z].Value = SmoothStepUp(d, radius) * boundaryValue + SmoothStepDown(d, radius) * scalarField1[x, y, z].Value;
 
                             VoxelType type;
                             if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
@@ -89,9 +89,9 @@ public class SphericalChunkFactory
         return m * p.Y - m * _scalarFieldGenerator.AvgElevation;
     }
 
-    private static float F1(float x, float r, float a = 0.5f, float k = .85f)
+    private static float SmoothStepUp(float x, float r, float a = 0.5f, float k = .85f)
         => 0.5f * (MathF.Tanh(a * (x - k * r)) + 1);
 
-    private static float F2(float x, float r, float a = 0.5f, float k = .85f)
+    private static float SmoothStepDown(float x, float r, float a = 0.5f, float k = .85f)
         => 0.5f * (-MathF.Tanh(a * (x - k * r)) + 1);
 }
