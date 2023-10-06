@@ -23,7 +23,7 @@ internal class StandardControllerFactory : IControllerFactory
 
     private readonly float _globalScale;
 
-    public StandardControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator, float globalScale = 0.05f)
+    public StandardControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator, float globalScale)
     {
         _scene = scene;
         _context = context;

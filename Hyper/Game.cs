@@ -64,8 +64,8 @@ public class Game
         _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
         IControllerFactory controllerFactory = _settings.GeometryType switch
         {
-            GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator),
-            GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator),
+            GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
             _ => throw new NotImplementedException(),
         };
 

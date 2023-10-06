@@ -110,9 +110,9 @@ void main(void)
 		totalNormal += worldNormal * in_weights[i];
 	}
 
-	vec4 eucPos = vec4(totalLocalPos.xyz, 1);
-	gl_Position = port(eucPos * model) * view * projection;
-	FragPos = port(eucPos * model);
-	Normal = totalNormal * normalRotation * TranslateMatrix(port(eucPos * model));
+	totalLocalPos /= totalLocalPos.w;
+	gl_Position = port(totalLocalPos * model) * view * projection;
+	FragPos = port(totalLocalPos * model);
+	Normal = totalNormal * normalRotation * TranslateMatrix(port(totalLocalPos * model));
 	Texture = in_textureCoords;
 }

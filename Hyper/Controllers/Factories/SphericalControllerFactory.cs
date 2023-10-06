@@ -28,7 +28,7 @@ internal class SphericalControllerFactory : IControllerFactory
 
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
-    public SphericalControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator, float globalScale = 0.05f)
+    public SphericalControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator, float globalScale)
     {
         _globalScale = globalScale;
         var sphere0Center = new Vector3i(0, 0, 0);
