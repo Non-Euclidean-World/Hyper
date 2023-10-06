@@ -43,7 +43,7 @@ internal class SphericalControllerFactory : IControllerFactory
 
     public IController[] CreateControllers(Settings settings)
     {
-        float cutoffRadius = MathF.PI / 2 / _globalScale;
+        float cutoffRadius = 1.02f * MathF.PI / 2 / _globalScale; // 2% margin to remove the gap
         var meshGenerator = new SphericalMeshGenerator(cutoffRadius, _sphereCenters);
         var chunkFactory = new SphericalChunkFactory(_scalarFieldGenerator, _sphereCenters, _globalScale, meshGenerator);
         var chunkHandler = new ChunkHandler(settings.SaveName, meshGenerator);

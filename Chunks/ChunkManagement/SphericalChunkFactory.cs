@@ -34,10 +34,10 @@ public class SphericalChunkFactory
         {
             for (int chunkY = -chunksPerSide / 2; chunkY < chunksPerSide / 2; chunkY++)
             {
-                var averageScalarField0 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
-                var averageScalarField1 = new Voxel[Chunk.Size, Chunk.Size, Chunk.Size];
+                var averageScalarField0 = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
+                var averageScalarField1 = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
 
-                int offset = Chunk.Size - 1;
+                int offset = Chunk.Size;
 
                 var sf0Pos = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[0];
                 var sf1Pos = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[1];
@@ -45,11 +45,11 @@ public class SphericalChunkFactory
                 var scalarField0 = _scalarFieldGenerator.Generate(Chunk.Size, sf0Pos);
                 var scalarField1 = _scalarFieldGenerator.Generate(Chunk.Size, sf1Pos);
 
-                for (int x = 0; x < Chunk.Size; x++)
+                for (int x = 0; x < Chunk.Size + 1; x++)
                 {
-                    for (int y = 0; y < Chunk.Size; y++)
+                    for (int y = 0; y < Chunk.Size + 1; y++)
                     {
-                        for (int z = 0; z < Chunk.Size; z++)
+                        for (int z = 0; z < Chunk.Size + 1; z++)
                         {
                             var position = new Vector3i(x + chunkX * Chunk.Size, y, z + chunkY * Chunk.Size);
                             var radius = MathF.PI / 2 / _globalScale;
