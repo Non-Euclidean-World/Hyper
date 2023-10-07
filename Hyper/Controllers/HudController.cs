@@ -1,11 +1,7 @@
 ﻿using Common;
-using Common.UserInput;
-using Hud;
 using Hud.HUDElements;
 using Hud.Shaders;
-using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
-using Hyper.Shaders;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Hyper.Controllers;

@@ -4,6 +4,7 @@ using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
 using Chunks.ChunkManagement;
+using Chunks.ChunkManagement.ChunkWorkers;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
@@ -20,7 +21,7 @@ namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly ChunkWorker ChunkWorker;
+    public readonly List<Chunk> Chunks;
 
     public readonly List<LightSource> LightSources;
 
@@ -37,15 +38,12 @@ internal class Scene : IInputSubscriber
     public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
-    
+
     public readonly IHudElement[] HudElements;
 
-    public readonly float Scale = 0.1f;
-
-    public Scene(float aspectRatio, Context context, IWindowHelper windowHelper, ChunkFactory chunkFactory, ChunkHandler chunkHandler)
+    public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
         int chunksPerSide = 2;
-        float elevation = chunkFactory.Elevation;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -68,6 +66,8 @@ internal class Scene : IInputSubscriber
             .ToList();
 
         Player = new Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -76,7 +76,7 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, elevation, context);
+        Camera = camera;
         
         HudElements = new IHudElement[]
         {
@@ -85,8 +85,7 @@ internal class Scene : IInputSubscriber
             new InventoryHudManager(windowHelper, Player.Inventory, context),
         };
 
-        ChunkWorker = new ChunkWorker(new List<Chunk>(), SimulationManager, chunkFactory, chunkHandler);
-
+        Chunks = new List<Chunk>();
         RegisterCallbacks(context);
     }
 
@@ -112,16 +111,6 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private Camera GetCamera(float aspectRatio, float elevation, Context context)
-    {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale, context)
-        {
-            ReferencePointPosition = (5f + elevation) * Vector3.UnitY
-        };
-
-        return camera;
-    }
-
     private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
         => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
@@ -140,8 +129,9 @@ internal class Scene : IInputSubscriber
 
     public void Dispose()
     {
-        ChunkWorker.Dispose();
-
+        foreach (var chunk in Chunks)
+            chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
+        
         foreach (var lightSource in LightSources)
             lightSource.Dispose();
 

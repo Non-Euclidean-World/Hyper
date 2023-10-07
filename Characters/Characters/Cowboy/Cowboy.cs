@@ -16,7 +16,7 @@ public class CowboyModel : Model
     {
         ModelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/model.dae");
         TexturePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/texture.png");
-        LocalScale = 0.04f;
+        LocalScale = 0.4f;
         LocalTranslation = new Vector3(0, -5, 0);
     }
 

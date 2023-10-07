@@ -1,7 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
 using Character.GameEntities;
-using Character.Shaders;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
@@ -32,22 +31,22 @@ internal class Player : Humanoid, IRayCaster, IContactEventListener
 
     public int RayId => 0;
 
-    public Player(PhysicalCharacter physicalCharacter, Context context) : base(physicalCharacter)
+    public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, true);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 
-    public void Render(ModelShader modelShader, float scale, Vector3 cameraPosition, bool isFirstPerson)
+    public void Render(Shader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
     {
         if (!isFirstPerson)
-            Character.Render(PhysicalCharacter.Pose, modelShader, scale, cameraPosition);
+            Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);
     }
 
-    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, Vector3 cameraPosition)
+    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, float curve, Vector3 cameraPosition)
     {
         _rayEndpointMarker.Position = GetRayEndpoint(rayHit);
-        _rayEndpointMarker.Render(rayMarkerShader, scale, cameraPosition);
+        _rayEndpointMarker.Render(rayMarkerShader, scale, curve, cameraPosition);
     }
 
     // in general this can depend on the properties of the character e.g. size etc
@@ -66,7 +65,7 @@ internal class Player : Humanoid, IRayCaster, IContactEventListener
         if (collidableReference.Mobility != CollidableMobility.Dynamic)
             return;
         if (collidableReference.BodyHandle == LastContactBody
-            && LastContactTime - DateTime.Now < EpsTime)
+            && DateTime.Now - LastContactTime < EpsTime)
             return;
 
         LastContactTime = DateTime.Now;

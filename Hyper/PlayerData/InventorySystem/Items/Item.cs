@@ -1,4 +1,6 @@
-﻿namespace Hyper.PlayerData.InventorySystem.Items;
+﻿using Chunks.ChunkManagement.ChunkWorkers;
+
+namespace Hyper.PlayerData.InventorySystem.Items;
 
 internal abstract class Item
 {
@@ -17,12 +19,12 @@ internal abstract class Item
         Console.WriteLine($"Used {Id} secondary");
     }
     
-    public virtual void Use(Scene scene, float time)
+    public virtual void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
         Console.WriteLine($"Used {Id}");
     }
 
-    public virtual void SecondaryUse(Scene scene, float time)
+    public virtual void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time)
     {
         Console.WriteLine($"Used {Id} secondary");
     }

@@ -122,6 +122,19 @@ public class PhysicalCharacter
     }
 
     /// <summary>
+    /// Disregards physics of the character and changes its pose.
+    /// The intention is that this method should only be used for teleportation functionality
+    /// </summary>
+    /// <param name="simulation"></param>
+    /// <param name="pose"></param>
+    public void ForcePoseChange(Simulation simulation, RigidPose pose, Func<Vector3, Vector3> velocityTransform) // TODO we need to also change the velocity vector
+    {
+        var body = new BodyReference(_bodyHandle, simulation.Bodies);
+        body.Pose = pose;
+        body.Velocity.Linear = velocityTransform(body.Velocity.Linear);
+    }
+
+    /// <summary>
     /// Removes the character's body from the simulation and the character from the associated characters set.
     /// </summary>
     public void Dispose()
@@ -131,10 +144,10 @@ public class PhysicalCharacter
         _characters.RemoveCharacterByBodyHandle(_bodyHandle);
     }
 
-    public void RenderBoundingBox(Shader shaderBoundingBox, float scale, OpenTK.Mathematics.Vector3 cameraPosition)
+    public void RenderBoundingBox(Shader shaderBoundingBox, float scale, float curve, OpenTK.Mathematics.Vector3 cameraPosition)
     {
         TurnOnWireframe();
-        BoundingBox.RenderFullDescription(shaderBoundingBox, scale, cameraPosition);
+        BoundingBox.RenderFullDescription(shaderBoundingBox, scale, curve, cameraPosition);
         TurnOffWireframe();
     }
 

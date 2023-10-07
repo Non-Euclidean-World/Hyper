@@ -1,5 +1,4 @@
 ﻿using Common;
-using NLog;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -10,18 +9,25 @@ public class Window : GameWindow
 {
     private Game _game;
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly CommandInterpreter _interpreter;
 
-    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss"));
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), geometryType);
+        _interpreter = new CommandInterpreter(this);
         CursorState = CursorState.Grabbed;
     }
 
     public override void Close()
     {
-        if (_game.IsRunning) _game.SaveAndClose();
+        if (_game.IsRunning)
+            _game.SaveAndClose();
+        base.Close();
+    }
+
+    public void CloseNoSave()
+    {
         base.Close();
     }
 
@@ -29,8 +35,9 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        if (!_game.IsRunning) return;
-        
+        if (!_game.IsRunning)
+            return;
+
         _game.RenderFrame(e);
         SwapBuffers();
     }
@@ -39,19 +46,22 @@ public class Window : GameWindow
     {
         base.OnUpdateFrame(e);
 
-        if (!IsFocused) return;
-        if (_game.IsRunning) _game.UpdateFrame(e);
+        if (!IsFocused)
+            return;
+        if (_game.IsRunning)
+            _game.UpdateFrame(e);
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
         base.OnKeyDown(e);
 
-        if (_game.IsRunning) _game.KeyDown(e.Key);
+        if (_game.IsRunning)
+            _game.KeyDown(e.Key);
 
         if (e.Key == Keys.Escape)
         {
-            Close();
+            CloseNoSave();
         }
 
         if (e.Key == Keys.T)
@@ -66,95 +76,78 @@ public class Window : GameWindow
     {
         base.OnKeyUp(e);
 
-        if (_game.IsRunning) _game.KeyUp(e.Key);
+        if (_game.IsRunning)
+            _game.KeyUp(e.Key);
     }
 
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
         base.OnMouseMove(e);
 
-        if (_game.IsRunning) _game.MouseMove(e);
+        if (_game.IsRunning)
+            _game.MouseMove(e);
     }
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         base.OnMouseDown(e);
 
-        if (_game.IsRunning) _game.MouseDown(e.Button);
+        if (_game.IsRunning)
+            _game.MouseDown(e.Button);
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)
     {
         base.OnMouseUp(e);
 
-        if (_game.IsRunning) _game.MouseUp(e.Button);
+        if (_game.IsRunning)
+            _game.MouseUp(e.Button);
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
 
-        if (_game.IsRunning) _game.MouseWheel(e);
+        if (_game.IsRunning)
+            _game.MouseWheel(e);
     }
 
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
-        
+
         _game.Resize(e);
     }
 
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)
     {
-        if (e.IsFocused) _game.IsRunning = true;
-        else _game.IsRunning = false;
+        if (e.IsFocused)
+            _game.IsRunning = true;
+        else
+            _game.IsRunning = false;
     }
 
     private void Command()
     {
         while (true)
         {
-            string? command = Console.ReadLine();
-            if (command is null)
+            string? line = Console.ReadLine();
+            if (line is null)
                 return;
-
             try
             {
-                Logger.Info($"[Command]{command}");
-                var args = command.Split(' ');
-
-                switch (args[0])
-                {
-                    case "resume":
-                        return;
-                    case "exit":
-                        Close();
-                        return;
-                    case "load":
-                        if (!SaveManager.GetSaves().Contains(args[1]))
-                            throw new FileNotFoundException("This save does not exist.");
-                        if (_game.IsRunning) _game.SaveAndClose();
-                        _game = new Game(Size.X, Size.Y, new WindowHelper(this), args[1]);
-                        CursorState = CursorState.Grabbed;
-                        return;
-                    case "delete":
-                        SaveManager.DeleteSave(args[1]);
-                        break;
-                    case "show":
-                        if (args[1] == "saves")
-                        {
-                            foreach (var file in SaveManager.GetSaves())
-                            {
-                                Console.WriteLine(file);
-                            }
-                        }
-                        break;
-                }
+                _interpreter.ParseLine(line, ref _game, out bool exitCli);
+                Console.WriteLine();
+                if (exitCli)
+                    return;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Error($"[Command]Error: {ex.Message}");
+                Console.WriteLine($"[ERROR] {e.Message}");
             }
         }
     }
+
+    private static string DefaultSaveName()
+        => DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
 }

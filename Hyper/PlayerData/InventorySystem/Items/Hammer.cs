@@ -1,4 +1,6 @@
-﻿namespace Hyper.PlayerData.InventorySystem.Items;
+﻿using Chunks.ChunkManagement.ChunkWorkers;
+
+namespace Hyper.PlayerData.InventorySystem.Items;
 
 internal class Hammer : Item
 {
@@ -14,17 +16,17 @@ internal class Hammer : Item
     
     private float _buildTime = 0;
 
-    public override void Use(Scene scene, float time)
+    public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
         bool zeroTime = false;
-        foreach (var chunk in scene.ChunkWorker.Chunks)
+        foreach (var chunk in chunkWorker.Chunks)
         {
             var location =
                 scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             if (chunk.DistanceFromChunk(location) >= Radius) continue;
-            if (scene.ChunkWorker.IsOnUpdateQueue(chunk)) continue;
+            if (chunkWorker.IsOnUpdateQueue(chunk)) continue;
             chunk.Mine(location, time + _mineTime, BrushWeight, Radius);
-            scene.ChunkWorker.EnqueueUpdatingChunk(chunk);
+            chunkWorker.EnqueueUpdatingChunk(chunk);
             zeroTime = true;
         }
         
@@ -32,17 +34,17 @@ internal class Hammer : Item
         else _mineTime += time;
     }
 
-    public override void SecondaryUse(Scene scene, float time)
+    public override void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time)
     {
         bool zeroTime = false;
-        foreach (var chunk in scene.ChunkWorker.Chunks)
+        foreach (var chunk in chunkWorker.Chunks)
         {
             var location =
                 scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             if (chunk.DistanceFromChunk(location) >= Radius) continue;
-            if (scene.ChunkWorker.IsOnUpdateQueue(chunk)) continue;
+            if (chunkWorker.IsOnUpdateQueue(chunk)) continue;
             chunk.Build(location, time + _buildTime, BrushWeight, Radius);
-            scene.ChunkWorker.EnqueueUpdatingChunk(chunk);
+            chunkWorker.EnqueueUpdatingChunk(chunk);
             zeroTime = true;
         }
         
