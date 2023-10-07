@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Common;
 using Hyper;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

@@ -48,6 +48,7 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
 
+        if (!_showBoundingBoxes) return;
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
     }
