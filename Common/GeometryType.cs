@@ -1,4 +1,4 @@
-﻿namespace Hyper;
+﻿namespace Common;
 public enum GeometryType
 {
     Euclidean,

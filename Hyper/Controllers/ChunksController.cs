@@ -13,10 +13,6 @@ internal class ChunksController : IController, IInputSubscriber
 
     private readonly IChunkWorker _chunkWorker;
 
-    private float _buildTime = 0;
-
-    private float _mineTime = 0;
-
     public ChunksController(Scene scene, Context context, AbstractObjectShader shader, IChunkWorker chunkWorker)
     {
         _scene = scene;
@@ -37,46 +33,6 @@ internal class ChunksController : IController, IInputSubscriber
     public void RegisterCallbacks(Context context)
     {
         context.RegisterMouseButtons(new List<MouseButton> { MouseButton.Left, MouseButton.Right });
-        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
-        {
-            foreach (var chunk in _scene.Chunks)
-            {
-                var location =
-                    _scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]);
-                if (!chunk.IsInside(location))
-                    continue;
-                if (!_chunkWorker.IsOnUpdateQueue(chunk))
-                {
-                    chunk.Mine(location, (float)e.Time + _mineTime);
-                    _chunkWorker.EnqueueUpdatingChunk(chunk);
-                    _mineTime = 0;
-                }
-                else
-                    _mineTime += (float)e.Time;
-                return;
-            }
-        });
-
-        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
-        {
-            foreach (var chunk in _scene.Chunks)
-            {
-                var location =
-                    _scene.Player.GetRayEndpoint(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId]);
-                if (!chunk.IsInside(location))
-                    continue;
-                if (!_chunkWorker.IsOnUpdateQueue(chunk))
-                {
-                    chunk.Build(location, (float)e.Time + _buildTime);
-                    _chunkWorker.EnqueueUpdatingChunk(chunk);
-                    _buildTime = 0;
-                }
-                else
-                    _buildTime += (float)e.Time;
-                return;
-            }
-        });
-
         context.RegisterUpdateFrameCallback(_ => _chunkWorker.Update(_scene.Camera.ReferencePointPosition));
     }
 

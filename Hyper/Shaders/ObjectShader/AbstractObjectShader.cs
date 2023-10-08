@@ -1,11 +1,13 @@
 ﻿using Common;
 using Common.Meshes;
+using Hyper.PlayerData;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Player;
 
 namespace Hyper.Shaders.ObjectShader;
-public abstract class AbstractObjectShader : Shader
+
+
+internal abstract class AbstractObjectShader : Shader
 {
     public float GlobalScale { get; private init; }
 

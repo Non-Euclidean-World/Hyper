@@ -1,7 +1,7 @@
 ﻿using Common;
 using OpenTK.Mathematics;
 
-namespace Player.Utils;
+namespace Hyper.PlayerData.Utils;
 
 public static class Matrices
 {

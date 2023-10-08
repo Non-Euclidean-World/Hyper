@@ -1,9 +1,11 @@
 ﻿using Common.Meshes;
+using Hyper.PlayerData;
 using OpenTK.Mathematics;
-using Player;
 
 namespace Hyper.Shaders.ObjectShader;
-public class SphericalObjectShader : AbstractObjectShader
+
+
+internal class SphericalObjectShader : AbstractObjectShader
 {
     private Vector3 _lowerSphereCenter;
 

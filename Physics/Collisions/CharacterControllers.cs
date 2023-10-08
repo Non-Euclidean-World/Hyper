@@ -107,7 +107,7 @@ public unsafe class CharacterControllers : IDisposable
     /// <param name="initialBodyHandleCapacity">Number of body handles to initially allocate space for in the body handle->character mapping.</param>
     public CharacterControllers(BufferPool pool, int initialCharacterCapacity = 4096, int initialBodyHandleCapacity = 4096)
     {
-        this._pool = pool;
+        _pool = pool;
         _characters = new QuickList<CharacterController>(initialCharacterCapacity, pool);
         ResizeBodyHandleCapacity(initialBodyHandleCapacity);
         _analyzeContactsWorker = AnalyzeContactsWorker;

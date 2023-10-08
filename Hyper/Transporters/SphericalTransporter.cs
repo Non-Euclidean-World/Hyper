@@ -1,8 +1,8 @@
 ﻿using BepuPhysics;
+using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
-using Player;
 using Numerics = System.Numerics;
 
 namespace Hyper.Transporters;

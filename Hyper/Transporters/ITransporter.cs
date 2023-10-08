@@ -1,7 +1,7 @@
 ﻿using BepuPhysics;
+using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Player;
 
 namespace Hyper.Transporters;
 internal interface ITransporter

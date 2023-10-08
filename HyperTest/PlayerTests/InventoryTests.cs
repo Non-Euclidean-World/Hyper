@@ -1,10 +1,9 @@
 ﻿using Common.UserInput;
 using FluentAssertions;
-using Player.InventorySystem;
-using Player.InventorySystem.Items;
-using Player.InventorySystem.Items.Tools;
+using Hyper.PlayerData.InventorySystem;
+using Hyper.PlayerData.InventorySystem.Items;
 
-namespace PlayerTest;
+namespace HyperTest.PlayerTests;
 
 [TestFixture]
 public class InventoryTests
@@ -15,13 +14,13 @@ public class InventoryTests
         // Arrange
         var context = new Context();
         var inventory = new Inventory(context);
-        var item = new Sword();
+        var item = new Hammer();
 
         // Act
         inventory.AddItem(item);
 
         // Assert
-        inventory.Items[0, 0].Item!.ID.Should().Be(item.ID);
+        inventory.Items[0, 0].Item!.Id.Should().Be(item.Id);
     }
 
     [Test]
@@ -30,8 +29,8 @@ public class InventoryTests
         // Arrange
         var context = new Context();
         var inventory = new Inventory(context);
-        var item = new Sword();
-        var item2 = new Hammer();
+        var item = new Hammer();
+        var item2 = new Bullet();
 
         // Act
         inventory.AddItem(item);
@@ -39,8 +38,8 @@ public class InventoryTests
         inventory.SwapWithHand(0, 0);
 
         // Assert
-        inventory.Items[0, 0].Item!.ID.Should().Be(item2.ID);
-        inventory.InHandItem.Item!.ID.Should().Be(item.ID);
+        inventory.Items[0, 0].Item!.Id.Should().Be(item2.Id);
+        inventory.InHandItem.Item!.Id.Should().Be(item.Id);
     }
 
     [Test]
@@ -49,7 +48,7 @@ public class InventoryTests
         // Arrange
         var context = new Context();
         var inventory = new Inventory(context);
-        var item = new Rock();
+        var item = new Bullet();
         int count1 = 10;
         int count2 = 5;
 
@@ -59,7 +58,7 @@ public class InventoryTests
         inventory.SwapWithHand(0, 0);
 
         // Assert
-        inventory.Items[0, 0].Item!.ID.Should().Be(item.ID);
+        inventory.Items[0, 0].Item!.Id.Should().Be(item.Id);
         inventory.Items[0, 0].Count.Should().Be(count1 + count2);
     }
 }

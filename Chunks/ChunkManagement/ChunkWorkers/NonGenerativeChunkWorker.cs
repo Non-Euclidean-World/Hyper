@@ -7,6 +7,8 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 {
+    public List<Chunk> Chunks { get; }
+
     private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
 
     private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
@@ -15,15 +17,13 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
 
-    private readonly List<Chunk> _chunks;
-
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
     private readonly ChunkHandler _chunkHandler;
 
     private const int NumberOfThreads = 1;
 
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private readonly SphericalChunkFactory _chunkFactory;
 
@@ -35,7 +35,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
         _meshGenerator = meshGenerator;
-        _chunks = chunks;
+        Chunks = chunks;
 
         Start();
     }
@@ -50,12 +50,12 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 
     private void RunJob()
     {
-        _chunks.Clear();
-        _chunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
-        if (_chunks.Count == 0)
-            _chunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
+        Chunks.Clear();
+        Chunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
+        if (Chunks.Count == 0)
+            Chunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
 
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
             _loadedChunks.Enqueue(chunk);
         try
         {
@@ -95,7 +95,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
 
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
         {
             _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
         }

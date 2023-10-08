@@ -3,19 +3,23 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
+using Common;
 using Common.Meshes;
 using Common.UserInput;
+using Hud;
+using Hud.HUDElements;
+using Hyper.PlayerData;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
-using Player;
 
 
 namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks = new();
+    public readonly List<Chunk> Chunks;
 
     public readonly List<LightSource> LightSources;
 
@@ -25,7 +29,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
-    public readonly Player.Player Player;
+    public readonly Player Player;
 
     public readonly Camera Camera;
 
@@ -33,7 +37,9 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public Scene(Camera camera, float elevation, Context context)
+    public readonly IHudElement[] HudElements;
+
+    public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
         int chunksPerSide = 2;
 
@@ -57,7 +63,7 @@ internal class Scene : IInputSubscriber
             })
             .ToList();
 
-        Player = new Player.Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        Player = new Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
         SimulationMembers.Add(Player.BodyHandle, Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
@@ -70,6 +76,14 @@ internal class Scene : IInputSubscriber
 
         Camera = camera;
 
+        HudElements = new IHudElement[]
+        {
+            new Crosshair(),
+            new FpsCounter(windowHelper),
+            new InventoryHudManager(windowHelper, Player.Inventory, context),
+        };
+
+        Chunks = new List<Chunk>();
         RegisterCallbacks(context);
     }
 
@@ -128,5 +142,10 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
+
+        foreach (var element in HudElements)
+        {
+            element.Dispose();
+        }
     }
 }

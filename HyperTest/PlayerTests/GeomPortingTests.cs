@@ -1,9 +1,9 @@
 ﻿using Common;
 using FluentAssertions;
+using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
-using Player.Utils;
 
-namespace PlayerTest;
+namespace HyperTest.PlayerTests;
 
 [TestFixture]
 public class GeomPortingTests

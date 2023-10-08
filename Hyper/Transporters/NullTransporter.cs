@@ -1,12 +1,12 @@
 ﻿using BepuPhysics;
+using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics.Collisions;
-using Player;
 
 namespace Hyper.Transporters;
 
 // I hate this thing
-public class NullTransporter : ITransporter
+internal class NullTransporter : ITransporter
 {
     public bool TryTeleportTo(int targetSphereId, ISimulationMember simulationMember, Simulation simulation, out Vector3 exitPoint)
     {

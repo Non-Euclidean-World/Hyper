@@ -3,12 +3,12 @@ using Common;
 using Common.UserInput;
 using Hyper.Controllers;
 using Hyper.Controllers.Factories;
+using Hyper.PlayerData;
 using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Player;
 
 namespace Hyper;
 
@@ -61,7 +61,7 @@ public class Game
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context, windowHelper);
         IControllerFactory controllerFactory = _settings.GeometryType switch
         {
             GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),

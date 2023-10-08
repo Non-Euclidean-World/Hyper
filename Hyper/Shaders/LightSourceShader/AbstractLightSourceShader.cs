@@ -1,10 +1,12 @@
 ﻿using Common;
+using Hyper.PlayerData;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Player;
 
 namespace Hyper.Shaders.LightSourceShader;
-public class AbstractLightSourceShader : Shader
+
+
+internal class AbstractLightSourceShader : Shader
 {
     public float GlobalScale { get; private init; }
 

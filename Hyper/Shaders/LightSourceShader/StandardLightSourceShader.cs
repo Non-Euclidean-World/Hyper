@@ -1,5 +1,7 @@
 ﻿namespace Hyper.Shaders.LightSourceShader;
-public class StandardLightSourceShader : AbstractLightSourceShader
+
+
+internal class StandardLightSourceShader : AbstractLightSourceShader
 {
     private StandardLightSourceShader(float globalScale) : base(globalScale)
     { }

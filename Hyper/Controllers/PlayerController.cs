@@ -1,4 +1,6 @@
-﻿using Common.UserInput;
+﻿using Chunks.ChunkManagement.ChunkWorkers;
+using Common.UserInput;
+using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -12,6 +14,8 @@ internal class PlayerController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
+    private readonly IChunkWorker _chunkWorker;
+
     private readonly AbstractModelShader _modelShader;
 
     private readonly AbstractObjectShader _objectShader;
@@ -22,9 +26,10 @@ internal class PlayerController : IController, IInputSubscriber
 
     private bool _showBoundingBoxes = false;
 
-    public PlayerController(Scene scene, Context context, AbstractModelShader modelShader, AbstractObjectShader objectShader, AbstractLightSourceShader rayMarkerShader, ITransporter sphericalTransporter)
+    public PlayerController(Scene scene, IChunkWorker chunkWorker, Context context, AbstractModelShader modelShader, AbstractObjectShader objectShader, AbstractLightSourceShader rayMarkerShader, ITransporter sphericalTransporter)
     {
         _scene = scene;
+        _chunkWorker = chunkWorker;
         _modelShader = modelShader;
         _objectShader = objectShader;
         _rayMarkerShader = rayMarkerShader;
@@ -37,12 +42,13 @@ internal class PlayerController : IController, IInputSubscriber
         _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
         _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
-        _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
-        _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+        if (_scene.Player.Inventory.SelectedItem is not null && _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
+        {
+            _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
+            _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+        }
 
-        if (!_showBoundingBoxes)
-            return;
-
+        if (!_showBoundingBoxes) return;
         _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
         _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
     }
@@ -100,6 +106,27 @@ internal class PlayerController : IController, IInputSubscriber
         });
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
+
+        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.Use(_scene);
+        });
+        context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene);
+        });
+        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.Use(_scene, _chunkWorker, (float)e.Time);
+        });
+        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
+        });
     }
 
     public void Dispose()

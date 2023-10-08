@@ -1,9 +1,9 @@
 ﻿
 using Common;
 using Common.Meshes;
+using Hyper.PlayerData;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using Player;
 
 namespace Hyper.Shaders.ModelShader;
 internal class AbstractModelShader : Shader

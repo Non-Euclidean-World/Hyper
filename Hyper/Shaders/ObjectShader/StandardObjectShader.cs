@@ -1,5 +1,5 @@
 ﻿namespace Hyper.Shaders.ObjectShader;
-public class StandardObjectShader : AbstractObjectShader
+internal class StandardObjectShader : AbstractObjectShader
 {
     private StandardObjectShader(float globalScale) : base(globalScale)
     {

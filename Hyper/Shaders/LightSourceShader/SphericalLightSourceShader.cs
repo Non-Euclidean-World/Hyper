@@ -1,8 +1,10 @@
-﻿using OpenTK.Mathematics;
-using Player;
+﻿using Hyper.PlayerData;
+using OpenTK.Mathematics;
 
 namespace Hyper.Shaders.LightSourceShader;
-public class SphericalLightSourceShader : AbstractLightSourceShader
+
+
+internal class SphericalLightSourceShader : AbstractLightSourceShader
 {
     private Vector3 _lowerSphereCenter;
 

@@ -7,7 +7,7 @@ using Physics.Collisions;
 
 namespace Chunks.ChunkManagement.ChunkWorkers;
 
-public class ChunkWorker : IDisposable, IChunkWorker
+public class ChunkWorker : IChunkWorker
 {
     private enum JobType
     {
@@ -18,7 +18,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     private readonly BlockingCollection<JobType> _jobs = new(new ConcurrentQueue<JobType>());
 
-    private readonly List<Chunk> _chunks;
+    public List<Chunk> Chunks { get; }
 
     private readonly HashSet<Vector3i> _existingChunks = new();
 
@@ -58,12 +58,12 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator)
     {
-        _chunks = chunks;
+        Chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
         _meshGenerator = meshGenerator;
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
         {
             _existingChunks.Add(chunk.Position / Chunk.Size);
         }
@@ -82,13 +82,13 @@ public class ChunkWorker : IDisposable, IChunkWorker
         GetSavedChunks();
         EnqueueLoadingChunks(Vector3i.Zero);
         int prevNumber = 0;
-        while (_chunks.Count < TotalChunks)
+        while (Chunks.Count < TotalChunks)
         {
             ResolveLoadedChunks();
-            if (prevNumber < _chunks.Count && _chunks.Count % 10 == 0)
+            if (prevNumber < Chunks.Count && Chunks.Count % 10 == 0)
             {
-                Logger.Info($"Loaded {_chunks.Count} / {TotalChunks} chunks");
-                prevNumber = _chunks.Count;
+                Logger.Info($"Loaded {Chunks.Count} / {TotalChunks} chunks");
+                prevNumber = Chunks.Count;
             }
         }
     }
@@ -170,10 +170,10 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     private void DeleteChunks(Vector3i currentChunk)
     {
-        if (_chunksToLoad.Count + _chunks.Count <= 2 * TotalChunks)
+        if (_chunksToLoad.Count + Chunks.Count <= 2 * TotalChunks)
             return;
 
-        _chunks.RemoveAll(chunk =>
+        Chunks.RemoveAll(chunk =>
         {
             if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance))
                 return false;
@@ -236,7 +236,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
         {
             chunk.Mesh.CreateVertexArrayObject();
             chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-            _chunks.Add(chunk);
+            Chunks.Add(chunk);
         }
     }
 
@@ -262,7 +262,7 @@ public class ChunkWorker : IDisposable, IChunkWorker
 
     private void SaveAllChunks()
     {
-        foreach (var chunk in _chunks)
+        foreach (var chunk in Chunks)
         {
             _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = 0 });
         }
