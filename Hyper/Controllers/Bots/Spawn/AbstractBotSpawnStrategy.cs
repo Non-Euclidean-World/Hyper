@@ -15,7 +15,7 @@ internal abstract class AbstractBotSpawnStrategy
     
     public abstract void Despawn();
     
-    protected float GetSpawnHeight(int x, int z) // TODO remove code duplication
+    protected float GetSpawnHeight(int x, int z)
     {
         foreach (var chunk in Scene.Chunks)
         {
