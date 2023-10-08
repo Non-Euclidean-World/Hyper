@@ -23,7 +23,7 @@ internal class Gun : Item
             scene.SimulationManager.Properties,
             new RigidPose(scene.Player.RayOrigin, q),
             Conversions.ToNumericsVector(scene.Camera.Front) * 15,
-            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5); // let's throw some refrigerators
+            new ProjectileMesh(0.4f, 0.1f, 0.1f), lifeTime: 5); // let's throw some refrigerators
         scene.Projectiles.Add(projectile);
         scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
     }

@@ -107,10 +107,26 @@ internal class PlayerController : IController, IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
         
-        context.RegisterMouseButtonDownCallback(MouseButton.Left, () => _scene.Player.Inventory.SelectedItem?.Use(_scene));
-        context.RegisterMouseButtonDownCallback(MouseButton.Right, () => _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene));
-        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) => _scene.Player.Inventory.SelectedItem?.Use(_scene, _chunkWorker, (float)e.Time));
-        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) => _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time));
+        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen) 
+                _scene.Player.Inventory.SelectedItem?.Use(_scene);
+        });
+        context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen) 
+                _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene);
+        });
+        context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
+        {
+            if (!_scene.Player.Inventory.IsOpen) 
+                _scene.Player.Inventory.SelectedItem?.Use(_scene, _chunkWorker, (float)e.Time);
+        });
+        context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
+        {
+            if (!_scene.Player.Inventory.IsOpen) 
+                _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
+        });
     }
 
     public void Dispose()
