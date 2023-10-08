@@ -52,7 +52,7 @@ public class ChunkWorker : IChunkWorker
 
     private int TotalChunks => (2 * _renderDistance + 1) * (2 * _renderDistance + 1) * (2 * _renderDistance + 1);
 
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private readonly MeshGenerator _meshGenerator;
 
@@ -74,7 +74,6 @@ public class ChunkWorker : IChunkWorker
 
     private void Start()
     {
-        _cancellationTokenSource = new CancellationTokenSource();
         for (int i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);

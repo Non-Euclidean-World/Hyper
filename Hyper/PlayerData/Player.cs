@@ -15,7 +15,7 @@ using Physics.TypingUtils;
 
 namespace Hyper.PlayerData;
 
-internal class Player : Humanoid, IRayCaster, IContactEventListener
+internal class Player : Humanoid, IRayCaster
 {
     public readonly Inventory Inventory;
 

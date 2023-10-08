@@ -10,11 +10,11 @@ public class Cowboy : Humanoid
 {
     private Vector3 _goalPosition;
 
-    private bool _isMoving = false;
+    private bool _isMoving;
 
-    private float _idleTime = 0;
+    private float _idleTime;
     
-    private float _moveTime = 0;
+    private float _moveTime;
 
     public Cowboy(PhysicalCharacter physicalCharacter) : base(
         new Model(CowboyResources.Instance, 0.4f, new Vector3(0, -5, 0)), physicalCharacter)
