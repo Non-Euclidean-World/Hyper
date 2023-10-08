@@ -28,7 +28,10 @@ internal class HudController : IController
 
         foreach (var element in _scene.HudElements)
         {
-            if (element is Crosshair && _scene.Player.Inventory.SelectedItem is Hammer) continue;
+            if (element is Crosshair &&
+                _scene.Player.Inventory.SelectedItem is not null && 
+                _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock) 
+                continue;
             if (element.Visible) element.Render(_shader);
         }
         GL.Enable(EnableCap.DepthTest);

@@ -26,8 +26,7 @@ internal class Player : Humanoid, IRayCaster, IContactEventListener
     public System.Numerics.Vector3 RayDirection => Conversions.ToNumericsVector(ViewDirection);
 
     public System.Numerics.Vector3 RayOrigin => PhysicalCharacter.Pose.Position
-            + Conversions.ToNumericsVector(ViewDirection) * RayOffset
-            + System.Numerics.Vector3.UnitY;
+            + Conversions.ToNumericsVector(ViewDirection) * RayOffset;
 
     public int RayId => 0;
 

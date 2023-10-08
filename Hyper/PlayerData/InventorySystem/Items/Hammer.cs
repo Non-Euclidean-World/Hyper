@@ -8,6 +8,8 @@ internal class Hammer : Item
 
     public override bool IsStackable => false;
     
+    public override CursorType Cursor => CursorType.BuildBlock;
+    
     private const float BrushWeight = 3;
     
     private const int Radius = 5;
