@@ -3,19 +3,23 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
+using Common;
 using Common.Meshes;
 using Common.UserInput;
+using Hud;
+using Hud.HUDElements;
+using Hyper.PlayerData;
+using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
-using Player;
 
 
 namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks = new();
+    public readonly List<Chunk> Chunks;
 
     public readonly List<LightSource> LightSources;
 
@@ -25,7 +29,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<SimpleCar> Cars;
 
-    public readonly Player.Player Player;
+    public readonly Player Player;
 
     public readonly Camera Camera;
 
@@ -33,9 +37,9 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly float Scale = 0.1f;
+    public readonly IHudElement[] HudElements;
 
-    public Scene(float aspectRatio, float elevation, Context context)
+    public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
         int chunksPerSide = 2;
 
@@ -47,7 +51,9 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
-        Player = new Player.Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
+        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
+        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
         Cars = new List<SimpleCar>()
@@ -56,8 +62,16 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
-        Camera = GetCamera(aspectRatio, elevation, context);
+        Camera = camera;
 
+        HudElements = new IHudElement[]
+        {
+            new Crosshair(),
+            new FpsCounter(windowHelper),
+            new InventoryHudManager(windowHelper, Player.Inventory, context),
+        };
+
+        Chunks = new List<Chunk>();
         RegisterCallbacks(context);
     }
 
@@ -83,15 +97,10 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private Camera GetCamera(float aspectRatio, float elevation, Context context)
-    {
-        var camera = new Camera(aspectRatio, 0.01f, 100f, Scale, context)
-        {
-            ReferencePointPosition = (5f + elevation) * Vector3.UnitY
-        };
-
-        return camera;
-    }
+    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
+        => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
+            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
+            maximumSlope: MathF.PI * 0.4f);
 
     public void RegisterCallbacks(Context context)
     {
@@ -121,5 +130,10 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
+
+        foreach (var element in HudElements)
+        {
+            element.Dispose();
+        }
     }
 }

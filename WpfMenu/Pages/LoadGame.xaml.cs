@@ -51,7 +51,7 @@ public partial class LoadGame : UserControl
     {
         if (Saves.SelectedItem is null) return;
 
-        SaveManager.DeleteSave(Saves.SelectedItem.ToString()!);
+        SaveManager.DeleteSaves(new string[] { Saves.SelectedItem.ToString()! });
         RefreshList();
     }
 }

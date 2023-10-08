@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Common;
 using Hyper;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -30,7 +31,7 @@ public partial class GameWindow : UserControl
     public void Load(int width, int height, string name)
     {
         Visibility = Visibility.Visible;
-        _game = new Game(width, height, _windowHelper, name);
+        _game = new Game(width, height, _windowHelper, name, GeometryType.Euclidean);
         _game.Resize(new ResizeEventArgs(width, height));
         Cursor = Cursors.None;
         _isPaused = false;
@@ -44,7 +45,7 @@ public partial class GameWindow : UserControl
             return;
         }
 
-        if (delta.Milliseconds == 0) 
+        if (delta.Milliseconds == 0)
             return;
         _game.UpdateFrame(new FrameEventArgs(delta.Milliseconds / 1000f));
         _game.RenderFrame(new FrameEventArgs(delta.Milliseconds / 1000f));

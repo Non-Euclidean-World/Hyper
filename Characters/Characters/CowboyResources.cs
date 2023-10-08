@@ -2,9 +2,9 @@
 
 public class CowboyResources : ModelResources
 {
-    private static readonly Lazy<CowboyResources> _instance = new(() => new CowboyResources());
+    private static readonly Lazy<CowboyResources> InternalInstance = new(() => new CowboyResources());
 
-    public static CowboyResources Instance => _instance.Value;
+    public static CowboyResources Instance => InternalInstance.Value;
     
     public CowboyResources() : base(
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/model.dae"),

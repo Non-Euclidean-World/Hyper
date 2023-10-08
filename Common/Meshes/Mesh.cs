@@ -21,9 +21,9 @@ public class Mesh
         Position = position;
     }
 
-    public virtual void Render(Shader shader, float scale, Vector3 cameraPosition)
+    public virtual void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
-        var model = Matrix4.CreateTranslation((Position - cameraPosition) * scale);
+        var model = Matrix4.CreateTranslation(GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale));
         var scaleMatrix = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleMatrix * model);
 

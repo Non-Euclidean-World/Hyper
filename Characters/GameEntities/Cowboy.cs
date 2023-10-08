@@ -17,7 +17,7 @@ public class Cowboy : Humanoid
     private float _moveTime = 0;
 
     public Cowboy(PhysicalCharacter physicalCharacter) : base(
-        new Model(CowboyResources.Instance, 0.04f, new Vector3(0, -5, 0)), physicalCharacter)
+        new Model(CowboyResources.Instance, 0.4f, new Vector3(0, -5, 0)), physicalCharacter)
     {
         _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
     }

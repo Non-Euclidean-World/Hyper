@@ -1,9 +1,10 @@
 ﻿using Character.GameEntities;
-using Character.Shaders;
 using Chunks;
 using Common;
 using Common.UserInput;
-using Hyper.Shaders;
+using Hyper.Shaders.ModelShader;
+using Hyper.Shaders.ObjectShader;
+using Hyper.Transporters;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -13,10 +14,12 @@ internal class BotsController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly ModelShader _shader;
+    private readonly AbstractModelShader _modelShader;
 
-    private readonly ObjectShader _objectShader;
+    private readonly AbstractObjectShader _objectShader;
     
+    private readonly ITransporter _transporter;
+
     private float _elapsedSeconds = 0;
 
     private readonly int _maxBots;
@@ -29,11 +32,12 @@ internal class BotsController : IController, IInputSubscriber
     
     private bool _showBoundingBoxes = false;
 
-    public BotsController(Scene scene, Context context, ModelShader shader, ObjectShader objectShader, Settings settings)
+    public BotsController(Scene scene, Context context, AbstractModelShader modelShader, AbstractObjectShader objectShader, ITransporter transporter, Settings settings)
     {
         _scene = scene;
-        _shader = shader;
+        _modelShader = modelShader;
         _objectShader = objectShader;
+        _transporter = transporter;
         _maxBots = 10 * settings.RenderDistance * settings.RenderDistance;
         _botsMinSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
         _botsMaxSpawnRadius = Chunk.Size * settings.RenderDistance * 2 / 3;
@@ -44,17 +48,17 @@ internal class BotsController : IController, IInputSubscriber
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         foreach (var bot in _scene.Bots)
         {
-            bot.Render(_shader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            _modelShader.SetUp(_scene.Camera, _scene.LightSources, sphere: bot.CurrentSphereId); // TODO No need to set up shader for every bot just sphere id
+            bot.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
-        
+
         if (!_showBoundingBoxes) return;
-        _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Scale);
         foreach (var bot in _scene.Bots)
         {
-            bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _scene.Scale, _scene.Camera.ReferencePointPosition);
+            _objectShader.SetUp(_scene.Camera, _scene.LightSources, sphere: 0); // TODO No need to set up shader for every bot just sphere id
+            bot.PhysicalCharacter.RenderBoundingBox(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
     
@@ -76,6 +80,9 @@ internal class BotsController : IController, IInputSubscriber
         {
             _elapsedSeconds += time;
             bot.UpdateCharacterGoals(_scene.SimulationManager.Simulation, time);
+            
+            int targetSphereId = 1 - _scene.Player.CurrentSphereId;
+            _transporter.TryTeleportTo(targetSphereId, bot, _scene.SimulationManager.Simulation, out _);
         }
     }
 
@@ -149,6 +156,6 @@ internal class BotsController : IController, IInputSubscriber
 
     public void Dispose()
     {
-        _shader.Dispose();
+        _modelShader.Dispose();
     }
 }

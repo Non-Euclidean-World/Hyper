@@ -15,22 +15,25 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener
 
     public BodyHandle BodyHandle => PhysicalCharacter.BodyHandle;
 
+    public int CurrentSphereId { get; set; }
+
     protected Vector3 ViewDirection;
 
     protected DateTime LastContactTime = DateTime.MinValue;
 
     protected BodyHandle? LastContactBody;
 
-    protected static readonly TimeSpan EpsTime = new(ticks: 10);
+    protected static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 500);
 
-    protected Humanoid(Model character, PhysicalCharacter physicalCharacter)
+    protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)
     {
         Character = character;
         PhysicalCharacter = physicalCharacter;
+        CurrentSphereId = currentSphereId;
     }
 
-    public void Render(Shader shader, float scale, Vector3 cameraPosition)
-        => Character.Render(PhysicalCharacter.Pose, shader, scale, cameraPosition);
+    public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
+        => Character.Render(PhysicalCharacter.Pose, shader, scale, curve, cameraPosition);
 
     public virtual void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
     {
@@ -41,7 +44,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener
             return;
 
         if (collidableReference.BodyHandle == LastContactBody
-            && LastContactTime - DateTime.Now < EpsTime)
+            && DateTime.Now - LastContactTime < EpsTime)
             return;
 
         LastContactTime = DateTime.Now;
