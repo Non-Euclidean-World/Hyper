@@ -16,7 +16,7 @@ namespace Hyper.PlayerData;
 internal class Player : Humanoid, IRayCaster, IContactEventListener
 {
     public readonly Inventory Inventory;
-    
+
     private readonly RayEndpointMarker _rayEndpointMarker;
 
     private const float RayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
@@ -32,7 +32,7 @@ internal class Player : Humanoid, IRayCaster, IContactEventListener
 
     public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(physicalCharacter, currentSphereId)
     {
-        Inventory = new Inventory(context, true);
+        Inventory = new Inventory(context, starterItems: true);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
     }
 

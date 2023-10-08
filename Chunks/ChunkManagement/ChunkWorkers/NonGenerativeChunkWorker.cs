@@ -8,7 +8,7 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
 {
     public List<Chunk> Chunks { get; }
-    
+
     private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
 
     private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();

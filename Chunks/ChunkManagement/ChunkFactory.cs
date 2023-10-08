@@ -11,8 +11,6 @@ public class ChunkFactory
 
     private readonly MeshGenerator _meshGenerator;
 
-    public float Elevation => _scalarFieldGenerator.AvgElevation;
-
     public ChunkFactory(ScalarFieldGenerator scalarFieldGenerator, MeshGenerator meshGenerator)
     {
         _scalarFieldGenerator = scalarFieldGenerator;

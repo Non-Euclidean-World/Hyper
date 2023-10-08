@@ -13,7 +13,7 @@ namespace Hyper.Controllers;
 internal class PlayerController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
-    
+
     private readonly IChunkWorker _chunkWorker;
 
     private readonly AbstractModelShader _modelShader;
@@ -44,7 +44,7 @@ internal class PlayerController : IController, IInputSubscriber
 
         if (_scene.Player.Inventory.SelectedItem is not null && _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
         {
-            _rayMarkerShader.SetUp(_scene.Camera);
+            _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
             _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
 
@@ -106,25 +106,25 @@ internal class PlayerController : IController, IInputSubscriber
         });
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
-        
+
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
-            if (!_scene.Player.Inventory.IsOpen) 
+            if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.Use(_scene);
         });
         context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
         {
-            if (!_scene.Player.Inventory.IsOpen) 
+            if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene);
         });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
-            if (!_scene.Player.Inventory.IsOpen) 
+            if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.Use(_scene, _chunkWorker, (float)e.Time);
         });
         context.RegisterMouseButtonHeldCallback(MouseButton.Right, (e) =>
         {
-            if (!_scene.Player.Inventory.IsOpen) 
+            if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
         });
     }

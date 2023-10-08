@@ -9,7 +9,7 @@ namespace Hyper.Controllers;
 internal class HudController : IController
 {
     private readonly Scene _scene;
-    
+
     private readonly HudShader _shader;
 
     private readonly IWindowHelper _windowHelper;
@@ -29,8 +29,8 @@ internal class HudController : IController
         foreach (var element in _scene.HudElements)
         {
             if (element is Crosshair &&
-                _scene.Player.Inventory.SelectedItem is not null && 
-                _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock) 
+                _scene.Player.Inventory.SelectedItem is not null &&
+                _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
                 continue;
             if (element.Visible) element.Render(_shader);
         }

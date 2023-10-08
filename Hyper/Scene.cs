@@ -3,8 +3,6 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
-using Chunks.ChunkManagement;
-using Chunks.ChunkManagement.ChunkWorkers;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
@@ -77,7 +75,7 @@ internal class Scene : IInputSubscriber
         };
 
         Camera = camera;
-        
+
         HudElements = new IHudElement[]
         {
             new Crosshair(),
@@ -131,7 +129,7 @@ internal class Scene : IInputSubscriber
     {
         foreach (var chunk in Chunks)
             chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
-        
+
         foreach (var lightSource in LightSources)
             lightSource.Dispose();
 
@@ -144,7 +142,7 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
-        
+
         foreach (var element in HudElements)
         {
             element.Dispose();

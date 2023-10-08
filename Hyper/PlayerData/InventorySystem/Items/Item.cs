@@ -8,13 +8,13 @@ internal abstract class Item
     public abstract string Id { get; }
 
     public abstract bool IsStackable { get; }
-    
+
     public virtual CursorType Cursor => CursorType.Crosshair;
 
     public virtual void Use(Scene scene) { }
-    
+
     public virtual void SecondaryUse(Scene scene) { }
-    
+
     public virtual void Use(Scene scene, IChunkWorker chunkWorker, float time) { }
 
     public virtual void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time) { }

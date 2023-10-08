@@ -41,18 +41,6 @@ internal class ProjectilesController : IController, IInputSubscriber
         }
     }
 
-    private void CreateProjectile()
-    {
-        var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(_scene.Camera.Front));
-        var projectile = Projectile.CreateStandardProjectile(_scene.SimulationManager.Simulation,
-            _scene.SimulationManager.Properties,
-            new RigidPose(_scene.Player.RayOrigin, q),
-            Conversions.ToNumericsVector(_scene.Camera.Front) * 15,
-            new ProjectileMesh(2, 0.5f, 0.5f), lifeTime: 5, _scene.Player.CurrentSphereId); // let's throw some refrigerators
-        _scene.Projectiles.Add(projectile);
-        _scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
-    }
-
     public void Render()
     {
         foreach (var projectile in _scene.Projectiles)

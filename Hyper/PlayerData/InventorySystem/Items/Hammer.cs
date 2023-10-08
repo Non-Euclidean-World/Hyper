@@ -7,15 +7,15 @@ internal class Hammer : Item
     public override string Id => "hammer";
 
     public override bool IsStackable => false;
-    
+
     public override CursorType Cursor => CursorType.BuildBlock;
-    
+
     private const float BrushWeight = 3;
-    
+
     private const int Radius = 5;
-    
+
     private float _mineTime = 0;
-    
+
     private float _buildTime = 0;
 
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
@@ -31,7 +31,7 @@ internal class Hammer : Item
             chunkWorker.EnqueueUpdatingChunk(chunk);
             zeroTime = true;
         }
-        
+
         if (zeroTime) _mineTime = 0;
         else _mineTime += time;
     }
@@ -49,7 +49,7 @@ internal class Hammer : Item
             chunkWorker.EnqueueUpdatingChunk(chunk);
             zeroTime = true;
         }
-        
+
         if (zeroTime) _buildTime = 0;
         else _buildTime += time;
     }

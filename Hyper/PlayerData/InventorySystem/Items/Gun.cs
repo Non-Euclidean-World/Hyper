@@ -7,16 +7,16 @@ namespace Hyper.PlayerData.InventorySystem.Items;
 internal class Gun : Item
 {
     public override string Id => "gun";
-    
+
     public override bool IsStackable => false;
-    
+
     public override void Use(Scene scene)
     {
         if (!scene.Player.Inventory.TryRemoveItem("bullet")) return;
         CreateProjectile(scene);
     }
-    
-    private void CreateProjectile(Scene scene)
+
+    private static void CreateProjectile(Scene scene)
     {
         var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, Conversions.ToNumericsVector(scene.Camera.Front));
         var projectile = Projectile.CreateStandardProjectile(scene.SimulationManager.Simulation,

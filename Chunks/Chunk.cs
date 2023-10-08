@@ -44,7 +44,6 @@ public class Chunk
     /// <param name="deltaTime"></param>
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
-    /// <returns>true is something was mined. false otherwise.</returns>
     public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
         var x = (int)location.X - Position.X;
@@ -73,7 +72,6 @@ public class Chunk
     /// <param name="deltaTime"></param>
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
-    /// <returns>true is something was built. false otherwise.</returns>
     public void Build(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
         var x = (int)location.X - Position.X;
@@ -94,19 +92,14 @@ public class Chunk
             }
         }
     }
-    
-    private float Clamp(float value, float min, float max)
-    {
-        return Math.Max(min, Math.Min(max, value));
-    }
 
     public float DistanceFromChunk(Vector3 location)
     {
         Vector3 chunkTopLeft = Position + new Vector3(Size, Size, Size);
 
-        float closestX = Clamp(location.X, Position.X, chunkTopLeft.X);
-        float closestY = Clamp(location.Y, Position.Y, chunkTopLeft.Y);
-        float closestZ = Clamp(location.Z, Position.Z, chunkTopLeft.Z);
+        float closestX = Math.Clamp(location.X, Position.X, chunkTopLeft.X);
+        float closestY = Math.Clamp(location.Y, Position.Y, chunkTopLeft.Y);
+        float closestZ = Math.Clamp(location.Z, Position.Z, chunkTopLeft.Z);
 
         Vector3 axisDistances = new Vector3(Math.Abs(closestX - location.X), Math.Abs(closestY - location.Y), Math.Abs(closestZ - location.Z));
 
