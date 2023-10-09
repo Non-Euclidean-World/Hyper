@@ -158,7 +158,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
     private void RenderItemCount(Shader shader, int count, Vector2i relativePosition, Vector2 parentPosition, string parentSpriteId)
     {
         var position = _spriteRenderer.GetPositionRelative(relativePosition, parentPosition, parentSpriteId);
-        Printer.RenderStringBottomRight(shader, count.ToString(), 0.2f * HotbarSizeY, position.X + 0.6f * HotbarSizeY, position.Y - 0.6f * HotbarSizeY);
+        Printer.RenderStringBottomRight(shader, count.ToString(), 0.3f * HotbarSizeY, position.X + 0.6f * HotbarSizeY, position.Y - 0.6f * HotbarSizeY);
     }
 
     private void RenderInHandItem(Shader shader)

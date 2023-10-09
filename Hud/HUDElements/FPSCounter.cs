@@ -10,7 +10,7 @@ public class FpsCounter : IHudElement
 
     private readonly float _size;
 
-    private const double FpsTimeFrame = 0.1f;
+    private const double FpsTimeFrame = 0.07f;
 
     private readonly Stopwatch _stopwatch = new();
 
@@ -25,7 +25,7 @@ public class FpsCounter : IHudElement
     public FpsCounter(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
-        _size = 0.02f;
+        _size = 0.06f;
         _stopwatch.Start();
     }
 

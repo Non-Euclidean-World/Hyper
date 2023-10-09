@@ -10,7 +10,7 @@ internal class PositionPrinter : IHudElement
     
     private readonly IWindowHelper _windowHelper;
     
-    private const float Size = 0.01f;
+    private const float Size = 0.03f;
     
     public bool Visible { get; set; }
     
