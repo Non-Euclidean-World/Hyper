@@ -5,7 +5,7 @@ using OpenTK.Mathematics;
 
 namespace Hyper.Controllers.Bots.Spawn;
 
-internal class StandardAbstractBotSpawnStrategy : AbstractBotSpawnStrategy
+internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 {
     private readonly float _despawnRadius;
     
@@ -15,7 +15,7 @@ internal class StandardAbstractBotSpawnStrategy : AbstractBotSpawnStrategy
     
     private readonly int _maxSpawnRadius;
     
-    public StandardAbstractBotSpawnStrategy(Scene scene, Settings settings) : base(scene)
+    public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene)
     {
         _maxBots = 10 * settings.RenderDistance * settings.RenderDistance;
         _minSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
@@ -49,7 +49,7 @@ internal class StandardAbstractBotSpawnStrategy : AbstractBotSpawnStrategy
             var distance = (bot.PhysicalCharacter.Pose.Position - Scene.Player.PhysicalCharacter.Pose.Position);
 
             if (!(Math.Abs(distance.X) > _despawnRadius || 
-                  Math.Abs(distance.Z) > _despawnRadius || 
+                  Math.Abs(distance.Y) > _despawnRadius || 
                   Math.Abs(distance.Z) > _despawnRadius)) return false;
 #if DEBUG
             Console.WriteLine($"Despawning bot {bot.BodyHandle}");

@@ -1,4 +1,5 @@
 ﻿using Chunks;
+using Chunks.MarchingCubes.MeshGenerators;
 
 namespace Hyper.Controllers.Bots.Spawn;
 
@@ -23,19 +24,19 @@ internal abstract class AbstractBotSpawnStrategy
             if (z < chunk.Position.Z || z > chunk.Position.Z + Chunk.Size ) continue;
             var chunkX = x - chunk.Position.X;
             var chunkZ = z - chunk.Position.Z;
-            bool negative = !(chunk.Voxels[chunkX, 0, chunkZ].Value >= 0);
+            bool negative = chunk.Voxels[chunkX, 0, chunkZ].Value < BaseMeshGenerator.IsoLevel;
             for (int y = 0; y < Chunk.Size; y++)
             {
                 if (negative)
                 {
-                    if (chunk.Voxels[chunkX, y, chunkZ].Value >= 0)
+                    if (chunk.Voxels[chunkX, y, chunkZ].Value >= BaseMeshGenerator.IsoLevel)
                     {
                         return y + chunk.Position.Y + 1;
                     }
                 }
                 else
                 {
-                    if (chunk.Voxels[chunkX, y, chunkZ].Value < 0)
+                    if (chunk.Voxels[chunkX, y, chunkZ].Value < BaseMeshGenerator.IsoLevel)
                     {
                         return y + chunk.Position.Y + 1;
                     }

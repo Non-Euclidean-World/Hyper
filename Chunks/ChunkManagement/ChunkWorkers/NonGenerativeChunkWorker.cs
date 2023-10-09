@@ -57,11 +57,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
             initialChunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
         foreach (var chunk in initialChunks)
             _loadedChunks.Enqueue(chunk);
-        while (Chunks.Count < initialChunks.Count)
-        {
-            ResolveLoadedChunks();
-            Logger.Info($"Loaded {Chunks.Count} / {initialChunks.Count} chunks");
-        }
+        ResolveLoadedChunks();
         initialChunks.Clear();
     }
 

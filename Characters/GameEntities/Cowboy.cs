@@ -17,7 +17,7 @@ public class Cowboy : Humanoid
     private float _moveTime;
 
     public Cowboy(PhysicalCharacter physicalCharacter) : base(
-        new Model(CowboyResources.Instance, 0.4f, new Vector3(0, -5, 0)), physicalCharacter)
+        new Model(CowboyResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter)
     {
         _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
     }
@@ -54,7 +54,12 @@ public class Cowboy : Humanoid
         {
             Idle();
         }
-        PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(ViewDirection), time, false, false, movementDirection);
+        PhysicalCharacter.UpdateCharacterGoals(simulation, 
+            Conversions.ToNumericsVector(ViewDirection), 
+            time, 
+            tryJump: false, 
+            sprint: false, 
+            movementDirection);
     }
 
     private void Run() => Character.Animator.Play(0);

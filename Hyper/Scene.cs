@@ -97,11 +97,6 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
-        => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
-            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
-            maximumSlope: MathF.PI * 0.4f);
-
     public void RegisterCallbacks(Context context)
     {
         context.RegisterUpdateFrameCallback((e) =>

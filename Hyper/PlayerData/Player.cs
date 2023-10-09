@@ -33,7 +33,7 @@ internal class Player : Humanoid, IRayCaster
     public int RayId => 0;
 
     public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0)  : base(
-        new Model(CowboyResources.Instance, 0.4f, new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
+        new Model(CowboyResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
         _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));

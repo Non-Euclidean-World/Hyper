@@ -10,7 +10,7 @@ public class SphericalMeshGenerator : BaseMeshGenerator
 
     private readonly Vector3i[] _sphereCenters;
 
-    public SphericalMeshGenerator(float cutoffRadius, Vector3i[] sphereCenters, float isoLevel = 0) : base(isoLevel)
+    public SphericalMeshGenerator(float cutoffRadius, Vector3i[] sphereCenters)
     {
         _cutoffRadius = cutoffRadius;
         _sphereCenters = sphereCenters;

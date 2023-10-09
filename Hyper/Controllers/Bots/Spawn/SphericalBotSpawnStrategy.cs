@@ -4,13 +4,13 @@ using OpenTK.Mathematics;
 
 namespace Hyper.Controllers.Bots.Spawn;
 
-internal class SphericalAbstractBotSpawnStrategy : AbstractBotSpawnStrategy
+internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 {
     private const int MaxBots = 20;
 
     private const int DistanceFromChunkCenter = Chunk.Size / 4;
 
-    public SphericalAbstractBotSpawnStrategy(Scene scene) : base(scene) { }
+    public SphericalBotSpawnStrategy(Scene scene) : base(scene) { }
     
     public override void Spawn()
     {
