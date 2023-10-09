@@ -15,7 +15,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
     
     private readonly int _maxSpawnRadius;
     
-    public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene)
+    public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
         _maxBots = 10 * settings.RenderDistance * settings.RenderDistance;
         _minSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
@@ -27,9 +27,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
     {
         for (int i = 0; i < _maxBots - Scene.Bots.Count; i++)
         {
-            var rand = new Random();
-            var x = rand.Next(0, 2) == 0 ? rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : rand.Next(_minSpawnRadius, _maxSpawnRadius);
-            var z = rand.Next(0, 2) == 0 ? rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : rand.Next(_minSpawnRadius, _maxSpawnRadius);
+            var x = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
+            var z = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
             var position = new Vector3(x + Scene.Player.PhysicalCharacter.Pose.Position.X, 0, z + Scene.Player.PhysicalCharacter.Pose.Position.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new Cowboy(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));

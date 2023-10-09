@@ -1,5 +1,6 @@
 ﻿using Character.GameEntities;
 using Chunks;
+using Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Controllers.Bots.Spawn;
@@ -10,16 +11,15 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 
     private const int DistanceFromChunkCenter = Chunk.Size / 4;
 
-    public SphericalBotSpawnStrategy(Scene scene) : base(scene) { }
+    public SphericalBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings) { }
     
     public override void Spawn()
     {
         while (Scene.Bots.Count < MaxBots)
         {
-            var rand = new Random();
-            var chunk = GetRandomChunk(rand);
-            var x = Chunk.Size / 2 + rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
-            var z = Chunk.Size / 2 + rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
+            var chunk = GetRandomChunk(Rand);
+            var x = Chunk.Size / 2 + Rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
+            var z = Chunk.Size / 2 + Rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
             var position = chunk.Position + new Vector3(x, 0, z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new Cowboy(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager))

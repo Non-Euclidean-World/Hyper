@@ -1,5 +1,6 @@
 ﻿using Chunks;
 using Chunks.MarchingCubes.MeshGenerators;
+using Common;
 
 namespace Hyper.Controllers.Bots.Spawn;
 
@@ -7,9 +8,12 @@ internal abstract class AbstractBotSpawnStrategy
 {
     protected readonly Scene Scene;
 
-    protected AbstractBotSpawnStrategy(Scene scene)
+    protected readonly Random Rand;
+
+    protected AbstractBotSpawnStrategy(Scene scene, Settings settings)
     {
         Scene = scene;
+        Rand = new Random(settings.Seed);
     }
     
     public abstract void Spawn();
