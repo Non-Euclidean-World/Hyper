@@ -42,7 +42,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ChunkFactory _chunkFactory;
 
-    private const int RenderDistance = 1;
+    private readonly int _renderDistance;
 
     private const int NumberOfThreads = 2;
 
@@ -50,18 +50,19 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ChunkHandler _chunkHandler;
 
-    private static int TotalChunks => (2 * RenderDistance + 1) * (2 * RenderDistance + 1) * (2 * RenderDistance + 1);
+    private int TotalChunks => (2 * _renderDistance + 1) * (2 * _renderDistance + 1) * (2 * _renderDistance + 1);
 
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private readonly MeshGenerator _meshGenerator;
 
-    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator)
+    public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator, int renderDistance)
     {
         Chunks = chunks;
         _simulationManager = simulationManager;
         _chunkFactory = chunkFactory;
         _chunkHandler = chunkHandler;
+        _renderDistance = renderDistance;
         _meshGenerator = meshGenerator;
         foreach (var chunk in Chunks)
         {
@@ -73,7 +74,6 @@ public class ChunkWorker : IChunkWorker
 
     private void Start()
     {
-        _cancellationTokenSource = new CancellationTokenSource();
         for (int i = 0; i < NumberOfThreads; i++)
         {
             Task.Run(RunJobs);
@@ -175,7 +175,7 @@ public class ChunkWorker : IChunkWorker
 
         Chunks.RemoveAll(chunk =>
         {
-            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > RenderDistance))
+            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > _renderDistance)) 
                 return false;
 
             _existingChunks.Remove(chunk.Position / Chunk.Size);
@@ -197,11 +197,11 @@ public class ChunkWorker : IChunkWorker
 
     private void EnqueueLoadingChunks(Vector3i currentChunk)
     {
-        for (int x = -RenderDistance; x <= RenderDistance; x++)
+        for (int x = -_renderDistance; x <= _renderDistance; x++)
         {
-            for (int y = -RenderDistance; y <= RenderDistance; y++)
+            for (int y = -_renderDistance; y <= _renderDistance; y++)
             {
-                for (int z = -RenderDistance; z <= RenderDistance; z++)
+                for (int z = -_renderDistance; z <= _renderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
                     if (_existingChunks.Contains(chunk))

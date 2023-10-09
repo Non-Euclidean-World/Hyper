@@ -7,10 +7,6 @@ namespace Chunks.MarchingCubes.MeshGenerators;
 
 public class MeshGenerator : BaseMeshGenerator
 {
-    public MeshGenerator(float isoLevel = 0f) : base(isoLevel)
-    {
-    }
-
     public override Vertex[] GetMesh(/*unused*/ Vector3i chunkPosition, ChunkData chunkData)
     {
         Voxel[,,] scalarField = chunkData.Voxels;

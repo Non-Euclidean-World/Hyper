@@ -27,6 +27,8 @@ public class Game
     private readonly Settings _settings;
 
     private readonly float _globalScale = 0.05f;
+    
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public Game(int width, int height, IWindowHelper windowHelper, string saveName, GeometryType geometryType) // TODO this is definitely getting out of hand
     {
@@ -47,6 +49,7 @@ public class Game
             _settings = Settings.Load(saveName); // TODO it's confusing as hell but geometryType variable is INVALID from this point onward
             _settings.AspectRatio = (float)width / height;
         }
+        Logger.Info($"Seed: {_settings.Seed}");
 
         float curve = _settings.GeometryType switch
         {

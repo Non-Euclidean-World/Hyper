@@ -128,7 +128,7 @@ internal class PlayerController : IController, IInputSubscriber
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
         });
     }
-
+    
     public void Dispose()
     {
         _modelShader.Dispose();

@@ -5,6 +5,8 @@ using Chunks.MarchingCubes.MeshGenerators;
 using Common;
 using Common.UserInput;
 using Hud.Shaders;
+using Hyper.Controllers.Bots;
+using Hyper.Controllers.Bots.Spawn;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -38,7 +40,7 @@ internal class StandardControllerFactory : IControllerFactory
         var chunkFactory = new ChunkFactory(_scalarFieldGenerator, meshGenerator);
 
         var chunkHandler = new ChunkHandler(settings.SaveName, meshGenerator);
-        var chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, meshGenerator);
+        var chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, meshGenerator, settings.RenderDistance);
         var transporter = new NullTransporter();
 
         var objectShader = StandardObjectShader.Create(_globalScale);
@@ -49,7 +51,7 @@ internal class StandardControllerFactory : IControllerFactory
         return new IController[]
         {
             new PlayerController(_scene, chunkWorker, _context, modelShader, objectShader, lightSourceShader, transporter),
-            new BotsController(_scene, _context, modelShader, objectShader),
+            new BotsController(_scene, _context, modelShader, objectShader, transporter, new StandardBotSpawnStrategy(_scene, settings)),
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader),

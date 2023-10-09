@@ -25,7 +25,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Projectile> Projectiles;
 
-    public readonly List<Humanoid> Bots;
+    public readonly List<Humanoid> Bots = new();
 
     public readonly List<SimpleCar> Cars;
 
@@ -51,19 +51,7 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
-        int botsCount = 3;
-        Bots = Enumerable.Range(0, botsCount) // initialize them however you like
-            .Select(i => new Vector3(i * 4 - botsCount * 2, elevation + 5, i * 4 - botsCount * 2))
-            .Select(pos =>
-            {
-                var humanoid = new Humanoid(CreatePhysicalHumanoid(pos));
-                SimulationMembers.Add(humanoid.BodyHandle, humanoid);
-                SimulationManager.RegisterContactCallback(humanoid.BodyHandle, contactInfo => humanoid.ContactCallback(contactInfo, SimulationMembers));
-                return humanoid;
-            })
-            .ToList();
-
-        Player = new Player(CreatePhysicalHumanoid(new Vector3(0, elevation + 5, 0)), context);
+        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
         SimulationMembers.Add(Player.BodyHandle, Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
@@ -108,11 +96,6 @@ internal class Scene : IInputSubscriber
 
         return lightSources;
     }
-
-    private PhysicalCharacter CreatePhysicalHumanoid(Vector3 initialPosition)
-        => new(SimulationManager.CharacterControllers, SimulationManager.Properties, Conversions.ToNumericsVector(initialPosition),
-            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
-            maximumSlope: MathF.PI * 0.4f);
 
     public void RegisterCallbacks(Context context)
     {

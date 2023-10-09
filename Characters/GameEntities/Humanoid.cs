@@ -1,7 +1,5 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
-using Character.Characters;
-using Character.Characters.Cowboy;
 using Common;
 using OpenTK.Mathematics;
 using Physics.Collisions;
@@ -9,9 +7,9 @@ using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
 namespace Character.GameEntities;
-public class Humanoid : ISimulationMember, IContactEventListener
+public abstract class Humanoid : ISimulationMember, IContactEventListener
 {
-    public CowboyModel Character { get; init; }
+    public Model Character { get; init; }
 
     public PhysicalCharacter PhysicalCharacter { get; init; }
 
@@ -27,48 +25,17 @@ public class Humanoid : ISimulationMember, IContactEventListener
 
     protected static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 500);
 
-    public Humanoid(PhysicalCharacter physicalCharacter, int currentSphereId = 0)
+    protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)
     {
-        Character = new CowboyModel();
+        Character = character;
         PhysicalCharacter = physicalCharacter;
         CurrentSphereId = currentSphereId;
-    }
-
-    public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
-    {
-        if (movementDirection != Vector2.Zero)
-        {
-            UpdateMovementAnimation(CharacterAnimationType.Walk);
-        }
-        else
-        {
-            UpdateMovementAnimation(CharacterAnimationType.Stand);
-        }
-
-        PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), simulationTimestepDuration, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
-        ViewDirection = viewDirection;
     }
 
     public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
         => Character.Render(PhysicalCharacter.Pose, shader, scale, curve, cameraPosition);
 
-    private void UpdateMovementAnimation(CharacterAnimationType animationType)
-    {
-        switch (animationType)
-        {
-            case CharacterAnimationType.Walk:
-            case CharacterAnimationType.Run: // TODO we need different animations for walking and running
-                Character.Run(); break;
-            case CharacterAnimationType.Stand:
-                Character.Idle(); break;
-            case CharacterAnimationType.Jump:
-                throw new NotImplementedException();
-            default:
-                Character.Idle(); break;
-        }
-    }
-
-    public void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    public virtual void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
     {
         var pair = collisionInfo.CollidablePair;
         var collidableReference
@@ -95,9 +62,15 @@ public class Humanoid : ISimulationMember, IContactEventListener
 #endif
     }
 
+    public virtual void UpdateCharacterGoals(Simulation simulation, float time) { }
+    
+    public static PhysicalCharacter CreatePhysicalCharacter(Vector3 position, SimulationManager<PoseIntegratorCallbacks> simulationManager)
+        => new(simulationManager.CharacterControllers, simulationManager.Properties, Conversions.ToNumericsVector(position),
+            minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
+            maximumSlope: MathF.PI * 0.4f);
+
     public void Dispose()
     {
         PhysicalCharacter.Dispose();
-        // TODO Models should be singletons so we don't need to dispose them. however now they are not so we have to keep that in mind.
     }
 }

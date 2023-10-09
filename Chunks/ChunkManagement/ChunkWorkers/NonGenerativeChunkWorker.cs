@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes.MeshGenerators;
+using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
 namespace Chunks.ChunkManagement.ChunkWorkers;
 
-public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
+public class NonGenerativeChunkWorker : IChunkWorker
 {
     public List<Chunk> Chunks { get; }
 
@@ -28,6 +29,8 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
     private readonly SphericalChunkFactory _chunkFactory;
 
     private readonly SphericalMeshGenerator _meshGenerator;
+    
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
     {
@@ -46,17 +49,20 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         {
             Task.Run(RunJob);
         }
+        
+        Chunks.Clear();
+        var initialChunks = new List<Chunk>();
+        initialChunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
+        if (initialChunks.Count == 0)
+            initialChunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
+        foreach (var chunk in initialChunks)
+            _loadedChunks.Enqueue(chunk);
+        ResolveLoadedChunks();
+        initialChunks.Clear();
     }
 
     private void RunJob()
     {
-        Chunks.Clear();
-        Chunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
-        if (Chunks.Count == 0)
-            Chunks.AddRange(_chunkFactory.CreateSpheres(chunksPerSide: 2, generateVao: false));
-
-        foreach (var chunk in Chunks)
-            _loadedChunks.Enqueue(chunk);
         try
         {
             while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
@@ -65,10 +71,13 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
                 _updatedChunks.Enqueue(chunk);
             }
         }
-        catch (OperationCanceledException)
-        {
-            return;
-        }
+        catch (OperationCanceledException) { }
+    }
+    
+    public void Update(Vector3 currentPosition)
+    {
+        ResolveLoadedChunks();
+        ResolveUpdatedChunks();
     }
 
     private void ResolveUpdatedChunks()
@@ -87,17 +96,7 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         {
             chunk.Mesh.CreateVertexArrayObject();
             chunk.CreateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-        }
-    }
-
-    public void Dispose()
-    {
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
-
-        foreach (var chunk in Chunks)
-        {
-            _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
+            Chunks.Add(chunk);
         }
     }
 
@@ -115,9 +114,14 @@ public class NonGenerativeChunkWorker : IChunkWorker, IDisposable
         return _chunksToUpdateHashSet.Contains(chunk);
     }
 
-    public void Update(Vector3 currentPosition)
+    public void Dispose()
     {
-        ResolveLoadedChunks();
-        ResolveUpdatedChunks();
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+
+        foreach (var chunk in Chunks)
+        {
+            _chunkHandler.SaveChunkData(chunk.Position, new ChunkData { Voxels = chunk.Voxels, SphereId = chunk.Sphere }, spherical: true);
+        }
     }
 }

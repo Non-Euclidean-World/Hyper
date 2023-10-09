@@ -19,6 +19,8 @@ public class Settings
 
     public GeometryType GeometryType { get; private set; }
 
+    public int RenderDistance { get; set; } = 1;
+
     [JsonIgnore]
     public float AspectRatio { get; set; }
 

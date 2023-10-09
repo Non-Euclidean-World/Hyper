@@ -7,12 +7,7 @@ namespace Chunks.MarchingCubes.MeshGenerators;
 
 public abstract class BaseMeshGenerator
 {
-    private readonly float _isoLevel;
-
-    protected BaseMeshGenerator(float isoLevel)
-    {
-        _isoLevel = isoLevel;
-    }
+    public const float IsoLevel = 0;
 
     public abstract Vertex[] GetMesh(Vector3i chunkPosition, ChunkData chunkData);
 
@@ -95,20 +90,20 @@ public abstract class BaseMeshGenerator
     private int[] GetEdges(float[] cubeValues)
     {
         int cubeIndex = 0;
-        if (cubeValues[0] < _isoLevel) cubeIndex |= 1;
-        if (cubeValues[1] < _isoLevel) cubeIndex |= 2;
-        if (cubeValues[2] < _isoLevel) cubeIndex |= 4;
-        if (cubeValues[3] < _isoLevel) cubeIndex |= 8;
-        if (cubeValues[4] < _isoLevel) cubeIndex |= 16;
-        if (cubeValues[5] < _isoLevel) cubeIndex |= 32;
-        if (cubeValues[6] < _isoLevel) cubeIndex |= 64;
-        if (cubeValues[7] < _isoLevel) cubeIndex |= 128;
+        if (cubeValues[0] < IsoLevel) cubeIndex |= 1;
+        if (cubeValues[1] < IsoLevel) cubeIndex |= 2;
+        if (cubeValues[2] < IsoLevel) cubeIndex |= 4;
+        if (cubeValues[3] < IsoLevel) cubeIndex |= 8;
+        if (cubeValues[4] < IsoLevel) cubeIndex |= 16;
+        if (cubeValues[5] < IsoLevel) cubeIndex |= 32;
+        if (cubeValues[6] < IsoLevel) cubeIndex |= 64;
+        if (cubeValues[7] < IsoLevel) cubeIndex |= 128;
 
         return MarchingCubesTables.TriTable[cubeIndex];
     }
 
     private Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
     {
-        return edgeVertex1 + (_isoLevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
+        return edgeVertex1 + (IsoLevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
     }
 }

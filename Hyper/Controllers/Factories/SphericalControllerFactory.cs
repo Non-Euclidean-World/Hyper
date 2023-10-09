@@ -5,6 +5,8 @@ using Chunks.MarchingCubes.MeshGenerators;
 using Common;
 using Common.UserInput;
 using Hud.Shaders;
+using Hyper.Controllers.Bots;
+using Hyper.Controllers.Bots.Spawn;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -33,7 +35,7 @@ internal class SphericalControllerFactory : IControllerFactory
         _globalScale = globalScale;
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI / _globalScale), 0, 0);
-        _sphereCenters = new Vector3i[] { sphere0Center, sphere1Center };
+        _sphereCenters = new[] { sphere0Center, sphere1Center };
         _scene = scene;
         _context = context;
         _windowHelper = windowHelper;
@@ -58,7 +60,7 @@ internal class SphericalControllerFactory : IControllerFactory
         return new IController[]
         {
             new PlayerController(_scene, chunkWorker, _context, modelShader, objectShader, lightSourceShader, transporter),
-            new BotsController(_scene, _context, modelShader, objectShader),
+            new BotsController(_scene, _context, modelShader, objectShader, transporter, new SphericalBotSpawnStrategy(_scene, settings)),
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader),
