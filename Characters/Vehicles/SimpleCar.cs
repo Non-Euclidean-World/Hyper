@@ -19,6 +19,8 @@ public class SimpleCar : ISimulationMember
     public WheelHandles BackLeftWheel { get; private set; }
     public WheelHandles BackRightWheel { get; private set; }
 
+    public RigidPose CarBodyPose { get; private set; }
+
     public CarMesh Mesh { get => _mesh; }
     public int CurrentSphereId { get; set; }
 
@@ -201,6 +203,6 @@ public class SimpleCar : ISimulationMember
         var frontRightWheel = new BodyReference(FrontRightWheel.Wheel, simulation.Bodies);
 
         _mesh.Update(carBody.Pose, rearLeftWheel.Pose, rearRightWheel.Pose, frontLeftWheel.Pose, frontRightWheel.Pose);
+        CarBodyPose = carBody.Pose;
     }
-
 }

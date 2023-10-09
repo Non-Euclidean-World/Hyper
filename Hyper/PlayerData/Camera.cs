@@ -1,3 +1,4 @@
+using Character.Vehicles;
 using Common.UserInput;
 using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
@@ -155,6 +156,16 @@ internal class Camera : IInputSubscriber
                 - (Curve > 0 ? SphereCenter : Vector3.Zero);
         }
     }
+
+    public void UpdateWithCar(SimpleCar car)
+    {
+        ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
+               + (FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(car))
+               - (Curve > 0 ? SphereCenter : Vector3.Zero);
+    }
+
+    private Vector3 GetThirdPersonCameraOffset(SimpleCar car)
+        => Up * 1f - Front * 5f;
 
     public void RegisterCallbacks(Context context)
     {

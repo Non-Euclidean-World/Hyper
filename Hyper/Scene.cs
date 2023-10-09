@@ -27,9 +27,11 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> Cars;
+    public readonly List<SimpleCar> BotCars;
 
     public readonly Player Player;
+
+    public readonly SimpleCar PlayersCar;
 
     public readonly Camera Camera;
 
@@ -56,11 +58,14 @@ internal class Scene : IInputSubscriber
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
-        Cars = new List<SimpleCar>()
-        {
+        BotCars = new List<SimpleCar>()
+        /*{
             SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
-        };
+        }*/;
+
+        PlayersCar = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
+                Conversions.ToNumericsVector(carInitialPosition));
 
         Camera = camera;
 

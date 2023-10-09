@@ -55,14 +55,12 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C });
         context.RegisterUpdateFrameCallback((e) =>
         {
-            // TODO commented out until we have context switching
-            /*float steeringSum = 0;
-            if (context.HeldKeys[Keys.A]) steeringSum += 1;
-            if (context.HeldKeys[Keys.D]) steeringSum -= 1;
-            float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;*/
+            if (context.Mode != Context.InputMode.PlayerOnFoot)
+                return;
+
             Vector2 movementDirection = default;
             if (context.HeldKeys[Keys.W])
             {
@@ -107,6 +105,11 @@ internal class PlayerController : IController, IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
 
+        context.RegisterKeyDownCallback(Keys.C, () =>
+        {
+            context.Mode = Context.InputMode.PlayerInCar;
+        });
+
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
             if (!_scene.Player.Inventory.IsOpen)
@@ -128,7 +131,7 @@ internal class PlayerController : IController, IInputSubscriber
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
         });
     }
-    
+
     public void Dispose()
     {
         _modelShader.Dispose();
