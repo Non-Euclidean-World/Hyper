@@ -1,4 +1,6 @@
 ﻿using Common.UserInput;
+using Hyper.Shaders.LightSourceShader;
+using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -11,12 +13,18 @@ internal class VehiclesController : IController, IInputSubscriber
 
     private readonly AbstractObjectShader _objectShader;
 
+    private readonly AbstractModelShader _modelShader;
+
+    private readonly AbstractLightSourceShader _lightSourceShader;
+
     private readonly ITransporter _transporter;
 
-    public VehiclesController(Scene scene, Context context, AbstractObjectShader shader, ITransporter transporter)
+    public VehiclesController(Scene scene, Context context, AbstractObjectShader objectShader, AbstractLightSourceShader lightSourceShader, AbstractModelShader modelShader, ITransporter transporter)
     {
         _scene = scene;
-        _objectShader = shader;
+        _objectShader = objectShader;
+        _lightSourceShader = lightSourceShader;
+        _modelShader = modelShader;
         RegisterCallbacks(context);
         _transporter = transporter;
     }
@@ -53,10 +61,12 @@ internal class VehiclesController : IController, IInputSubscriber
                 _scene.Camera.UpdateWithCar(_scene.PlayersCar);
 
                 int targetSphereId = 1 - _scene.PlayersCar.CurrentSphereId;
-                if (_transporter.TryTeleportTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
+                if (_transporter.TryTeleportCarTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
                 {
                     _transporter.UpdateCamera(targetSphereId, _scene.Camera, exitPoint);
                     _objectShader.SetInt("characterSphere", targetSphereId);
+                    _modelShader.SetInt("characterSphere", targetSphereId);
+                    _lightSourceShader.SetInt("characterSphere", targetSphereId);
                 }
             }
 

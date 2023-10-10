@@ -159,9 +159,20 @@ internal class Camera : IInputSubscriber
 
     public void UpdateWithCar(SimpleCar car)
     {
-        ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
+        if (Sphere == 0)
+        {
+            ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
                + (FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(car))
                - (Curve > 0 ? SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
+            playerCarPos.Y *= -1;
+            ReferencePointPosition = playerCarPos
+                + (FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(car))
+                - (Curve > 0 ? SphereCenter : Vector3.Zero);
+        }
     }
 
     private Vector3 GetThirdPersonCameraOffset(SimpleCar car)

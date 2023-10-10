@@ -97,6 +97,8 @@ public class SimpleCar : ISimulationMember
         wheelProperties = new SimulationProperties { Filter = new SubgroupCollisionFilter(bodyHandle.Value, 1), Friction = wheelFriction };
         SubgroupCollisionFilter.DisableCollision(ref wheelProperties.Filter, ref bodyFilter);
 
+        handles.BodyToWheelSuspension = bodyToWheelSuspension;
+
         return handles;
     }
 
