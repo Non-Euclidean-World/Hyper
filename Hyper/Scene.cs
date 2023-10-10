@@ -6,10 +6,7 @@ using Chunks;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
-using Hud;
-using Hud.HUDElements;
 using Hyper.PlayerData;
-using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
@@ -27,19 +24,17 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> BotCars;
+    public readonly List<SimpleCar> FreeCars;
+
+    public SimpleCar? PlayersCar { get; private set; }
 
     public readonly Player Player;
-
-    public readonly SimpleCar PlayersCar;
 
     public readonly Camera Camera;
 
     public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
-
-    public readonly IHudElement[] HudElements;
 
     public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
@@ -58,25 +53,16 @@ internal class Scene : IInputSubscriber
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
-        BotCars = new List<SimpleCar>()
-        /*{
+        FreeCars = new List<SimpleCar>()
+        {
             SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
-        }*/;
-
-        PlayersCar = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
-                Conversions.ToNumericsVector(carInitialPosition));
+        };
 
         Camera = camera;
 
-        HudElements = new IHudElement[]
-        {
-            new Crosshair(),
-            new FpsCounter(windowHelper),
-            new InventoryHudManager(windowHelper, Player.Inventory, context),
-        };
-
         Chunks = new List<Chunk>();
+
         RegisterCallbacks(context);
     }
 
@@ -100,6 +86,34 @@ internal class Scene : IInputSubscriber
         }
 
         return lightSources;
+    }
+
+    public bool TryEnterAnyCar(bool testOnly = false)
+    {
+        const float carEnterRadius = 10f;
+        foreach (var car in FreeCars)
+        {
+            if (System.Numerics.Vector3.Distance(car.CarBodyPose.Position, Player.PhysicalCharacter.Pose.Position) <= carEnterRadius)
+            {
+                if (!testOnly)
+                {
+                    PlayersCar = car;
+                    FreeCars.Remove(car);
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void LeaveCar()
+    {
+        if (PlayersCar == null)
+            return;
+
+        FreeCars.Add(PlayersCar);
+        PlayersCar = null;
     }
 
     public void RegisterCallbacks(Context context)
@@ -130,10 +144,5 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
-
-        foreach (var element in HudElements)
-        {
-            element.Dispose();
-        }
     }
 }

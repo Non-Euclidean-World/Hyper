@@ -12,8 +12,6 @@ public class Context
         PlayerInCar
     }
 
-    public InputMode Mode { get; set; }
-
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
     public Dictionary<MouseButton, List<Action<FrameEventArgs>>> ButtonHeldCallbacks = new();
 

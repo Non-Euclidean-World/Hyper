@@ -58,7 +58,7 @@ internal class PlayerController : IController, IInputSubscriber
         context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C });
         context.RegisterUpdateFrameCallback((e) =>
         {
-            if (context.Mode != Context.InputMode.PlayerOnFoot)
+            if (_scene.PlayersCar != null)
                 return;
 
             Vector2 movementDirection = default;
@@ -91,6 +91,11 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Player.UpdateCharacterGoals(_scene.SimulationManager.Simulation, _scene.Camera.Front, (float)e.Time,
                 context.HeldKeys[Keys.Space], context.HeldKeys[Keys.LeftShift], movementDirection);
 
+            _scene.Camera.UpdateWithCharacter(_scene.Player);
+
+            if (movementDirection == Vector2.Zero)
+                return;
+
             int targetSphereId = 1 - _scene.Player.CurrentSphereId;
             if (_transporter.TryTeleportTo(targetSphereId, _scene.Player, _scene.SimulationManager.Simulation, out var exitPoint))
             {
@@ -99,15 +104,13 @@ internal class PlayerController : IController, IInputSubscriber
                 _modelShader.SetInt("characterSphere", targetSphereId);
                 _rayMarkerShader.SetInt("characterSphere", targetSphereId);
             }
-
-            _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
 
         context.RegisterKeyDownCallback(Keys.C, () =>
         {
-            context.Mode = Context.InputMode.PlayerInCar;
+            _scene.TryEnterAnyCar();
         });
 
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>

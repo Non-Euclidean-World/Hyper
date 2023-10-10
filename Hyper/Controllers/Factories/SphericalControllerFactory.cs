@@ -63,9 +63,9 @@ internal class SphericalControllerFactory : IControllerFactory
             new BotsController(_scene, _context, modelShader, objectShader, transporter, new SphericalBotSpawnStrategy(_scene, settings)),
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
-            new VehiclesController(_scene, _context, objectShader),
+            new VehiclesController(_scene, _context, objectShader, transporter),
             new LightSourcesController(_scene, lightSourceShader),
-            new HudController(_scene, _windowHelper, hudShader),
+            new HudController(_scene, _windowHelper, hudShader, _context),
         };
     }
 }

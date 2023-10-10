@@ -1,5 +1,6 @@
 ﻿using Common.UserInput;
 using Hyper.Shaders.ObjectShader;
+using Hyper.Transporters;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Controllers;
@@ -8,25 +9,32 @@ internal class VehiclesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly AbstractObjectShader _shader;
+    private readonly AbstractObjectShader _objectShader;
 
-    public VehiclesController(Scene scene, Context context, AbstractObjectShader shader)
+    private readonly ITransporter _transporter;
+
+    public VehiclesController(Scene scene, Context context, AbstractObjectShader shader, ITransporter transporter)
     {
         _scene = scene;
-        _shader = shader;
+        _objectShader = shader;
         RegisterCallbacks(context);
+        _transporter = transporter;
     }
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, sphere: 0); // TODO current sphere
 
-        foreach (var car in _scene.BotCars)
+        foreach (var car in _scene.FreeCars)
         {
-            car.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _objectShader.SetUp(_scene.Camera, _scene.LightSources, car.CurrentSphereId);
+            car.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
 
-        _scene.PlayersCar.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+        if (_scene.PlayersCar != null)
+        {
+            _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.PlayersCar.CurrentSphereId);
+            _scene.PlayersCar.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+        }
     }
 
     public void RegisterCallbacks(Context context)
@@ -34,11 +42,7 @@ internal class VehiclesController : IController, IInputSubscriber
         context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.L, Keys.Space });
         context.RegisterUpdateFrameCallback((e) =>
         {
-            foreach (var car in _scene.BotCars)
-            {
-                car.Update(_scene.SimulationManager.Simulation, (float)e.Time, 0, 0f, false, false);
-            }
-            if (context.Mode == Context.InputMode.PlayerInCar)
+            if (_scene.PlayersCar != null)
             {
                 float steeringSum = 0;
                 if (context.HeldKeys[Keys.A]) steeringSum += 1;
@@ -47,18 +51,29 @@ internal class VehiclesController : IController, IInputSubscriber
                 _scene.PlayersCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, steeringSum, targetSpeedFraction, context.HeldKeys[Keys.LeftShift], context.HeldKeys[Keys.Space]);
 
                 _scene.Camera.UpdateWithCar(_scene.PlayersCar);
+
+                int targetSphereId = 1 - _scene.PlayersCar.CurrentSphereId;
+                if (_transporter.TryTeleportTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
+                {
+                    _transporter.UpdateCamera(targetSphereId, _scene.Camera, exitPoint);
+                    _objectShader.SetInt("characterSphere", targetSphereId);
+                }
             }
-            else
+
+            foreach (var car in _scene.FreeCars)
             {
-                _scene.PlayersCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, 0, 0f, false, false);
+                car.Update(_scene.SimulationManager.Simulation, (float)e.Time, targetSteeringAngle: 0f, targetSpeedFraction: 0f, zoom: false, brake: false);
             }
         });
 
-        context.RegisterKeyDownCallback(Keys.L, () => context.Mode = Context.InputMode.PlayerOnFoot);
+        context.RegisterKeyDownCallback(Keys.L, () =>
+        {
+            _scene.LeaveCar();
+        });
     }
 
     public void Dispose()
     {
-        _shader.Dispose();
+        _objectShader.Dispose();
     }
 }

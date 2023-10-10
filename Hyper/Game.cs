@@ -20,7 +20,7 @@ public class Game
 
     private readonly IController[] _controllers;
 
-    private readonly Context _context = new() { Mode = Context.InputMode.PlayerOnFoot };
+    private readonly Context _context = new();
 
     private Vector2i _size;
 
