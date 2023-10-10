@@ -69,6 +69,7 @@ internal class Scene : IInputSubscriber
             new Crosshair(),
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, Player.Inventory, context),
+            new PositionPrinter(camera, windowHelper),
         };
 
         Chunks = new List<Chunk>();
