@@ -162,7 +162,7 @@ internal class Camera : IInputSubscriber
         if (Sphere == 0)
         {
             ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
-               + (FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(car))
+               + (FirstPerson ? GetFirstPersonCameraOffset(car) : GetThirdPersonCameraOffset(car))
                - (Curve > 0 ? SphereCenter : Vector3.Zero);
         }
         else
@@ -170,13 +170,16 @@ internal class Camera : IInputSubscriber
             var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
             playerCarPos.Y *= -1;
             ReferencePointPosition = playerCarPos
-                + (FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(car))
+                + (FirstPerson ? GetFirstPersonCameraOffset(car) : GetThirdPersonCameraOffset(car))
                 - (Curve > 0 ? SphereCenter : Vector3.Zero);
         }
     }
 
     private Vector3 GetThirdPersonCameraOffset(SimpleCar car)
         => Up * 1f - Front * 5f;
+
+    private Vector3 GetFirstPersonCameraOffset(SimpleCar car)
+        => Up * 0.4f - 0.2f * Front * System.Numerics.Vector3.Distance(car.BackLeftWheel.BodyToWheelSuspension, car.FrontLeftWheel.BodyToWheelSuspension);
 
     public void RegisterCallbacks(Context context)
     {

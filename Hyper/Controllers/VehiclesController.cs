@@ -53,8 +53,17 @@ internal class VehiclesController : IController, IInputSubscriber
             if (_scene.PlayersCar != null)
             {
                 float steeringSum = 0;
-                if (context.HeldKeys[Keys.A]) steeringSum += 1;
-                if (context.HeldKeys[Keys.D]) steeringSum -= 1;
+                if (_scene.PlayersCar.CurrentSphereId == 0)
+                {
+                    if (context.HeldKeys[Keys.A]) steeringSum += 1;
+                    if (context.HeldKeys[Keys.D]) steeringSum -= 1;
+                }
+                else
+                {
+                    if (context.HeldKeys[Keys.A]) steeringSum -= 1;
+                    if (context.HeldKeys[Keys.D]) steeringSum += 1;
+                }
+
                 float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;
                 _scene.PlayersCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, steeringSum, targetSpeedFraction, context.HeldKeys[Keys.LeftShift], context.HeldKeys[Keys.Space]);
 
