@@ -6,7 +6,7 @@ public class TipText : IHudElement
 {
     public bool Visible { get; set; } = true;
 
-    private readonly float _size = 0.01f;
+    private readonly float _size = 0.03f;
 
     public void Dispose()
     {
@@ -17,6 +17,6 @@ public class TipText : IHudElement
     {
         shader.SetVector4("color", Vector4.One);
 
-        Printer.RenderString(shader, "C to enter the car", _size, 0, 0);
+        Printer.RenderStringTopLeft(shader, "C to enter the car", _size, 0, 0);
     }
 }

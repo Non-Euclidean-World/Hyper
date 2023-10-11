@@ -3,6 +3,7 @@ using Common.UserInput;
 using Hud;
 using Hud.HUDElements;
 using Hud.Shaders;
+using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
 using OpenTK.Graphics.OpenGL4;
@@ -30,6 +31,7 @@ internal class HudController : IController
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, _scene.Player.Inventory, context),
             new TipText(),
+            new PositionPrinter(_scene.Camera, windowHelper)
         };
     }
 

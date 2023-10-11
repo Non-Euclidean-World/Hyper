@@ -11,7 +11,6 @@ using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
 
-
 namespace Hyper;
 
 internal class Scene : IInputSubscriber
