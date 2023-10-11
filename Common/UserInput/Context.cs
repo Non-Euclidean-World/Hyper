@@ -5,13 +5,6 @@ namespace Common.UserInput;
 
 public class Context
 {
-    public enum InputMode
-    {
-        Menu,
-        PlayerOnFoot,
-        PlayerInCar
-    }
-
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
     public Dictionary<MouseButton, List<Action<FrameEventArgs>>> ButtonHeldCallbacks = new();
 
