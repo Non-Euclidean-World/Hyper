@@ -1,9 +1,7 @@
-using Character.Vehicles;
 using Common.UserInput;
 using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Physics.TypingUtils;
 
 namespace Hyper.PlayerData;
 
@@ -29,7 +27,7 @@ internal class Camera : IInputSubscriber
 
     private readonly float _far;
 
-    private float _scale;
+    private readonly float _scale;
 
     private readonly Vector3 _fixedViewPosition;
 
@@ -138,48 +136,6 @@ internal class Camera : IInputSubscriber
         Yaw += delta.X * Sensitivity;
         Pitch -= delta.Y * Sensitivity; // Reversed since y-coordinates range from bottom to top
     }
-
-    public void UpdateWithCharacter(Player player)
-    {
-        if (Sphere == 0)
-        {
-            ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
-                + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this))
-                - (Curve > 0 ? SphereCenter : Vector3.Zero);
-        }
-        else
-        {
-            var playerPos = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
-            playerPos.Y *= -1;
-            ReferencePointPosition = playerPos
-                + (FirstPerson ? Vector3.Zero : player.GetThirdPersonCameraOffset(this))
-                - (Curve > 0 ? SphereCenter : Vector3.Zero);
-        }
-    }
-
-    public void UpdateWithCar(SimpleCar car)
-    {
-        if (Sphere == 0)
-        {
-            ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
-               + (FirstPerson ? GetFirstPersonCameraOffset(car) : GetThirdPersonCameraOffset(car))
-               - (Curve > 0 ? SphereCenter : Vector3.Zero);
-        }
-        else
-        {
-            var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
-            playerCarPos.Y *= -1;
-            ReferencePointPosition = playerCarPos
-                + (FirstPerson ? GetFirstPersonCameraOffset(car) : GetThirdPersonCameraOffset(car))
-                - (Curve > 0 ? SphereCenter : Vector3.Zero);
-        }
-    }
-
-    private Vector3 GetThirdPersonCameraOffset(SimpleCar car)
-        => Up * 1f - Front * 5f;
-
-    private Vector3 GetFirstPersonCameraOffset(SimpleCar car)
-        => Up * 0.4f - 0.2f * Front * System.Numerics.Vector3.Distance(car.BackLeftWheel.BodyToWheelSuspension, car.FrontLeftWheel.BodyToWheelSuspension);
 
     public void RegisterCallbacks(Context context)
     {

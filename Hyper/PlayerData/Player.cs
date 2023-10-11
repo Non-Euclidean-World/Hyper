@@ -32,7 +32,7 @@ internal class Player : Humanoid, IRayCaster
 
     public int RayId => 0;
 
-    public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0)  : base(
+    public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(
         new Model(CowboyResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
@@ -50,10 +50,6 @@ internal class Player : Humanoid, IRayCaster
         _rayEndpointMarker.Position = GetRayEndpoint(rayHit);
         _rayEndpointMarker.Render(rayMarkerShader, scale, curve, cameraPosition);
     }
-
-    // in general this can depend on the properties of the character e.g. size etc
-    public Vector3 GetThirdPersonCameraOffset(Camera camera)
-        => camera.Up * 1f - camera.Front * 5f;
 
     public Vector3 GetRayEndpoint(in RayHit hit)
         => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
@@ -83,7 +79,7 @@ internal class Player : Humanoid, IRayCaster
         }
 #endif
     }
-    
+
     public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float time, bool tryJump, bool sprint, Vector2 movementDirection)
     {
         if (movementDirection != Vector2.Zero)

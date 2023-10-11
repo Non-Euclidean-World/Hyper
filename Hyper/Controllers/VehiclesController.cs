@@ -1,9 +1,13 @@
-﻿using Common.UserInput;
+﻿using Character.Vehicles;
+using Common.UserInput;
+using Hyper.PlayerData;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
@@ -67,7 +71,7 @@ internal class VehiclesController : IController, IInputSubscriber
                 float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;
                 _scene.PlayersCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, steeringSum, targetSpeedFraction, context.HeldKeys[Keys.LeftShift], context.HeldKeys[Keys.Space]);
 
-                _scene.Camera.UpdateWithCar(_scene.PlayersCar);
+                UpdateCamera(_scene.Camera, _scene.PlayersCar);
 
                 int targetSphereId = 1 - _scene.PlayersCar.CurrentSphereId;
                 if (_transporter.TryTeleportCarTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
@@ -90,6 +94,30 @@ internal class VehiclesController : IController, IInputSubscriber
             _scene.LeaveCar();
         });
     }
+
+    private void UpdateCamera(Camera camera, SimpleCar car)
+    {
+        if (camera.Sphere == 0)
+        {
+            camera.ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
+               + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+               - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
+            playerCarPos.Y *= -1;
+            camera.ReferencePointPosition = playerCarPos
+                + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+    }
+
+    private Vector3 GetThirdPersonCameraOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
+
+    private Vector3 GetFirstPersonCameraOffset(Camera camera, SimpleCar car)
+        => camera.Up * 0.4f - 0.2f * camera.Front * System.Numerics.Vector3.Distance(car.BackLeftWheel.BodyToWheelSuspension, car.FrontLeftWheel.BodyToWheelSuspension);
 
     public void Dispose()
     {

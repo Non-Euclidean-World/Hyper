@@ -1,5 +1,6 @@
 ﻿using Chunks.ChunkManagement.ChunkWorkers;
 using Common.UserInput;
+using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
@@ -7,6 +8,7 @@ using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
@@ -57,7 +59,7 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F });
         context.RegisterUpdateFrameCallback((e) =>
         {
             if (_scene.PlayersCar != null)
@@ -93,7 +95,7 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Player.UpdateCharacterGoals(_scene.SimulationManager.Simulation, _scene.Camera.Front, (float)e.Time,
                 context.HeldKeys[Keys.Space], context.HeldKeys[Keys.LeftShift], movementDirection);
 
-            _scene.Camera.UpdateWithCharacter(_scene.Player);
+            UpdateCamera(_scene.Camera, _scene.Player);
 
             if (movementDirection == Vector2.Zero)
                 return;
@@ -112,8 +114,10 @@ internal class PlayerController : IController, IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.C, () =>
         {
-            _scene.TryEnterAnyCar();
+            _scene.TryEnterClosestCar();
         });
+
+        context.RegisterKeyDownCallback(Keys.F, () => _scene.TryFlipClosestCar());
 
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
@@ -136,6 +140,27 @@ internal class PlayerController : IController, IInputSubscriber
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
         });
     }
+
+    private void UpdateCamera(Camera camera, Player player)
+    {
+        if (camera.Sphere == 0)
+        {
+            camera.ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
+                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerPos = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
+            playerPos.Y *= -1;
+            camera.ReferencePointPosition = playerPos
+                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+    }
+
+    private Vector3 GetThirdPersonCameraOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
 
     public void Dispose()
     {

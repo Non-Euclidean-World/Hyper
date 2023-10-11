@@ -11,7 +11,7 @@ using BepuUtilities.Memory;
 using Physics.Collisions;
 
 namespace Character.Vehicles;
-public class SimpleCar : ISimulationMember
+public class SimpleCar : ISimulationMember, IDisposable
 {
     public BodyHandle BodyHandle { get; private set; }
     public WheelHandles FrontLeftWheel { get; private set; }
@@ -31,11 +31,14 @@ public class SimpleCar : ISimulationMember
 
     private readonly CarMesh _mesh;
 
-    private SimpleCar(SimpleCarController controller, CarMesh mesh, int currentSphereId)
+    private readonly Simulation _simulation;
+
+    private SimpleCar(SimpleCarController controller, CarMesh mesh, int currentSphereId, Simulation simulation)
     {
         _controller = controller;
         _mesh = mesh;
         CurrentSphereId = currentSphereId;
+        _simulation = simulation;
     }
 
     public void Steer(Simulation simulation, in WheelHandles wheel, float angle)
@@ -108,7 +111,7 @@ public class SimpleCar : ISimulationMember
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
         SimpleCarController controller, CarMesh mesh, int currentSphereId = 0)
     {
-        SimpleCar car = new SimpleCar(controller, mesh, currentSphereId);
+        SimpleCar car = new SimpleCar(controller, mesh, currentSphereId, simulation);
         car.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(pose, bodyInertia, new(bodyShape, 0.5f), 0.01f));
         ref var bodyProperties = ref properties.Allocate(car.BodyHandle);
         bodyProperties = new SimulationProperties { Friction = bodyFriction, Filter = new SubgroupCollisionFilter(car.BodyHandle.Value, 0) };
@@ -206,5 +209,20 @@ public class SimpleCar : ISimulationMember
 
         _mesh.Update(carBody.Pose, rearLeftWheel.Pose, rearRightWheel.Pose, frontLeftWheel.Pose, frontRightWheel.Pose);
         CarBodyPose = carBody.Pose;
+    }
+
+    public void Dispose()
+    {
+        _simulation.Shapes.Remove(new BodyReference(BodyHandle, _simulation.Bodies).Collidable.Shape);
+        _simulation.Shapes.Remove(new BodyReference(BackLeftWheel.Wheel, _simulation.Bodies).Collidable.Shape);
+        _simulation.Shapes.Remove(new BodyReference(BackRightWheel.Wheel, _simulation.Bodies).Collidable.Shape);
+        _simulation.Shapes.Remove(new BodyReference(FrontLeftWheel.Wheel, _simulation.Bodies).Collidable.Shape);
+        _simulation.Shapes.Remove(new BodyReference(FrontRightWheel.Wheel, _simulation.Bodies).Collidable.Shape);
+
+        _simulation.Bodies.Remove(BodyHandle);
+        _simulation.Bodies.Remove(BackLeftWheel.Wheel);
+        _simulation.Bodies.Remove(BackRightWheel.Wheel);
+        _simulation.Bodies.Remove(FrontLeftWheel.Wheel);
+        _simulation.Bodies.Remove(FrontRightWheel.Wheel);
     }
 }

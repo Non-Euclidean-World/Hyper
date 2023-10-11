@@ -30,7 +30,9 @@ internal class HudController : IController
             new Crosshair(),
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, _scene.Player.Inventory, context),
-            new TipText(),
+            new TipText("C to enter the car", () => _scene.TryEnterClosestCar(testOnly: true)),
+            new TipText("L to leave the car", () => _scene.PlayersCar != null, top: 0.4f),
+            new TipText("F to flip the car", () => _scene.TryFlipClosestCar(testOnly: true), top: -0.2f),
             new PositionPrinter(_scene.Camera, windowHelper)
         };
     }
@@ -45,9 +47,6 @@ internal class HudController : IController
             if (element is Crosshair &&
                 _scene.Player.Inventory.SelectedItem is not null &&
                 _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
-                continue;
-
-            if (element is TipText && !_scene.TryEnterAnyCar(testOnly: true))
                 continue;
 
             if (element.Visible)

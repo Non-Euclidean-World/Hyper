@@ -90,7 +90,7 @@ internal class Scene : IInputSubscriber
         return lightSources;
     }
 
-    public bool TryEnterAnyCar(bool testOnly = false)
+    public bool TryEnterClosestCar(bool testOnly = false)
     {
         const float carEnterRadius = 10f;
         foreach (var car in FreeCars)
@@ -106,6 +106,29 @@ internal class Scene : IInputSubscriber
                 }
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    public bool TryFlipClosestCar(bool testOnly = false)
+    {
+        const float carEnterRadius = 10f;
+        for (int i = 0; i < FreeCars.Count; i++)
+        {
+            var car = FreeCars[i];
+            if (System.Numerics.Vector3.Distance(car.CarBodyPose.Position, Player.PhysicalCharacter.Pose.Position) <= carEnterRadius)
+            {
+                if (!testOnly)
+                {
+                    FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
+                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
+                    SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
+                    car.Dispose();
+                }
+                return true;
+            }
+
         }
 
         return false;
