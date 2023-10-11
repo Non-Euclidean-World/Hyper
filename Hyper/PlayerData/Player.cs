@@ -32,6 +32,8 @@ internal class Player : Humanoid, IRayCaster
 
     public int RayId => 0;
 
+    private bool _hidden;
+
     public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(
         new Model(CowboyResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
     {
@@ -41,7 +43,7 @@ internal class Player : Humanoid, IRayCaster
 
     public void Render(Shader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
     {
-        if (!isFirstPerson)
+        if (!isFirstPerson && !_hidden)
             Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);
     }
 
@@ -93,5 +95,29 @@ internal class Player : Humanoid, IRayCaster
 
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
         ViewDirection = viewDirection;
+    }
+
+    public void Hide()
+    {
+        if (_hidden)
+            return;
+
+        PhysicalCharacter.Dispose();
+        _hidden = true;
+    }
+
+    public void Show(PhysicalCharacter physicalCharacter)
+    {
+        if (!_hidden)
+            return;
+
+        PhysicalCharacter = physicalCharacter;
+        _hidden = false;
+    }
+
+    public override void Dispose()
+    {
+        if (!_hidden)
+            base.Dispose();
     }
 }

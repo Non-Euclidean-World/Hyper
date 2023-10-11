@@ -101,7 +101,7 @@ internal class Scene : IInputSubscriber
                 {
                     PlayersCar = car;
                     FreeCars.Remove(car);
-                    Player.Dispose();
+                    Player.Hide();
                     SimulationMembers.Remove(Player.BodyHandle);
                 }
                 return true;
@@ -143,7 +143,7 @@ internal class Scene : IInputSubscriber
         FreeCars.Add(PlayersCar);
         PlayersCar = null;
 
-        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager), _context);
+        Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
         SimulationMembers.Add(Player.BodyHandle, Player);
     }
 

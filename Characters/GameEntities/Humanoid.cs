@@ -7,11 +7,11 @@ using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
 namespace Character.GameEntities;
-public abstract class Humanoid : ISimulationMember, IContactEventListener
+public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisposable
 {
     public Model Character { get; init; }
 
-    public PhysicalCharacter PhysicalCharacter { get; init; }
+    public PhysicalCharacter PhysicalCharacter { get; protected set; }
 
     public BodyHandle BodyHandle => PhysicalCharacter.BodyHandle;
 
@@ -63,13 +63,13 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener
     }
 
     public virtual void UpdateCharacterGoals(Simulation simulation, float time) { }
-    
+
     public static PhysicalCharacter CreatePhysicalCharacter(Vector3 position, SimulationManager<PoseIntegratorCallbacks> simulationManager)
         => new(simulationManager.CharacterControllers, simulationManager.Properties, Conversions.ToNumericsVector(position),
             minimumSpeculativeMargin: 0.1f, mass: 1, maximumHorizontalForce: 20, maximumVerticalGlueForce: 100, jumpVelocity: 6, speed: 4,
             maximumSlope: MathF.PI * 0.4f);
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         PhysicalCharacter.Dispose();
     }
