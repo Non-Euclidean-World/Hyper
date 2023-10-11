@@ -11,12 +11,14 @@ internal class NullTransporter : ITransporter
 {
     public bool TryTeleportCarTo(int targetSphereId, SimpleCar simulationMember, Simulation simulation, out Vector3 exitPoint)
     {
-        throw new NotImplementedException();
+        exitPoint = default;
+        return false;
     }
 
     public bool TryTeleportTo(int targetSphereId, ISimulationMember simulationMember, Simulation simulation, out Vector3 exitPoint)
     {
-        throw new NotImplementedException();
+        exitPoint = default;
+        return false;
     }
 
     public void UpdateCamera(int targetSphereId, Camera camera, Vector3 exitPoint)

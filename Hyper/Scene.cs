@@ -28,7 +28,7 @@ internal class Scene : IInputSubscriber
 
     public SimpleCar? PlayersCar { get; private set; }
 
-    public readonly Player Player;
+    public Player Player { get; private set; }
 
     public readonly Camera Camera;
 
@@ -36,9 +36,12 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
+    private readonly Context _context;
+
     public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
         int chunksPerSide = 2;
+        _context = context;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -99,6 +102,8 @@ internal class Scene : IInputSubscriber
                 {
                     PlayersCar = car;
                     FreeCars.Remove(car);
+                    Player.Dispose();
+                    SimulationMembers.Remove(Player.BodyHandle);
                 }
                 return true;
             }
@@ -112,8 +117,12 @@ internal class Scene : IInputSubscriber
         if (PlayersCar == null)
             return;
 
+        var position = PlayersCar.CarBodyPose.Position;
         FreeCars.Add(PlayersCar);
         PlayersCar = null;
+
+        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager), _context);
+        SimulationMembers.Add(Player.BodyHandle, Player);
     }
 
     public void RegisterCallbacks(Context context)
