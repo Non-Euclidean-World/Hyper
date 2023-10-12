@@ -6,14 +6,10 @@ using Chunks;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
-using Hud;
-using Hud.HUDElements;
 using Hyper.PlayerData;
-using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 using Physics.TypingUtils;
-
 
 namespace Hyper;
 
@@ -27,9 +23,11 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> Cars;
+    public readonly List<SimpleCar> FreeCars;
 
-    public readonly Player Player;
+    public SimpleCar? PlayersCar { get; private set; }
+
+    public Player Player { get; private set; }
 
     public readonly Camera Camera;
 
@@ -37,11 +35,12 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public readonly IHudElement[] HudElements;
+    private readonly Context _context;
 
     public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
     {
         int chunksPerSide = 2;
+        _context = context;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -56,7 +55,7 @@ internal class Scene : IInputSubscriber
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
-        Cars = new List<SimpleCar>()
+        FreeCars = new List<SimpleCar>()
         {
             SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                 Conversions.ToNumericsVector(carInitialPosition))
@@ -64,15 +63,8 @@ internal class Scene : IInputSubscriber
 
         Camera = camera;
 
-        HudElements = new IHudElement[]
-        {
-            new Crosshair(),
-            new FpsCounter(windowHelper),
-            new InventoryHudManager(windowHelper, Player.Inventory, context),
-            new PositionPrinter(camera, windowHelper),
-        };
-
         Chunks = new List<Chunk>();
+
         RegisterCallbacks(context);
     }
 
@@ -96,6 +88,63 @@ internal class Scene : IInputSubscriber
         }
 
         return lightSources;
+    }
+
+    public bool TryEnterClosestCar(bool testOnly = false)
+    {
+        const float carEnterRadius = 10f;
+        foreach (var car in FreeCars)
+        {
+            if (System.Numerics.Vector3.Distance(car.CarBodyPose.Position, Player.PhysicalCharacter.Pose.Position) <= carEnterRadius)
+            {
+                if (!testOnly)
+                {
+                    PlayersCar = car;
+                    FreeCars.Remove(car);
+                    Player.Hide();
+                    SimulationMembers.Remove(Player.BodyHandle);
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool TryFlipClosestCar(bool testOnly = false)
+    {
+        const float carEnterRadius = 10f;
+        for (int i = 0; i < FreeCars.Count; i++)
+        {
+            var car = FreeCars[i];
+            if (System.Numerics.Vector3.Distance(car.CarBodyPose.Position, Player.PhysicalCharacter.Pose.Position) <= carEnterRadius)
+            {
+                if (!testOnly)
+                {
+                    FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
+                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
+                    SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
+                    car.Dispose();
+                }
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    public void LeaveCar()
+    {
+        if (PlayersCar == null)
+            return;
+
+        var position = PlayersCar.CarBodyPose.Position;
+        FreeCars.Add(PlayersCar);
+        PlayersCar = null;
+
+        Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
+        SimulationMembers.Add(Player.BodyHandle, Player);
     }
 
     public void RegisterCallbacks(Context context)
@@ -126,10 +175,5 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
-
-        foreach (var element in HudElements)
-        {
-            element.Dispose();
-        }
     }
 }

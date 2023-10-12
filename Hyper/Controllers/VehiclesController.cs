@@ -1,5 +1,13 @@
-﻿using Common.UserInput;
+﻿using Character.Vehicles;
+using Common.UserInput;
+using Hyper.PlayerData;
+using Hyper.Shaders.LightSourceShader;
+using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
+using Hyper.Transporters;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
@@ -7,38 +15,112 @@ internal class VehiclesController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
-    private readonly AbstractObjectShader _shader;
+    private readonly AbstractObjectShader _objectShader;
 
-    public VehiclesController(Scene scene, Context context, AbstractObjectShader shader)
+    private readonly AbstractModelShader _modelShader;
+
+    private readonly AbstractLightSourceShader _lightSourceShader;
+
+    private readonly ITransporter _transporter;
+
+    public VehiclesController(Scene scene, Context context, AbstractObjectShader objectShader, AbstractLightSourceShader lightSourceShader, AbstractModelShader modelShader, ITransporter transporter)
     {
         _scene = scene;
-        _shader = shader;
+        _objectShader = objectShader;
+        _lightSourceShader = lightSourceShader;
+        _modelShader = modelShader;
         RegisterCallbacks(context);
+        _transporter = transporter;
     }
 
     public void Render()
     {
-        _shader.SetUp(_scene.Camera, _scene.LightSources, sphere: 0); // TODO current sphere
 
-        foreach (var car in _scene.Cars)
+        foreach (var car in _scene.FreeCars)
         {
-            car.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _objectShader.SetUp(_scene.Camera, _scene.LightSources, car.CurrentSphereId);
+            car.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+        }
+
+        if (_scene.PlayersCar != null)
+        {
+            _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.PlayersCar.CurrentSphereId);
+            _scene.PlayersCar.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 
     public void RegisterCallbacks(Context context)
     {
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.L, Keys.Space });
         context.RegisterUpdateFrameCallback((e) =>
         {
-            foreach (var car in _scene.Cars)
+            if (_scene.PlayersCar != null)
             {
-                car.Update(_scene.SimulationManager.Simulation, (float)e.Time, 0, 0f, false, false);
+                float steeringSum = 0;
+                if (_scene.PlayersCar.CurrentSphereId == 0)
+                {
+                    if (context.HeldKeys[Keys.A]) steeringSum += 1;
+                    if (context.HeldKeys[Keys.D]) steeringSum -= 1;
+                }
+                else
+                {
+                    if (context.HeldKeys[Keys.A]) steeringSum -= 1;
+                    if (context.HeldKeys[Keys.D]) steeringSum += 1;
+                }
+
+                float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;
+                _scene.PlayersCar.Update(_scene.SimulationManager.Simulation, (float)e.Time, steeringSum, targetSpeedFraction, context.HeldKeys[Keys.LeftShift], context.HeldKeys[Keys.Space]);
+
+                UpdateCamera(_scene.Camera, _scene.PlayersCar);
+
+                int targetSphereId = 1 - _scene.PlayersCar.CurrentSphereId;
+                if (_transporter.TryTeleportCarTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
+                {
+                    _transporter.UpdateCamera(targetSphereId, _scene.Camera, exitPoint);
+                    _objectShader.SetInt("characterSphere", targetSphereId);
+                    _modelShader.SetInt("characterSphere", targetSphereId);
+                    _lightSourceShader.SetInt("characterSphere", targetSphereId);
+                }
             }
+
+            foreach (var car in _scene.FreeCars)
+            {
+                car.Update(_scene.SimulationManager.Simulation, (float)e.Time, targetSteeringAngle: 0f, targetSpeedFraction: 0f, zoom: false, brake: false);
+            }
+        });
+
+        context.RegisterKeyDownCallback(Keys.L, () =>
+        {
+            _scene.LeaveCar();
         });
     }
 
+    private void UpdateCamera(Camera camera, SimpleCar car)
+    {
+        if (camera.Sphere == 0)
+        {
+            camera.ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
+               + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+               - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
+            playerCarPos.Y *= -1;
+            camera.ReferencePointPosition = playerCarPos
+                + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+    }
+
+    private Vector3 GetThirdPersonCameraOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
+
+    private Vector3 GetFirstPersonCameraOffset(Camera camera, SimpleCar car)
+        => camera.Up * 0.4f - 0.2f * camera.Front * System.Numerics.Vector3.Distance(car.BackLeftWheel.BodyToWheelSuspension, car.FrontLeftWheel.BodyToWheelSuspension);
+
     public void Dispose()
     {
-        _shader.Dispose();
+        _objectShader.Dispose();
     }
 }

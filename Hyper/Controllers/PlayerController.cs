@@ -1,5 +1,6 @@
 ﻿using Chunks.ChunkManagement.ChunkWorkers;
 using Common.UserInput;
+using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
@@ -7,6 +8,7 @@ using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Physics.TypingUtils;
 
 namespace Hyper.Controllers;
 
@@ -39,6 +41,8 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void Render()
     {
+        if (_scene.PlayersCar != null)
+            return;
         _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
         _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
@@ -55,14 +59,12 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F });
         context.RegisterUpdateFrameCallback((e) =>
         {
-            // TODO commented out until we have context switching
-            /*float steeringSum = 0;
-            if (context.HeldKeys[Keys.A]) steeringSum += 1;
-            if (context.HeldKeys[Keys.D]) steeringSum -= 1;
-            float targetSpeedFraction = context.HeldKeys[Keys.W] ? 1f : context.HeldKeys[Keys.S] ? -1f : 0;*/
+            if (_scene.PlayersCar != null)
+                return;
+
             Vector2 movementDirection = default;
             if (context.HeldKeys[Keys.W])
             {
@@ -93,6 +95,11 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Player.UpdateCharacterGoals(_scene.SimulationManager.Simulation, _scene.Camera.Front, (float)e.Time,
                 context.HeldKeys[Keys.Space], context.HeldKeys[Keys.LeftShift], movementDirection);
 
+            UpdateCamera(_scene.Camera, _scene.Player);
+
+            if (movementDirection == Vector2.Zero)
+                return;
+
             int targetSphereId = 1 - _scene.Player.CurrentSphereId;
             if (_transporter.TryTeleportTo(targetSphereId, _scene.Player, _scene.SimulationManager.Simulation, out var exitPoint))
             {
@@ -101,11 +108,16 @@ internal class PlayerController : IController, IInputSubscriber
                 _modelShader.SetInt("characterSphere", targetSphereId);
                 _rayMarkerShader.SetInt("characterSphere", targetSphereId);
             }
-
-            _scene.Camera.UpdateWithCharacter(_scene.Player);
         });
 
         context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
+
+        context.RegisterKeyDownCallback(Keys.C, () =>
+        {
+            _scene.TryEnterClosestCar();
+        });
+
+        context.RegisterKeyDownCallback(Keys.F, () => _scene.TryFlipClosestCar());
 
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
@@ -128,7 +140,28 @@ internal class PlayerController : IController, IInputSubscriber
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
         });
     }
-    
+
+    private void UpdateCamera(Camera camera, Player player)
+    {
+        if (camera.Sphere == 0)
+        {
+            camera.ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
+                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+        else
+        {
+            var playerPos = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
+            playerPos.Y *= -1;
+            camera.ReferencePointPosition = playerPos
+                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
+        }
+    }
+
+    private Vector3 GetThirdPersonCameraOffset(Camera camera)
+        => camera.Up * 1f - camera.Front * 5f;
+
     public void Dispose()
     {
         _modelShader.Dispose();

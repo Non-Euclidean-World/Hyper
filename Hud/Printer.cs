@@ -33,7 +33,7 @@ public static class Printer
         Paint.GetFontMetrics(out var metrics);
 
         CharHeight = -metrics.Ascent + metrics.Descent + metrics.Leading;
-        
+
         using var bitmap = new SKBitmap((int)Math.Ceiling(textWidth), (int)Math.Ceiling(CharHeight));
         using (SKCanvas canvas = new SKCanvas(bitmap))
         {
@@ -81,7 +81,7 @@ public static class Printer
             horizontalOffset += 2 * size * Paint.MeasureText(t.ToString()) / CharHeight;
         }
     }
-    
+
     /// <summary>
     /// Renders the text with the top right corner at the given position.
     /// </summary>

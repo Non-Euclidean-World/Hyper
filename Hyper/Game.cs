@@ -27,7 +27,7 @@ public class Game
     private readonly Settings _settings;
 
     private readonly float _globalScale = 0.05f;
-    
+
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public Game(int width, int height, IWindowHelper windowHelper, string saveName, GeometryType geometryType) // TODO this is definitely getting out of hand
