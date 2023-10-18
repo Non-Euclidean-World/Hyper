@@ -2,6 +2,7 @@
 using BepuPhysics.Collidables;
 using Common;
 using OpenTK.Mathematics;
+using Physics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
 using Physics.TypingUtils;
@@ -17,6 +18,8 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     public int CurrentSphereId { get; set; }
 
+    public IList<BodyHandle> BodyHandles { get; private set; }
+
     protected Vector3 ViewDirection;
 
     protected DateTime LastContactTime = DateTime.MinValue;
@@ -30,12 +33,13 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
         Character = character;
         PhysicalCharacter = physicalCharacter;
         CurrentSphereId = currentSphereId;
+        BodyHandles = new BodyHandle[1] { PhysicalCharacter.BodyHandle };
     }
 
     public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
         => Character.Render(PhysicalCharacter.Pose, shader, scale, curve, cameraPosition);
 
-    public virtual void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    public virtual void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers)
     {
         var pair = collisionInfo.CollidablePair;
         var collidableReference
@@ -51,7 +55,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
         LastContactBody = collidableReference.BodyHandle;
 #if DEBUG
         // TODO replace with something more sensible
-        if (simulationMembers.TryGetValue(collidableReference.BodyHandle, out var otherBody))
+        if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
             Console.WriteLine($"Bot collided with {otherBody}");
         }

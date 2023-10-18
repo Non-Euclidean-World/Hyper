@@ -4,7 +4,6 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities.Collections;
 using BepuUtilities.Memory;
-using Physics.Collisions;
 
 namespace Physics.BoundingShapes;
 public class ShapesExtractor : IDisposable
@@ -44,7 +43,7 @@ public class ShapesExtractor : IDisposable
         Cylinders.Dispose(_pool);
     }
 
-    public void AddShapes(Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    public void AddShapes(SimulationMembers simulationMembers)
     {
         for (int setIndex = 0; setIndex < _simulation.Bodies.Sets.Length; setIndex++)
         {
@@ -60,12 +59,12 @@ public class ShapesExtractor : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void AddShape(int setIndex, int indexInSet, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    private void AddShape(int setIndex, int indexInSet, SimulationMembers simulationMembers)
     {
         ref var set = ref _simulation.Bodies.Sets[setIndex];
         ref var state = ref set.SolverStates[indexInSet];
         var handle = set.IndexToHandle[indexInSet];
-        if (!simulationMembers.ContainsKey(handle))
+        if (!simulationMembers.Contains(handle))
             return;
 
         int sphereId = simulationMembers[handle].CurrentSphereId;

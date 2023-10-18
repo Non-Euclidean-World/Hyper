@@ -21,7 +21,7 @@ internal class SphericalTransporter : ITransporter
     public bool TryTeleportTo(int targetSphereId, ISimulationMember simulationMember, Simulation simulation, out Vector3 exitPoint)
     {
         var currentSphereId = 1 - targetSphereId;
-        var bodyReference = new BodyReference(simulationMember.BodyHandle, simulation.Bodies);
+        var bodyReference = new BodyReference(simulationMember.BodyHandles[0], simulation.Bodies);
 
         var bodyPosition = Conversions.ToOpenTKVector(bodyReference.Pose.Position);
         var bodyPositionXZ = new Vector3(bodyPosition.X, 0, bodyPosition.Z);

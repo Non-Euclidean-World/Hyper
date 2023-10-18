@@ -33,7 +33,7 @@ internal class ProjectilesController : IController, IInputSubscriber
             if (projectile.IsDead)
             {
                 projectile.Dispose(_scene.SimulationManager.Simulation, _scene.SimulationManager.BufferPool);
-                _scene.SimulationMembers.Remove(projectile.BodyHandle);
+                _scene.SimulationMembers.Remove(projectile);
             }
         }
     }

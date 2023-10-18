@@ -3,7 +3,10 @@
 namespace Physics.Collisions;
 public interface ISimulationMember
 {
-    public BodyHandle BodyHandle { get; }
+    /// <summary>
+    /// List of all body handles used by the simulation member
+    /// </summary>
+    public IList<BodyHandle> BodyHandles { get; }
 
     public int CurrentSphereId { get; set; }
 }

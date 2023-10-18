@@ -7,6 +7,7 @@ using Common.Meshes;
 using Common.UserInput;
 using Hyper.PlayerData;
 using OpenTK.Mathematics;
+using Physics;
 using Physics.Collisions;
 using Physics.TypingUtils;
 
@@ -30,7 +31,7 @@ internal class Scene : IInputSubscriber
 
     public readonly Camera Camera;
 
-    public readonly Dictionary<BodyHandle, ISimulationMember> SimulationMembers;
+    public readonly SimulationMembers SimulationMembers;
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
@@ -41,13 +42,13 @@ internal class Scene : IInputSubscriber
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
 
-        SimulationMembers = new Dictionary<BodyHandle, ISimulationMember>();
+        SimulationMembers = new SimulationMembers();
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
-        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         var carInitialPosition = new Vector3(5, elevation + 5, 12);
@@ -59,7 +60,7 @@ internal class Scene : IInputSubscriber
 
         foreach (var car in FreeCars)
         {
-            AddCar(car);
+            SimulationMembers.Add(car);
         }
 
         Camera = camera;
@@ -67,24 +68,6 @@ internal class Scene : IInputSubscriber
         Chunks = new List<Chunk>();
 
         RegisterCallbacks(context);
-    }
-
-    private void AddCar(in SimpleCar car) // TODO move to vehicle controller. SimpleCar could return a list of all handles so that we don't have to query each of them
-    {
-        SimulationMembers.Add(car.BodyHandle, car); // this is pain in the neck
-        SimulationMembers.Add(car.BackLeftWheel.Wheel, car);
-        SimulationMembers.Add(car.BackRightWheel.Wheel, car);
-        SimulationMembers.Add(car.FrontLeftWheel.Wheel, car);
-        SimulationMembers.Add(car.FrontRightWheel.Wheel, car);
-    }
-
-    private void RemoveCar(in SimpleCar car) // TODO move to vehicle controller.
-    {
-        SimulationMembers.Remove(car.BodyHandle); // this is pain in the neck
-        SimulationMembers.Remove(car.BackLeftWheel.Wheel);
-        SimulationMembers.Remove(car.BackRightWheel.Wheel);
-        SimulationMembers.Remove(car.FrontLeftWheel.Wheel);
-        SimulationMembers.Remove(car.FrontRightWheel.Wheel);
     }
 
     private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
@@ -121,7 +104,7 @@ internal class Scene : IInputSubscriber
                     PlayersCar = car;
                     FreeCars.Remove(car);
                     Player.Hide();
-                    SimulationMembers.Remove(Player.BodyHandle); // TODO move to player controller
+                    SimulationMembers.Remove(Player);
                 }
                 return true;
             }
@@ -143,8 +126,8 @@ internal class Scene : IInputSubscriber
                     FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                         car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
-                    AddCar(FreeCars[i]);
-                    RemoveCar(car);
+                    SimulationMembers.Add(FreeCars[i]);
+                    SimulationMembers.Remove(car);
                     car.Dispose();
                 }
                 return true;
@@ -165,7 +148,7 @@ internal class Scene : IInputSubscriber
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
-        SimulationMembers.Add(Player.BodyHandle, Player);
+        SimulationMembers.Add(Player);
     }
 
     public void RegisterCallbacks(Context context)

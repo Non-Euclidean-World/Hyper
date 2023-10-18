@@ -36,7 +36,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 #if DEBUG
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
 #endif
-            Scene.SimulationMembers.Add(bot.BodyHandle, bot);
+            Scene.SimulationMembers.Add(bot);
             Scene.SimulationManager.RegisterContactCallback(bot.BodyHandle, contactInfo => bot.ContactCallback(contactInfo, Scene.SimulationMembers));
             Scene.Bots.Add(bot);
         }
@@ -55,7 +55,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
             Console.WriteLine($"Despawning bot {bot.BodyHandle}");
 #endif
             bot.Dispose();
-            Scene.SimulationMembers.Remove(bot.BodyHandle);
+            Scene.SimulationMembers.Remove(bot);
             return true;
         });
     }

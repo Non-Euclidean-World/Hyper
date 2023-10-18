@@ -1,7 +1,4 @@
-﻿using BepuPhysics;
-using Physics.Collisions;
-
-namespace Physics.ContactCallbacks;
+﻿namespace Physics.ContactCallbacks;
 public interface IContactEventListener
 {
     /// <summary>
@@ -9,5 +6,5 @@ public interface IContactEventListener
     /// </summary>
     /// <param name="collisionInfo">Information about the contact</param>
     /// <param name="simulationMembers">Objects present in the simulation</param>
-    public void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers);
+    public void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers);
 }

@@ -14,6 +14,9 @@ namespace Character.Vehicles;
 public class SimpleCar : ISimulationMember, IDisposable
 {
     public BodyHandle BodyHandle { get; private set; }
+
+    public IList<BodyHandle> BodyHandles { get; private set; } = null!;
+
     public WheelHandles FrontLeftWheel { get; private set; }
     public WheelHandles FrontRightWheel { get; private set; }
     public WheelHandles BackLeftWheel { get; private set; }
@@ -128,6 +131,9 @@ public class SimpleCar : ISimulationMember, IDisposable
         car.BackRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToBackRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+
+        car.BodyHandles = new BodyHandle[5] { car.BodyHandle, car.BackLeftWheel.Wheel, car.BackRightWheel.Wheel, car.FrontLeftWheel.Wheel, car.FrontRightWheel.Wheel };
+
         return car;
     }
 

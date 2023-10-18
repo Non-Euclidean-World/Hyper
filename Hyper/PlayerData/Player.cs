@@ -8,6 +8,7 @@ using Common.Meshes;
 using Common.UserInput;
 using Hyper.PlayerData.InventorySystem;
 using OpenTK.Mathematics;
+using Physics;
 using Physics.Collisions;
 using Physics.ContactCallbacks;
 using Physics.RayCasting;
@@ -56,7 +57,7 @@ internal class Player : Humanoid, IRayCaster
     public Vector3 GetRayEndpoint(in RayHit hit)
         => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
 
-    public override void ContactCallback(ContactInfo collisionInfo, Dictionary<BodyHandle, ISimulationMember> simulationMembers)
+    public override void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers)
     {
         var pair = collisionInfo.CollidablePair;
         var collidableReference
@@ -71,7 +72,7 @@ internal class Player : Humanoid, IRayCaster
         LastContactBody = collidableReference.BodyHandle;
 #if DEBUG
         // TODO replace with something more sensible
-        if (simulationMembers.TryGetValue(collidableReference.BodyHandle, out var otherBody))
+        if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
             Console.WriteLine($"Player collided with {otherBody}");
         }

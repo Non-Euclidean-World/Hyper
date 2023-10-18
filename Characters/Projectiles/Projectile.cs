@@ -14,6 +14,8 @@ public class Projectile : ISimulationMember
 
     public int CurrentSphereId { get; set; }
 
+    public IList<BodyHandle> BodyHandles { get; private set; } = null!;
+
     private TypedIndex _shape;
 
     private float _lifeTime;
@@ -55,6 +57,7 @@ public class Projectile : ISimulationMember
             adjustedInitialPose = initialPose;
         }
         projectile.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(adjustedInitialPose, initialVelocity, inertia, new CollidableDescription(projectile._shape, 0.5f), 0.01f));
+        projectile.BodyHandles = new BodyHandle[1] { projectile.BodyHandle };
         ref var bodyProperties = ref properties.Allocate(projectile.BodyHandle);
         bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(projectile.BodyHandle.Value, 0) };
 
