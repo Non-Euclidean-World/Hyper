@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -12,11 +12,20 @@
       <PackageReference Include="OpenTK" Version="4.7.7" /> <!--This needs to stay at 4.7.7. Changing to 4.8 breaks things.-->
       <PackageReference Include="SkiaSharp" Version="2.88.6" />
       <PackageReference Include="StbImageSharp" Version="2.27.13" />
+      <PackageReference Include="AssimpNet" Version="4.1.0" />
     </ItemGroup>
-
 
     <ItemGroup>
       <None Update="NLog.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\BoundingShapes\box.dae">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\BoundingShapes\capsule.dae">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\BoundingShapes\cylinder.dae">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

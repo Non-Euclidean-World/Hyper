@@ -5,13 +5,12 @@ namespace Character;
 
 public static class ModelLoader
 {
-    public static Scene GetModel(string path)
+    public static Scene GetModel(string path, AssimpContext importer)
     {
-        AssimpContext importer = new AssimpContext();
         return importer.ImportFile(path);
     }
 
-    public static int[] GetVaos(Scene model)
+    public static int[] GetVaos(Scene model, bool texture = false, bool bones = false)
     {
         var vaos = new List<int>();
 
@@ -20,11 +19,13 @@ public static class ModelLoader
             int vao = GL.GenVertexArray();
             GL.BindVertexArray(vao);
 
-            SetupPositions(mesh);
-            SetupNormals(mesh);
-            SetupTextureCoords(mesh);
-            SetupBones(mesh);
-            SetupFaces(mesh);
+            SetUpPositions(mesh);
+            SetUpNormals(mesh);
+            if (texture)
+                SetUpTextureCoords(mesh);
+            if (bones)
+                SetUpBones(mesh);
+            SetUpFaces(mesh);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
@@ -35,7 +36,7 @@ public static class ModelLoader
         return vaos.ToArray();
     }
 
-    private static void SetupPositions(Mesh mesh)
+    private static void SetUpPositions(Mesh mesh)
     {
         int vboPositions = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboPositions);
@@ -47,7 +48,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(0);
     }
 
-    private static void SetupNormals(Mesh mesh)
+    private static void SetUpNormals(Mesh mesh)
     {
         int vboNormals = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vboNormals);
@@ -59,7 +60,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(1);
     }
 
-    private static void SetupTextureCoords(Mesh mesh)
+    private static void SetUpTextureCoords(Mesh mesh)
     {
         if (!mesh.HasTextureCoords(0)) return;
 
@@ -73,8 +74,11 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(2);
     }
 
-    private static void SetupBones(Mesh mesh)
+    private static void SetUpBones(Mesh mesh)
     {
+        if (!mesh.HasBones)
+            return;
+
         const int maxBones = 3;
 
         int[,] vertexBones = new int[mesh.VertexCount, maxBones];
@@ -119,7 +123,7 @@ public static class ModelLoader
         GL.EnableVertexAttribArray(4);
     }
 
-    private static void SetupFaces(Mesh mesh)
+    private static void SetUpFaces(Mesh mesh)
     {
         if (!mesh.HasFaces) return;
 

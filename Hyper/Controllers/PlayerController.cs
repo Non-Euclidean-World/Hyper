@@ -26,8 +26,6 @@ internal class PlayerController : IController, IInputSubscriber
 
     private readonly ITransporter _transporter;
 
-    private bool _showBoundingBoxes = false;
-
     public PlayerController(Scene scene, IChunkWorker chunkWorker, Context context, AbstractModelShader modelShader, AbstractObjectShader objectShader, AbstractLightSourceShader rayMarkerShader, ITransporter sphericalTransporter)
     {
         _scene = scene;
@@ -51,10 +49,6 @@ internal class PlayerController : IController, IInputSubscriber
             _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
             _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
-
-        if (!_showBoundingBoxes) return;
-        _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
-        _scene.Player.PhysicalCharacter.RenderBoundingBox(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
     }
 
     public void RegisterCallbacks(Context context)
@@ -109,8 +103,6 @@ internal class PlayerController : IController, IInputSubscriber
                 _rayMarkerShader.SetInt("characterSphere", targetSphereId);
             }
         });
-
-        context.RegisterKeyDownCallback(Keys.F3, () => _showBoundingBoxes = !_showBoundingBoxes);
 
         context.RegisterKeyDownCallback(Keys.C, () =>
         {

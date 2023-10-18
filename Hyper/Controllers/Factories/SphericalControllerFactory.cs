@@ -60,12 +60,13 @@ internal class SphericalControllerFactory : IControllerFactory
         return new IController[]
         {
             new PlayerController(_scene, chunkWorker, _context, modelShader, objectShader, lightSourceShader, transporter),
-            new BotsController(_scene, _context, modelShader, objectShader, transporter, new SphericalBotSpawnStrategy(_scene, settings)),
+            new BotsController(_scene, _context, modelShader, transporter, new SphericalBotSpawnStrategy(_scene, settings)),
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter),
             new LightSourcesController(_scene, lightSourceShader),
             new HudController(_scene, _windowHelper, hudShader, _context),
+            new BoundingShapesController(_scene, lightSourceShader, _context),
         };
     }
 }

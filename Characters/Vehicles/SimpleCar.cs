@@ -14,6 +14,9 @@ namespace Character.Vehicles;
 public class SimpleCar : ISimulationMember, IDisposable
 {
     public BodyHandle BodyHandle { get; private set; }
+
+    public IList<BodyHandle> BodyHandles { get; private set; } = null!;
+
     public WheelHandles FrontLeftWheel { get; private set; }
     public WheelHandles FrontRightWheel { get; private set; }
     public WheelHandles BackLeftWheel { get; private set; }
@@ -128,6 +131,9 @@ public class SimpleCar : ISimulationMember, IDisposable
         car.BackRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToBackRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
+
+        car.BodyHandles = new BodyHandle[5] { car.BodyHandle, car.BackLeftWheel.Wheel, car.BackRightWheel.Wheel, car.FrontLeftWheel.Wheel, car.FrontRightWheel.Wheel };
+
         return car;
     }
 
@@ -178,12 +184,12 @@ public class SimpleCar : ISimulationMember, IDisposable
         CarMesh mesh = new CarMesh(new OpenTK.Mathematics.Vector3(1.3f, 0.5f, 2.73f), wheelRadius, wheelWidth);
 
         return Create(simulation, bufferPool, properties, initialPose,
-            lowerPart: new Box(1.3f, 0.5f, 2.73f),
+            lowerPart: new Box(1.85f, 0.7f, 4.73f),
             lowerPartOrientation: RigidPose.Identity,
             lowerPartWeight: 10,
 
-            upperPart: new Box(1f, 0.4f, 0.5f),
-            upperPartOrientation: new Vector3(0, 0.65f, -1f),
+            upperPart: new Box(1.85f, 0.6f, 2.5f),
+            upperPartOrientation: new Vector3(0, 0.65f, -0.35f),
             upperPartWeight: 0.5f,
 
             bodyFriction: 0.5f, wheelFriction: 2f,

@@ -25,6 +25,6 @@ internal class Gun : Item
             Conversions.ToNumericsVector(scene.Camera.Front) * 15,
             new ProjectileMesh(0.4f, 0.1f, 0.1f), lifeTime: 5, scene.Player.CurrentSphereId); // let's throw some refrigerators
         scene.Projectiles.Add(projectile);
-        scene.SimulationMembers.Add(projectile.BodyHandle, projectile);
+        scene.SimulationMembers.Add(projectile);
     }
 }
