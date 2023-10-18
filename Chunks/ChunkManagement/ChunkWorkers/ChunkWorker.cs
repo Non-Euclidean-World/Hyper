@@ -175,7 +175,7 @@ public class ChunkWorker : IChunkWorker
 
         Chunks.RemoveAll(chunk =>
         {
-            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > _renderDistance)) 
+            if (!(GetDistance(chunk.Position / Chunk.Size, currentChunk) > _renderDistance))
                 return false;
 
             _existingChunks.Remove(chunk.Position / Chunk.Size);

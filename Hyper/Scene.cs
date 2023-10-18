@@ -3,7 +3,6 @@ using Character.GameEntities;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
-using Common;
 using Common.Meshes;
 using Common.UserInput;
 using Hyper.PlayerData;
@@ -35,12 +34,9 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    private readonly Context _context;
-
-    public Scene(Camera camera, float elevation, Context context, IWindowHelper windowHelper)
+    public Scene(Camera camera, float elevation, Context context)
     {
         int chunksPerSide = 2;
-        _context = context;
 
         LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
@@ -61,11 +57,34 @@ internal class Scene : IInputSubscriber
                 Conversions.ToNumericsVector(carInitialPosition))
         };
 
+        foreach (var car in FreeCars)
+        {
+            AddCar(car);
+        }
+
         Camera = camera;
 
         Chunks = new List<Chunk>();
 
         RegisterCallbacks(context);
+    }
+
+    private void AddCar(in SimpleCar car)
+    {
+        SimulationMembers.Add(car.BodyHandle, car); // this is pain in the neck
+        SimulationMembers.Add(car.BackLeftWheel.Wheel, car);
+        SimulationMembers.Add(car.BackRightWheel.Wheel, car);
+        SimulationMembers.Add(car.FrontLeftWheel.Wheel, car);
+        SimulationMembers.Add(car.FrontRightWheel.Wheel, car);
+    }
+
+    private void RemoveCar(in SimpleCar car)
+    {
+        SimulationMembers.Remove(car.BodyHandle); // this is pain in the neck
+        SimulationMembers.Remove(car.BackLeftWheel.Wheel);
+        SimulationMembers.Remove(car.BackRightWheel.Wheel);
+        SimulationMembers.Remove(car.FrontLeftWheel.Wheel);
+        SimulationMembers.Remove(car.FrontRightWheel.Wheel);
     }
 
     private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
@@ -124,6 +143,8 @@ internal class Scene : IInputSubscriber
                     FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                         car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
+                    AddCar(FreeCars[i]);
+                    RemoveCar(car);
                     car.Dispose();
                 }
                 return true;

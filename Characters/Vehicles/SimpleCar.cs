@@ -178,12 +178,12 @@ public class SimpleCar : ISimulationMember, IDisposable
         CarMesh mesh = new CarMesh(new OpenTK.Mathematics.Vector3(1.3f, 0.5f, 2.73f), wheelRadius, wheelWidth);
 
         return Create(simulation, bufferPool, properties, initialPose,
-            lowerPart: new Box(1.3f, 0.5f, 2.73f),
+            lowerPart: new Box(1.85f, 0.7f, 4.73f),
             lowerPartOrientation: RigidPose.Identity,
             lowerPartWeight: 10,
 
-            upperPart: new Box(1f, 0.4f, 0.5f),
-            upperPartOrientation: new Vector3(0, 0.65f, -1f),
+            upperPart: new Box(1.85f, 0.6f, 2.5f),
+            upperPartOrientation: new Vector3(0, 0.65f, -0.35f),
             upperPartWeight: 0.5f,
 
             bodyFriction: 0.5f, wheelFriction: 2f,

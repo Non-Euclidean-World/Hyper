@@ -75,6 +75,9 @@ public static class ModelLoader
 
     private static void SetupBones(Mesh mesh)
     {
+        if (!mesh.HasBones)
+            return;
+
         const int maxBones = 3;
 
         int[,] vertexBones = new int[mesh.VertexCount, maxBones];

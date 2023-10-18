@@ -12,7 +12,7 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
     private const int DistanceFromChunkCenter = Chunk.Size / 4;
 
     public SphericalBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings) { }
-    
+
     public override void Spawn()
     {
         while (Scene.Bots.Count < MaxBots)
@@ -34,12 +34,12 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
             Scene.Bots.Add(bot);
         }
     }
-    
+
     public override void Despawn()
     {
         // Nothing to do here.
     }
-    
+
     private Chunk GetRandomChunk(Random rand)
     {
         int index = rand.Next(Scene.Chunks.Count);
