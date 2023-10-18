@@ -69,7 +69,7 @@ internal class Scene : IInputSubscriber
         RegisterCallbacks(context);
     }
 
-    private void AddCar(in SimpleCar car)
+    private void AddCar(in SimpleCar car) // TODO move to vehicle controller. SimpleCar could return a list of all handles so that we don't have to query each of them
     {
         SimulationMembers.Add(car.BodyHandle, car); // this is pain in the neck
         SimulationMembers.Add(car.BackLeftWheel.Wheel, car);
@@ -78,7 +78,7 @@ internal class Scene : IInputSubscriber
         SimulationMembers.Add(car.FrontRightWheel.Wheel, car);
     }
 
-    private void RemoveCar(in SimpleCar car)
+    private void RemoveCar(in SimpleCar car) // TODO move to vehicle controller.
     {
         SimulationMembers.Remove(car.BodyHandle); // this is pain in the neck
         SimulationMembers.Remove(car.BackLeftWheel.Wheel);
@@ -121,7 +121,7 @@ internal class Scene : IInputSubscriber
                     PlayersCar = car;
                     FreeCars.Remove(car);
                     Player.Hide();
-                    SimulationMembers.Remove(Player.BodyHandle);
+                    SimulationMembers.Remove(Player.BodyHandle); // TODO move to player controller
                 }
                 return true;
             }

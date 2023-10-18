@@ -145,7 +145,7 @@ public class ShapesExtractor : IDisposable
         }
     }
 
-    private unsafe void AddCompoundChildren(ref Buffer<CompoundChild> children, RigidPose pose, Vector3 color, int sphereId)
+    private void AddCompoundChildren(ref Buffer<CompoundChild> children, RigidPose pose, Vector3 color, int sphereId)
     {
         for (int i = 0; i < children.Length; i++)
         {

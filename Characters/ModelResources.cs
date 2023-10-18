@@ -9,11 +9,13 @@ public abstract class ModelResources
     public readonly Texture Texture;
 
     public readonly Assimp.Scene Model;
-    
+
+    private static readonly Assimp.AssimpContext Importer = new();
+
     protected ModelResources(string modelPath, string texturePath)
     {
-        Model = ModelLoader.GetModel(modelPath);
-        Vaos = ModelLoader.GetVaos(Model);
+        Model = ModelLoader.GetModel(modelPath, Importer);
+        Vaos = ModelLoader.GetVaos(Model, texture: true, bones: true);
         Texture = Texture.LoadFromFile(texturePath);
     }
 }

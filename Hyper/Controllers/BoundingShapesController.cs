@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Common;
+﻿using Common;
 using Common.UserInput;
 using Hyper.Shaders.LightSourceShader;
 using OpenTK.Graphics.OpenGL4;
@@ -31,20 +30,6 @@ internal class BoundingShapesController : IController, IInputSubscriber
         _shader = shader;
         _shapesExtractor = new ShapesExtractor(_scene.SimulationManager.Simulation);
         RegisterCallbacks(context);
-    }
-
-    public void Dispose()
-    {
-        _shapesExtractor.Dispose();
-    }
-
-    public void RegisterCallbacks(Context context)
-    {
-        context.RegisterKeys(new List<Keys> { Keys.F3 });
-        context.RegisterKeyDownCallback(Keys.F3,
-            () =>
-            _active = !_active
-            );
     }
 
     public void Render()
@@ -94,7 +79,6 @@ internal class BoundingShapesController : IController, IInputSubscriber
         var localScale = Matrix4.CreateScale(new Vector3(box.HalfWidth, box.HalfHeight, box.HalfLength));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
-        Debug.Assert(_boxResource.Vaos.Length == 1 && _boxResource.Model.MeshCount == 1);
         GL.BindVertexArray(_boxResource.Vaos[0]);
         GL.DrawElements(PrimitiveType.Triangles, _boxResource.Model.Meshes[0].FaceCount * 3,
             DrawElementsType.UnsignedInt, 0);
@@ -111,7 +95,6 @@ internal class BoundingShapesController : IController, IInputSubscriber
         var localScale = Matrix4.CreateScale(new Vector3(capsule.Radius, capsule.HalfLength, capsule.Radius));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
-        Debug.Assert(_capsuleResource.Vaos.Length == 1 && _capsuleResource.Model.MeshCount == 1);
         GL.BindVertexArray(_capsuleResource.Vaos[0]);
         GL.DrawElements(PrimitiveType.Triangles, _capsuleResource.Model.Meshes[0].FaceCount * 3,
             DrawElementsType.UnsignedInt, 0);
@@ -128,7 +111,6 @@ internal class BoundingShapesController : IController, IInputSubscriber
         var localScale = Matrix4.CreateScale(new Vector3(cylinder.Radius, cylinder.HalfLength, cylinder.Radius));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
-        Debug.Assert(_cylinderResource.Vaos.Length == 1 && _cylinderResource.Model.MeshCount == 1);
         GL.BindVertexArray(_cylinderResource.Vaos[0]);
         GL.DrawElements(PrimitiveType.Triangles, _cylinderResource.Model.Meshes[0].FaceCount * 3,
             DrawElementsType.UnsignedInt, 0);
@@ -142,5 +124,16 @@ internal class BoundingShapesController : IController, IInputSubscriber
     private static void TurnOffWireframe()
     {
         GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+    }
+
+    public void Dispose()
+    {
+        _shapesExtractor.Dispose();
+    }
+
+    public void RegisterCallbacks(Context context)
+    {
+        context.RegisterKeys(new List<Keys> { Keys.F3 });
+        context.RegisterKeyDownCallback(Keys.F3, () => _active = !_active);
     }
 }
