@@ -66,7 +66,7 @@ public class Texture
 
         return new Texture(handle);
     }
-
+    
     private Texture(int glHandle)
     {
         _handle = glHandle;

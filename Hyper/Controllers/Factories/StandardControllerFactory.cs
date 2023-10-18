@@ -10,6 +10,7 @@ using Hyper.Controllers.Bots.Spawn;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
+using Hyper.Shaders.Shadow;
 using Hyper.Transporters;
 
 namespace Hyper.Controllers.Factories;
@@ -46,6 +47,7 @@ internal class StandardControllerFactory : IControllerFactory
         var objectShader = StandardObjectShader.Create(_globalScale);
         var modelShader = StandardModelShader.Create(_globalScale);
         var lightSourceShader = StandardLightSourceShader.Create(_globalScale);
+        var shadowShader = StandardShadowShader.Create(_globalScale);
         var hudShader = HudShader.Create();
 
         return new IController[]
@@ -55,7 +57,7 @@ internal class StandardControllerFactory : IControllerFactory
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter),
-            new LightSourcesController(_scene, lightSourceShader),
+            new LightSourcesController(_scene, lightSourceShader, shadowShader),
             new HudController(_scene, _windowHelper, hudShader, _context),
         };
     }

@@ -4,6 +4,9 @@ out vec4 FragColor;
 
 #define MAX_LIGHTS 10
 
+uniform samplerCube depthMap;
+uniform float far_plane;
+
 uniform vec3 lightColor[MAX_LIGHTS];
 uniform vec4 lightPos[MAX_LIGHTS];
 uniform vec4 viewPos;
@@ -37,6 +40,18 @@ vec4 direction(vec4 from, vec4 to)
     return normalize(to - from);
 }
 
+float ShadowCalculation(vec3 fragPos)
+{
+    vec3 fragToLight = fragPos - lightPos[0].xyz;
+    float closestDepth = texture(depthMap, fragToLight).r;
+    closestDepth *= far_plane;
+    float currentDepth = length(fragToLight);
+    float bias = 0.05;
+    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
+
 void main()
 {
     float ambientStrength = 0.1;
@@ -58,6 +73,7 @@ void main()
         specular += specularStrength * spec * lightColor[i];
     }
 
-    vec3 result = (ambient + diffuse + specular) * Color;
+    float shadow = ShadowCalculation(FragPos.xyz);
+    vec3 result = (ambient + diffuse + specular) * (1 - shadow) * Color;
     FragColor = vec4(result, 1.0);
 }

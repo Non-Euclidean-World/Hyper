@@ -83,7 +83,8 @@ internal class Scene : IInputSubscriber
 
                 int offset = Chunk.Size - 1;
 
-                lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, elevation + 10f, offset * y), new Vector3(1, 1, 1)));
+                lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, elevation + 4f, offset * y), new Vector3(1, 1, 1)));
+                return lightSources; // TODO remove this
             }
         }
 

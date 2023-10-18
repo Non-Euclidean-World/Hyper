@@ -10,6 +10,7 @@ using Hyper.Controllers.Bots.Spawn;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
+using Hyper.Shaders.Shadow;
 using Hyper.Transporters;
 using OpenTK.Mathematics;
 
@@ -55,6 +56,7 @@ internal class SphericalControllerFactory : IControllerFactory
         var objectShader = SphericalObjectShader.Create(_globalScale, _lowerSphereCenter);
         var modelShader = SphericalModelShader.Create(_globalScale, _lowerSphereCenter);
         var lightSourceShader = SphericalLightSourceShader.Create(_globalScale, _lowerSphereCenter);
+        var shadowShader = SphericalShadowShader.Create(_globalScale, _lowerSphereCenter);
         var hudShader = HudShader.Create();
 
         return new IController[]
@@ -64,7 +66,7 @@ internal class SphericalControllerFactory : IControllerFactory
             new ChunksController(_scene, _context, objectShader, chunkWorker),
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter),
-            new LightSourcesController(_scene, lightSourceShader),
+            new LightSourcesController(_scene, lightSourceShader, shadowShader),
             new HudController(_scene, _windowHelper, hudShader, _context),
         };
     }

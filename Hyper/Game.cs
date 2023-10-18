@@ -92,6 +92,9 @@ public class Game
         if (!IsRunning) return;
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+        var lightSourceController = _controllers.Single((x) => x.GetType() == typeof(LightSourcesController)) as LightSourcesController;
+        lightSourceController.RenderShadows(_size.X, _size.Y);
+
         foreach (var controller in _controllers)
         {
             controller.Render();

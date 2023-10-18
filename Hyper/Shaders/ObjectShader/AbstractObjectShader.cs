@@ -49,5 +49,9 @@ internal abstract class AbstractObjectShader : Shader
         SetLightColors(lightSources.Select(x => x.Color).ToArray());
         SetLightPositions(lightSources.Select(x =>
             GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve)).ToArray());
+        
+        lightSources[0].CubeMap.Use(TextureUnit.Texture0);
+        SetInt("depthMap", 0); 
+        SetFloat("far_plane", LightSource.FarPlane);
     }
 }
