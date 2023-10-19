@@ -24,6 +24,7 @@ public class RayEndpointMarker
         shader.SetVector3("color", _color);
 
         GL.BindVertexArray(_sphereResource.Vaos[0]);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _sphereResource.Model.Meshes[0].FaceCount * 3);
+        GL.DrawElements(PrimitiveType.Triangles, _sphereResource.Model.Meshes[0].FaceCount * 3,
+            DrawElementsType.UnsignedInt, 0);
     }
 }

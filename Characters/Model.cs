@@ -47,7 +47,8 @@ public class Model
             shader.SetMatrix4Array("boneTransforms", boneTransforms);
 
             GL.BindVertexArray(_modelResources.Vaos[i]);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, _modelResources.Model.Meshes[i].FaceCount * 3);
+            GL.DrawElements(PrimitiveType.Triangles, _modelResources.Model.Meshes[i].FaceCount * 3,
+                DrawElementsType.UnsignedInt, 0);
         }
     }
 }
