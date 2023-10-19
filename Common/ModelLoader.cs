@@ -25,7 +25,6 @@ public static class ModelLoader
                 SetUpTextureCoords(mesh);
             if (bones)
                 SetUpBones(mesh);
-            SetUpFaces(mesh);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
@@ -121,16 +120,5 @@ public static class ModelLoader
 
         GL.VertexAttribPointer(4, maxBones, VertexAttribPointerType.Float, false, 0, 0);
         GL.EnableVertexAttribArray(4);
-    }
-
-    private static void SetUpFaces(Mesh mesh)
-    {
-        if (!mesh.HasFaces) return;
-
-        int ebo = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-
-        var indices = mesh.Faces.SelectMany(f => f.Indices).ToArray();
-        GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(int), indices, BufferUsageHint.StaticDraw);
     }
 }
