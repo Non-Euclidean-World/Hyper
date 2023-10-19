@@ -51,7 +51,7 @@ internal abstract class Pickaxe : Item
         if (zeroTime) _buildTime = 0;
         else _buildTime += time;
     }
-    
+
     public override void Up()
     {
         Radius = Math.Min(Radius + 1, 10);
@@ -60,5 +60,5 @@ internal abstract class Pickaxe : Item
     public override void Down()
     {
         Radius = Math.Max(Radius - 1, 1);
-    }   
+    }
 }

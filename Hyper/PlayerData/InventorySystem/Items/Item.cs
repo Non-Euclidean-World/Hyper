@@ -18,6 +18,6 @@ internal abstract class Item
     public virtual void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time) { }
 
     public virtual void Up() { }
-    
+
     public virtual void Down() { }
 }

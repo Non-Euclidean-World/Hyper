@@ -29,7 +29,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
     private readonly SphericalChunkFactory _chunkFactory;
 
     private readonly SphericalMeshGenerator _meshGenerator;
-    
+
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
@@ -49,7 +49,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
         {
             Task.Run(RunJob);
         }
-        
+
         Chunks.Clear();
         var initialChunks = new List<Chunk>();
         initialChunks.AddRange(_chunkHandler.LoadAllSavedChunks(spherical: true));
@@ -73,7 +73,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
         }
         catch (OperationCanceledException) { }
     }
-    
+
     public void Update(Vector3 currentPosition)
     {
         ResolveLoadedChunks();

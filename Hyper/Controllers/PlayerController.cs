@@ -49,10 +49,10 @@ internal class PlayerController : IController, IInputSubscriber
         {
             _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
             _scene.Player.RenderRay(
-                in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], 
-                _rayMarkerShader, 
-                _rayMarkerShader.GlobalScale, 
-                _scene.Camera.Curve, 
+                in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId],
+                _rayMarkerShader,
+                _rayMarkerShader.GlobalScale,
+                _scene.Camera.Curve,
                 _scene.Camera.ReferencePointPosition,
                 pickaxe.Radius / 5f);
         }
