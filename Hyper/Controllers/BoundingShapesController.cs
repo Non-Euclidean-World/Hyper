@@ -81,8 +81,7 @@ internal class BoundingShapesController : IController, IInputSubscriber
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
         GL.BindVertexArray(_boxResource.Vaos[0]);
-        GL.DrawElements(PrimitiveType.Triangles, _boxResource.Model.Meshes[0].FaceCount * 3,
-            DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _boxResource.Model.Meshes[0].FaceCount * 3);
     }
 
     private void Render(BoundingCapsule capsule)
@@ -97,8 +96,7 @@ internal class BoundingShapesController : IController, IInputSubscriber
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
         GL.BindVertexArray(_capsuleResource.Vaos[0]);
-        GL.DrawElements(PrimitiveType.Triangles, _capsuleResource.Model.Meshes[0].FaceCount * 3,
-            DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _capsuleResource.Model.Meshes[0].FaceCount * 3);
     }
 
     private void Render(BoundingCylinder cylinder)
@@ -113,8 +111,7 @@ internal class BoundingShapesController : IController, IInputSubscriber
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
         GL.BindVertexArray(_cylinderResource.Vaos[0]);
-        GL.DrawElements(PrimitiveType.Triangles, _cylinderResource.Model.Meshes[0].FaceCount * 3,
-            DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _cylinderResource.Model.Meshes[0].FaceCount * 3);
     }
 
     private static void TurnOnWireframe()
