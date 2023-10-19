@@ -28,6 +28,9 @@
       <None Update="Resources\BoundingShapes\cylinder.dae">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Resources\BoundingShapes\sphere.dae">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

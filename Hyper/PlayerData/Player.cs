@@ -39,7 +39,7 @@ internal class Player : Humanoid, IRayCaster
         new Model(CowboyResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
-        _rayEndpointMarker = new RayEndpointMarker(CubeMesh.Vertices, Vector3.Zero, new Vector3(.5f, .5f, .5f));
+        _rayEndpointMarker = new RayEndpointMarker(new Vector3(.5f, .5f, .5f));
     }
 
     public void Render(Shader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
@@ -48,10 +48,10 @@ internal class Player : Humanoid, IRayCaster
             Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);
     }
 
-    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, float curve, Vector3 cameraPosition)
+    public void RenderRay(in RayHit rayHit, Shader rayMarkerShader, float scale, float curve, Vector3 cameraPosition, float size)
     {
-        _rayEndpointMarker.Position = GetRayEndpoint(rayHit);
-        _rayEndpointMarker.Render(rayMarkerShader, scale, curve, cameraPosition);
+        var rayPosition = GetRayEndpoint(rayHit);
+        _rayEndpointMarker.Render(rayMarkerShader, scale, curve, rayPosition, cameraPosition, size);
     }
 
     public Vector3 GetRayEndpoint(in RayHit hit)

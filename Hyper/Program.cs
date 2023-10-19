@@ -1,8 +1,9 @@
 ﻿using Common;
-using Hyper;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+
+namespace Hyper;
 
 internal class Program
 {

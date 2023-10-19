@@ -1,18 +1,16 @@
 ﻿using Chunks.ChunkManagement.ChunkWorkers;
 
-namespace Hyper.PlayerData.InventorySystem.Items;
+namespace Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 
-internal class Hammer : Item
+internal abstract class Pickaxe : Item
 {
-    public override string Id => "hammer";
+    public override string Id => "pickaxe";
 
     public override bool IsStackable => false;
 
-    public override CursorType Cursor => CursorType.BuildBlock;
+    protected virtual float BrushWeight => 3;
 
-    private const float BrushWeight = 3;
-
-    private const int Radius = 5;
+    public int Radius = 5;
 
     private float _mineTime = 0;
 
@@ -53,4 +51,14 @@ internal class Hammer : Item
         if (zeroTime) _buildTime = 0;
         else _buildTime += time;
     }
+    
+    public override void Up()
+    {
+        Radius = Math.Min(Radius + 1, 10);
+    }
+
+    public override void Down()
+    {
+        Radius = Math.Max(Radius - 1, 1);
+    }   
 }

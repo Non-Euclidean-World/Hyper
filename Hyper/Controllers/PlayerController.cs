@@ -2,6 +2,7 @@
 using Common.UserInput;
 using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -44,10 +45,16 @@ internal class PlayerController : IController, IInputSubscriber
         _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
         _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
-        if (_scene.Player.Inventory.SelectedItem is not null && _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
+        if (_scene.Player.Inventory.SelectedItem is Pickaxe pickaxe)
         {
             _rayMarkerShader.SetUp(_scene.Camera, _scene.Player.CurrentSphereId);
-            _scene.Player.RenderRay(in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], _rayMarkerShader, _rayMarkerShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _scene.Player.RenderRay(
+                in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId], 
+                _rayMarkerShader, 
+                _rayMarkerShader.GlobalScale, 
+                _scene.Camera.Curve, 
+                _scene.Camera.ReferencePointPosition,
+                pickaxe.Radius / 5f);
         }
     }
 
@@ -130,6 +137,16 @@ internal class PlayerController : IController, IInputSubscriber
         {
             if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene, _chunkWorker, (float)e.Time);
+        });
+        context.RegisterKeyDownCallback(Keys.Up, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.Up();
+        });
+        context.RegisterKeyDownCallback(Keys.Down, () =>
+        {
+            if (!_scene.Player.Inventory.IsOpen)
+                _scene.Player.Inventory.SelectedItem?.Down();
         });
     }
 

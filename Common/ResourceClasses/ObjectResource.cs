@@ -1,6 +1,4 @@
-﻿using Character;
-
-namespace Common;
+﻿namespace Common.ResourceClasses;
 public class ObjectResource
 {
     public readonly int[] Vaos;
