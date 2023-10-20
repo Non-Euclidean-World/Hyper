@@ -34,7 +34,7 @@ public abstract class BaseMeshGenerator
         int edge0 = MarchingCubesTables.EdgeConnections[edges[index]][0];
         int edge1 = MarchingCubesTables.EdgeConnections[edges[index]][1];
 
-        var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position;
+        var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position - Vector3.One;
         var normal = Interpolate(normals[edge0], cubeValues[edge0], normals[edge1], cubeValues[edge1]);
         var color = Interpolate(colors[edge0], cubeValues[edge0], colors[edge1], cubeValues[edge1]);
 
@@ -52,36 +52,13 @@ public abstract class BaseMeshGenerator
             Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
             cubeValues[i] = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
             colors[i] = VoxelHelper.GetColor(scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
-
-            if (cubeVertexPos.X == 0)
-                normals[i].X = 2 * (scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.X == scalarField.GetLength(0) - 1)
-                normals[i].X = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else
-                normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
-
-            if (cubeVertexPos.Y == 0)
-                normals[i].Y = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.Y == scalarField.GetLength(1) - 1)
-                normals[i].Y = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value);
-            else
-                normals[i].Y = scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
-
-            if (cubeVertexPos.Z == 0)
-                normals[i].Z = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
-                                    - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.Z == scalarField.GetLength(2) - 1)
-                normals[i].Z = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                                    - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value);
-            else
-                normals[i].Z = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
+            
+            normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                           - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
+            normals[i].Y = scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
+                           - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
+            normals[i].Z = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
+                           - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
         }
 
         return (cubeValues, normals, colors);

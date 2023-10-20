@@ -29,13 +29,14 @@ public class SphericalChunkFactory
             throw new ArgumentException("# of chunks/side must be even");
 
         List<Chunk> spheres = new();
+        const int extra = Chunk.Overlap + 1;
 
         for (int chunkX = -chunksPerSide / 2; chunkX < chunksPerSide / 2; chunkX++)
         {
             for (int chunkY = -chunksPerSide / 2; chunkY < chunksPerSide / 2; chunkY++)
             {
-                var averageScalarField0 = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
-                var averageScalarField1 = new Voxel[Chunk.Size + 1, Chunk.Size + 1, Chunk.Size + 1];
+                var averageScalarField0 = new Voxel[Chunk.Size + extra, Chunk.Size + extra, Chunk.Size + extra];
+                var averageScalarField1 = new Voxel[Chunk.Size + extra, Chunk.Size + extra, Chunk.Size + extra];
 
                 int offset = Chunk.Size;
 
@@ -45,11 +46,11 @@ public class SphericalChunkFactory
                 var scalarField0 = _scalarFieldGenerator.Generate(Chunk.Size, sf0Pos);
                 var scalarField1 = _scalarFieldGenerator.Generate(Chunk.Size, sf1Pos);
 
-                for (int x = 0; x < Chunk.Size + 1; x++)
+                for (int x = 0; x < Chunk.Size + extra; x++)
                 {
-                    for (int y = 0; y < Chunk.Size + 1; y++)
+                    for (int y = 0; y < Chunk.Size + extra; y++)
                     {
-                        for (int z = 0; z < Chunk.Size + 1; z++)
+                        for (int z = 0; z < Chunk.Size + extra; z++)
                         {
                             var position = new Vector3i(x + chunkX * Chunk.Size, y, z + chunkY * Chunk.Size);
                             var radius = MathF.PI / 2 / _globalScale;

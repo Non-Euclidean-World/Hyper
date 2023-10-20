@@ -14,6 +14,8 @@ public class Chunk
 {
     public const int Size = 32;
 
+    public const int Overlap = 2;
+
     public Vector3i Position { get; }
 
     public readonly Voxel[,,] Voxels;
@@ -50,11 +52,11 @@ public class Chunk
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size + Overlap - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size + Overlap - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size + Overlap - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -78,11 +80,11 @@ public class Chunk
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size + Overlap - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size + Overlap - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size + Overlap - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
