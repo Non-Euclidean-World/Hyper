@@ -19,14 +19,13 @@ internal abstract class Pickaxe : Item
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
         bool zeroTime = false;
-        if (!chunkWorker.IsOnUpdateQueue(scene.Chunks[0]))
+        if (!chunkWorker.IsUpdating)
         {
             foreach (var chunk in chunkWorker.Chunks)
             {
                 var location =
                     scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
                 if (chunk.DistanceFromChunk(location) >= Radius) continue;
-                // if (chunkWorker.IsOnUpdateQueue(chunk)) continue;
                 chunk.Mine(location, time + _mineTime, BrushWeight, Radius);
                 chunkWorker.EnqueueUpdatingChunk(chunk);
                 zeroTime = true;
@@ -40,15 +39,17 @@ internal abstract class Pickaxe : Item
     public override void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time)
     {
         bool zeroTime = false;
-        foreach (var chunk in chunkWorker.Chunks)
+        if (!chunkWorker.IsUpdating)
         {
-            var location =
-                scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
-            if (chunk.DistanceFromChunk(location) >= Radius) continue;
-            if (chunkWorker.IsOnUpdateQueue(chunk)) continue;
-            chunk.Build(location, time + _buildTime, BrushWeight, Radius);
-            chunkWorker.EnqueueUpdatingChunk(chunk);
-            zeroTime = true;
+            foreach (var chunk in chunkWorker.Chunks)
+            {
+                var location =
+                    scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
+                if (chunk.DistanceFromChunk(location) >= Radius) continue;
+                chunk.Build(location, time + _buildTime, BrushWeight, Radius);
+                chunkWorker.EnqueueUpdatingChunk(chunk);
+                zeroTime = true;
+            }
         }
 
         if (zeroTime) _buildTime = 0;

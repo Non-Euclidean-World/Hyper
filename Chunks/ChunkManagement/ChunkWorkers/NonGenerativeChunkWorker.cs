@@ -8,6 +8,24 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class NonGenerativeChunkWorker : IChunkWorker
 {
+    private bool _isUpdatingUnlocked;
+    
+    private readonly object _lockObj = new();
+
+    public bool IsUpdating
+    {
+        get
+        {
+            lock (_lockObj)
+                return _isUpdatingUnlocked;
+        }
+        set
+        {
+            lock (_lockObj)
+                _isUpdatingUnlocked = value;
+        }
+    }
+    
     public List<Chunk> Chunks { get; }
 
     private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
@@ -107,11 +125,6 @@ public class NonGenerativeChunkWorker : IChunkWorker
 
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdate.Add(chunk);
-    }
-
-    public bool IsOnUpdateQueue(Chunk chunk)
-    {
-        return _chunksToUpdateHashSet.Contains(chunk);
     }
 
     public void Dispose()

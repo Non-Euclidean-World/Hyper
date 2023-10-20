@@ -5,8 +5,8 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 public interface IChunkWorker : IDisposable
 {
     public List<Chunk> Chunks { get; }
-
-    bool IsOnUpdateQueue(Chunk chunk);
+    
+    public bool IsUpdating { get; set; }
 
     void EnqueueUpdatingChunk(Chunk chunk);
 
