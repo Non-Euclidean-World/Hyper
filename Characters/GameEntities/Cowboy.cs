@@ -13,7 +13,7 @@ public class Cowboy : Humanoid
     private bool _isMoving;
 
     private float _idleTime;
-    
+
     private float _moveTime;
 
     public Cowboy(PhysicalCharacter physicalCharacter) : base(
@@ -21,7 +21,7 @@ public class Cowboy : Humanoid
     {
         _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
     }
-    
+
     public override void UpdateCharacterGoals(Simulation simulation, float time)
     {
         if (_isMoving == false)
@@ -36,7 +36,7 @@ public class Cowboy : Humanoid
                 _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position) + new Vector3(random.Next(-10, 10), 0, random.Next(-10, 10));
             }
         }
-        
+
         ViewDirection = _goalPosition - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
         var movementDirection = System.Numerics.Vector2.UnitY;
         if (ViewDirection is { X: < 0.1f, Z: < 0.1f })
@@ -45,7 +45,7 @@ public class Cowboy : Humanoid
             ViewDirection = Vector3.Zero;
             _isMoving = false;
         }
-        
+
         if (_isMoving)
         {
             Run();
@@ -54,15 +54,15 @@ public class Cowboy : Humanoid
         {
             Idle();
         }
-        PhysicalCharacter.UpdateCharacterGoals(simulation, 
-            Conversions.ToNumericsVector(ViewDirection), 
-            time, 
-            tryJump: false, 
-            sprint: false, 
+        PhysicalCharacter.UpdateCharacterGoals(simulation,
+            Conversions.ToNumericsVector(ViewDirection),
+            time,
+            tryJump: false,
+            sprint: false,
             movementDirection);
     }
 
     private void Run() => Character.Animator.Play(0);
-    
+
     private void Idle() => Character.Animator.Reset();
 }

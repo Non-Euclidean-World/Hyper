@@ -1,7 +1,7 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Character;
+namespace Common;
 
 public static class ModelLoader
 {

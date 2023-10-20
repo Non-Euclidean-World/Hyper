@@ -6,6 +6,7 @@ using Hud.Shaders;
 using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Hyper.Controllers;
@@ -45,8 +46,7 @@ internal class HudController : IController
         foreach (var element in _hudElements)
         {
             if (element is Crosshair &&
-                _scene.Player.Inventory.SelectedItem is not null &&
-                _scene.Player.Inventory.SelectedItem.Cursor == CursorType.BuildBlock)
+                _scene.Player.Inventory.SelectedItem is Pickaxe)
                 continue;
 
             if (element.Visible)

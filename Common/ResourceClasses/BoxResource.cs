@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.ResourceClasses;
 public class BoxResource : ObjectResource
 {
     private static readonly Lazy<BoxResource> InternalInstance = new(() => new BoxResource());

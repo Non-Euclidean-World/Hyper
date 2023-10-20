@@ -1,6 +1,7 @@
 ﻿using Common.UserInput;
 using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -31,8 +32,10 @@ internal class Inventory : IInputSubscriber
 
         if (starterItems)
         {
-            AddItem(new Hammer());
             AddItem(new Gun());
+            AddItem(new WoodenPickaxe());
+            AddItem(new IronPickaxe());
+            AddItem(new DiamondPickaxe());
             AddItem(new Bullet(), 64);
         }
     }

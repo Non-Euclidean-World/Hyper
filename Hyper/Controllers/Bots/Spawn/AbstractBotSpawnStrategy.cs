@@ -15,17 +15,17 @@ internal abstract class AbstractBotSpawnStrategy
         Scene = scene;
         Rand = new Random(settings.Seed);
     }
-    
+
     public abstract void Spawn();
-    
+
     public abstract void Despawn();
-    
+
     protected float GetSpawnHeight(int x, int z)
     {
         foreach (var chunk in Scene.Chunks)
         {
-            if (x < chunk.Position.X || x > chunk.Position.X + Chunk.Size ) continue;
-            if (z < chunk.Position.Z || z > chunk.Position.Z + Chunk.Size ) continue;
+            if (x < chunk.Position.X || x > chunk.Position.X + Chunk.Size) continue;
+            if (z < chunk.Position.Z || z > chunk.Position.Z + Chunk.Size) continue;
             var chunkX = x - chunk.Position.X;
             var chunkZ = z - chunk.Position.Z;
             bool negative = chunk.Voxels[chunkX, 0, chunkZ].Value < BaseMeshGenerator.IsoLevel;

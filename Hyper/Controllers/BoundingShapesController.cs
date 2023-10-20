@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.ResourceClasses;
 using Common.UserInput;
 using Hyper.Shaders.LightSourceShader;
 using OpenTK.Graphics.OpenGL4;

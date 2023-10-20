@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.ResourceClasses;
 public class CylinderResource : ObjectResource
 {
     private static readonly Lazy<CylinderResource> InternalInstance = new(() => new CylinderResource());

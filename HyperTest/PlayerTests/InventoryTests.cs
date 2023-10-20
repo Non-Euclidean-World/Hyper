@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Hyper.PlayerData.InventorySystem;
 using Hyper.PlayerData.InventorySystem.Items;
+using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 
 namespace HyperTest.PlayerTests;
 
@@ -14,7 +15,7 @@ public class InventoryTests
         // Arrange
         var context = new Context();
         var inventory = new Inventory(context);
-        var item = new Hammer();
+        var item = new IronPickaxe();
 
         // Act
         inventory.AddItem(item);
@@ -29,7 +30,7 @@ public class InventoryTests
         // Arrange
         var context = new Context();
         var inventory = new Inventory(context);
-        var item = new Hammer();
+        var item = new IronPickaxe();
         var item2 = new Bullet();
 
         // Act
