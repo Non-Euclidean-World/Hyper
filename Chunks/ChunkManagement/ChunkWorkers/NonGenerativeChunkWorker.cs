@@ -19,7 +19,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
             lock (_lockObj)
                 return _isUpdatingUnlocked;
         }
-        set
+        private set
         {
             lock (_lockObj)
                 _isUpdatingUnlocked = value;
@@ -87,6 +87,8 @@ public class NonGenerativeChunkWorker : IChunkWorker
             {
                 chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
+                if (_chunksToUpdate.Count == 0) 
+                    IsUpdating = false;
             }
         }
         catch (OperationCanceledException) { }
@@ -123,6 +125,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
         if (_chunksToUpdateHashSet.Contains(chunk))
             return;
 
+        IsUpdating = true;
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdate.Add(chunk);
     }

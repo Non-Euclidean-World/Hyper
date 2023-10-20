@@ -20,7 +20,7 @@ public class ChunkWorker : IChunkWorker
             lock (_lockObj)
                 return _isUpdatingUnlocked;
         }
-        set
+        private set
         {
             lock (_lockObj)
                 _isUpdatingUnlocked = value;
@@ -124,7 +124,8 @@ public class ChunkWorker : IChunkWorker
                         UpdateChunks();
                     }
 
-                    if (_chunksToUpdateQueue.IsEmpty) IsUpdating = false;
+                    if (_chunksToUpdateQueue.IsEmpty) 
+                        IsUpdating = false;
 
                     switch (jobType)
                     {

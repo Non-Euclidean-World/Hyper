@@ -12,9 +12,14 @@ namespace Chunks;
 
 public class Chunk
 {
-    public const int Size = 32;
+    public static int Size = 16;
 
     public const int Overlap = 2;
+    
+    /// <summary>
+    /// Size of the voxel field dimension.
+    /// </summary>
+    public static int TotalSize => Size + Overlap + 1;
 
     public Vector3i Position { get; }
 
@@ -48,15 +53,16 @@ public class Chunk
     /// <param name="radius"></param>
     public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
+        location += Vector3.One;
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size + Overlap - 1, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(TotalSize - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size + Overlap - 1, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(TotalSize - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size + Overlap - 1, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(TotalSize - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -76,15 +82,16 @@ public class Chunk
     /// <param name="radius"></param>
     public void Build(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
+        location += Vector3.One;
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size + Overlap - 1, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(TotalSize - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size + Overlap - 1, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(TotalSize - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size + Overlap - 1, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(TotalSize - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -97,7 +104,8 @@ public class Chunk
 
     public float DistanceFromChunk(Vector3 location)
     {
-        Vector3 chunkTopLeft = Position + new Vector3(Size, Size, Size);
+        location += Vector3.One; // This is because of chunk overlap. The chunks is shifted by 1 in each direction so we need to unshift it here.
+        Vector3 chunkTopLeft = Position + new Vector3(TotalSize, TotalSize, TotalSize);
 
         float closestX = Math.Clamp(location.X, Position.X, chunkTopLeft.X);
         float closestY = Math.Clamp(location.Y, Position.Y, chunkTopLeft.Y);

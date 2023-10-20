@@ -1,4 +1,5 @@
-﻿using Chunks.MarchingCubes;
+﻿using Chunks;
+using Chunks.MarchingCubes;
 using Common;
 using Common.UserInput;
 using Hyper.Controllers;
@@ -58,6 +59,9 @@ public class Game
             GeometryType.Spherical => 1f,
             _ => throw new NotImplementedException(),
         };
+
+        if (_settings.GeometryType == GeometryType.Spherical)
+            Chunk.Size = 32;
 
         var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
         var camera = new Camera(aspectRatio: _size.X / (float)_size.Y, curve, near: 0.01f, far: 200f, _globalScale, _context)
