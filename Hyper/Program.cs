@@ -9,9 +9,10 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        const int height = 600;
         var nativeWindowSettings = new NativeWindowSettings()
         {
-            Size = new Vector2i(800, 600),
+            Size = new Vector2i(height * 16 / 9, height),
             Title = "Hyper",
             // This is needed to run on macos
             Flags = ContextFlags.ForwardCompatible,
