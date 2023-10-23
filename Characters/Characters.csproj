@@ -17,6 +17,18 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="Resources\Car\body.dae">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\Car\bodyTexture.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\Car\wheel.dae">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\Car\wheelTexture.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Resources\Cowboy\model.dae">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

@@ -1,10 +1,13 @@
-﻿using Character.Vehicles;
+﻿using BepuPhysics;
+using Character.Vehicles;
+using Common;
 using Common.UserInput;
 using Hyper.PlayerData;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
 using Hyper.Transporters;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Physics.TypingUtils;
@@ -23,6 +26,10 @@ internal class VehiclesController : IController, IInputSubscriber
 
     private readonly ITransporter _transporter;
 
+    private readonly CarBodyResource _bodyResource = CarBodyResource.Instance;
+
+    private readonly CarWheelResource _wheelResource = CarWheelResource.Instance;
+
     public VehiclesController(Scene scene, Context context, AbstractObjectShader objectShader, AbstractLightSourceShader lightSourceShader, AbstractModelShader modelShader, ITransporter transporter)
     {
         _scene = scene;
@@ -38,14 +45,85 @@ internal class VehiclesController : IController, IInputSubscriber
 
         foreach (var car in _scene.FreeCars)
         {
-            _objectShader.SetUp(_scene.Camera, _scene.LightSources, car.CurrentSphereId);
-            car.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _modelShader.SetUp(_scene.Camera, _scene.LightSources, car.CurrentSphereId);
+            _modelShader.SetBool("isAnimated", false);
+            Render(car);
+            RenderWheels(car);
         }
 
         if (_scene.PlayersCar != null)
         {
-            _objectShader.SetUp(_scene.Camera, _scene.LightSources, _scene.PlayersCar.CurrentSphereId);
-            _scene.PlayersCar.Mesh.Render(_objectShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.PlayersCar.CurrentSphereId);
+            _modelShader.SetBool("isAnimated", false);
+            Render(_scene.PlayersCar);
+            RenderWheels(_scene.PlayersCar);
+        }
+    }
+
+    private void Render(SimpleCar car)
+    {
+        _bodyResource.Texture.Use(TextureUnit.Texture0);
+
+        var translation = Matrix4.CreateTranslation(
+        GeomPorting.CreateTranslationTarget(
+                Conversions.ToOpenTKVector(car.CarBodyPose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _objectShader.GlobalScale));
+
+        var rotation = Matrix4.CreateRotationX(-MathF.PI / 2) // TODO this can be optimized by making a z->y conversion on model load
+            * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(car.CarBodyPose.Orientation));
+        var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
+        var localScale = Matrix4.CreateScale(2);
+        _modelShader.SetMatrix4("model", localScale * globalScale * rotation * translation);
+        _modelShader.SetMatrix4("normalRotation", rotation);
+
+        for (int i = 0; i < _bodyResource.Model.Meshes.Count; i++)
+        {
+            GL.BindVertexArray(_bodyResource.Vaos[i]);
+            GL.DrawElements(PrimitiveType.Triangles, _bodyResource.Model.Meshes[i].FaceCount * 3,
+                DrawElementsType.UnsignedInt, 0);
+        }
+    }
+
+    private void RenderWheels(SimpleCar car)
+    {
+        RenderWheel(car.FrontLeftWheel, true);
+        RenderWheel(car.FrontRightWheel, false);
+        RenderWheel(car.BackLeftWheel, true);
+        RenderWheel(car.BackRightWheel, false);
+    }
+
+    // this makes me wanna cry TODO move it to car class
+    private void RenderWheel(WheelHandles wheel, bool leftSide)
+    {
+        _wheelResource.Texture.Use(TextureUnit.Texture0);
+
+        var wheelReference = new BodyReference(wheel.Wheel, _scene.SimulationManager.Simulation.Bodies);
+        ref var wheelPose = ref wheelReference.Pose;
+        var translation = Matrix4.CreateTranslation(
+       GeomPorting.CreateTranslationTarget(
+               Conversions.ToOpenTKVector(wheelPose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _objectShader.GlobalScale));
+
+        Matrix4 importRotation;
+        if (leftSide)
+        {
+            importRotation = Matrix4.CreateRotationZ(-MathF.PI / 2);
+        }
+        else
+        {
+            importRotation = Matrix4.CreateRotationZ(MathF.PI / 2);
+        }
+        var rotation = importRotation // TODO this can be optimized by making a z->y conversion on model load
+            * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(wheelPose.Orientation));
+
+        var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
+        var localScale = Matrix4.CreateScale(2);
+        _modelShader.SetMatrix4("model", localScale * globalScale * rotation * translation);
+        _modelShader.SetMatrix4("normalRotation", rotation);
+
+        for (int i = 0; i < _wheelResource.Model.Meshes.Count; i++)
+        {
+            GL.BindVertexArray(_wheelResource.Vaos[i]);
+            GL.DrawElements(PrimitiveType.Triangles, _wheelResource.Model.Meshes[i].FaceCount * 3,
+                DrawElementsType.UnsignedInt, 0);
         }
     }
 
