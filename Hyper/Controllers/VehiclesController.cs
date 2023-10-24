@@ -2,6 +2,7 @@
 using Character.Vehicles;
 using Common;
 using Common.UserInput;
+using Hyper.Controllers.Bots.Spawn;
 using Hyper.PlayerData;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
@@ -30,14 +31,20 @@ internal class VehiclesController : IController, IInputSubscriber
 
     private readonly CarWheelResource _wheelResource = CarWheelResource.Instance;
 
-    public VehiclesController(Scene scene, Context context, AbstractObjectShader objectShader, AbstractLightSourceShader lightSourceShader, AbstractModelShader modelShader, ITransporter transporter)
+    private readonly AbstractBotSpawnStrategy _spawnStrategy;
+
+    public VehiclesController(Scene scene, Context context, AbstractObjectShader objectShader,
+        AbstractLightSourceShader lightSourceShader, AbstractModelShader modelShader, ITransporter transporter,
+        AbstractBotSpawnStrategy spawnStrategy)
     {
         _scene = scene;
         _objectShader = objectShader;
         _lightSourceShader = lightSourceShader;
         _modelShader = modelShader;
-        RegisterCallbacks(context);
         _transporter = transporter;
+        _spawnStrategy = spawnStrategy;
+        RegisterCallbacks(context);
+        _spawnStrategy.Spawn();
     }
 
     public void Render()
@@ -60,7 +67,7 @@ internal class VehiclesController : IController, IInputSubscriber
         }
     }
 
-    private void Render(SimpleCar car)
+    private void Render(SimpleCar car, float scale = 2f)
     {
         _bodyResource.Texture.Use(TextureUnit.Texture0);
 
@@ -71,7 +78,7 @@ internal class VehiclesController : IController, IInputSubscriber
         var rotation = Matrix4.CreateRotationX(-MathF.PI / 2) // TODO this can be optimized by making a z->y conversion on model load
             * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(car.CarBodyPose.Orientation));
         var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
-        var localScale = Matrix4.CreateScale(2);
+        var localScale = Matrix4.CreateScale(scale);
         _modelShader.SetMatrix4("model", localScale * globalScale * rotation * translation);
         _modelShader.SetMatrix4("normalRotation", rotation);
 
@@ -92,7 +99,7 @@ internal class VehiclesController : IController, IInputSubscriber
     }
 
     // this makes me wanna cry TODO move it to car class
-    private void RenderWheel(WheelHandles wheel, bool leftSide)
+    private void RenderWheel(WheelHandles wheel, bool leftSide, float scale = 2f)
     {
         _wheelResource.Texture.Use(TextureUnit.Texture0);
 
@@ -115,7 +122,7 @@ internal class VehiclesController : IController, IInputSubscriber
             * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(wheelPose.Orientation));
 
         var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
-        var localScale = Matrix4.CreateScale(2);
+        var localScale = Matrix4.CreateScale(scale);
         _modelShader.SetMatrix4("model", localScale * globalScale * rotation * translation);
         _modelShader.SetMatrix4("normalRotation", rotation);
 

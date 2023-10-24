@@ -9,7 +9,6 @@ using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics;
 using Physics.Collisions;
-using Physics.TypingUtils;
 
 namespace Hyper;
 
@@ -23,7 +22,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> FreeCars;
+    public readonly List<SimpleCar> FreeCars = new();
 
     public SimpleCar? PlayersCar { get; private set; }
 
@@ -50,18 +49,6 @@ internal class Scene : IInputSubscriber
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
         SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
-
-        var carInitialPosition = new Vector3(5, elevation + 5, 12);
-        FreeCars = new List<SimpleCar>()
-        {
-            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
-                Conversions.ToNumericsVector(carInitialPosition))
-        };
-
-        foreach (var car in FreeCars)
-        {
-            SimulationMembers.Add(car);
-        }
 
         Camera = camera;
 

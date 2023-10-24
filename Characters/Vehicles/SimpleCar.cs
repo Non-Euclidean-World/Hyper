@@ -167,16 +167,25 @@ public class SimpleCar : ISimulationMember, IDisposable
 
     }
 
-    // This car looks ridiculous but that's OK for the time being
+    /// <summary>
+    /// Creates a physical vehicle corresponding to the Ford Mustang model
+    /// </summary>
+    /// <param name="simulation"></param>
+    /// <param name="bufferPool"></param>
+    /// <param name="properties"></param>
+    /// <param name="initialPose"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     public static SimpleCar CreateStandardCar(Simulation simulation, BufferPool bufferPool, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose)
+        in RigidPose initialPose, float scale = 2f)
     {
-        const float x = 0.9f;
-        const float y = -0.1f;
-        const float frontZ = 1.7f;
-        const float backZ = -1.7f;
-        const float wheelRadius = 0.4f;
-        const float wheelWidth = 0.18f;
+        // some of these numbers were measured diligently in blender, others were pulled out of thin air
+        float x = 0.65f * scale;
+        float y = -0.25f * scale;
+        float frontZ = 1.18f * scale;
+        float backZ = -0.85f * scale;
+        float wheelRadius = 0.23f * scale;
+        float wheelWidth = 0.16f * scale;
 
         SimpleCarController controller = new SimpleCarController(forwardSpeed: 75, forwardForce: 6, zoomMultiplier: 2, backwardSpeed: 30, backwardForce: 4, idleForce: 0.25f, brakeForce: 7, steeringSpeed: 1.5f, maximumSteeringAngle: MathF.PI * 0.23f,
             wheelBaseLength: frontZ - backZ, wheelBaseWidth: x * 2, ackermanSteering: 1f);
@@ -184,12 +193,12 @@ public class SimpleCar : ISimulationMember, IDisposable
         CarMesh mesh = new CarMesh(new OpenTK.Mathematics.Vector3(1.3f, 0.5f, 2.73f), wheelRadius, wheelWidth);
 
         return Create(simulation, bufferPool, properties, initialPose,
-            lowerPart: new Box(1.85f, 0.7f, 4.73f),
+            lowerPart: new Box(1.3f * scale, 0.43f * scale, 3.25f * scale),
             lowerPartOrientation: RigidPose.Identity,
             lowerPartWeight: 10,
 
-            upperPart: new Box(1.85f, 0.6f, 2.5f),
-            upperPartOrientation: new Vector3(0, 0.65f, -0.35f),
+            upperPart: new Box(1f * scale, 0.3f * scale, 1.3f * scale),
+            upperPartOrientation: new Vector3(0, 0.35f * scale, -0.2f * scale),
             upperPartWeight: 0.5f,
 
             bodyFriction: 0.5f, wheelFriction: 2f,
