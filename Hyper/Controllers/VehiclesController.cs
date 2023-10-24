@@ -75,7 +75,7 @@ internal class VehiclesController : IController, IInputSubscriber
         GeomPorting.CreateTranslationTarget(
                 Conversions.ToOpenTKVector(car.CarBodyPose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _objectShader.GlobalScale));
 
-        var rotation = Matrix4.CreateRotationX(-MathF.PI / 2) // TODO this can be optimized by making a z->y conversion on model load
+        var rotation = Matrix4.CreateRotationX(-MathF.PI / 2)
             * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(car.CarBodyPose.Orientation));
         var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
         var localScale = Matrix4.CreateScale(scale);
@@ -98,7 +98,8 @@ internal class VehiclesController : IController, IInputSubscriber
         RenderWheel(car.BackRightWheel, false);
     }
 
-    // this makes me wanna cry TODO move it to car class
+    // TODO make rendering consistent
+    // bounding shapes are rendered in controller, cowboy has a Model class & the rendering takes place there
     private void RenderWheel(WheelHandles wheel, bool leftSide, float scale = 2f)
     {
         _wheelResource.Texture.Use(TextureUnit.Texture0);
@@ -118,7 +119,7 @@ internal class VehiclesController : IController, IInputSubscriber
         {
             importRotation = Matrix4.CreateRotationZ(MathF.PI / 2);
         }
-        var rotation = importRotation // TODO this can be optimized by making a z->y conversion on model load
+        var rotation = importRotation
             * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(wheelPose.Orientation));
 
         var globalScale = Matrix4.CreateScale(_objectShader.GlobalScale);
