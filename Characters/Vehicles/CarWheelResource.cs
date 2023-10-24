@@ -1,7 +1,7 @@
 ﻿using Common.ResourceClasses;
 
-namespace Hyper.PlayerData;
-internal class CarWheelResource : TexturedObjectResource
+namespace Character.Vehicles;
+public class CarWheelResource : TexturedObjectResource
 {
     private static readonly Lazy<CarWheelResource> InternalInstance = new(() => new CarWheelResource());
 

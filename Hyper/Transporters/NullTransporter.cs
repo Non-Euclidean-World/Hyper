@@ -9,7 +9,7 @@ namespace Hyper.Transporters;
 // I hate this thing
 internal class NullTransporter : ITransporter
 {
-    public bool TryTeleportCarTo(int targetSphereId, SimpleCar simulationMember, Simulation simulation, out Vector3 exitPoint)
+    public bool TryTeleportCarTo(int targetSphereId, FourWheeledCar simulationMember, Simulation simulation, out Vector3 exitPoint)
     {
         exitPoint = default;
         return false;

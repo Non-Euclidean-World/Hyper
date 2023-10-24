@@ -1,7 +1,7 @@
 ﻿using Common.ResourceClasses;
 
-namespace Hyper;
-internal class CarBodyResource : TexturedObjectResource
+namespace Character.Vehicles;
+public class CarBodyResource : TexturedObjectResource
 {
     private static readonly Lazy<CarBodyResource> InternalResource = new(() => new CarBodyResource());
 

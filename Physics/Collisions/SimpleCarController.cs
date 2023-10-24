@@ -2,7 +2,7 @@
 
 using BepuPhysics;
 
-namespace Character.Vehicles;
+namespace Physics.Collisions;
 public class SimpleCarController
 {
     private float _steeringAngle;

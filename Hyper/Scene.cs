@@ -22,9 +22,9 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> FreeCars = new();
+    public readonly List<FourWheeledCar> FreeCars = new();
 
-    public SimpleCar? PlayersCar { get; private set; }
+    public FourWheeledCar? PlayersCar { get; private set; }
 
     public Player Player { get; private set; }
 
@@ -110,9 +110,8 @@ internal class Scene : IInputSubscriber
             {
                 if (!testOnly)
                 {
-                    FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
-                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
-                    FreeCars[i].CurrentSphereId = car.CurrentSphereId;
+                    FreeCars[i] = new SpaceMustang(SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
+                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY), car.CurrentSphereId);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
                     SimulationMembers.Add(FreeCars[i]);
                     SimulationMembers.Remove(car);
