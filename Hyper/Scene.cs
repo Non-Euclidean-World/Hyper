@@ -112,6 +112,7 @@ internal class Scene : IInputSubscriber
                 {
                     FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
                         car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
+                    FreeCars[i].CurrentSphereId = car.CurrentSphereId;
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
                     SimulationMembers.Add(FreeCars[i]);
                     SimulationMembers.Remove(car);
@@ -132,6 +133,7 @@ internal class Scene : IInputSubscriber
 
         var position = PlayersCar.CarBodyPose.Position;
         FreeCars.Add(PlayersCar);
+        Player.CurrentSphereId = PlayersCar.CurrentSphereId;
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));

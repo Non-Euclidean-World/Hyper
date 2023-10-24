@@ -180,7 +180,7 @@ public class SimpleCar : ISimulationMember, IDisposable
         in RigidPose initialPose, float scale = 2f)
     {
         // some of these numbers were measured diligently in blender, others were pulled out of thin air
-        float x = 0.65f * scale;
+        float x = 0.6f * scale;
         float y = -0.25f * scale;
         float frontZ = 1.18f * scale;
         float backZ = -0.85f * scale;

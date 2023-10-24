@@ -172,6 +172,9 @@ internal class VehiclesController : IController, IInputSubscriber
             foreach (var car in _scene.FreeCars)
             {
                 car.Update(_scene.SimulationManager.Simulation, (float)e.Time, targetSteeringAngle: 0f, targetSpeedFraction: 0f, zoom: false, brake: false);
+
+                int targetSphereId = 1 - car.CurrentSphereId;
+                _transporter.TryTeleportCarTo(targetSphereId, car, _scene.SimulationManager.Simulation, out var _);
             }
         });
 
