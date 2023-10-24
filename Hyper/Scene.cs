@@ -164,6 +164,11 @@ internal class Scene : IInputSubscriber
         foreach (var bot in Bots)
             bot.Dispose();
 
+        foreach (var car in FreeCars)
+            car.Dispose();
+
+        PlayersCar?.Dispose();
+
         Player.Dispose();
 
         SimulationManager.Dispose();
