@@ -5,7 +5,7 @@
 using System.Numerics;
 using BepuPhysics;
 
-namespace Character.Vehicles;
+namespace Physics.Collisions;
 public struct WheelHandles
 {
     public BodyHandle Wheel;

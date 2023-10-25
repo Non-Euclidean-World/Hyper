@@ -43,14 +43,14 @@ internal class SphericalTransporter : ITransporter
         return false;
     }
 
-    public bool TryTeleportCarTo(int targetSphereId, SimpleCar car, Simulation simulation, out Vector3 exitPoint)
+    public bool TryTeleportCarTo(int targetSphereId, FourWheeledCar car, Simulation simulation, out Vector3 exitPoint)
     {
         var currentSphereId = 1 - targetSphereId;
         var bodyReference = new BodyReference(car.BodyHandle, simulation.Bodies);
-        var frontLeftWheelReference = new BodyReference(car.FrontLeftWheel.Wheel, simulation.Bodies);
-        var frontRightWheelReference = new BodyReference(car.FrontRightWheel.Wheel, simulation.Bodies);
-        var backLeftWheelReference = new BodyReference(car.BackLeftWheel.Wheel, simulation.Bodies);
-        var backRightWheelReference = new BodyReference(car.BackRightWheel.Wheel, simulation.Bodies);
+        var frontLeftWheelReference = new BodyReference(car.SimpleCar.FrontLeftWheel.Wheel, simulation.Bodies);
+        var frontRightWheelReference = new BodyReference(car.SimpleCar.FrontRightWheel.Wheel, simulation.Bodies);
+        var backLeftWheelReference = new BodyReference(car.SimpleCar.BackLeftWheel.Wheel, simulation.Bodies);
+        var backRightWheelReference = new BodyReference(car.SimpleCar.BackRightWheel.Wheel, simulation.Bodies);
 
         var bodyPosition = Conversions.ToOpenTKVector(bodyReference.Pose.Position);
         var bodyPositionXZ = new Vector3(bodyPosition.X, 0, bodyPosition.Z);
@@ -62,10 +62,10 @@ internal class SphericalTransporter : ITransporter
 
             bodyReference.Pose = new RigidPose(Conversions.ToNumericsVector(posAfterTeleport), bodyReference.Pose.Orientation);
 
-            TransformWheelPosition(posAfterTeleport, car.FrontLeftWheel.BodyToWheelSuspension, ref frontLeftWheelReference);
-            TransformWheelPosition(posAfterTeleport, car.FrontRightWheel.BodyToWheelSuspension, ref frontRightWheelReference);
-            TransformWheelPosition(posAfterTeleport, car.BackLeftWheel.BodyToWheelSuspension, ref backLeftWheelReference);
-            TransformWheelPosition(posAfterTeleport, car.BackRightWheel.BodyToWheelSuspension, ref backRightWheelReference);
+            TransformWheelPosition(posAfterTeleport, car.SimpleCar.FrontLeftWheel.BodyToWheelSuspension, ref frontLeftWheelReference);
+            TransformWheelPosition(posAfterTeleport, car.SimpleCar.FrontRightWheel.BodyToWheelSuspension, ref frontRightWheelReference);
+            TransformWheelPosition(posAfterTeleport, car.SimpleCar.BackLeftWheel.BodyToWheelSuspension, ref backLeftWheelReference);
+            TransformWheelPosition(posAfterTeleport, car.SimpleCar.BackRightWheel.BodyToWheelSuspension, ref backRightWheelReference);
 
             car.CurrentSphereId = targetSphereId;
             exitPoint = bodyPositionXZ;

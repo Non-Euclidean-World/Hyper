@@ -9,7 +9,7 @@ internal interface ITransporter
 {
     bool TryTeleportTo(int targetSphereId, ISimulationMember simulationMember, Simulation simulation, out Vector3 exitPoint);
 
-    bool TryTeleportCarTo(int targetSphereId, SimpleCar simulationMember, Simulation simulation, out Vector3 exitPoint);
+    bool TryTeleportCarTo(int targetSphereId, FourWheeledCar simulationMember, Simulation simulation, out Vector3 exitPoint);
 
     void UpdateCamera(int targetSphereId, Camera camera, Vector3 exitPoint);
 }

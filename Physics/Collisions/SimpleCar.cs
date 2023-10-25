@@ -8,14 +8,11 @@ using BepuPhysics.Collidables;
 using BepuPhysics.Constraints;
 using BepuUtilities;
 using BepuUtilities.Memory;
-using Physics.Collisions;
 
-namespace Character.Vehicles;
-public class SimpleCar : ISimulationMember, IDisposable
+namespace Physics.Collisions;
+public class SimpleCar : IDisposable
 {
     public BodyHandle BodyHandle { get; private set; }
-
-    public IList<BodyHandle> BodyHandles { get; private set; } = null!;
 
     public WheelHandles FrontLeftWheel { get; private set; }
     public WheelHandles FrontRightWheel { get; private set; }
@@ -24,23 +21,16 @@ public class SimpleCar : ISimulationMember, IDisposable
 
     public RigidPose CarBodyPose { get; private set; }
 
-    public CarMesh Mesh { get => _mesh; }
-    public int CurrentSphereId { get; set; }
-
     private Vector3 _suspensionDirection;
     private AngularHinge _hingeDescription;
 
     private readonly SimpleCarController _controller;
 
-    private readonly CarMesh _mesh;
-
     private readonly Simulation _simulation;
 
-    private SimpleCar(SimpleCarController controller, CarMesh mesh, int currentSphereId, Simulation simulation)
+    private SimpleCar(SimpleCarController controller, Simulation simulation)
     {
         _controller = controller;
-        _mesh = mesh;
-        CurrentSphereId = currentSphereId;
         _simulation = simulation;
     }
 
@@ -112,9 +102,9 @@ public class SimpleCar : ISimulationMember, IDisposable
         TypedIndex bodyShape, BodyInertia bodyInertia, float bodyFriction, TypedIndex wheelShape, BodyInertia wheelInertia, float wheelFriction,
         Vector3 bodyToFrontLeftSuspension, Vector3 bodyToFrontRightSuspension, Vector3 bodyToBackLeftSuspension, Vector3 bodyToBackRightSuspension,
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
-        SimpleCarController controller, CarMesh mesh, int currentSphereId = 0)
+        SimpleCarController controller)
     {
-        SimpleCar car = new SimpleCar(controller, mesh, currentSphereId, simulation);
+        SimpleCar car = new SimpleCar(controller, simulation);
         car.BodyHandle = simulation.Bodies.Add(BodyDescription.CreateDynamic(pose, bodyInertia, new(bodyShape, 0.5f), 0.01f));
         ref var bodyProperties = ref properties.Allocate(car.BodyHandle);
         bodyProperties = new SimulationProperties { Friction = bodyFriction, Filter = new SubgroupCollisionFilter(car.BodyHandle.Value, 0) };
@@ -132,8 +122,6 @@ public class SimpleCar : ISimulationMember, IDisposable
         car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
 
-        car.BodyHandles = new BodyHandle[5] { car.BodyHandle, car.BackLeftWheel.Wheel, car.BackRightWheel.Wheel, car.FrontLeftWheel.Wheel, car.FrontRightWheel.Wheel };
-
         return car;
     }
 
@@ -146,7 +134,7 @@ public class SimpleCar : ISimulationMember, IDisposable
         float wheelRadius, float wheelWidth, float wheelMass,
         Vector3 bodyToFrontLeftSuspension, Vector3 bodyToFrontRightSuspension, Vector3 bodyToBackLeftSuspension, Vector3 bodyToBackRightSuspension,
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
-        SimpleCarController controller, CarMesh mesh)
+        SimpleCarController controller)
     {
         var builder = new CompoundBuilder(bufferPool, simulation.Shapes, 2);
         builder.Add(lowerPart, lowerPartOrientation, lowerPartWeight);
@@ -163,33 +151,40 @@ public class SimpleCar : ISimulationMember, IDisposable
             wheelFriction, bodyToFrontLeftSuspension, bodyToFrontRightSuspension,
             bodyToBackLeftSuspension, bodyToBackRightSuspension, suspensionDirection, suspensionLength,
             suspensionSettings, localWheelOrientation,
-            controller, mesh);
+            controller);
 
     }
 
-    // This car looks ridiculous but that's OK for the time being
+    /// <summary>
+    /// Creates a physical vehicle corresponding to the Ford Mustang model
+    /// </summary>
+    /// <param name="simulation"></param>
+    /// <param name="bufferPool"></param>
+    /// <param name="properties"></param>
+    /// <param name="initialPose"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     public static SimpleCar CreateStandardCar(Simulation simulation, BufferPool bufferPool, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose)
+        in RigidPose initialPose, float scale = 2f)
     {
-        const float x = 0.9f;
-        const float y = -0.1f;
-        const float frontZ = 1.7f;
-        const float backZ = -1.7f;
-        const float wheelRadius = 0.4f;
-        const float wheelWidth = 0.18f;
+        // some of these numbers were measured diligently in blender, others were pulled out of thin air
+        float x = 0.6f * scale;
+        float y = -0.25f * scale;
+        float frontZ = 1.18f * scale;
+        float backZ = -0.85f * scale;
+        float wheelRadius = 0.23f * scale;
+        float wheelWidth = 0.16f * scale;
 
         SimpleCarController controller = new SimpleCarController(forwardSpeed: 75, forwardForce: 6, zoomMultiplier: 2, backwardSpeed: 30, backwardForce: 4, idleForce: 0.25f, brakeForce: 7, steeringSpeed: 1.5f, maximumSteeringAngle: MathF.PI * 0.23f,
             wheelBaseLength: frontZ - backZ, wheelBaseWidth: x * 2, ackermanSteering: 1f);
 
-        CarMesh mesh = new CarMesh(new OpenTK.Mathematics.Vector3(1.3f, 0.5f, 2.73f), wheelRadius, wheelWidth);
-
         return Create(simulation, bufferPool, properties, initialPose,
-            lowerPart: new Box(1.85f, 0.7f, 4.73f),
+            lowerPart: new Box(1.3f * scale, 0.43f * scale, 3.25f * scale),
             lowerPartOrientation: RigidPose.Identity,
             lowerPartWeight: 10,
 
-            upperPart: new Box(1.85f, 0.6f, 2.5f),
-            upperPartOrientation: new Vector3(0, 0.65f, -0.35f),
+            upperPart: new Box(1f * scale, 0.3f * scale, 1.3f * scale),
+            upperPartOrientation: new Vector3(0, 0.35f * scale, -0.2f * scale),
             upperPartWeight: 0.5f,
 
             bodyFriction: 0.5f, wheelFriction: 2f,
@@ -200,7 +195,7 @@ public class SimpleCar : ISimulationMember, IDisposable
             suspensionLength: 0.25f,
             new SpringSettings(5f, 0.7f),
             localWheelOrientation: QuaternionEx.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI * 0.5f),
-            controller, mesh);
+            controller);
     }
 
     public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
@@ -208,12 +203,6 @@ public class SimpleCar : ISimulationMember, IDisposable
         _controller.Update(simulation, this, dt, targetSteeringAngle, targetSpeedFraction, zoom, brake);
 
         var carBody = new BodyReference(BodyHandle, simulation.Bodies);
-        var rearLeftWheel = new BodyReference(BackLeftWheel.Wheel, simulation.Bodies);
-        var rearRightWheel = new BodyReference(BackRightWheel.Wheel, simulation.Bodies);
-        var frontLeftWheel = new BodyReference(FrontLeftWheel.Wheel, simulation.Bodies);
-        var frontRightWheel = new BodyReference(FrontRightWheel.Wheel, simulation.Bodies);
-
-        _mesh.Update(carBody.Pose, rearLeftWheel.Pose, rearRightWheel.Pose, frontLeftWheel.Pose, frontRightWheel.Pose);
         CarBodyPose = carBody.Pose;
     }
 

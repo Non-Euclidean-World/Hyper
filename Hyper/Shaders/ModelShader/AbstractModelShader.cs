@@ -48,5 +48,7 @@ internal class AbstractModelShader : Shader
         SetLightColors(lightSources.Select(x => x.Color).ToArray());
         SetLightPositions(lightSources.Select(x =>
             GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve)).ToArray());
+
+        SetBool("isAnimated", true);
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace Character.Characters;
+﻿using Common.ResourceClasses;
 
-public class CowboyResources : ModelResources
+namespace Character.Characters;
+
+public class CowboyResources : ModelResource
 {
     private static readonly Lazy<CowboyResources> InternalInstance = new(() => new CowboyResources());
 
@@ -8,6 +10,7 @@ public class CowboyResources : ModelResources
 
     public CowboyResources() : base(
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/model.dae"),
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/texture.png"))
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Cowboy/texture.png"),
+        isAnimated: true)
     { }
 }

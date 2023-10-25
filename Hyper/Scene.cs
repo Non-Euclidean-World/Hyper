@@ -9,7 +9,6 @@ using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics;
 using Physics.Collisions;
-using Physics.TypingUtils;
 
 namespace Hyper;
 
@@ -23,9 +22,9 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Humanoid> Bots = new();
 
-    public readonly List<SimpleCar> FreeCars;
+    public readonly List<FourWheeledCar> FreeCars = new();
 
-    public SimpleCar? PlayersCar { get; private set; }
+    public FourWheeledCar? PlayersCar { get; private set; }
 
     public Player Player { get; private set; }
 
@@ -50,18 +49,6 @@ internal class Scene : IInputSubscriber
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
         SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
-
-        var carInitialPosition = new Vector3(5, elevation + 5, 12);
-        FreeCars = new List<SimpleCar>()
-        {
-            SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
-                Conversions.ToNumericsVector(carInitialPosition))
-        };
-
-        foreach (var car in FreeCars)
-        {
-            SimulationMembers.Add(car);
-        }
 
         Camera = camera;
 
@@ -123,8 +110,8 @@ internal class Scene : IInputSubscriber
             {
                 if (!testOnly)
                 {
-                    FreeCars[i] = SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
-                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY);
+                    FreeCars[i] = new SpaceMustang(SimpleCar.CreateStandardCar(SimulationManager.Simulation, SimulationManager.BufferPool, SimulationManager.Properties,
+                        car.CarBodyPose.Position + System.Numerics.Vector3.UnitY), car.CurrentSphereId);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
                     SimulationMembers.Add(FreeCars[i]);
                     SimulationMembers.Remove(car);
@@ -145,6 +132,7 @@ internal class Scene : IInputSubscriber
 
         var position = PlayersCar.CarBodyPose.Position;
         FreeCars.Add(PlayersCar);
+        Player.CurrentSphereId = PlayersCar.CurrentSphereId;
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
@@ -175,6 +163,11 @@ internal class Scene : IInputSubscriber
 
         foreach (var bot in Bots)
             bot.Dispose();
+
+        foreach (var car in FreeCars)
+            car.Dispose();
+
+        PlayersCar?.Dispose();
 
         Player.Dispose();
 

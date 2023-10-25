@@ -23,6 +23,8 @@ uniform int sphere; // 0 for upper, 1 for lower
 uniform vec3 lowerSphereCenter;
 uniform int characterSphere;
 
+uniform bool isAnimated = true;
+
 vec3 flipXZ(vec3 v);
 vec3 flipY(vec3);
 
@@ -97,6 +99,18 @@ mat4 TranslateMatrix(vec4 to)
 
 void main(void)
 {
+	if(!isAnimated)
+	{
+		vec4 eucPos = vec4(in_position, 1);
+
+		gl_Position = port(eucPos * model) * view * projection;
+		FragPos = port(eucPos * model);
+		Normal = vec4(in_normal, 0) * normalRotation * TranslateMatrix(port(eucPos * model));
+		Texture = in_textureCoords;
+
+		return;
+	}
+
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalNormal = vec4(0.0);
 	

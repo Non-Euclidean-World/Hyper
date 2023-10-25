@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.ResourceClasses;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Physics.TypingUtils;
@@ -11,13 +12,13 @@ public class Model
 {
     public readonly Animator Animator;
 
-    private readonly ModelResources _modelResources;
+    private readonly ModelResource _modelResources;
 
     private readonly float _localScale;
 
     private readonly Vector3 _localTranslation;
 
-    public Model(ModelResources modelResources, float localScale, Vector3 localTranslation)
+    public Model(ModelResource modelResources, float localScale, Vector3 localTranslation)
     {
         _modelResources = modelResources;
         Animator = new Animator();
@@ -27,6 +28,8 @@ public class Model
 
     public void Render(RigidPose rigidPose, Shader shader, float globalScale, float curve, Vector3 cameraPosition)
     {
+        if (_modelResources.Texture == null)
+            throw new InvalidOperationException("No texture provided");
         _modelResources.Texture.Use(TextureUnit.Texture0);
 
         var localTranslationMatrix = Matrix4.CreateTranslation(_localTranslation);
