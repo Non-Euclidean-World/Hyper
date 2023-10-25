@@ -1,7 +1,7 @@
 ﻿using Common.ResourceClasses;
 
 namespace Character.Vehicles;
-public class CarBodyResource : TexturedObjectResource
+public class CarBodyResource : ModelResource
 {
     private static readonly Lazy<CarBodyResource> InternalResource = new(() => new CarBodyResource());
 
@@ -9,6 +9,7 @@ public class CarBodyResource : TexturedObjectResource
 
     protected CarBodyResource() : base(
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Car/body.dae"),
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Car/bodyTexture.png"))
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Car/bodyTexture.png"),
+        isAnimated: false)
     { }
 }

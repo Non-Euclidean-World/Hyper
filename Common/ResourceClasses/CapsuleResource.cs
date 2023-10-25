@@ -1,5 +1,5 @@
 ﻿namespace Common.ResourceClasses;
-public class CapsuleResource : ObjectResource
+public class CapsuleResource : ModelResource
 {
     private static readonly Lazy<CapsuleResource> InternalResource = new(() => new CapsuleResource());
 

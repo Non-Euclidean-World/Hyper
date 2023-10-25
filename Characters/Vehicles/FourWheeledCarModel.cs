@@ -37,6 +37,8 @@ public class FourWheeledCarModel
 
     private void RenderBody(RigidPose bodyPose, Shader shader, float globalScale, float curve, Vector3 cameraPosition)
     {
+        if (_bodyResource.Texture == null)
+            throw new InvalidOperationException("No texture provided");
         _bodyResource.Texture.Use(TextureUnit.Texture0);
 
         var translation = Matrix4.CreateTranslation(
@@ -60,6 +62,8 @@ public class FourWheeledCarModel
 
     private void RenderWheel(RigidPose wheelPose, bool isOnLeftSide, Shader shader, float globalScale, float curve, Vector3 cameraPosition)
     {
+        if (_wheelResource.Texture == null)
+            throw new InvalidOperationException("No texture provided");
         _wheelResource.Texture.Use(TextureUnit.Texture0);
 
         var translation = Matrix4.CreateTranslation(
