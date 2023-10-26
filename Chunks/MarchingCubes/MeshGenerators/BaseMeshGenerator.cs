@@ -15,7 +15,7 @@ public abstract class BaseMeshGenerator
     {
         var vertices = new List<Vertex>();
 
-        var (cubeValues, normals, colors) = GetCubeValues(x, y, z, scalarField);
+        var (cubeValues, normals, colors) = GetCubeValues(x + 1, y + 1, z + 1, scalarField);
         var edges = GetEdges(cubeValues);
         var position = new Vector3(x, y, z);
 
@@ -34,7 +34,7 @@ public abstract class BaseMeshGenerator
         int edge0 = MarchingCubesTables.EdgeConnections[edges[index]][0];
         int edge1 = MarchingCubesTables.EdgeConnections[edges[index]][1];
 
-        var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position - Vector3.One;
+        var vertexPosition = Interpolate(MarchingCubesTables.CubeCorners[edge0], cubeValues[edge0], MarchingCubesTables.CubeCorners[edge1], cubeValues[edge1]) + position;
         var normal = Interpolate(normals[edge0], cubeValues[edge0], normals[edge1], cubeValues[edge1]);
         var color = Interpolate(colors[edge0], cubeValues[edge0], colors[edge1], cubeValues[edge1]);
 
@@ -52,7 +52,7 @@ public abstract class BaseMeshGenerator
             Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
             cubeValues[i] = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
             colors[i] = VoxelHelper.GetColor(scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
-            
+
             normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
                            - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
             normals[i].Y = scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value

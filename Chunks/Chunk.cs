@@ -15,7 +15,7 @@ public class Chunk
     public static int Size = 16;
 
     public const int Overlap = 2;
-    
+
     /// <summary>
     /// Size of the voxel field dimension.
     /// </summary>
@@ -53,7 +53,6 @@ public class Chunk
     /// <param name="radius"></param>
     public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
-        location += Vector3.One;
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
@@ -82,7 +81,6 @@ public class Chunk
     /// <param name="radius"></param>
     public void Build(Vector3 location, float deltaTime, float brushWeight, int radius)
     {
-        location += Vector3.One;
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
@@ -104,7 +102,6 @@ public class Chunk
 
     public float DistanceFromChunk(Vector3 location)
     {
-        location += Vector3.One; // This is because of chunk overlap. The chunks is shifted by 1 in each direction so we need to unshift it here.
         Vector3 chunkTopLeft = Position + new Vector3(TotalSize, TotalSize, TotalSize);
 
         float closestX = Math.Clamp(location.X, Position.X, chunkTopLeft.X);
