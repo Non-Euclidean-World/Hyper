@@ -13,7 +13,7 @@ internal static class MeshHelper
     /// <param name="mesh"></param>
     /// <param name="pool"></param>
     /// <returns></returns>
-    public static BepuMesh CreateCollisionSurface(Mesh mesh, BufferPool pool)
+    public static BepuMesh? CreateCollisionSurface(Mesh mesh, BufferPool pool)
     {
         int triangleCount = mesh.Vertices.Length / 3;
         pool.Take<Triangle>(triangleCount, out var triangles);
@@ -27,6 +27,8 @@ internal static class MeshHelper
             triangle.C = Conversions.ToNumericsVector(mesh.Vertices[3 * i + 2].Position);
         }
 
+        if (triangles.Length == 0) 
+            return null;
         return new BepuMesh(triangles, new System.Numerics.Vector3(1f, 1f, 1f), pool);
     }
 }

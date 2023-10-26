@@ -118,10 +118,7 @@ public class Chunk
         if (Mesh.Vertices.Length == 0)
         {
             if (_shape.Exists)
-            {
                 simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-                simulation.Statics.Remove(_handle);
-            }
             else return;
         }
 
@@ -132,8 +129,10 @@ public class Chunk
         }
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
+        if (collisionSurface is null) 
+            return;
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-        _shape = simulation.Shapes.Add(collisionSurface);
+        _shape = simulation.Shapes.Add(collisionSurface.Value);
         simulation.Statics[_handle].SetShape(_shape);
     }
 
@@ -144,7 +143,9 @@ public class Chunk
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
-        _shape = simulation.Shapes.Add(collisionSurface);
+        if (collisionSurface is null)
+            return;
+        _shape = simulation.Shapes.Add(collisionSurface.Value);
         _handle = simulation.Statics.Add(new StaticDescription(
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
