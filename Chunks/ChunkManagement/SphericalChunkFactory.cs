@@ -45,11 +45,11 @@ public class SphericalChunkFactory
                 var scalarField0 = _scalarFieldGenerator.Generate(Chunk.Size, sf0Pos);
                 var scalarField1 = _scalarFieldGenerator.Generate(Chunk.Size, sf1Pos);
 
-                for (int x = 0; x < Chunk.TotalSize - 1; x++)
+                for (int x = 0; x < Chunk.TotalSize; x++)
                 {
-                    for (int y = 0; y < Chunk.TotalSize - 1; y++)
+                    for (int y = 0; y < Chunk.TotalSize; y++)
                     {
-                        for (int z = 0; z < Chunk.TotalSize - 1; z++)
+                        for (int z = 0; z < Chunk.TotalSize; z++)
                         {
                             var position = new Vector3i(x + chunkX * Chunk.Size, y, z + chunkY * Chunk.Size);
                             var radius = MathF.PI / 2 / _globalScale;
