@@ -13,9 +13,11 @@ internal static class MeshHelper
     /// <param name="mesh"></param>
     /// <param name="pool"></param>
     /// <returns></returns>
-    public static BepuMesh CreateCollisionSurface(Mesh mesh, BufferPool pool)
+    public static BepuMesh? CreateCollisionSurface(Mesh mesh, BufferPool pool)
     {
         int triangleCount = mesh.Vertices.Length / 3;
+        if (triangleCount == 0) 
+            return null;
         pool.Take<Triangle>(triangleCount, out var triangles);
 
         for (int i = 0; i < triangleCount; i++)

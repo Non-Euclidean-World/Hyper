@@ -9,6 +9,24 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class ChunkWorker : IChunkWorker
 {
+    private bool _isUpdatingUnlocked;
+
+    private readonly object _lockObj = new();
+
+    public bool IsUpdating
+    {
+        get
+        {
+            lock (_lockObj)
+                return _isUpdatingUnlocked;
+        }
+        private set
+        {
+            lock (_lockObj)
+                _isUpdatingUnlocked = value;
+        }
+    }
+
     private enum JobType
     {
         Load,
@@ -106,6 +124,9 @@ public class ChunkWorker : IChunkWorker
                         UpdateChunks();
                     }
 
+                    if (_chunksToUpdateQueue.IsEmpty)
+                        IsUpdating = false;
+
                     switch (jobType)
                     {
                         case JobType.Load:
@@ -152,7 +173,10 @@ public class ChunkWorker : IChunkWorker
     private void UpdateChunks()
     {
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
+        {
+            IsUpdating = false;
             return;
+        }
 
         chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
         _updatedChunks.Enqueue(chunk);
@@ -215,16 +239,12 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
-    public bool IsOnUpdateQueue(Chunk chunk)
-    {
-        return _chunksToUpdateHashSet.Contains(chunk);
-    }
-
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
         if (_chunksToUpdateHashSet.Contains(chunk))
             return;
 
+        IsUpdating = true;
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdateQueue.Enqueue(chunk);
         _jobs.Add(JobType.Update);

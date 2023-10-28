@@ -15,7 +15,7 @@ public abstract class BaseMeshGenerator
     {
         var vertices = new List<Vertex>();
 
-        var (cubeValues, normals, colors) = GetCubeValues(x, y, z, scalarField);
+        var (cubeValues, normals, colors) = GetCubeValues(x + 1, y + 1, z + 1, scalarField);
         var edges = GetEdges(cubeValues);
         var position = new Vector3(x, y, z);
 
@@ -53,35 +53,12 @@ public abstract class BaseMeshGenerator
             cubeValues[i] = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
             colors[i] = VoxelHelper.GetColor(scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
 
-            if (cubeVertexPos.X == 0)
-                normals[i].X = 2 * (scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.X == scalarField.GetLength(0) - 1)
-                normals[i].X = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else
-                normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
-
-            if (cubeVertexPos.Y == 0)
-                normals[i].Y = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.Y == scalarField.GetLength(1) - 1)
-                normals[i].Y = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value);
-            else
-                normals[i].Y = scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
-
-            if (cubeVertexPos.Z == 0)
-                normals[i].Z = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
-                                    - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value);
-            else if (cubeVertexPos.Z == scalarField.GetLength(2) - 1)
-                normals[i].Z = 2 * (scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value
-                                    - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value);
-            else
-                normals[i].Z = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
-                               - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
+            normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
+                           - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;
+            normals[i].Y = scalarField[cubeVertexPos.X, cubeVertexPos.Y + 1, cubeVertexPos.Z].Value
+                           - scalarField[cubeVertexPos.X, cubeVertexPos.Y - 1, cubeVertexPos.Z].Value;
+            normals[i].Z = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z + 1].Value
+                           - scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z - 1].Value;
         }
 
         return (cubeValues, normals, colors);

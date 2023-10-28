@@ -6,7 +6,7 @@ public interface IChunkWorker : IDisposable
 {
     public List<Chunk> Chunks { get; }
 
-    bool IsOnUpdateQueue(Chunk chunk);
+    public bool IsUpdating { get; }
 
     void EnqueueUpdatingChunk(Chunk chunk);
 

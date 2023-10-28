@@ -21,11 +21,11 @@ public class SphericalMeshGenerator : BaseMeshGenerator
         var vertices = new List<Vertex>();
         Vector3i sphereCenter = _sphereCenters[chunkData.SphereId];
         Voxel[,,] scalarField = chunkData.Voxels;
-        for (int x = 0; x < scalarField.GetLength(0) - 1; x++)
+        for (int x = 0; x < scalarField.GetLength(0) - 3; x++)
         {
-            for (int y = 0; y < scalarField.GetLength(1) - 1; y++)
+            for (int y = 0; y < scalarField.GetLength(1) - 3; y++)
             {
-                for (int z = 0; z < scalarField.GetLength(2) - 1; z++)
+                for (int z = 0; z < scalarField.GetLength(2) - 3; z++)
                 {
                     var xAbs = chunkPosition.X + x - sphereCenter.X;
                     var yAbs = chunkPosition.Y + y - sphereCenter.Y;

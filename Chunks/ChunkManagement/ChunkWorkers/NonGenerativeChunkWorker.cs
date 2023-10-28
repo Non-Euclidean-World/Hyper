@@ -8,6 +8,24 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class NonGenerativeChunkWorker : IChunkWorker
 {
+    private bool _isUpdatingUnlocked;
+
+    private readonly object _lockObj = new();
+
+    public bool IsUpdating
+    {
+        get
+        {
+            lock (_lockObj)
+                return _isUpdatingUnlocked;
+        }
+        private set
+        {
+            lock (_lockObj)
+                _isUpdatingUnlocked = value;
+        }
+    }
+
     public List<Chunk> Chunks { get; }
 
     private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
@@ -69,6 +87,8 @@ public class NonGenerativeChunkWorker : IChunkWorker
             {
                 chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
+                if (_chunksToUpdate.Count == 0)
+                    IsUpdating = false;
             }
         }
         catch (OperationCanceledException) { }
@@ -105,13 +125,9 @@ public class NonGenerativeChunkWorker : IChunkWorker
         if (_chunksToUpdateHashSet.Contains(chunk))
             return;
 
+        IsUpdating = true;
         _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdate.Add(chunk);
-    }
-
-    public bool IsOnUpdateQueue(Chunk chunk)
-    {
-        return _chunksToUpdateHashSet.Contains(chunk);
     }
 
     public void Dispose()

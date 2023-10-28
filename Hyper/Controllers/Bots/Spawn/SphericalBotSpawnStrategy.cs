@@ -9,7 +9,7 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 {
     private const int MaxBots = 20;
 
-    private const int DistanceFromChunkCenter = Chunk.Size / 4;
+    private static int DistanceFromChunkCenter => Chunk.Size / 4;
 
     public SphericalBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings) { }
 

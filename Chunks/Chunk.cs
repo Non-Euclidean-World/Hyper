@@ -12,7 +12,14 @@ namespace Chunks;
 
 public class Chunk
 {
-    public const int Size = 32;
+    public static int Size = 16;
+
+    public const int Overlap = 2;
+
+    /// <summary>
+    /// Size of the voxel field dimension.
+    /// </summary>
+    public static int TotalSize => Size + Overlap + 1;
 
     public Vector3i Position { get; }
 
@@ -50,11 +57,11 @@ public class Chunk
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(TotalSize - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(TotalSize - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(TotalSize - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -78,11 +85,11 @@ public class Chunk
         var y = (int)location.Y - Position.Y;
         var z = (int)location.Z - Position.Z;
 
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(Size, x + radius); xi++)
+        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(TotalSize - 1, x + radius); xi++)
         {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(Size, y + radius); yi++)
+            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(TotalSize - 1, y + radius); yi++)
             {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(Size, z + radius); zi++)
+                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(TotalSize - 1, z + radius); zi++)
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
@@ -95,7 +102,7 @@ public class Chunk
 
     public float DistanceFromChunk(Vector3 location)
     {
-        Vector3 chunkTopLeft = Position + new Vector3(Size, Size, Size);
+        Vector3 chunkTopLeft = Position + new Vector3(TotalSize, TotalSize, TotalSize);
 
         float closestX = Math.Clamp(location.X, Position.X, chunkTopLeft.X);
         float closestY = Math.Clamp(location.Y, Position.Y, chunkTopLeft.Y);
@@ -111,10 +118,7 @@ public class Chunk
         if (Mesh.Vertices.Length == 0)
         {
             if (_shape.Exists)
-            {
                 simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-                simulation.Statics.Remove(_handle);
-            }
             else return;
         }
 
@@ -125,8 +129,10 @@ public class Chunk
         }
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
+        if (collisionSurface is null)
+            return;
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-        _shape = simulation.Shapes.Add(collisionSurface);
+        _shape = simulation.Shapes.Add(collisionSurface.Value);
         simulation.Statics[_handle].SetShape(_shape);
     }
 
@@ -137,7 +143,9 @@ public class Chunk
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
         var position = Position;
-        _shape = simulation.Shapes.Add(collisionSurface);
+        if (collisionSurface is null)
+            return;
+        _shape = simulation.Shapes.Add(collisionSurface.Value);
         _handle = simulation.Statics.Add(new StaticDescription(
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
