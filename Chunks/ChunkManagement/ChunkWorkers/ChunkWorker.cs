@@ -10,7 +10,7 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 public class ChunkWorker : IChunkWorker
 {
     private bool _isUpdatingUnlocked;
-    
+
     private readonly object _lockObj = new();
 
     public bool IsUpdating
@@ -124,7 +124,7 @@ public class ChunkWorker : IChunkWorker
                         UpdateChunks();
                     }
 
-                    if (_chunksToUpdateQueue.IsEmpty) 
+                    if (_chunksToUpdateQueue.IsEmpty)
                         IsUpdating = false;
 
                     switch (jobType)

@@ -129,7 +129,7 @@ public class Chunk
         }
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
-        if (collisionSurface is null) 
+        if (collisionSurface is null)
             return;
         simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
         _shape = simulation.Shapes.Add(collisionSurface.Value);

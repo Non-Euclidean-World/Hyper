@@ -21,17 +21,16 @@ internal abstract class Pickaxe : Item
         bool zeroTime = false;
         if (!chunkWorker.IsUpdating)
         {
+            var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             foreach (var chunk in chunkWorker.Chunks)
             {
-                var location =
-                    scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
                 if (chunk.DistanceFromChunk(location) >= Radius) continue;
                 chunk.Mine(location, time + _mineTime, BrushWeight, Radius);
                 chunkWorker.EnqueueUpdatingChunk(chunk);
-                zeroTime = true;
             }
+            zeroTime = true;
         }
-        
+
         if (zeroTime) _mineTime = 0;
         else _mineTime += time;
     }
@@ -41,15 +40,14 @@ internal abstract class Pickaxe : Item
         bool zeroTime = false;
         if (!chunkWorker.IsUpdating)
         {
+            var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             foreach (var chunk in chunkWorker.Chunks)
             {
-                var location =
-                    scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
                 if (chunk.DistanceFromChunk(location) >= Radius) continue;
                 chunk.Build(location, time + _buildTime, BrushWeight, Radius);
                 chunkWorker.EnqueueUpdatingChunk(chunk);
-                zeroTime = true;
             }
+            zeroTime = true;
         }
 
         if (zeroTime) _buildTime = 0;

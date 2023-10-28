@@ -9,7 +9,7 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 public class NonGenerativeChunkWorker : IChunkWorker
 {
     private bool _isUpdatingUnlocked;
-    
+
     private readonly object _lockObj = new();
 
     public bool IsUpdating
@@ -25,7 +25,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
                 _isUpdatingUnlocked = value;
         }
     }
-    
+
     public List<Chunk> Chunks { get; }
 
     private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
@@ -87,7 +87,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
             {
                 chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
-                if (_chunksToUpdate.Count == 0) 
+                if (_chunksToUpdate.Count == 0)
                     IsUpdating = false;
             }
         }
