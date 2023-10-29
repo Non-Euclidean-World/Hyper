@@ -17,12 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Resources\Cowboy\model.dae">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\Cowboy\texture.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="Resources\Astronaut\texture.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
