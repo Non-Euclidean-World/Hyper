@@ -6,7 +6,7 @@ using Physics.TypingUtils;
 
 namespace Character.GameEntities;
 
-public class Cowboy : Humanoid
+public class AstronautBot : Humanoid
 {
     private Vector3 _goalPosition;
 
@@ -16,7 +16,7 @@ public class Cowboy : Humanoid
 
     private float _moveTime;
 
-    public Cowboy(PhysicalCharacter physicalCharacter) : base(
+    public AstronautBot(PhysicalCharacter physicalCharacter) : base(
         new Model(AstronautBotResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter)
     {
         _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
