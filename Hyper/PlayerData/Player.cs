@@ -87,7 +87,10 @@ internal class Player : Humanoid, IRayCaster
     {
         if (movementDirection != Vector2.Zero)
         {
-            Character.Animator.Play(0);
+            if (sprint)
+                Character.Animator.Play(1);
+            else
+                Character.Animator.Play(0);
         }
         else
         {

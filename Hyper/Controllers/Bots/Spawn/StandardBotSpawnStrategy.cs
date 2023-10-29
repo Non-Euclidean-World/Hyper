@@ -32,7 +32,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
             var z = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
             var position = new Vector3(x + Scene.Camera.ReferencePointPosition.X, 0, z + Scene.Camera.ReferencePointPosition.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
-            var bot = new Cowboy(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
+            var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
 #if DEBUG
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
 #endif
