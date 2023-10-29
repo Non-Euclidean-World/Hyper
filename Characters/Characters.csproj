@@ -29,10 +29,13 @@
       <None Update="Resources\Car\wheelTexture.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Resources\Cowboy\model.dae">
+      <None Update="Resources\Astronaut\model.dae">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Resources\Cowboy\texture.png">
+      <None Update="Resources\Astronaut\texture.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\Astronaut\texture-orange.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
 
