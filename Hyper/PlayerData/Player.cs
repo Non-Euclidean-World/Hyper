@@ -36,7 +36,7 @@ internal class Player : Humanoid, IRayCaster
     private bool _hidden;
 
     public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(
-        new Model(AstronautResources.Instance, localScale: 0.4f, localTranslation: new Vector3(0, -5, 0)), physicalCharacter, currentSphereId)
+        new Model(AstronautResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
         _rayEndpointMarker = new RayEndpointMarker(new Vector3(.5f, .5f, .5f));
