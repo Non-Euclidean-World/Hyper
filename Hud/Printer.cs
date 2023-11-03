@@ -71,14 +71,14 @@ public static class Printer
         {
             if (t == '\n')
             {
-                verticalOffset += size * 1.2f;
+                verticalOffset += GetVerticalOffset(size);
                 horizontalOffset = 0;
                 continue;
             }
 
             var charOffset = size * Paint.MeasureText(t.ToString()) / CharHeight;
             RenderChar(shader, t, size, x + horizontalOffset + charOffset, y - verticalOffset);
-            horizontalOffset += 2 * size * Paint.MeasureText(t.ToString()) / CharHeight;
+            horizontalOffset += GetHorizontalOffset(size, t.ToString());
         }
     }
 
@@ -148,4 +148,14 @@ public static class Printer
 
         return rectangles;
     }
+
+    public Vector2 GetTextSize(string text)
+    {
+        var lines = text.Split('\n');
+
+    }
+
+    private float GetVerticalOffset(float size) => size * 1.2f;
+
+    private float GetHorizontalOffset(float size, string text) => 2 * size * Paint.MeasureText(text) / CharHeight;
 }
