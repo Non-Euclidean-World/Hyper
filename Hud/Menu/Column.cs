@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-internal class Column : IWidget
+public class Column : IWidget
 {
     private IWidget[] _children;
 

@@ -1,4 +1,7 @@
-﻿using Common;
+﻿using BepuPhysics.Collidables;
+using Common;
+using Hud.Menu;
+using Hud.Shaders;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -7,6 +10,8 @@ namespace Hyper;
 
 public class Window : GameWindow
 {
+    private Menu _menu;
+    
     private Game _game;
 
     private readonly CommandInterpreter _interpreter;
@@ -14,7 +19,9 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), geometryType);
+        var windowHelper = new WindowHelper(this);
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
+        _menu = new Menu(windowHelper);
         _interpreter = new CommandInterpreter(this);
         CursorState = CursorState.Grabbed;
     }
@@ -35,6 +42,7 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
+        _menu.Render();
         if (!_game.IsRunning)
             return;
 

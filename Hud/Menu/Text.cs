@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-internal class Text : IWidget
+public class Text : IWidget
 {
     private readonly string _text;
 
     private readonly float _size;
+    
+    public Text(string text, float size)
+    {
+        _text = text;
+        _size = size;
+    }
 
     public Vector2 GetSize()
     {

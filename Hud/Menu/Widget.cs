@@ -7,7 +7,7 @@ using Common;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-internal interface IWidget
+public interface IWidget
 {
     Vector2 GetSize();
 
