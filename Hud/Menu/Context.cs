@@ -7,4 +7,11 @@ using Common;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
+
+/// <summary>
+/// This describes how much space there is on the screen.
+/// </summary>
+/// <param name="Shader"></param>
+/// <param name="Position">The top left corner of the Context</param>
+/// <param name="Size">Width and height of the Context</param>
 public record Context(Shader Shader, Vector2 Position, Vector2 Size);

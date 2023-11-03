@@ -149,13 +149,20 @@ public static class Printer
         return rectangles;
     }
 
-    public Vector2 GetTextSize(string text)
+    public static Vector2 GetTextSize(string text, float size)
     {
         var lines = text.Split('\n');
+        float y = GetVerticalOffset(size) * (lines.Length - 1) + size;
+        float x = 0;
+        foreach (var line in lines)
+        {
+            x = Math.Max(x, GetHorizontalOffset(size, text));
+        }
 
+        return new Vector2(x, y);
     }
 
-    private float GetVerticalOffset(float size) => size * 1.2f;
+    private static float GetVerticalOffset(float size) => size * 1.2f;
 
-    private float GetHorizontalOffset(float size, string text) => 2 * size * Paint.MeasureText(text) / CharHeight;
+    private static float GetHorizontalOffset(float size, string text) => 2 * size * Paint.MeasureText(text) / CharHeight;
 }
