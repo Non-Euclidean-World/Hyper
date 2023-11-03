@@ -42,11 +42,11 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        _menu.Render();
         if (!_game.IsRunning)
             return;
 
         _game.RenderFrame(e);
+        _menu.Render();
         SwapBuffers();
     }
 

@@ -33,7 +33,7 @@ public class Row : IWidget
     public void Render(Context context)
     {
         var size = GetSize();
-        var ratio = size / context.Size;
+        var ratio = context.Size / size;
 
         float x = context.Position.X;
         foreach (var child in _children)

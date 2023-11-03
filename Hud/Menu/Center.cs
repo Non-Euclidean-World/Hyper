@@ -21,8 +21,8 @@ public class Center : IWidget
     {
         var childSize = _child.GetSize();
 
-        float x = (context.Position.X + context.Size.X) / 2;
-        float y = (context.Position.Y + context.Size.Y) / 2;
+        float x = context.Position.X + context.Size.X / 2;
+        float y = context.Position.Y - context.Size.Y / 2;
 
         _child.Render(new Context(context.Shader, new Vector2(x, y), childSize));
     }

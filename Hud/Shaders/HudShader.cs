@@ -27,4 +27,10 @@ public class HudShader : Shader
         var projection = Matrix4.CreateOrthographic(aspectRatio, 1, -1.0f, 1.0f);
         SetProjection(projection);
     }
+
+    public void SetColor(Vector4 color) => SetVector4("color", color);
+
+    public void UseTexture(bool useTexture) => SetBool("useTexture", useTexture);
+
+    public void SetModel(Matrix4 model) => SetMatrix4("model", model);
 }

@@ -1,5 +1,6 @@
 ﻿using Common;
 using Hud.Menu;
+using Hud.Menu.Colors;
 using Hud.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -18,15 +19,15 @@ public class Menu
             new Row(
                 children: new IWidget[]
                 {
-                    new Text("row1col1", 0.02f),
-                    new Text("row2col1", 0.02f),
-                    new Text("row3col1", 0.02f),
+                    new Center(new Text("row1col1", 0.02f)),
+                    new Center(new Center(new Text("row2col1", 0.02f))),
+                    new Background(Color.Red, new Text("row3col1", 0.02f)),
                 }
             ),
             new Row(
                 children: new IWidget[]
                 {
-                    new Text("row1col1", 0.02f),
+                    new Text("test", 0.02f),
                     new Text("row2col1", 0.02f),
                     new Text("row3col1", 0.02f),
                 }
@@ -51,8 +52,9 @@ public class Menu
         GL.Disable(EnableCap.DepthTest);
         var aspectRatio = _windowHelper.GetAspectRatio();
         _shader.SetUp(aspectRatio);
-        _shader.SetBool("useTexture", false);
-        _menu.Render(new Context(_shader, Vector2.Zero, new Vector2(aspectRatio, 1)));
+        _shader.UseTexture(false);
+        _shader.SetColor(Vector4.One);
+        _menu.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
         GL.Enable(EnableCap.DepthTest);
     }
 }
