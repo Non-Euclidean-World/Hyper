@@ -42,11 +42,11 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        if (!_game.IsRunning)
-            return;
-
-        _game.RenderFrame(e);
-        _menu.Render();
+        if (_game.IsRunning)
+            _game.RenderFrame(e);
+        else
+            _menu.Render();
+        
         SwapBuffers();
     }
 
@@ -63,21 +63,26 @@ public class Window : GameWindow
     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
         base.OnKeyDown(e);
-
-        if (_game.IsRunning)
-            _game.KeyDown(e.Key);
-
+        
         if (e.Key == Keys.Escape)
         {
-            CloseNoSave();
+            _game.IsRunning = !_game.IsRunning;
+            CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
+            return;
         }
 
-        if (e.Key == Keys.T)
+        if (_game.IsRunning)
         {
-            CursorState = CursorState.Normal;
-            Command();
-            CursorState = CursorState.Grabbed;
+            _game.KeyDown(e.Key);
+            if (e.Key == Keys.T)
+            {
+                CursorState = CursorState.Normal;
+                Command();
+                CursorState = CursorState.Grabbed;
+            }
         }
+        else
+            _menu.KeyDown(e.Key);
     }
 
     protected override void OnKeyUp(KeyboardKeyEventArgs e)
@@ -102,6 +107,8 @@ public class Window : GameWindow
 
         if (_game.IsRunning)
             _game.MouseDown(e.Button);
+        else
+            _menu.Click();
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)

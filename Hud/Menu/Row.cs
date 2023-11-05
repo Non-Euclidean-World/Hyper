@@ -6,21 +6,18 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-public class Row : IWidget
+public class Row : MultipleChildWidget
 {
-    private IWidget[] _children;
-
-    public Row(IWidget[] children)
+    public Row(Widget[] children) : base(children)
     {
-        _children = children;
     }
 
-    public Vector2 GetSize()
+    public override Vector2 GetSize()
     {
         float x = 0;
         float y = 0;
 
-        foreach (var child in _children)
+        foreach (var child in Children)
         {
             var size = child.GetSize();
             x += size.X;
@@ -30,16 +27,16 @@ public class Row : IWidget
         return new Vector2(x, y);
     }
 
-    public void Render(Context context)
+    public override void Render(Context context)
     {
         var size = GetSize();
         var ratio = context.Size / size;
 
         float x = context.Position.X;
-        foreach (var child in _children)
+        foreach (var child in Children)
         {
             var childWidth = child.GetSize().X * ratio.X;
-            child.Render(new Context(context.Shader, new Vector2(x, context.Position.Y), new Vector2(childWidth, context.Size.Y)));
+            child.Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(childWidth, context.Size.Y)));
             x += childWidth;
         }
     }

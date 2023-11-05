@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hud.Menu;
-public interface IWidget
+public abstract class Widget
 {
-    Vector2 GetSize();
+    public abstract Vector2 GetSize();
 
-    void Render(Context context);
+    public abstract void Render(Context context);
+    
+    public virtual void Click(Vector2 position) { }
+    
+    public virtual void KeyboardInput(Keys key) { }
 }

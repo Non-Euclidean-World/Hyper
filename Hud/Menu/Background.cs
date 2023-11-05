@@ -8,24 +8,21 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-public class Background : IWidget
+public class Background : SingleChildWidget
 {
-    private Color _color;
+    private readonly Color _color;
 
-    private IWidget _child;
-
-    public Background(Color color, IWidget child)
+    public Background(Color color, Widget child) : base(child)
     {
         _color = color;
-        _child = child;
     }
 
-    public Vector2 GetSize()
+    public override Vector2 GetSize()
     {
-        return _child.GetSize();
+        return Child.GetSize();
     }
 
-    public void Render(Context context)
+    public override void Render(Context context)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
         context.Shader.SetColor(ColorGetter.GetVector(_color));
@@ -33,9 +30,9 @@ public class Background : IWidget
         float x = context.Position.X + context.Size.X / 2;
         float y = context.Position.Y - context.Size.Y / 2;
         var model = Matrix4.CreateTranslation(x, y, 0);
-        model = Matrix4.CreateScale(context.Size.X, context.Size.Y, 1) * model;
+        model = Matrix4.CreateScale(0.5f * context.Size.X, 0.5f * context.Size.Y, 1) * model; // 0.5f * is because SharedVao.Instance.Vao has size 2.
         context.Shader.SetModel(model);
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
-        _child.Render(context);
+        Child.Render(context);
     }
 }

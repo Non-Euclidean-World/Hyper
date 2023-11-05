@@ -6,24 +6,22 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 
 namespace Hud.Menu;
-public class Center : IWidget
+public class Center : SingleChildWidget
 {
-    private IWidget _child;
+    public Center(Widget child) : base(child) { }
 
-    public Center(IWidget child) { _child = child; }
-
-    public Vector2 GetSize()
+    public override Vector2 GetSize()
     {
-        return _child.GetSize();
+        return Child.GetSize();
     }
 
-    public void Render(Context context)
+    public override void Render(Context context)
     {
-        var childSize = _child.GetSize();
+        var childSize = Child.GetSize();
 
         float x = context.Position.X + context.Size.X / 2;
         float y = context.Position.Y - context.Size.Y / 2;
 
-        _child.Render(new Context(context.Shader, new Vector2(x, y), childSize));
+        Child.Render(new Context(context, new Vector2(x, y), childSize));
     }
 }

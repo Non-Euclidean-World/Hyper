@@ -8,9 +8,9 @@ using OpenTK.Mathematics;
 
 namespace Hud.Menu;
 
-public class Text : IWidget
+public class Text : Widget
 {
-    private readonly string _text;
+    protected string _text;
 
     private readonly float _size;
 
@@ -23,12 +23,12 @@ public class Text : IWidget
         _color = color;
     }
 
-    public Vector2 GetSize()
+    public override Vector2 GetSize()
     {
         return Printer.GetTextSize(_text, _size);
     }
 
-    public void Render(Context context)
+    public override void Render(Context context)
     {
         context.Shader.UseTexture(false);
         context.Shader.SetColor(ColorGetter.GetVector(_color));
