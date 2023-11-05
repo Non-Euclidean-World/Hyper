@@ -12,25 +12,18 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup .NET 7.0
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 7.x
 
     - name: Setup DocFX
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: install docfx
-
-    - name: Install dependecies
-      run: dotnet restore
+      run: dotnet tool update -g docfx
 
     - name: DocFX Build
-      working-directory: docs
-      run: docfx docfx.json
-      continue-on-error: false
+      run: docfx docs/docfx.json
 
     - name: Publish
       if: github.event_name == 'push'
