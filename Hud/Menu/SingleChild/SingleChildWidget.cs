@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hud.Menu;
+namespace Hud.Menu.SingleChild;
 
 public abstract class SingleChildWidget : Widget
 {

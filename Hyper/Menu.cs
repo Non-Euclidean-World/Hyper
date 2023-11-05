@@ -1,6 +1,9 @@
 ﻿using Common;
 using Hud.Menu;
 using Hud.Menu.Colors;
+using Hud.Menu.MultipleChildren;
+using Hud.Menu.NoChildren;
+using Hud.Menu.SingleChild;
 using Hud.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -20,7 +23,7 @@ public class Menu
             new Row(
                 children: new Widget[]
                 {
-                    new Center(new Text("row1col1", 0.02f)),
+                    new Center(new Text("row1col1", 0.02f, Color.Green)),
                     new Center(new Center(new Text("row2col1", 0.02f))),
                     new Background(Color.Red, new Text("row3col1", 0.02f)),
                 }

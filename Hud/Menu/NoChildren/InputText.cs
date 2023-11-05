@@ -2,7 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hud.Menu;
+namespace Hud.Menu.NoChildren;
 
 public class InputText : Text
 {
