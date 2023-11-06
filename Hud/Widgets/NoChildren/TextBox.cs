@@ -1,32 +1,32 @@
-﻿using Hud.Menu.Colors;
+﻿using Hud.Widgets.Colors;
 using OpenTK.Mathematics;
 
-namespace Hud.Menu.NoChildren;
+namespace Hud.Widgets.NoChildren;
 
-public class Text : Widget
+public class TextBox : Widget
 {
-    protected string _text;
+    public string Text;
 
     private readonly float _size;
 
     private readonly Color _color;
 
-    public Text(string text, float size, Color color = Color.White)
+    public TextBox(string text, float size, Color color = Color.White)
     {
-        _text = text;
+        Text = text;
         _size = size;
         _color = color;
     }
 
     public override Vector2 GetSize()
     {
-        return Printer.GetTextSize(_text, _size);
+        return Printer.GetTextSize(Text, _size);
     }
 
     public override void Render(Context context)
     {
         context.Shader.UseTexture(false);
         context.Shader.SetColor(ColorGetter.GetVector(_color));
-        Printer.RenderStringTopLeft(context.Shader, _text, _size, context.Position.X, context.Position.Y);
+        Printer.RenderStringTopLeft(context.Shader, Text, _size, context.Position.X, context.Position.Y);
     }
 }

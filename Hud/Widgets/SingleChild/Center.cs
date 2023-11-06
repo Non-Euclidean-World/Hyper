@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hud.Menu.SingleChild;
+namespace Hud.Widgets.SingleChild;
 public class Center : SingleChildWidget
 {
     public Center(Widget child) : base(child) { }
@@ -14,8 +14,8 @@ public class Center : SingleChildWidget
     {
         var childSize = Child.GetSize();
 
-        float x = context.Position.X + context.Size.X / 2;
-        float y = context.Position.Y - context.Size.Y / 2;
+        float x = context.Position.X + (context.Size.X / 2 - childSize.X / 2);
+        float y = context.Position.Y - (context.Size.Y / 2 - childSize.Y / 2);
 
         Child.Render(new Context(context, new Vector2(x, y), childSize));
     }

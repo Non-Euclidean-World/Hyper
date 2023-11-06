@@ -1,10 +1,10 @@
-﻿using Hud.Menu.Colors;
+﻿using Hud.Widgets.Colors;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hud.Menu.NoChildren;
+namespace Hud.Widgets.NoChildren;
 
-public class InputText : Text
+public class InputTextBox : TextBox
 {
     private bool _selected = false;
 
@@ -12,7 +12,7 @@ public class InputText : Text
     
     private Vector2 _size;
     
-    public InputText(string text, float size, Color color = Color.White) : base(text, size, color)
+    public InputTextBox(string text, float size, Color color = Color.White) : base(text, size, color)
     {
     }
     
@@ -49,16 +49,16 @@ public class InputText : Text
         
         if (key == Keys.Backspace)
         {
-            if (_text.Length > 0)
-                _text = _text[..^1];
+            if (Text.Length > 0)
+                Text = Text[..^1];
         }
         else if (key == Keys.Space)
         {
-            _text += " ";
+            Text += " ";
         }
         else if (key is >= Keys.A and <= Keys.Z)
         {
-            _text += key.ToString().ToLower();
+            Text += key.ToString().ToLower();
         }
     }
 }

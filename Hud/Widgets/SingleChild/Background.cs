@@ -1,8 +1,8 @@
-﻿using Hud.Menu.Colors;
+﻿using Hud.Widgets.Colors;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Hud.Menu.SingleChild;
+namespace Hud.Widgets.SingleChild;
 public class Background : SingleChildWidget
 {
     private readonly Color _color;

@@ -1,13 +1,13 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hud.Menu.MultipleChildren;
+namespace Hud.Widgets.MultipleChildren;
 
-public abstract class MultipleChildWidget : Widget
+public abstract class MultipleChildrenWidget : Widget
 {
     protected readonly Widget[] Children;
     
-    protected MultipleChildWidget(Widget[] children) { Children = children; }
+    protected MultipleChildrenWidget(Widget[] children) { Children = children; }
 
     public override void Click(Vector2 position)
     {

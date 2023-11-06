@@ -1,7 +1,7 @@
 ﻿using BepuPhysics.Collidables;
 using Common;
-using Hud.Menu;
 using Hud.Shaders;
+using Hyper.Menu;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -10,7 +10,7 @@ namespace Hyper;
 
 public class Window : GameWindow
 {
-    private Menu _menu;
+    private MainMenu _mainMenu;
     
     private Game _game;
 
@@ -21,7 +21,7 @@ public class Window : GameWindow
     {
         var windowHelper = new WindowHelper(this);
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
-        _menu = new Menu(windowHelper);
+        _mainMenu = new MainMenu(windowHelper);
         _interpreter = new CommandInterpreter(this);
         CursorState = CursorState.Grabbed;
     }
@@ -45,7 +45,7 @@ public class Window : GameWindow
         if (_game.IsRunning)
             _game.RenderFrame(e);
         else
-            _menu.Render();
+            _mainMenu.Render();
         
         SwapBuffers();
     }
@@ -82,7 +82,7 @@ public class Window : GameWindow
             }
         }
         else
-            _menu.KeyDown(e.Key);
+            _mainMenu.KeyDown(e.Key);
     }
 
     protected override void OnKeyUp(KeyboardKeyEventArgs e)
@@ -108,7 +108,7 @@ public class Window : GameWindow
         if (_game.IsRunning)
             _game.MouseDown(e.Button);
         else
-            _menu.Click();
+            _mainMenu.Click();
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)

@@ -1,17 +1,17 @@
 ﻿using Common;
-using Hud.Menu;
-using Hud.Menu.Colors;
-using Hud.Menu.MultipleChildren;
-using Hud.Menu.NoChildren;
-using Hud.Menu.SingleChild;
 using Hud.Shaders;
+using Hud.Widgets;
+using Hud.Widgets.Colors;
+using Hud.Widgets.MultipleChildren;
+using Hud.Widgets.NoChildren;
+using Hud.Widgets.SingleChild;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Hyper;
+namespace Hyper.Menu;
 
-public class Menu
+public class MainMenu
 {
     private readonly IWindowHelper _windowHelper;
 
@@ -23,30 +23,32 @@ public class Menu
             new Row(
                 children: new Widget[]
                 {
-                    new Center(new Text("row1col1", 0.02f, Color.Green)),
-                    new Center(new Center(new Text("row2col1", 0.02f))),
-                    new Background(Color.Red, new Text("row3col1", 0.02f)),
+                    new Center(new TextBox("row1col1", 0.02f, Color.Green)),
+                    new Center(new Center(new TextBox("row2col1", 0.02f))),
+                    new Background(Color.Red, new TextBox("row3col1", 0.02f)),
                 }
             ),
             new Row(
                 children: new Widget[]
                 {
-                    new Text("test", 0.02f),
-                    new InputText("inputtext", 0.02f),
-                    new Text("row3col1", 0.02f),
+                    new TextBox("test", 0.02f),
+                    new InputTextBox("inputtext", 0.02f),
+                    new Background(Color.Blue, new Padding(new Background(Color.Red, new TextBox("row3col1", 0.02f)), 0.01f)),
                 }
             ),
             new Row(
                 children: new Widget[]
                 {
-                    new Text("row1col1", 0.02f),
-                    new Text("row2col1", 0.02f),
-                    new Text("row3col1", 0.02f),
+                    new TextBox("row1col1", 0.02f),
+                    new TextBox("row2col1", 0.02f),
+                    new TextBox("row3col1", 0.02f),
                 }
             )
         });
 
-    public Menu(IWindowHelper windowHelper)
+    private readonly Widget _savedGames = new SavedGames();
+
+    public MainMenu(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
     }
@@ -59,7 +61,7 @@ public class Menu
         _shader.SetUp(aspectRatio);
         _shader.UseTexture(false);
         _shader.SetColor(Vector4.One);
-        _menu.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
+        _savedGames.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
         GL.Enable(EnableCap.DepthTest);
     }
     

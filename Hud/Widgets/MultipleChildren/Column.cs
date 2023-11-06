@@ -1,14 +1,14 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hud.Menu.MultipleChildren;
+namespace Hud.Widgets.MultipleChildren;
 
-public class Column : MultipleChildWidget
+public class Column : MultipleChildrenWidget
 {
-    private ColumnAllignment _allignment;
+    private readonly Alignment _alignment;
 
-    public Column(Widget[] children, ColumnAllignment allignment = ColumnAllignment.Proportional) : base(children)
+    public Column(Widget[] children, Alignment alignment = Alignment.Equal) : base(children)
     {
-        _allignment = allignment;
+        _alignment = alignment;
     }
 
     public override Vector2 GetSize()
@@ -28,19 +28,18 @@ public class Column : MultipleChildWidget
 
     public override void Render(Context context)
     {
-        switch (_allignment)
+        switch (_alignment)
         {
-            case ColumnAllignment.Proportional:
+            case Alignment.Proportional:
                 RenderProportional(context);
                 break;
-            case ColumnAllignment.Equal:
+            case Alignment.Equal:
                 RenderEqual(context);
                 break;
             default:
-                RenderProportional(context);
+                throw new NotImplementedException();
                 break;
         }
-        
     }
 
     private void RenderProportional(Context context)
@@ -59,21 +58,11 @@ public class Column : MultipleChildWidget
 
     private void RenderEqual(Context context)
     {
-        var size = GetSize();
-
-        float height = Children.Length * size.Y;
+        float height = context.Size.Y / Children.Length;
         for (int i = 0; i < Children.Length; i++)
         {
-            float y = i / Children.Length * size.Y;
+            float y = context.Position.Y - i * height;
             Children[i].Render(new Context(context, new Vector2(context.Position.X, y), new Vector2(context.Size.X, height)));
         }
     }
-    
-    
-}
-
-public enum ColumnAllignment
-{
-    Proportional,
-    Equal
 }

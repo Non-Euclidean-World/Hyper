@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hud.Menu.SingleChild;
+namespace Hud.Widgets.SingleChild;
 
 public class ClickDetector : SingleChildWidget
 {
