@@ -8,7 +8,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
 
-public class SavedGames : Widget
+public class LoadGame : Widget
 {
     private const int GamesPerRow = 3;
 
@@ -16,7 +16,7 @@ public class SavedGames : Widget
     
     private readonly Widget _child;
     
-    public SavedGames()
+    public LoadGame()
     {
         _child = GetChild();
     }
@@ -27,11 +27,26 @@ public class SavedGames : Widget
 
         return new Background(
             color: Color.Black,
-            child: Grid.Build(
-                children: saveNames,
-                GetSaveWidget,
-                GamesPerRow
-            )
+            child: new Column(
+                alignment: Alignment.Greedy,
+                children: new Widget[]
+                {
+                    new Padding(
+                        size: 0.03f,
+                        child: new Center(
+                            new TextBox(
+                                size: 0.05f,
+                                text: "Load Game"
+                            )
+                        )
+                    ),
+                    Grid.Build(
+                        children: saveNames,
+                        GetSaveWidget,
+                        GamesPerRow
+                    ),
+                })
+            
         );
     }
 

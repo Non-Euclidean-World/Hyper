@@ -46,7 +46,7 @@ public class MainMenu
             )
         });
 
-    private readonly Widget _savedGames = new SavedGames();
+    private readonly Widget _savedGames = new LoadGame();
 
     public MainMenu(IWindowHelper windowHelper)
     {

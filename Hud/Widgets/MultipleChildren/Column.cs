@@ -100,9 +100,17 @@ public class Column : MultipleChildrenWidget
         float y = context.Position.Y;
         for (int i = 0; i < Children.Length; i++)
         {
-            float height = Children[i].GetSize().Y;
-            Children[i].Render(new Context(context, new Vector2(context.Position.X, y), new Vector2(context.Size.X, height)));
-            y -= height;
+            if (i < Children.Length - 1)
+            {
+                float height = Children[i].GetSize().Y;
+                Children[i].Render(new Context(context, new Vector2(context.Position.X, y), new Vector2(context.Size.X, height)));
+                y -= height;
+            }
+            else
+            {
+                float bottomPoint = context.Position.Y - context.Size.Y;
+                Children[i].Render(new Context(context, new Vector2(context.Position.X, y), new Vector2(context.Size.X, y - bottomPoint)));
+            }
         }
     }
 }
