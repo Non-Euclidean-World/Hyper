@@ -25,7 +25,7 @@ public class MainMenu
                 {
                     new Center(new TextBox("row1col1", 0.02f, Color.Green)),
                     new Center(new Center(new TextBox("row2col1", 0.02f))),
-                    new Background(Color.Red, new TextBox("row3col1", 0.02f)),
+                    new Background(color: Color.Red, child : new TextBox("row3col1", 0.02f)),
                 }
             ),
             new Row(
@@ -33,7 +33,7 @@ public class MainMenu
                 {
                     new TextBox("test", 0.02f),
                     new InputTextBox("inputtext", 0.02f),
-                    new Background(Color.Blue, new Padding(new Background(Color.Red, new TextBox("row3col1", 0.02f)), 0.01f)),
+                    new TextBox("test", 0.02f),
                 }
             ),
             new Row(
@@ -67,11 +67,11 @@ public class MainMenu
     
     public void Click()
     {
-        _menu.Click(_windowHelper.GetMousePosition());
+        _savedGames.Click(_windowHelper.GetMousePosition());
     }
     
     public void KeyDown(Keys key)
     {
-        _menu.KeyboardInput(key);
+        _savedGames.KeyboardInput(key);
     }
 }

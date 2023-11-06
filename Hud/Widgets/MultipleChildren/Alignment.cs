@@ -3,5 +3,7 @@
 public enum Alignment
 {
     Proportional,
-    Equal
+    Equal,
+    Predefined,
+    Greedy
 }

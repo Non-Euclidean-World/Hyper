@@ -16,14 +16,9 @@ public class InputTextBox : TextBox
     {
     }
     
-    public override Vector2 GetSize()
-    {
-        _size = base.GetSize();
-        return _size;
-    }
-
     public override void Render(Context context)
     {
+        _size = context.Size;
         _position = context.Position;
         base.Render(context);
     }
@@ -32,8 +27,8 @@ public class InputTextBox : TextBox
     {
         if (_position.X + _size.X < position.X ||
             _position.X > position.X ||
-            _position.Y + _size.Y < position.Y ||
-            _position.Y > position.Y)
+            _position.Y - _size.Y > position.Y ||
+            _position.Y < position.Y)
         {
             _selected = false;
             return;

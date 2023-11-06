@@ -11,39 +11,46 @@ namespace Hyper.Menu;
 public class SavedGames : Widget
 {
     private const int GamesPerRow = 3;
+
+    private const int TotalGames = 9;
     
     private readonly Widget _child;
     
     public SavedGames()
     {
-        string[] saveNames = new[]
-        {
-            "save1", "save2", "save3", "save4", "save5", "save6", "save7", "save8", "save9",
-        };
+        _child = GetChild();
+    }
 
-        _child = new Background(
+    private Widget GetChild()
+    {
+        string[] saveNames = SaveManager.GetSaves().Take(TotalGames).ToArray();
+
+        return new Background(
             color: Color.Black,
             child: Grid.Build(
                 children: saveNames,
-                GetSave,
+                GetSaveWidget,
                 GamesPerRow
             )
         );
     }
 
-    private Widget GetSave(string name)
+    private Widget GetSaveWidget(string name)
     {
-        return new Background(
-            color: Color.Blue,
-            child: new Padding(
-                size: 0.01f,
-                child: new Background(
-                    color: Color.Red,
-                    child: new Center(
-                        child: new TextBox(
-                            text: name,
-                            size: 0.02f,
-                            color: Color.White
+        return new ClickDetector(
+            action: () => Console.WriteLine($"Load save {name}"),
+            child: new Background(
+                color: Color.Blue,
+                child: new Padding(
+                    size: 0.01f,
+                    child: new Background(
+                        color: Color.Red,
+                        child: new Center(
+                            child: new TextBox(
+                                text: name,
+                                size: 0.02f,
+                                color: Color.White
+                            )
                         )
                     )
                 )

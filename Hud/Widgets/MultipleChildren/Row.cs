@@ -4,10 +4,20 @@ namespace Hud.Widgets.MultipleChildren;
 public class Row : MultipleChildrenWidget
 {
     private readonly Alignment _alignment;
+
+    private readonly float[] _sizes;
     
     public Row(Widget[] children, Alignment alignment = Alignment.Equal) : base(children)
     {
         _alignment = alignment;
+    }
+
+    public Row(Widget[] children, float[] sizes) : base(children)
+    {
+        if (children.Length != sizes.Length)
+            throw new Exception("Sizes do not match");
+        _alignment = Alignment.Predefined;
+        _sizes = sizes;
     }
 
     public override Vector2 GetSize()
@@ -35,9 +45,14 @@ public class Row : MultipleChildrenWidget
             case Alignment.Equal:
                 RenderEqual(context);
                 break;
+            case Alignment.Predefined:
+                RenderPredefined(context);
+                break;
+            case Alignment.Greedy:
+                RenderGreedy(context);
+                break;
             default:
                 throw new NotImplementedException();
-                break;
         }
     }
 
@@ -62,6 +77,31 @@ public class Row : MultipleChildrenWidget
         {
             float x = context.Position.X + i * width;
             Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(width, context.Size.Y)));
+        }
+    }
+
+    private void RenderPredefined(Context context)
+    {
+        if (Children.Length != _sizes.Length)
+            throw new Exception("Lengths do not match");
+
+        float x = context.Position.X;
+        for (int i = 0; i < Children.Length; i++)
+        {
+            float width = context.Size.X * _sizes[i];
+            Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(width, context.Size.Y)));
+            x += width;
+        }
+    }
+
+    private void RenderGreedy(Context context)
+    {
+        float x = context.Position.X;
+        for (int i = 0; i < Children.Length; i++)
+        {
+            float width = Children[i].GetSize().X;
+            Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(width, context.Size.Y)));
+            x += width;
         }
     }
 }

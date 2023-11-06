@@ -17,12 +17,12 @@ public class ClickDetector : SingleChildWidget
 
     public override Vector2 GetSize()
     {
-        _size = Child.GetSize();
         return _size;
     }
 
     public override void Render(Context context)
     {
+        _size = context.Size;
         _position = context.Position;
         Child.Render(context);
     }
@@ -31,8 +31,8 @@ public class ClickDetector : SingleChildWidget
     {
         if (_position.X + _size.X < position.X ||
             _position.X > position.X ||
-            _position.Y + _size.Y < position.Y ||
-            _position.Y > position.Y)
+            _position.Y - _size.Y > position.Y ||
+            _position.Y < position.Y)
         {
             return;
         }

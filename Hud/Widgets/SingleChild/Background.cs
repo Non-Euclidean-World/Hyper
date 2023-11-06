@@ -5,9 +5,14 @@ using OpenTK.Mathematics;
 namespace Hud.Widgets.SingleChild;
 public class Background : SingleChildWidget
 {
-    private readonly Color _color;
+    private readonly Vector4 _color;
 
-    public Background(Color color, Widget child) : base(child)
+    public Background(Widget child, Color color) : base(child)
+    {
+        _color = ColorGetter.GetVector(color);
+    }
+
+    public Background(Widget child, Vector4 color) : base(child)
     {
         _color = color;
     }
@@ -20,7 +25,7 @@ public class Background : SingleChildWidget
     public override void Render(Context context)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
-        context.Shader.SetColor(ColorGetter.GetVector(_color));
+        context.Shader.SetColor(_color);
         context.Shader.UseTexture(false);
         float x = context.Position.X + context.Size.X / 2;
         float y = context.Position.Y - context.Size.Y / 2;
