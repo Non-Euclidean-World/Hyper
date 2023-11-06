@@ -40,4 +40,9 @@ public class Button : Widget
     {
         _child.Render(context);
     }
+
+    public override void Click(Vector2 position)
+    {
+        _child.Click(position);
+    }
 }

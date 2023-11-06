@@ -28,22 +28,22 @@ internal class MainMenuScreen : Widget
                 alignment: Alignment.Equal,
                 children: new Widget[]
                 {
-                    new Button(
-                        size: new Vector2(0.8f, 0.2f),
-                        action: () => Console.WriteLine("Resume"),
-                        text: "Resume"
-                        ),
-                    new Button(
-                        size: new Vector2(0.8f, 0.2f),
-                        action: () => Console.WriteLine("Load"),
-                        text: "Load"
-                        ),
-                    new Button(
-                        size: new Vector2(0.8f, 0.2f),
-                        action: () => Console.WriteLine("Quit"),
-                        text: "Quit"
-                        ),
+                    CreateButton("resume"),
+                    CreateButton("Load"),
+                    CreateButton("Quit")
                 }
+            )
+        );
+    }
+
+    private Widget CreateButton(string text)
+    {
+        return new Padding(
+            size: 0.02f,
+            child: new Button(
+                size: new Vector2(0.8f, 0.2f),
+                action: () => Console.WriteLine(text),
+                text: text
             )
         );
     }
