@@ -136,9 +136,7 @@ public class Window : GameWindow
 
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)
     {
-        if (e.IsFocused)
-            _game.IsRunning = true;
-        else
+        if (!e.IsFocused)
             _game.IsRunning = false;
     }
 
