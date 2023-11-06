@@ -17,36 +17,7 @@ public class MainMenu
 
     private readonly HudShader _shader = HudShader.Create();
     
-    private readonly Widget _menu = new Column(
-        children: new Widget[]
-        {
-            new Row(
-                children: new Widget[]
-                {
-                    new Center(new TextBox("row1col1", 0.02f, Color.Green)),
-                    new Center(new Center(new TextBox("row2col1", 0.02f))),
-                    new Background(color: Color.Red, child : new TextBox("row3col1", 0.02f)),
-                }
-            ),
-            new Row(
-                children: new Widget[]
-                {
-                    new TextBox("test", 0.02f),
-                    new InputTextBox("inputtext", 0.02f),
-                    new TextBox("test", 0.02f),
-                }
-            ),
-            new Row(
-                children: new Widget[]
-                {
-                    new TextBox("row1col1", 0.02f),
-                    new TextBox("row2col1", 0.02f),
-                    new TextBox("row3col1", 0.02f),
-                }
-            )
-        });
-
-    private readonly Widget _savedGames = new LoadGame();
+    private readonly Widget _widget = new MainMenuScreen();
 
     public MainMenu(IWindowHelper windowHelper)
     {
@@ -61,17 +32,17 @@ public class MainMenu
         _shader.SetUp(aspectRatio);
         _shader.UseTexture(false);
         _shader.SetColor(Vector4.One);
-        _savedGames.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
+        _widget.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
         GL.Enable(EnableCap.DepthTest);
     }
     
     public void Click()
     {
-        _savedGames.Click(_windowHelper.GetMousePosition());
+        _widget.Click(_windowHelper.GetMousePosition());
     }
     
     public void KeyDown(Keys key)
     {
-        _savedGames.KeyboardInput(key);
+        _widget.KeyboardInput(key);
     }
 }
