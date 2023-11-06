@@ -2,10 +2,24 @@
 
 out vec4 FragColor;
 
+struct PointLight 
+{
+    vec4 position;
+    vec3 color;
+    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    // attenuation parameters
+    float constant;
+    float linear;
+    float quadratic;
+};
+
 #define MAX_LIGHTS 10
 
-uniform vec3 lightColor[MAX_LIGHTS];
-uniform vec4 lightPos[MAX_LIGHTS];
+uniform PointLight lightCasters[MAX_LIGHTS];
 uniform vec4 viewPos;
 uniform int numLights;
 
@@ -37,27 +51,40 @@ vec4 direction(vec4 from, vec4 to)
     return normalize(to - from);
 }
 
+vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
+
 void main()
 {
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * vec3(1.0);
-    vec3 diffuse = vec3(0.0);
-    vec3 specular = vec3(0.0);
-
     vec4 norm = normalize(Normal);
     vec4 viewDir = normalize(direction(FragPos, viewPos));
 
+    vec3 result = vec3(0);
     for (int i = 0; i < numLights; ++i)
     {
-        vec4 lightDir = normalize(direction(FragPos, lightPos[i]));
-        diffuse += max(dotProduct(norm, lightDir), 0.0) * lightColor[i];
-        
-        float specularStrength = 0.5;
-        vec4 reflectDir = 2 * dotProduct(lightDir, norm) * norm - lightDir;
-        float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
-        specular += specularStrength * spec * lightColor[i];
+        result += CalcPointLight(lightCasters[i], norm, FragPos, viewDir); 
     }
 
-    vec3 result = (ambient + diffuse + specular) * Color;
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result * Color, 1.0);
+}
+
+vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
+{
+        vec3 currAmbient = light.ambient * light.color;
+
+        vec4 lightDir = normalize(direction(FragPos, light.position));
+        float diff = max(dotProduct(normal, lightDir), 0.0);
+        vec3 currDiffuse = light.diffuse * diff * light.color;
+        
+        vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
+        float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
+        vec3 currSpecular = light.specular * spec * light.color;
+
+        float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
+        float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+
+        currAmbient *= attenuation;
+        currDiffuse *= attenuation;
+        currSpecular *= attenuation;
+
+        return (currAmbient + currDiffuse + currSpecular) * light.color;
 }

@@ -5,7 +5,7 @@ namespace Common;
 public static class GeomPorting
 {
     /// <summary>
-    /// Ports a point in euclidean space to non-euclidean space.
+    /// Ports a point in Euclidean space to non-Euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
     /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
@@ -16,7 +16,7 @@ public static class GeomPorting
     }
 
     /// <summary>
-    /// Ports a point in non-euclidean space to euclidean space.
+    /// Ports a point in non-Euclidean space to Euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
     /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>

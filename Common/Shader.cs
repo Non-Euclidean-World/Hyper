@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Reflection;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Common;
@@ -115,6 +116,46 @@ public class Shader
     {
         GL.UseProgram(_handle);
         GL.Uniform1(_uniformLocations[name], data ? 1 : 0);
+    }
+
+    /// <summary>
+    /// Sets an array of structs on this shader.
+    /// This operation can be slow. Define a dedicated setter if performance is critical.
+    /// </summary>
+    /// <typeparam name="T">Type of the struct</typeparam>
+    /// <param name="name">Name of the uniform</param>
+    /// <param name="data">The data to set</param>
+    /// <exception cref="NotImplementedException"></exception>
+    public void SetStructArray<T>(string name, T[] data) where T : struct
+    {
+        FieldInfo[] fields = typeof(T).GetFields();
+
+        for (int i = 0; i < data.Length; i++)
+        {
+            foreach (var field in fields)
+            {
+                string structFieldName = $"{name}[{i}].{ToCamelCase(field.Name)}";
+                if (field.FieldType == typeof(int))
+                    SetInt(structFieldName, (int)field.GetValue(data[i])!);
+                else if (field.FieldType == typeof(float))
+                    SetFloat(structFieldName, (float)field.GetValue(data[i])!);
+                else if (field.FieldType == typeof(Vector3))
+                    SetVector3(structFieldName, (Vector3)field.GetValue(data[i])!);
+                else if (field.FieldType == typeof(Vector4))
+                    SetVector4(structFieldName, (Vector4)field.GetValue(data[i])!);
+                else
+                    throw new NotImplementedException($"Struct contains field of unsupported type");
+            }
+        }
+
+        static string ToCamelCase(string s)
+        {
+            string firstLetter = s[0].ToString().ToLower();
+            if (s.Length == 1)
+                return firstLetter;
+
+            return firstLetter + s[1..];
+        }
     }
 
     /// <summary>
