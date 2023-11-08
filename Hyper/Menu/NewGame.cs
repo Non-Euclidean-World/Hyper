@@ -14,6 +14,8 @@ public class NewGame : SingleChildWidget
     public event Action<string, GeometryType> Create = null!;
     
     private readonly InputTextBox _gameNameInput;
+    
+    private string[] _saveNames = SaveManager.GetSaves().ToArray();
 
     public NewGame()
     {
@@ -47,22 +49,45 @@ public class NewGame : SingleChildWidget
                             ),
                         new HyperButton(
                             text: "Start Hyper", 
-                            action: () => Console.WriteLine($"Hyper {_gameNameInput.Text}"),
+                            action: () => StartGame(GeometryType.Hyperbolic),
                             size: size
                             ),
                         new HyperButton(
                             text: "Start Euclidean", 
-                            action: () => Console.WriteLine("Euclid"),
+                            action: () => StartGame(GeometryType.Euclidean),
                             size: size
                         ),
                         new HyperButton(
                             text: "Start Spherical", 
-                            action: () => Console.WriteLine("Sphere"),
+                            action: () => StartGame(GeometryType.Spherical),
                             size: size
                         ),
                     }
                 )
             )
         );
+    }
+    
+    private void StartGame(GeometryType geometry)
+    {
+        var name = _gameNameInput.Text;
+        var saveNames = SaveManager.GetSaves();
+        if (saveNames.Contains(name))
+            return;
+        Create?.Invoke(name, geometry);
+    }
+
+    public override void Render(Context context)
+    {
+        if (_saveNames.Contains(_gameNameInput.Text))
+            _gameNameInput.Color = ColorGetter.GetVector(Color.Red);
+        else
+            _gameNameInput.Color = ColorGetter.GetVector(Color.White);
+        base.Render(context);
+    }
+
+    public void Reload()
+    {
+        _saveNames = SaveManager.GetSaves().ToArray();
     }
 }

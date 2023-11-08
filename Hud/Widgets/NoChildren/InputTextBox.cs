@@ -12,7 +12,7 @@ public class InputTextBox : TextBox
     
     private Vector2 _size;
     
-    public InputTextBox(string text, float size, Color color = Color.White) : base(text, size, color)
+    public InputTextBox(string text, float size, Color color = Colors.Color.White) : base(text, size, color)
     {
     }
     
@@ -54,6 +54,10 @@ public class InputTextBox : TextBox
         else if (key is >= Keys.A and <= Keys.Z)
         {
             Text += key.ToString().ToLower();
+        }
+        else if (key is >= Keys.D0 and <= Keys.D9)
+        {
+            Text += key.ToString().Substring(1);
         }
     }
 }

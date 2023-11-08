@@ -9,13 +9,13 @@ public class TextBox : Widget
 
     private readonly float _size;
 
-    private readonly Vector4 _color;
+    public Vector4 Color;
 
-    public TextBox(string text, float size, Color color = Color.White)
+    public TextBox(string text, float size, Color color = Colors.Color.White)
     {
         Text = text;
         _size = size;
-        _color = ColorGetter.GetVector(color);
+        Color = ColorGetter.GetVector(color);
     }
 
     public override Vector2 GetSize()
@@ -26,7 +26,7 @@ public class TextBox : Widget
     public override void Render(Context context)
     {
         context.Shader.UseTexture(false);
-        context.Shader.SetColor(_color);
+        context.Shader.SetColor(Color);
         Printer.RenderStringTopLeft(context.Shader, Text, _size, context.Position.X, context.Position.Y);
     }
 }

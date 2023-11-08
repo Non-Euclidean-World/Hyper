@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hud.Widgets.Colors;
-internal static class ColorGetter
+public static class ColorGetter
 {
     public static Vector4 GetVector(Color color) => color switch
     {

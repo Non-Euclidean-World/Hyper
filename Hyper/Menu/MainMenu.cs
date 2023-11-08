@@ -20,6 +20,7 @@ public class MainMenu
     }
     
     public event Action Resume = null!;
+    public event Action<string, GeometryType> NewGame = null!;
     public event Action<string> Load = null!;
     public event Action<string> Delete = null!;
     public event Action Quit = null!;
@@ -36,7 +37,9 @@ public class MainMenu
     
     private readonly Widget _saveGridScreen;
     
-    private readonly Widget _newGame;
+    private readonly NewGame _newGame = new NewGame();
+    
+    private readonly Widget _newGameScreen;
     
     private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
@@ -46,12 +49,14 @@ public class MainMenu
         _activeWidget = _appBar;
         SetUpAppBar();
         (_saveGrid, _saveGridScreen) = GetSaveGrid();
-        _newGame = GetWidgetWrapped(new NewGame());
+        _newGameScreen = GetWidgetWrapped(_newGame);
+        _newGame.Create += (saveName, geometryType) => NewGame?.Invoke(saveName, geometryType);
     }
     
     public void Reload()
     {
         _saveGrid.Reload();
+        _newGame.Reload();
     }
 
     private Widget GetWidgetWrapped(Widget widget)
@@ -87,7 +92,7 @@ public class MainMenu
         };
         _appBar.NewGame += () => 
         {
-            _activeWidget = _newGame;
+            _activeWidget = _newGameScreen;
         };
         _appBar.Quit += () => Quit?.Invoke();
     }

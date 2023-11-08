@@ -34,6 +34,12 @@ public class Window : GameWindow
             CursorState = CursorState.Grabbed;
             _game.IsRunning = true;
         };
+        mainMenu.NewGame += (saveName, geometryType) =>
+        {
+            _game.SaveAndClose();
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, geometryType);
+            CursorState = CursorState.Grabbed;
+        };
         mainMenu.Delete += (saveName) =>
         {
             if (saveName == _game.Settings.SaveName)
