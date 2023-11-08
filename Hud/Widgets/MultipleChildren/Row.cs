@@ -99,9 +99,17 @@ public class Row : MultipleChildrenWidget
         float x = context.Position.X;
         for (int i = 0; i < Children.Length; i++)
         {
-            float width = Children[i].GetSize().X;
-            Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(width, context.Size.Y)));
-            x += width;
+            if (i < Children.Length - 1)
+            {
+                float width = Children[i].GetSize().X;
+                Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(width, context.Size.Y)));
+                x += width;
+            }
+            else
+            {
+                float rightmostPoint = context.Position.X + context.Size.X;
+                Children[i].Render(new Context(context, new Vector2(x, context.Position.Y), new Vector2(rightmostPoint - x, context.Size.Y)));
+            }
         }
     }
 }

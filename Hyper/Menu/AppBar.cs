@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
-internal class MainMenuScreen : Widget
+internal class AppBar : Widget
 {
     private readonly Widget _child;
     
@@ -17,7 +17,7 @@ internal class MainMenuScreen : Widget
     
     public event Action Quit;
 
-    public MainMenuScreen()
+    public AppBar()
     {
         _child = GetChild();
     }
@@ -42,13 +42,14 @@ internal class MainMenuScreen : Widget
         return new Padding(
             size: 0.01f,
             child: new Background(
-                color: Color.White,
+                color: Color.Secondary,
                 child: new Padding(
                     size: 0.01f,
                     child: new Button(
                         size: new Vector2(0.4f, 0.1f),
                         action: () => action?.Invoke(),
-                        text: text
+                        text: text,
+                        color: Color.Primary
                     )
                 )
             )

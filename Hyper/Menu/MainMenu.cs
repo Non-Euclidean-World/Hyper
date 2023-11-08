@@ -16,6 +16,8 @@ public class MainMenu
     public event Action Resume = null!;
     
     public event Action Quit = null!;
+
+    public event Action<string> Load = null!;
     
     private readonly IWindowHelper _windowHelper;
 
@@ -23,17 +25,32 @@ public class MainMenu
 
     private Widget _activeWidget;
     
-    private readonly MainMenuScreen _menu = new ();
+    private readonly AppBar _appBar = new ();
     
-    private readonly LoadGame _loadGame = new ();
+    private readonly Widget _loadGame;
 
     public MainMenu(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
-        _activeWidget = _menu;
-        _menu.Resume += () => Resume?.Invoke();
-        _menu.Load += () => _activeWidget = _loadGame;
-        _menu.Quit += () => Quit?.Invoke();
+        _activeWidget = _appBar;
+        _appBar.Resume += () => 
+        {
+            _activeWidget = _appBar;
+            Resume?.Invoke();
+        };
+        _appBar.Load += () => _activeWidget = _loadGame;
+        _appBar.Quit += () => Quit?.Invoke();
+
+        var loadGameWidget = new LoadGame();
+        loadGameWidget.Load += (saveName) => Load?.Invoke(saveName);
+        _loadGame = new Row(
+            alignment: Alignment.Greedy,
+            children: new Widget[]
+            {
+                _appBar,
+                loadGameWidget
+            }
+        );
     }
     
     public void Render()

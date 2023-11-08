@@ -29,13 +29,20 @@ public class Window : GameWindow
             _game.IsRunning = true;
         };
         _mainMenu.Quit += Close;
+        _mainMenu.Load += (saveName) =>
+        {
+            if (_game.IsRunning)
+                _game.SaveAndClose();
+
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, GeometryType.Euclidean);
+            CursorState = CursorState.Grabbed;
+        };
         CursorState = CursorState.Grabbed;
     }
 
     public override void Close()
     {
-        if (_game.IsRunning)
-            _game.SaveAndClose();
+        _game.SaveAndClose();
         base.Close();
     }
 
@@ -143,7 +150,10 @@ public class Window : GameWindow
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)
     {
         if (!e.IsFocused)
+        {
             _game.IsRunning = false;
+            CursorState = CursorState.Normal;
+        }
     }
 
     private void Command()

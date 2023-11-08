@@ -15,7 +15,9 @@ public class LoadGame : Widget
     private const int TotalGames = 9;
     
     private readonly Widget _child;
-    
+
+    public event Action<string> Load;
+
     public LoadGame()
     {
         _child = GetChild();
@@ -26,7 +28,7 @@ public class LoadGame : Widget
         string[] saveNames = SaveManager.GetSaves().Take(TotalGames).ToArray();
 
         return new Background(
-            color: Color.Black,
+            color: Color.Background,
             child: new Column(
                 alignment: Alignment.Greedy,
                 children: new Widget[]
@@ -46,25 +48,27 @@ public class LoadGame : Widget
                         GamesPerRow
                     ),
                 })
-            
         );
     }
 
     private Widget GetSaveWidget(string name)
     {
-        return new ClickDetector(
-            action: () => Console.WriteLine($"Load save {name}"),
-            child: new Background(
-                color: Color.Blue,
-                child: new Padding(
-                    size: 0.01f,
-                    child: new Background(
-                        color: Color.Red,
-                        child: new Center(
-                            child: new TextBox(
-                                text: name,
-                                size: 0.02f,
-                                color: Color.White
+        return  new Padding(
+            size: 0.02f,
+            child: new ClickDetector(
+                action: () => Load?.Invoke(name),
+                child: new Background(
+                    color: Color.Secondary,
+                    child: new Padding(
+                        size: 0.01f,
+                        child: new Background(
+                            color: Color.Primary,
+                            child: new Center(
+                                child: new TextBox(
+                                    text: name,
+                                    size: 0.02f,
+                                    color: Color.White
+                                )
                             )
                         )
                     )
