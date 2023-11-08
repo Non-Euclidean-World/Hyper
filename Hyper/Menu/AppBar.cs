@@ -7,11 +7,11 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
-internal class AppBar : Widget
+internal class AppBar : SingleChildWidget
 {
-    private readonly Widget _child;
-    
     public event Action Resume;
+    
+    public event Action NewGame;
     
     public event Action Load;
 
@@ -21,61 +21,25 @@ internal class AppBar : Widget
 
     public AppBar()
     {
-        _child = GetChild();
+        Child = GetChild();
     }
 
     private Widget GetChild()
     {
+        var size = new Vector2(0.42f, 0.12f);
+        
         return new Center(
             child: new Column(
                 alignment: Alignment.Equal,
                 children: new Widget[]
                 {
-                    CreateButton("Resume", () => Resume.Invoke()),
-                    CreateButton("Load", () => Load.Invoke()),
-                    CreateButton("Delete", () => Delete.Invoke()),
-                    CreateButton("Quit", () => Quit.Invoke())
+                    new HyperButton("Resume", () => Resume.Invoke(), size),
+                    new HyperButton("New Game", () => NewGame.Invoke(), size),
+                    new HyperButton("Load", () => Load.Invoke(), size),
+                    new HyperButton("Delete", () => Delete.Invoke(), size),
+                    new HyperButton("Quit", () => Quit.Invoke(), size)
                 }
             )
         );
-    }
-
-    private Widget CreateButton(string text, Action action)
-    {
-        return new Padding(
-            size: 0.01f,
-            child: new Background(
-                color: Color.Secondary,
-                child: new Padding(
-                    size: 0.01f,
-                    child: new Button(
-                        size: new Vector2(0.4f, 0.1f),
-                        action: () => action?.Invoke(),
-                        text: text,
-                        color: Color.Primary
-                    )
-                )
-            )
-        );
-    }
-
-    public override Vector2 GetSize()
-    {
-        return _child.GetSize();
-    }
-
-    public override void Render(Context context)
-    {
-        _child.Render(context);
-    }
-
-    public override void Click(Vector2 position)
-    {
-        _child.Click(position);
-    }
-
-    public override void KeyboardInput(Keys key)
-    {
-        _child.KeyboardInput(key);
     }
 }

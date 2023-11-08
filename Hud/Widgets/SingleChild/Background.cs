@@ -7,7 +7,7 @@ public class Background : SingleChildWidget
 {
     private readonly Vector4 _color;
 
-    public Background(Widget child, Color color) : base(child)
+    public Background(Widget child, Color color = Color.Background) : base(child)
     {
         _color = ColorGetter.GetVector(color);
     }
@@ -15,11 +15,6 @@ public class Background : SingleChildWidget
     public Background(Widget child, Vector4 color) : base(child)
     {
         _color = color;
-    }
-
-    public override Vector2 GetSize()
-    {
-        return Child.GetSize();
     }
 
     public override void Render(Context context)

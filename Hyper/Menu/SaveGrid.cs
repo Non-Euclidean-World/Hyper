@@ -8,14 +8,12 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
 
-public class SaveGrid : Widget
+public class SaveGrid : SingleChildWidget
 {
     private const int GamesPerRow = 3;
 
     private const int TotalGames = 9;
     
-    private Widget _child;
-
     public event Action<string> OnSelected;
 
     private TextBox _titleTextBox;
@@ -28,12 +26,12 @@ public class SaveGrid : Widget
 
     public SaveGrid()
     {
-        _child = GetChild("Load Game");
+        Child = GetChild("Load Game");
     }
     
     public void Reload()
     {
-        _child = GetChild(Title);
+        Child = GetChild(Title);
     }
 
     private Widget GetChild(string title)
@@ -93,25 +91,5 @@ public class SaveGrid : Widget
                 )
             )
         );
-    }
-
-    public override Vector2 GetSize()
-    {
-        return _child.GetSize();
-    }
-
-    public override void Render(Context context)
-    {
-        _child.Render(context);
-    }
-
-    public override void Click(Vector2 position)
-    {
-        _child.Click(position);
-    }
-    
-    public override void KeyboardInput(Keys key)
-    {
-        _child.KeyboardInput(key);
     }
 }

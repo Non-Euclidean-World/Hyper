@@ -36,6 +36,8 @@ public class MainMenu
     
     private readonly Widget _saveGridScreen;
     
+    private readonly Widget _newGame;
+    
     private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
     public MainMenu(IWindowHelper windowHelper)
@@ -44,6 +46,7 @@ public class MainMenu
         _activeWidget = _appBar;
         SetUpAppBar();
         (_saveGrid, _saveGridScreen) = GetSaveGrid();
+        _newGame = GetWidgetWrapped(new NewGame());
     }
     
     public void Reload()
@@ -81,6 +84,10 @@ public class MainMenu
             _saveGrid!.Title = "Delete Game";
             _saveGridMode = SaveGridMode.Delete;
             _activeWidget = _saveGridScreen!;
+        };
+        _appBar.NewGame += () => 
+        {
+            _activeWidget = _newGame;
         };
         _appBar.Quit += () => Quit?.Invoke();
     }

@@ -5,11 +5,6 @@ public class Center : SingleChildWidget
 {
     public Center(Widget child) : base(child) { }
 
-    public override Vector2 GetSize()
-    {
-        return Child.GetSize();
-    }
-
     public override void Render(Context context)
     {
         var childSize = Child.GetSize();
