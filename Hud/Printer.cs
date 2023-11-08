@@ -20,7 +20,7 @@ public static class Printer
     static Printer()
     {
         var bytes = Enumerable.Range(0, CharacterCount).Select(i => (byte)i).ToArray();
-        string text = Encoding.ASCII.GetString(bytes);
+        string text = string.Join(' ', Encoding.ASCII.GetString(bytes).ToCharArray());
 
         Paint = new SKPaint();
         Paint.Color = SKColors.White;
@@ -127,7 +127,7 @@ public static class Printer
         var model = Matrix4.CreateTranslation(x, y, 0.0f);
         model = Matrix4.CreateScale(size * Paint.MeasureText(c.ToString()) / CharHeight, size, 1.0f) * model;
         shader.SetMatrix4("model", model);
-        shader.SetVector4("spriteRect", Rectangles[c]);
+        shader.SetVector4("spriteRect", Rectangles[2 * c]);
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }

@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hud.Widgets;
+﻿using Hud.Widgets;
+using Hud.Widgets.Colors;
 using Hud.Widgets.MultipleChildren;
 using Hud.Widgets.NoChildren;
 using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using static BepuPhysics.Collidables.CompoundBuilder;
 
 namespace Hyper.Menu;
 internal class MainMenuScreen : Widget
 {
     private readonly Widget _child;
+    
+    public event Action Resume;
+    
+    public event Action Load;
+    
+    public event Action Quit;
 
     public MainMenuScreen()
     {
@@ -28,22 +29,28 @@ internal class MainMenuScreen : Widget
                 alignment: Alignment.Equal,
                 children: new Widget[]
                 {
-                    CreateButton("resume"),
-                    CreateButton("Load"),
-                    CreateButton("Quit")
+                    CreateButton("Resume", () => Resume.Invoke()),
+                    CreateButton("Load", () => Load.Invoke()),
+                    CreateButton("Quit", () => Quit.Invoke())
                 }
             )
         );
     }
 
-    private Widget CreateButton(string text)
+    private Widget CreateButton(string text, Action action)
     {
         return new Padding(
-            size: 0.02f,
-            child: new Button(
-                size: new Vector2(0.8f, 0.2f),
-                action: () => Console.WriteLine(text),
-                text: text
+            size: 0.01f,
+            child: new Background(
+                color: Color.White,
+                child: new Padding(
+                    size: 0.01f,
+                    child: new Button(
+                        size: new Vector2(0.4f, 0.1f),
+                        action: () => action?.Invoke(),
+                        text: text
+                    )
+                )
             )
         );
     }

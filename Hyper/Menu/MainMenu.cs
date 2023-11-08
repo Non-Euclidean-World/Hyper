@@ -13,15 +13,27 @@ namespace Hyper.Menu;
 
 public class MainMenu
 {
+    public event Action Resume = null!;
+    
+    public event Action Quit = null!;
+    
     private readonly IWindowHelper _windowHelper;
 
     private readonly HudShader _shader = HudShader.Create();
+
+    private Widget _activeWidget;
     
-    private readonly Widget _widget = new MainMenuScreen();
+    private readonly MainMenuScreen _menu = new ();
+    
+    private readonly LoadGame _loadGame = new ();
 
     public MainMenu(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
+        _activeWidget = _menu;
+        _menu.Resume += () => Resume?.Invoke();
+        _menu.Load += () => _activeWidget = _loadGame;
+        _menu.Quit += () => Quit?.Invoke();
     }
     
     public void Render()
@@ -32,17 +44,17 @@ public class MainMenu
         _shader.SetUp(aspectRatio);
         _shader.UseTexture(false);
         _shader.SetColor(Vector4.One);
-        _widget.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
+        _activeWidget.Render(new Context(_shader, new Vector2(-aspectRatio / 2, 0.5f), new Vector2(aspectRatio, 1)));
         GL.Enable(EnableCap.DepthTest);
     }
     
     public void Click()
     {
-        _widget.Click(_windowHelper.GetMousePosition());
+        _activeWidget.Click(_windowHelper.GetMousePosition());
     }
     
     public void KeyDown(Keys key)
     {
-        _widget.KeyboardInput(key);
+        _activeWidget.KeyboardInput(key);
     }
 }

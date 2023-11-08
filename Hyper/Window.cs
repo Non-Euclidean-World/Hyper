@@ -10,7 +10,7 @@ namespace Hyper;
 
 public class Window : GameWindow
 {
-    private MainMenu _mainMenu;
+    private readonly MainMenu _mainMenu;
     
     private Game _game;
 
@@ -21,8 +21,14 @@ public class Window : GameWindow
     {
         var windowHelper = new WindowHelper(this);
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
-        _mainMenu = new MainMenu(windowHelper);
         _interpreter = new CommandInterpreter(this);
+        _mainMenu = new MainMenu(windowHelper);
+        _mainMenu.Resume += () =>
+        {
+            CursorState = CursorState.Grabbed;
+            _game.IsRunning = true;
+        };
+        _mainMenu.Quit += Close;
         CursorState = CursorState.Grabbed;
     }
 
