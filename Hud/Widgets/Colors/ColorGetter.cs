@@ -7,7 +7,7 @@ public static class ColorGetter
     {
         Color.Primary => new Vector4(0, 0, 1, 1),
         Color.Secondary => new Vector4(1, 1, 1, 1),
-        Color.Background => new Vector4(0, 0, 0, 1),
+        Color.Background => new Vector4(0.9f, 0.7f, 0.7f, 1),
 
         Color.White => new Vector4(1, 1, 1, 1),
         Color.Black => new Vector4(0, 0, 0, 1),

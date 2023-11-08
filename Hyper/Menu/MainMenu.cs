@@ -61,13 +61,15 @@ public class MainMenu
 
     private Widget GetWidgetWrapped(Widget widget)
     {
-        return new Row(
-            alignment: Alignment.Greedy,
-            children: new Widget[]
-            {
-                _appBar,
-                widget
-            }
+        return new Background(
+        new Row(
+                alignment: Alignment.Greedy,
+                children: new Widget[]
+                {
+                    _appBar,
+                    widget
+                }
+            )
         );
     }
 

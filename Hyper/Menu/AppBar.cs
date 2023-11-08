@@ -28,17 +28,19 @@ internal class AppBar : SingleChildWidget
     {
         var size = new Vector2(0.42f, 0.12f);
         
-        return new Center(
-            child: new Column(
-                alignment: Alignment.Equal,
-                children: new Widget[]
-                {
-                    new HyperButton("Resume", () => Resume.Invoke(), size),
-                    new HyperButton("New Game", () => NewGame.Invoke(), size),
-                    new HyperButton("Load", () => Load.Invoke(), size),
-                    new HyperButton("Delete", () => Delete.Invoke(), size),
-                    new HyperButton("Quit", () => Quit.Invoke(), size)
-                }
+        return new Background(
+            new Center(
+                child: new Column(
+                    alignment: Alignment.Equal,
+                    children: new Widget[]
+                    {
+                        new HyperButton("Resume", () => Resume.Invoke(), size),
+                        new HyperButton("New Game", () => NewGame.Invoke(), size),
+                        new HyperButton("Load", () => Load.Invoke(), size),
+                        new HyperButton("Delete", () => Delete.Invoke(), size),
+                        new HyperButton("Quit", () => Quit.Invoke(), size)
+                    }
+                )
             )
         );
     }
