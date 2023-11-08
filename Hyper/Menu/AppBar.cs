@@ -14,6 +14,8 @@ internal class AppBar : Widget
     public event Action Resume;
     
     public event Action Load;
+
+    public event Action Delete;
     
     public event Action Quit;
 
@@ -31,6 +33,7 @@ internal class AppBar : Widget
                 {
                     CreateButton("Resume", () => Resume.Invoke()),
                     CreateButton("Load", () => Load.Invoke()),
+                    CreateButton("Delete", () => Delete.Invoke()),
                     CreateButton("Quit", () => Quit.Invoke())
                 }
             )

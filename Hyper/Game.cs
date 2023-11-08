@@ -25,7 +25,7 @@ public class Game
 
     private Vector2i _size;
 
-    private readonly Settings _settings;
+    public readonly Settings Settings;
 
     private readonly float _globalScale = 0.05f;
 
@@ -43,16 +43,17 @@ public class Game
         if (!Settings.SaveExists(saveName))
         {
             Random rand = new Random();
-            _settings = new Settings(rand.Next(), saveName, (float)width / height, geometryType);
+            Settings = new Settings(rand.Next(), saveName, (float)width / height, geometryType);
         }
         else
         {
-            _settings = Settings.Load(saveName); // TODO it's confusing as hell but geometryType variable is INVALID from this point onward
-            _settings.AspectRatio = (float)width / height;
+            Settings = Settings.Load(saveName); // TODO it's confusing as hell but geometryType variable is INVALID from this point onward
+            Settings.AspectRatio = (float)width / height;
         }
-        Logger.Info($"Seed: {_settings.Seed}");
+        Logger.Info($"Seed: {Settings.Seed}");
+        Settings.Save();
 
-        float curve = _settings.GeometryType switch
+        float curve = Settings.GeometryType switch
         {
             GeometryType.Euclidean => 0f,
             GeometryType.Hyperbolic => -1f,
@@ -60,23 +61,23 @@ public class Game
             _ => throw new NotImplementedException(),
         };
 
-        if (_settings.GeometryType == GeometryType.Spherical)
+        if (Settings.GeometryType == GeometryType.Spherical)
             Chunk.Size = 32;
 
-        var scalarFieldGenerator = new ScalarFieldGenerator(_settings.Seed);
+        var scalarFieldGenerator = new ScalarFieldGenerator(Settings.Seed);
         var camera = new Camera(aspectRatio: _size.X / (float)_size.Y, curve, near: 0.01f, far: 200f, _globalScale, _context)
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, _settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
-        IControllerFactory controllerFactory = _settings.GeometryType switch
+        _scene = new Scene(camera, Settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        IControllerFactory controllerFactory = Settings.GeometryType switch
         {
             GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
             GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
             _ => throw new NotImplementedException(),
         };
 
-        _controllers = controllerFactory.CreateControllers(_settings);
+        _controllers = controllerFactory.CreateControllers(Settings);
     }
 
     public void SaveAndClose()
@@ -86,7 +87,7 @@ public class Game
             controller.Dispose();
         }
         _scene.Dispose(); // Scene dispose needs to be after controller dispose.
-        _settings.Save();
+        Settings.Save();
         LogManager.Flush();
         IsRunning = false;
     }
@@ -174,7 +175,7 @@ public class Game
     {
         GL.Viewport(0, 0, e.Width, e.Height);
         _scene.Camera.AspectRatio = e.Width / (float)e.Height;
-        _settings.AspectRatio = e.Width / (float)e.Height;
+        Settings.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
     }
 }

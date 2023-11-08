@@ -13,11 +13,16 @@ namespace Hyper.Menu;
 
 public class MainMenu
 {
-    public event Action Resume = null!;
+    private enum SaveGridMode
+    {
+        Load,
+        Delete
+    }
     
-    public event Action Quit = null!;
-
+    public event Action Resume = null!;
     public event Action<string> Load = null!;
+    public event Action<string> Delete = null!;
+    public event Action Quit = null!;
     
     private readonly IWindowHelper _windowHelper;
 
@@ -27,30 +32,77 @@ public class MainMenu
     
     private readonly AppBar _appBar = new ();
     
-    private readonly Widget _loadGame;
+    private readonly SaveGrid _saveGrid;
+    
+    private readonly Widget _saveGridScreen;
+    
+    private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
     public MainMenu(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
         _activeWidget = _appBar;
+        SetUpAppBar();
+        (_saveGrid, _saveGridScreen) = GetSaveGrid();
+    }
+    
+    public void Reload()
+    {
+        _saveGrid.Reload();
+    }
+
+    private Widget GetWidgetWrapped(Widget widget)
+    {
+        return new Row(
+            alignment: Alignment.Greedy,
+            children: new Widget[]
+            {
+                _appBar,
+                widget
+            }
+        );
+    }
+
+    private void SetUpAppBar()
+    {
         _appBar.Resume += () => 
         {
             _activeWidget = _appBar;
             Resume?.Invoke();
         };
-        _appBar.Load += () => _activeWidget = _loadGame;
+        _appBar.Load += () =>
+        {
+            _saveGrid!.Title = "Load Game";
+            _saveGridMode = SaveGridMode.Load;
+            _activeWidget = _saveGridScreen!;
+        };
+        _appBar.Delete += () =>
+        {
+            _saveGrid!.Title = "Delete Game";
+            _saveGridMode = SaveGridMode.Delete;
+            _activeWidget = _saveGridScreen!;
+        };
         _appBar.Quit += () => Quit?.Invoke();
+    }
 
-        var loadGameWidget = new LoadGame();
-        loadGameWidget.Load += (saveName) => Load?.Invoke(saveName);
-        _loadGame = new Row(
-            alignment: Alignment.Greedy,
-            children: new Widget[]
+    private (SaveGrid, Widget) GetSaveGrid()
+    {
+        var saveGrid = new SaveGrid();
+        saveGrid.OnSelected += (saveName) =>
+        {
+            switch (_saveGridMode)
             {
-                _appBar,
-                loadGameWidget
+                case SaveGridMode.Load:
+                    Load?.Invoke(saveName);
+                    break;
+                case SaveGridMode.Delete:
+                    Delete?.Invoke(saveName);
+                    break;
             }
-        );
+        };
+        var saveGridScreen = GetWidgetWrapped(saveGrid);
+
+        return (saveGrid, saveGridScreen);
     }
     
     public void Render()

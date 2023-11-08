@@ -8,24 +8,40 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
 
-public class LoadGame : Widget
+public class SaveGrid : Widget
 {
     private const int GamesPerRow = 3;
 
     private const int TotalGames = 9;
     
-    private readonly Widget _child;
+    private Widget _child;
 
-    public event Action<string> Load;
+    public event Action<string> OnSelected;
 
-    public LoadGame()
+    private TextBox _titleTextBox;
+    
+    public string Title
     {
-        _child = GetChild();
+        get => _titleTextBox.Text;
+        set => _titleTextBox.Text = value;
     }
 
-    private Widget GetChild()
+    public SaveGrid()
+    {
+        _child = GetChild("Load Game");
+    }
+    
+    public void Reload()
+    {
+        _child = GetChild(Title);
+    }
+
+    private Widget GetChild(string title)
     {
         string[] saveNames = SaveManager.GetSaves().Take(TotalGames).ToArray();
+        saveNames = saveNames.Concat(Enumerable.Repeat(string.Empty, TotalGames - saveNames.Length)).ToArray();
+        
+        _titleTextBox = new TextBox(title, 0.05f);
 
         return new Background(
             color: Color.Background,
@@ -36,10 +52,7 @@ public class LoadGame : Widget
                     new Padding(
                         size: 0.03f,
                         child: new Center(
-                            new TextBox(
-                                size: 0.05f,
-                                text: "Load Game"
-                            )
+                            _titleTextBox
                         )
                     ),
                     Grid.Build(
@@ -56,7 +69,12 @@ public class LoadGame : Widget
         return  new Padding(
             size: 0.02f,
             child: new ClickDetector(
-                action: () => Load?.Invoke(name),
+                action: () =>
+                {
+                    if (name.Length == 0)
+                        return;
+                    OnSelected?.Invoke(name);
+                },
                 child: new Background(
                     color: Color.Secondary,
                     child: new Padding(

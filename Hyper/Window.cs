@@ -22,22 +22,35 @@ public class Window : GameWindow
         var windowHelper = new WindowHelper(this);
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
         _interpreter = new CommandInterpreter(this);
-        _mainMenu = new MainMenu(windowHelper);
-        _mainMenu.Resume += () =>
+        _mainMenu = GetMainMenu(windowHelper);
+        CursorState = CursorState.Grabbed;
+    }
+
+    private MainMenu GetMainMenu(IWindowHelper windowHelper)
+    {
+        var mainMenu = new MainMenu(windowHelper);
+        mainMenu.Resume += () =>
         {
             CursorState = CursorState.Grabbed;
             _game.IsRunning = true;
         };
-        _mainMenu.Quit += Close;
-        _mainMenu.Load += (saveName) =>
+        mainMenu.Delete += (saveName) =>
         {
-            if (_game.IsRunning)
-                _game.SaveAndClose();
+            if (saveName == _game.Settings.SaveName)
+                return;
+            SaveManager.DeleteSaves(new []{saveName});
+            mainMenu.Reload();
+        };
+        mainMenu.Load += (saveName) =>
+        {
+            _game.SaveAndClose();
 
             _game = new Game(Size.X, Size.Y, windowHelper, saveName, GeometryType.Euclidean);
             CursorState = CursorState.Grabbed;
         };
-        CursorState = CursorState.Grabbed;
+        mainMenu.Quit += Close;
+
+        return mainMenu;
     }
 
     public override void Close()
