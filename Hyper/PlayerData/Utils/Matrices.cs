@@ -11,7 +11,7 @@ public static class Matrices
     /// <param name="position"></param>
     /// <param name="front"></param>
     /// <param name="up"></param>
-    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
     /// <returns></returns>
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve)
     {
