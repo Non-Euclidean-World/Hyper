@@ -1,7 +1,6 @@
 ﻿using Chunks.ChunkManagement.ChunkWorkers;
 using Common.UserInput;
 using Hyper.PlayerData;
-using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;

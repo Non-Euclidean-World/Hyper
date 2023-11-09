@@ -123,29 +123,47 @@ public class Shader
     /// This operation can be slow. Define a dedicated setter if performance is critical.
     /// </summary>
     /// <typeparam name="T">Type of the struct</typeparam>
-    /// <param name="name">Name of the uniform</param>
+    /// <param name="name">Name of the uniform array</param>
     /// <param name="data">The data to set</param>
     /// <exception cref="NotImplementedException"></exception>
     public void SetStructArray<T>(string name, T[] data) where T : struct
     {
-        FieldInfo[] fields = typeof(T).GetFields();
-
         for (int i = 0; i < data.Length; i++)
         {
-            foreach (var field in fields)
-            {
-                string structFieldName = $"{name}[{i}].{ToCamelCase(field.Name)}";
-                if (field.FieldType == typeof(int))
-                    SetInt(structFieldName, (int)field.GetValue(data[i])!);
-                else if (field.FieldType == typeof(float))
-                    SetFloat(structFieldName, (float)field.GetValue(data[i])!);
-                else if (field.FieldType == typeof(Vector3))
-                    SetVector3(structFieldName, (Vector3)field.GetValue(data[i])!);
-                else if (field.FieldType == typeof(Vector4))
-                    SetVector4(structFieldName, (Vector4)field.GetValue(data[i])!);
-                else
-                    throw new NotImplementedException($"Struct contains field of unsupported type");
-            }
+            SetFields($"{name}[{i}]", data[i]);
+        }
+    }
+
+    /// <summary>
+    /// Sets a struct on this shader.
+    /// This operation can be slow. Define a dedicated setter if performance is critical.
+    /// </summary>
+    /// <typeparam name="T">Type of the struct</typeparam>
+    /// <param name="name">Name of the uniform</param>
+    /// <param name="data">The data to set</param>
+    /// <exception cref="NotImplementedException"></exception>
+    public void SetStruct<T>(string name, T data) where T : struct
+    {
+        SetFields(name, data);
+    }
+
+    private void SetFields<T>(string fullName, T data) where T : struct
+    {
+        FieldInfo[] fields = typeof(T).GetFields();
+
+        foreach (var field in fields)
+        {
+            string structFieldName = $"{fullName}.{ToCamelCase(field.Name)}";
+            if (field.FieldType == typeof(int))
+                SetInt(structFieldName, (int)field.GetValue(data)!);
+            else if (field.FieldType == typeof(float))
+                SetFloat(structFieldName, (float)field.GetValue(data)!);
+            else if (field.FieldType == typeof(Vector3))
+                SetVector3(structFieldName, (Vector3)field.GetValue(data)!);
+            else if (field.FieldType == typeof(Vector4))
+                SetVector4(structFieldName, (Vector4)field.GetValue(data)!);
+            else
+                throw new NotImplementedException($"Struct contains field of unsupported type");
         }
 
         static string ToCamelCase(string s)

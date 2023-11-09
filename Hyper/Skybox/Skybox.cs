@@ -1,11 +1,20 @@
 ﻿using Common;
 using Hyper.Shaders.SkyboxShader;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace Hyper.Skybox;
 internal class Skybox
 {
+    /// <summary>
+    /// Cubemap texture for the skybox
+    /// </summary>
     public Texture Texture { get; private init; }
+
+    /// <summary>
+    /// Rotation of the skybox in radians
+    /// </summary>
+    public float RotationX { get; set; }
 
     private readonly string[] _dayFaces;
 
@@ -48,6 +57,9 @@ internal class Skybox
 
     public void Render(AbstractSkyboxShader shader)
     {
+        var rotation = Matrix4.CreateFromAxisAngle(Vector3.UnitX, RotationX);
+        shader.SetMatrix4("model", rotation);
+
         GL.DepthFunc(DepthFunction.Lequal);
         GL.BindVertexArray(_skyboxResource.Vao);
         GL.ActiveTexture(TextureUnit.Texture0);
