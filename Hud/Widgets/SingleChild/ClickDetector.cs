@@ -49,7 +49,7 @@ public class ClickDetector : SingleChildWidget
             _position.Y - _size.Y > position.Y ||
             _position.Y < position.Y)
         {
-            _outsideAction.Invoke();
+            _outsideAction?.Invoke();
             if (_propagate)
                 Child.Click(position);
             return;
