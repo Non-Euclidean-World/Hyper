@@ -17,6 +17,8 @@ public static class Printer
     private static readonly SKPaint Paint;
     private static readonly float CharHeight;
 
+    public static char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than ChaacterCount.
+
     static Printer()
     {
         var bytes = Enumerable.Range(0, CharacterCount).Select(i => (byte)i).ToArray();
@@ -73,6 +75,12 @@ public static class Printer
             {
                 verticalOffset += GetVerticalOffset(size);
                 horizontalOffset = 0;
+                continue;
+            }
+
+            if (t == Caret)
+            {
+                RenderChar(shader, '|', size, x + horizontalOffset, y - verticalOffset);
                 continue;
             }
 

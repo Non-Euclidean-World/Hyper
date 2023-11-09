@@ -6,13 +6,16 @@ public class ClickDetector : SingleChildWidget
 {
     private readonly Action _action;
 
+    private readonly Action _outsideAction;
+
     private Vector2 _position;
     
     private Vector2 _size;
 
-    public ClickDetector(Widget child, Action action) : base(child)
+    public ClickDetector(Widget child, Action action, Action outsideAction = null!) : base(child)
     {
         _action = action;
+        _outsideAction = outsideAction;
     }
 
     public override Vector2 GetSize()
@@ -34,6 +37,7 @@ public class ClickDetector : SingleChildWidget
             _position.Y - _size.Y > position.Y ||
             _position.Y < position.Y)
         {
+            _outsideAction?.Invoke();
             return;
         }
         
