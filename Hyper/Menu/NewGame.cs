@@ -13,40 +13,26 @@ public class NewGame : SingleChildWidget
 {
     public event Action<string, GeometryType> Create = null!;
     
-    private readonly InputTextBox _gameNameInput;
+    private readonly HyperInputTextBox _gameNameInput;
     
     private string[] _saveNames = SaveManager.GetSaves().ToArray();
 
     public NewGame()
     {
-        _gameNameInput = new InputTextBox(
-            text: "Game Name",
-            size: 0.05f);
-        
         var size = new Vector2(0.5f, 0.1f);
-        
+
+        _gameNameInput = new HyperInputTextBox(
+            placeholderText: "Input Game Name",
+            size: size
+        );
+            
         Child = new Background(
             child: new Center(
                 child: new Column(
                     alignment: Alignment.Greedy,
                     children: new Widget[]
                     {
-                        new SizeBox(
-                            size: size,
-                            child: new Padding(
-                                size: 0.01f,
-                                child: new Background(
-                                    color: Color.Secondary,
-                                    child: new Padding(
-                                        size: 0.01f,
-                                        child: new Background(
-                                            color: Color.Primary,
-                                            child: new Center(_gameNameInput)
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
+                        _gameNameInput,
                         new HyperButton(
                             text: "Start Hyper", 
                             action: () => StartGame(GeometryType.Hyperbolic),

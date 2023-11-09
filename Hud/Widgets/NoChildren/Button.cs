@@ -10,7 +10,7 @@ using OpenTK.Mathematics;
 namespace Hud.Widgets.NoChildren;
 public class Button : SingleChildWidget
 {
-    public Button(Vector2 size, Action action, string text, Color color = Color.Blue) 
+    public Button(Vector2 size, Action action, string text, Color color = Color.Primary) 
     {
         Child = new SizeBox(
             size: size,
@@ -19,7 +19,7 @@ public class Button : SingleChildWidget
                 child: new Background(
                     color: color,
                     child: new Center(
-                        child: new TextBox(
+                        child: new Text(
                             size: size.Y * 1/3,
                             text: text
                         )

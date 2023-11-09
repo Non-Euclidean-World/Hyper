@@ -12,10 +12,13 @@ public class ClickDetector : SingleChildWidget
     
     private Vector2 _size;
 
-    public ClickDetector(Widget child, Action action, Action outsideAction = null!) : base(child)
+    private bool _propagate;
+
+    public ClickDetector(Widget child, Action action, Action outsideAction = null!, bool propagate = false) : base(child)
     {
         _action = action;
         _outsideAction = outsideAction;
+        _propagate = propagate;
     }
 
     public override Vector2 GetSize()
@@ -38,9 +41,13 @@ public class ClickDetector : SingleChildWidget
             _position.Y < position.Y)
         {
             _outsideAction?.Invoke();
+            if (_propagate)
+                Child.Click(position);
             return;
         }
-        
+
+        if (_propagate)
+            Child.Click(position);
         _action.Invoke();
     }
 }

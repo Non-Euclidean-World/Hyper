@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hud.Widgets.MultipleChildren;
@@ -17,7 +18,7 @@ public abstract class MultipleChildrenWidget : Widget
         }
     }
     
-    public override void KeyboardInput(Keys key)
+    public override void KeyboardInput(KeyboardKeyEventArgs key)
     {
         foreach (var child in Children)
         {

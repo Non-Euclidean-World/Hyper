@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hud.Widgets;
@@ -10,5 +11,5 @@ public abstract class Widget
     
     public virtual void Click(Vector2 position) { }
     
-    public virtual void KeyboardInput(Keys key) { }
+    public virtual void KeyboardInput(KeyboardKeyEventArgs key) { }
 }

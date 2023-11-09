@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hud.Widgets.SingleChild;
@@ -26,7 +27,7 @@ public abstract class SingleChildWidget : Widget
         Child.Click(position);
     }
     
-    public override void KeyboardInput(Keys key)
+    public override void KeyboardInput(KeyboardKeyEventArgs key)
     {
         Child.KeyboardInput(key);
     }

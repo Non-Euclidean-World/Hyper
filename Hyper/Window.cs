@@ -114,7 +114,7 @@ public class Window : GameWindow
             }
         }
         else
-            _mainMenu.KeyDown(e.Key);
+            _mainMenu.KeyDown(e);
     }
 
     protected override void OnKeyUp(KeyboardKeyEventArgs e)

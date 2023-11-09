@@ -16,12 +16,12 @@ public class SaveGrid : SingleChildWidget
     
     public event Action<string> OnSelected;
 
-    private TextBox _titleTextBox;
+    private Text _titleTextBox;
     
     public string Title
     {
-        get => _titleTextBox.Text;
-        set => _titleTextBox.Text = value;
+        get => _titleTextBox.Content;
+        set => _titleTextBox.Content = value;
     }
 
     public SaveGrid()
@@ -39,7 +39,7 @@ public class SaveGrid : SingleChildWidget
         string[] saveNames = SaveManager.GetSaves().Take(TotalGames).ToArray();
         saveNames = saveNames.Concat(Enumerable.Repeat(string.Empty, TotalGames - saveNames.Length)).ToArray();
         
-        _titleTextBox = new TextBox(title, 0.05f);
+        _titleTextBox = new Text(title, 0.05f);
 
         return new Background(
             color: Color.Background,
@@ -80,7 +80,7 @@ public class SaveGrid : SingleChildWidget
                         child: new Background(
                             color: Color.Primary,
                             child: new Center(
-                                child: new TextBox(
+                                child: new Text(
                                     text: name,
                                     size: 0.02f,
                                     color: Color.White

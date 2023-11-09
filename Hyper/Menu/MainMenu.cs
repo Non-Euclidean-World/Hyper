@@ -7,6 +7,7 @@ using Hud.Widgets.NoChildren;
 using Hud.Widgets.SingleChild;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
@@ -136,7 +137,7 @@ public class MainMenu
         _activeWidget.Click(_windowHelper.GetMousePosition());
     }
     
-    public void KeyDown(Keys key)
+    public void KeyDown(KeyboardKeyEventArgs key)
     {
         _activeWidget.KeyboardInput(key);
     }
