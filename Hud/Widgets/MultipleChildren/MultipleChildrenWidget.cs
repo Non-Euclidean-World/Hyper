@@ -3,6 +3,9 @@ using OpenTK.Windowing.Common;
 
 namespace Hud.Widgets.MultipleChildren;
 
+/// <summary>
+/// Class that widgets with multiple children inherit from.
+/// </summary>
 public abstract class MultipleChildrenWidget : Widget
 {
     protected readonly Widget[] Children;
@@ -17,11 +20,11 @@ public abstract class MultipleChildrenWidget : Widget
         }
     }
 
-    public override void KeyboardInput(KeyboardKeyEventArgs key)
+    public override void KeyboardInput(KeyboardKeyEventArgs e)
     {
         foreach (var child in Children)
         {
-            child.KeyboardInput(key);
+            child.KeyboardInput(e);
         }
     }
 }

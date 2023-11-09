@@ -1,6 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hud.Widgets.SingleChild;
+/// <summary>
+/// Centers the child widget.
+/// </summary>
 public class Center : SingleChildWidget
 {
     public Center(Widget child) : base(child) { }

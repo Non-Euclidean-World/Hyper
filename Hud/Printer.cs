@@ -5,7 +5,9 @@ using OpenTK.Mathematics;
 using SkiaSharp;
 
 namespace Hud;
-
+/// <summary>
+/// Prints text to the screen.
+/// </summary>
 public static class Printer
 {
     private static readonly Texture AsciiTexture;
@@ -17,7 +19,7 @@ public static class Printer
     private static readonly SKPaint Paint;
     private static readonly float CharHeight;
 
-    public static char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than ChaacterCount.
+    public const char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than ChaacterCount.
 
     static Printer()
     {
@@ -157,6 +159,12 @@ public static class Printer
         return rectangles;
     }
 
+    /// <summary>
+    /// Gets the size of the text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="size">The height of a single letter.</param>
+    /// <returns></returns>
     public static Vector2 GetTextSize(string text, float size)
     {
         var lines = text.Split('\n');

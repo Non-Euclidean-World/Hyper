@@ -6,7 +6,7 @@ namespace Hud.Widgets;
 /// <summary>
 /// This describes how much space there is on the screen.
 /// </summary>
-/// <param name="Shader"></param>
+/// <param name="Shader">The shader used to render widgets.</param>
 /// <param name="Position">The top left corner of the Context</param>
 /// <param name="Size">Width and height of the Context</param>
 public record Context(HudShader Shader, Vector2 Position, Vector2 Size)

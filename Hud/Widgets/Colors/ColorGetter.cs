@@ -1,6 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hud.Widgets.Colors;
+/// <summary>
+/// Converts Color to Vector4.
+/// </summary>
 public static class ColorGetter
 {
     public static Vector4 GetVector(Color color) => color switch

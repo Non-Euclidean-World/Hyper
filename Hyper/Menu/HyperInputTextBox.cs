@@ -3,6 +3,9 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
+/// <summary>
+/// Input text box used in the game. It is the same as a <see cref="InputTextBox"/> but with some extra styling.
+/// </summary>
 internal class HyperInputTextBox : SingleChildWidget
 {
     private readonly InputTextBox _textBox;
@@ -18,7 +21,7 @@ internal class HyperInputTextBox : SingleChildWidget
         _textBox = new InputTextBox(
             text: placeholderText,
             placeholder: true,
-            characterlimit: (int)(size.X * 40),
+            characterLimit: (int)(size.X * 40),
             size: size - new Vector2(0.02f));
 
         _background = new Background(

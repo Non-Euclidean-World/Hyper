@@ -6,7 +6,9 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
-
+/// <summary>
+/// A menu for creating a new game.
+/// </summary>
 public class NewGame : SingleChildWidget
 {
     public event Action<string, GeometryType> Create = null!;

@@ -1,7 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hud.Widgets.SingleChild;
-
+/// <summary>
+/// A widget that performs an action when clicked.
+/// </summary>
 public class ClickDetector : SingleChildWidget
 {
     private readonly Action _action;
@@ -12,8 +14,15 @@ public class ClickDetector : SingleChildWidget
 
     private Vector2 _size;
 
-    private bool _propagate;
+    private readonly bool _propagate;
 
+    /// <summary>
+    /// Creates an instance of ClickDetector.
+    /// </summary>
+    /// <param name="child">Widget inside ClickDetector.</param>
+    /// <param name="action">An action that is performed after ClickDetector is pressed.</param>
+    /// <param name="outsideAction">An action that is performed when area outside ClickDetector is pressed.</param>
+    /// <param name="propagate">Whether after being clicked .Click() should be called on the child.</param>
     public ClickDetector(Widget child, Action action, Action outsideAction = null!, bool propagate = false) : base(child)
     {
         _action = action;
@@ -40,7 +49,7 @@ public class ClickDetector : SingleChildWidget
             _position.Y - _size.Y > position.Y ||
             _position.Y < position.Y)
         {
-            _outsideAction?.Invoke();
+            _outsideAction.Invoke();
             if (_propagate)
                 Child.Click(position);
             return;

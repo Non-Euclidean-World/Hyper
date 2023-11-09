@@ -4,7 +4,9 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
-
+/// <summary>
+/// Button used in the game. It is the same as a <see cref="Button"/> but with some extra styling.
+/// </summary>
 public class HyperButton : SingleChildWidget
 {
     public HyperButton(string text, Action action, Vector2 size)

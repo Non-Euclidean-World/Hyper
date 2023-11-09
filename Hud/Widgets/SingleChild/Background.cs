@@ -3,10 +3,18 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hud.Widgets.SingleChild;
+/// <summary>
+/// Sets the background color.
+/// </summary>
 public class Background : SingleChildWidget
 {
     public Vector4 Color;
 
+    /// <summary>
+    /// Creates an instance of Background class.
+    /// </summary>
+    /// <param name="child">The widget inside the background.</param>
+    /// <param name="color">The background color.</param>
     public Background(Widget child, Color color = Colors.Color.Background) : base(child)
     {
         Color = ColorGetter.GetVector(color);

@@ -1,18 +1,31 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hud.Widgets.MultipleChildren;
-
+/// <summary>
+/// Aligns children one next to another.
+/// </summary>
 public class Column : MultipleChildrenWidget
 {
     private readonly Alignment _alignment;
 
     private readonly float[] _sizes;
 
+    /// <summary>
+    /// Creates an instance of Column class.
+    /// </summary>
+    /// <param name="children">Array of child widgets.</param>
+    /// <param name="alignment">The way to aligns the children.</param>
     public Column(Widget[] children, Alignment alignment = Alignment.Equal) : base(children)
     {
         _alignment = alignment;
     }
 
+    /// <summary>
+    /// Creates an instance of Column class. The sizes of both arrays must match.
+    /// </summary>
+    /// <param name="children">Array of child widgets.</param>
+    /// <param name="sizes">Array of sized each child is supposed to have.</param>
+    /// <exception cref="Exception">The sizes of arrays do not match</exception>
     public Column(Widget[] children, float[] sizes) : base(children)
     {
         if (children.Length != sizes.Length)

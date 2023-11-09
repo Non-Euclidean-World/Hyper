@@ -2,6 +2,9 @@
 
 namespace Hud.Widgets.NoChildren;
 
+/// <summary>
+/// A widget that does nothing.
+/// </summary>
 public class Empty : Widget
 {
     public override Vector2 GetSize()

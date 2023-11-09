@@ -8,7 +8,9 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 
 namespace Hyper.Menu;
-
+/// <summary>
+/// The main menu of the game. It lets the user start a new game, load a game, delete a game, or quit the game.
+/// </summary>
 public class MainMenu
 {
     private enum SaveGridMode

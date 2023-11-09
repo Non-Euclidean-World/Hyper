@@ -4,17 +4,20 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
+/// <summary>
+/// A bar the lets the user navigate the menu.
+/// </summary>
 internal class AppBar : SingleChildWidget
 {
-    public event Action Resume;
+    public event Action Resume = null!;
 
-    public event Action NewGame;
+    public event Action NewGame = null!;
 
-    public event Action Load;
+    public event Action Load = null!;
 
-    public event Action Delete;
+    public event Action Delete = null!;
 
-    public event Action Quit;
+    public event Action Quit = null!;
 
     public AppBar()
     {
