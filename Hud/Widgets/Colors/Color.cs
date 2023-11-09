@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace Hud.Widgets.Colors;
+﻿namespace Hud.Widgets.Colors;
 public enum Color
 {
     Primary,

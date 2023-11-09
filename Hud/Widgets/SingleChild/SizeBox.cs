@@ -5,7 +5,7 @@ namespace Hud.Widgets.SingleChild;
 public class SizeBox : SingleChildWidget
 {
     private readonly Vector2 _size;
-    
+
     public SizeBox(Widget child, Vector2 size) : base(child)
     {
         _size = size;

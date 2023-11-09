@@ -3,8 +3,6 @@ using Hud.Widgets.Colors;
 using Hud.Widgets.MultipleChildren;
 using Hud.Widgets.NoChildren;
 using Hud.Widgets.SingleChild;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Menu;
 
@@ -13,11 +11,11 @@ public class SaveGrid : SingleChildWidget
     private const int GamesPerRow = 3;
 
     private const int TotalGames = 9;
-    
+
     public event Action<string> OnSelected;
 
     private Text _titleTextBox;
-    
+
     public string Title
     {
         get => _titleTextBox.Content;
@@ -28,7 +26,7 @@ public class SaveGrid : SingleChildWidget
     {
         Child = GetChild("Load Game");
     }
-    
+
     public void Reload()
     {
         Child = GetChild(Title);
@@ -38,7 +36,7 @@ public class SaveGrid : SingleChildWidget
     {
         string[] saveNames = SaveManager.GetSaves().Take(TotalGames).ToArray();
         saveNames = saveNames.Concat(Enumerable.Repeat(string.Empty, TotalGames - saveNames.Length)).ToArray();
-        
+
         _titleTextBox = new Text(title, 0.05f);
 
         return new Background(
@@ -64,7 +62,7 @@ public class SaveGrid : SingleChildWidget
 
     private Widget GetSaveWidget(string name)
     {
-        return  new Padding(
+        return new Padding(
             size: 0.02f,
             child: new ClickDetector(
                 action: () =>

@@ -1,6 +1,4 @@
-﻿using BepuPhysics.Collidables;
-using Common;
-using Hud.Shaders;
+﻿using Common;
 using Hyper.Menu;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -11,7 +9,7 @@ namespace Hyper;
 public class Window : GameWindow
 {
     private readonly MainMenu _mainMenu;
-    
+
     private Game _game;
 
     private readonly CommandInterpreter _interpreter;
@@ -44,7 +42,7 @@ public class Window : GameWindow
         {
             if (saveName == _game.Settings.SaveName)
                 return;
-            SaveManager.DeleteSaves(new []{saveName});
+            SaveManager.DeleteSaves(new[] { saveName });
             mainMenu.Reload();
         };
         mainMenu.Load += (saveName) =>
@@ -78,7 +76,7 @@ public class Window : GameWindow
             _game.RenderFrame(e);
         else
             _mainMenu.Render();
-        
+
         SwapBuffers();
     }
 
@@ -95,7 +93,7 @@ public class Window : GameWindow
     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
         base.OnKeyDown(e);
-        
+
         if (e.Key == Keys.Escape)
         {
             _game.IsRunning = !_game.IsRunning;

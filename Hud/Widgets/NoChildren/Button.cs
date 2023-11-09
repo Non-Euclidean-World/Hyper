@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hud.Widgets.Colors;
+﻿using Hud.Widgets.Colors;
 using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hud.Widgets.NoChildren;
 public class Button : SingleChildWidget
 {
-    public Button(Vector2 size, Action action, string text, Color color = Color.Primary) 
+    public Button(Vector2 size, Action action, string text, Color color = Color.Primary)
     {
         Child = new SizeBox(
             size: size,
@@ -20,7 +15,7 @@ public class Button : SingleChildWidget
                     color: color,
                     child: new Center(
                         child: new Text(
-                            size: size.Y * 1/3,
+                            size: size.Y * 1 / 3,
                             text: text
                         )
                     )

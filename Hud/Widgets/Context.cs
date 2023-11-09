@@ -11,9 +11,11 @@ namespace Hud.Widgets;
 /// <param name="Size">Width and height of the Context</param>
 public record Context(HudShader Shader, Vector2 Position, Vector2 Size)
 {
-    public Context(Context oldContext, Vector2 newPosition) : 
-        this(oldContext.Shader, newPosition, oldContext.Size) { }
-    
+    public Context(Context oldContext, Vector2 newPosition) :
+        this(oldContext.Shader, newPosition, oldContext.Size)
+    { }
+
     public Context(Context oldContext, Vector2 newPosition, Vector2 newSize) :
-        this(oldContext.Shader,  newPosition, newSize) { }
+        this(oldContext.Shader, newPosition, newSize)
+    { }
 }

@@ -6,7 +6,7 @@ namespace Hud.Widgets.MultipleChildren;
 public class Grid : MultipleChildrenWidget
 {
     private readonly Column _child;
-    
+
     public Grid(Widget[] children, int numberOfChildrenInARow, Alignment alignment = Alignment.Equal) : base(children)
     {
         var colChildren = new List<Widget>();
@@ -22,10 +22,10 @@ public class Grid : MultipleChildrenWidget
             }
             colChildren.Add(new Row(rowChildren.ToArray(), alignment));
         }
-        
+
         _child = new Column(colChildren.ToArray(), alignment);
     }
-    
+
     public static Grid Build<T>(IEnumerable<T> children, Func<T, Widget> widgetMaker, int numberOfChildrenInARow, Alignment alignment = Alignment.Equal)
     {
         var widgets = children.Select(widgetMaker).ToArray();

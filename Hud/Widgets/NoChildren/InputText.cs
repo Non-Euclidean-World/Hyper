@@ -11,7 +11,7 @@ internal class InputText : Widget
     private bool _isActive = false;
 
     private Vector2 _position;
-    
+
     private Vector2 _boxSize;
 
     private float _size;
@@ -81,7 +81,7 @@ internal class InputText : Widget
             Desactivate();
             return;
         }
-        
+
         Activate();
     }
 
@@ -103,7 +103,7 @@ internal class InputText : Widget
             return;
 
         var key = e.Key;
-        
+
         if (key == Keys.Backspace)
         {
             if (_caretPosition > 0)
@@ -111,7 +111,7 @@ internal class InputText : Widget
                 _caretPosition--;
                 Content = Content.Remove(_caretPosition, 1);
             }
-                
+
         }
         else if (key == Keys.Space)
         {
@@ -142,7 +142,7 @@ internal class InputText : Widget
 
     private void AddCharacter(string c)
     {
-        if (Content.Length == _characterlimit) 
+        if (Content.Length == _characterlimit)
             return;
         Content = Content.Insert(_caretPosition, c);
         _caretPosition++;

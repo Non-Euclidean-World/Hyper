@@ -11,6 +11,6 @@ public class Empty : Widget
 
     public override void Render(Context context)
     {
-        
+
     }
 }

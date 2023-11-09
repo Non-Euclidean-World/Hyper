@@ -9,7 +9,7 @@ public class ClickDetector : SingleChildWidget
     private readonly Action _outsideAction;
 
     private Vector2 _position;
-    
+
     private Vector2 _size;
 
     private bool _propagate;
@@ -32,7 +32,7 @@ public class ClickDetector : SingleChildWidget
         _position = context.Position;
         Child.Render(context);
     }
-    
+
     public override void Click(Vector2 position)
     {
         if (_position.X + _size.X < position.X ||

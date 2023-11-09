@@ -6,7 +6,7 @@ public class Row : MultipleChildrenWidget
     private readonly Alignment _alignment;
 
     private readonly float[] _sizes;
-    
+
     public Row(Widget[] children, Alignment alignment = Alignment.Equal) : base(children)
     {
         _alignment = alignment;

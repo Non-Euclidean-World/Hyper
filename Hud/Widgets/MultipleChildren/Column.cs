@@ -17,7 +17,7 @@ public class Column : MultipleChildrenWidget
     {
         if (children.Length != sizes.Length)
             throw new Exception("Sizes do not match");
-        _alignment= Alignment.Predefined;
+        _alignment = Alignment.Predefined;
         _sizes = sizes;
     }
 

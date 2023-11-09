@@ -5,7 +5,7 @@ namespace Hud.Widgets.SingleChild;
 public class Padding : SingleChildWidget
 {
     private readonly float _size;
-    
+
     public Padding(Widget child, float size) : base(child)
     {
         _size = size;
