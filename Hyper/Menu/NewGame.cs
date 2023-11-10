@@ -58,17 +58,17 @@ public class NewGame : SingleChildWidget
     {
         var name = _gameNameInput.Text;
         var saveNames = SaveManager.GetSaves();
-        if (saveNames.Contains(name))
+        if (saveNames.Contains(name) || _gameNameInput.Text == "")
             return;
         Create?.Invoke(name, geometry);
     }
 
     public override void Render(Context context)
     {
-        if (_saveNames.Contains(_gameNameInput.Text))
+        if (_saveNames.Contains(_gameNameInput.Text) || _gameNameInput.Text == "")
             _gameNameInput.Color = ColorGetter.GetVector(Color.Red);
         else
-            _gameNameInput.Color = ColorGetter.GetVector(Color.White);
+            _gameNameInput.Color = ColorGetter.GetVector(Color.Green);
         base.Render(context);
     }
 
