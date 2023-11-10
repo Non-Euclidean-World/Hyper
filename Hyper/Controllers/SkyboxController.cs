@@ -25,6 +25,8 @@ internal class SkyboxController : IController, IInputSubscriber
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
+    private float _initTime = 50;
+
     private struct Phase
     {
         public Vector4 SkytopColor;
@@ -88,7 +90,8 @@ internal class SkyboxController : IController, IInputSubscriber
         _modelShader = modelShader;
         _objectShader = objectShader;
         _skybox = new Skybox.Skybox(skyboxShader.GlobalScale);
-        _initialSunVector = -Vector3.UnitZ;
+        _skybox.RotationX = _initTime / 1000.0f / _dayLength * MathF.PI;
+        _initialSunVector = -Vector3.UnitZ * Matrix3.CreateRotationX(_skybox.RotationX);
         _stopwatch.Start();
         RegisterCallbacks(context);
     }
@@ -102,10 +105,21 @@ internal class SkyboxController : IController, IInputSubscriber
     {
         context.RegisterUpdateFrameCallback((e) =>
         {
-            _skybox.RotationX = _stopwatch.ElapsedMilliseconds / 1000.0f / _dayLength * MathF.PI;
-            if (_stopwatch.ElapsedMilliseconds / 1000f > _dayLength * 2)
-                _stopwatch.Restart();
+            _skybox.RotationX = GetCurrentTime() / _dayLength * MathF.PI;
         });
+    }
+
+    // current time in seconds
+    private float GetCurrentTime()
+    {
+        float currentTime = _stopwatch.ElapsedMilliseconds / 1000f + _initTime;
+        if (currentTime > _dayLength * 2)
+        {
+            _stopwatch.Restart();
+            if (_initTime != 0)
+                _initTime = 0;
+        }
+        return currentTime;
     }
 
     private (Phase, Phase, float) GetInterval(float time)
@@ -164,7 +178,7 @@ internal class SkyboxController : IController, IInputSubscriber
     {
         _skyboxShader.SetUp(_scene.Camera);
 
-        var interval = GetInterval(_stopwatch.ElapsedMilliseconds / 1000f);
+        var interval = GetInterval(GetCurrentTime());
         _skyboxShader.SetStruct("prevPhase", interval.Item1);
         _skyboxShader.SetStruct("nextPhase", interval.Item2);
         _skyboxShader.SetFloat("phaseT", interval.Item3);

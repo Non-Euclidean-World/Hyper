@@ -91,6 +91,10 @@ void main()
         result += CalcDirLight(sunLight, norm, viewDir);
         result += mix(envInfo.prevPhaseNightAmbient, envInfo.nextPhaseNightAmbient, envInfo.phaseT) * vec3(1);
     }
+    else
+    {
+        result += 0.2 * vec3(1);
+    }
 
     FragColor = vec4(result * Color, 1.0);
 }

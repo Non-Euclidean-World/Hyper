@@ -2,7 +2,7 @@
 
 namespace Hyper.PlayerData.InventorySystem.Items;
 
-internal abstract class Item
+internal abstract class Item : IEquatable<Item>
 {
     // Set according to what we have in the sprite sheet.
     public abstract string Id { get; }
@@ -20,4 +20,28 @@ internal abstract class Item
     public virtual void Up() { }
 
     public virtual void Down() { }
+
+    public bool Equals(Item? other)
+    {
+        if (other is null)
+            return false;
+
+        if (ReferenceEquals(this, other))
+            return true;
+
+        if (GetType() != other.GetType())
+            return false;
+
+        return other.Id == Id;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Item);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }

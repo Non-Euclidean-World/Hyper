@@ -37,6 +37,7 @@ internal class Inventory : IInputSubscriber
             AddItem(new IronPickaxe());
             AddItem(new DiamondPickaxe());
             AddItem(new Bullet(), 64);
+            AddItem(new Lamp(), 10);
         }
     }
 
@@ -98,7 +99,7 @@ internal class Inventory : IInputSubscriber
         {
             for (int j = 0; j < Rows; j++)
             {
-                if (Items[i, j].Item == item)
+                if (Items[i, j].Item != null && Items[i, j].Item!.Equals(item))
                 {
                     (x, y) = (i, j);
                     return true;

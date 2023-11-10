@@ -6,9 +6,11 @@ using Chunks;
 using Common.Meshes;
 using Common.UserInput;
 using Hyper.PlayerData;
+using Hyper.PlayerData.InventorySystem.Items;
 using OpenTK.Mathematics;
 using Physics;
 using Physics.Collisions;
+using Physics.TypingUtils;
 
 namespace Hyper;
 
@@ -16,7 +18,7 @@ internal class Scene : IInputSubscriber
 {
     public readonly List<Chunk> Chunks;
 
-    public readonly List<LightSource> LightSources;
+    public readonly List<LightSource> LightSources = new();
 
     public readonly List<Projectile> Projectiles;
 
@@ -36,9 +38,6 @@ internal class Scene : IInputSubscriber
 
     public Scene(Camera camera, float elevation, Context context)
     {
-        int chunksPerSide = 2;
-
-        LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
 
         SimulationMembers = new SimulationMembers();
@@ -55,36 +54,6 @@ internal class Scene : IInputSubscriber
         Chunks = new List<Chunk>();
 
         RegisterCallbacks(context);
-    }
-
-    private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
-    {
-        if (chunksPerSide % 2 != 0)
-            throw new ArgumentException("# of chunks/side must be even");
-
-        List<LightSource> lightSources = new List<LightSource>();
-        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
-        {
-            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-            {
-                if (x % 2 == 0 && y % 2 == 0)
-                    continue;
-
-                int offset = Chunk.Size - 1;
-
-                lightSources.Add(new LightSource(CubeMesh.Vertices,
-                    position: new Vector3(offset * x, elevation + 10f, offset * y),
-                    color: new Vector3(1, 1, 1),
-                    ambient: new Vector3(0.05f, 0.05f, 0.05f),
-                    diffuse: new Vector3(0.8f, 0.8f, 0.8f),
-                    specular: new Vector3(1f, 1f, 1f),
-                    constant: 1f,
-                    linear: 0.35f,
-                    quadratic: 0.44f));
-            }
-        }
-
-        return lightSources;
     }
 
     public bool TryEnterClosestCar(bool testOnly = false)
@@ -128,6 +97,31 @@ internal class Scene : IInputSubscriber
                 return true;
             }
 
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Picks a lamp if it's close enough to the player.
+    /// </summary>
+    /// <param name="testOnly">If true the lamp won't be picked even if it could be</param>
+    /// <returns>True if a lamp was (or could be) picked. False otherwise.</returns>
+    public bool TryPickLamp(bool testOnly = false)
+    {
+        const float lampPickRadius = 10f;
+        for (int i = 0; i < LightSources.Count; i++)
+        {
+            var lamp = LightSources[i];
+            if (System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(lamp.Position), Player.PhysicalCharacter.Pose.Position) <= lampPickRadius)
+            {
+                if (!testOnly)
+                {
+                    LightSources.RemoveAt(i);
+                    Player.Inventory.AddItem(new Lamp());
+                }
+                return true;
+            }
         }
 
         return false;
