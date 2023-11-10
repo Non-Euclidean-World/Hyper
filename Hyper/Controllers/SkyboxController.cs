@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
 using Common.UserInput;
+using Hyper.Shaders.DataTypes;
+using Hyper.Shaders.ModelShader;
+using Hyper.Shaders.ObjectShader;
 using Hyper.Shaders.SkyboxShader;
 using OpenTK.Mathematics;
 
@@ -10,11 +13,15 @@ internal class SkyboxController : IController, IInputSubscriber
 
     private readonly AbstractSkyboxShader _skyboxShader;
 
+    private readonly StandardModelShader _modelShader;
+
+    private readonly StandardObjectShader _objectShader;
+
     private readonly Skybox.Skybox _skybox;
 
     private readonly Stopwatch _stopwatch = new();
 
-    private readonly float _dayLength = 15; // length of the day in seconds
+    private readonly float _dayLength = 60; // length of the day in seconds
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
@@ -74,10 +81,12 @@ internal class SkyboxController : IController, IInputSubscriber
         StarsVisibility = 1f
     };
 
-    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, Context context)
+    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader, Context context)
     {
         _scene = scene;
         _skyboxShader = skyboxShader;
+        _modelShader = modelShader;
+        _objectShader = objectShader;
         _skybox = new Skybox.Skybox(skyboxShader.GlobalScale);
         _initialSunVector = -Vector3.UnitZ;
         _stopwatch.Start();
@@ -99,8 +108,6 @@ internal class SkyboxController : IController, IInputSubscriber
         });
     }
 
-    readonly bool[] _printed = new bool[8]; // TODO remove later
-
     private (Phase, Phase, float) GetInterval(float time)
     {
         float sunriseStartTime = 0f;
@@ -114,77 +121,37 @@ internal class SkyboxController : IController, IInputSubscriber
 
         if (time >= sunriseStartTime && time < dayStartTime)
         {
-            if (!_printed[7])
-            {
-                Console.WriteLine("sunrise - day");
-                _printed[7] = true;
-            }
             return (_sunriseStart, _dayStart, GetT(sunriseStartTime, dayStartTime, time));
         }
 
         if (time >= dayStartTime && time < dayEndTime)
         {
-            if (!_printed[0])
-            {
-                Console.WriteLine("day");
-                _printed[0] = true;
-            }
             return (_dayStart, _dayStart, 1);
         }
 
         if (time >= dayEndTime && time < sunsetStartTime)
         {
-            if (!_printed[1])
-            {
-                Console.WriteLine("day - sunset");
-                _printed[1] = true;
-            }
             return (_dayStart, _sunsetStart, GetT(dayEndTime, sunsetStartTime, time));
         }
 
         if (time >= sunsetStartTime && time < duskStartTime)
         {
-            if (!_printed[2])
-            {
-                Console.WriteLine("sunset - dusk");
-                _printed[2] = true;
-            }
             return (_sunsetStart, _duskStart, GetT(sunsetStartTime, duskStartTime, time));
         }
 
         if (time >= duskStartTime && time < nightStartTime)
         {
-            if (!_printed[3])
-            {
-                Console.WriteLine("dusk - night");
-                _printed[3] = true;
-            }
             return (_duskStart, _nightStart, GetT(duskStartTime, nightStartTime, time));
         }
         if (time >= nightStartTime && time < nightEndTime)
         {
-            if (!_printed[4])
-            {
-                Console.WriteLine("night");
-                _printed[4] = true;
-            }
             return (_nightStart, _nightStart, 1);
         }
         if (time >= nightEndTime && time < dawnStartTime)
         {
-            if (!_printed[5])
-            {
-                Console.WriteLine("night - dawn");
-                _printed[5] = true;
-            }
             return (_nightStart, _dawnStart, GetT(nightEndTime, dawnStartTime, time));
         }
 
-        if (!_printed[6])
-        {
-            Console.WriteLine("dawn - sunrise");
-            _printed[6] = true;
-        }
         return (_dawnStart, _sunriseStart, GetT(dawnStartTime, 2 * _dayLength, time));
 
         static float GetT(float begin, float end, float time)
@@ -203,6 +170,31 @@ internal class SkyboxController : IController, IInputSubscriber
         _skyboxShader.SetFloat("phaseT", interval.Item3);
 
         var sunVector = _initialSunVector * Matrix3.CreateRotationX(_skybox.RotationX);
+        DirectionalLight sunLight = new DirectionalLight
+        {
+            Ambient = 0.1f,
+            Diffuse = 0.8f,
+            Specular = 1f,
+            Direction = new Vector4(sunVector, 0) //GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(sunVector, _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _modelShader.GlobalScale), _scene.Camera.Curve)
+        };
+
+        EnvironmentInfo envInfo = new EnvironmentInfo
+        {
+            PrevPhaseSunLightColor = interval.Item1.SunglareColor.Xyz,
+            NextPhaseSunLightColor = interval.Item2.SunglareColor.Xyz,
+            PhaseT = interval.Item3,
+            PrevPhaseNightAmbient = 0.2f * interval.Item1.StarsVisibility,
+            NextPhaseNightAmbient = 0.2f * interval.Item2.StarsVisibility,
+        };
+
+        _modelShader.SetBool("hasSun", true);
+        _modelShader.SetStruct("sunLight", sunLight);
+        _modelShader.SetStruct("envInfo", envInfo);
+
+        _objectShader.SetBool("hasSun", true);
+        _objectShader.SetStruct("sunLight", sunLight);
+        _objectShader.SetStruct("envInfo", envInfo);
+
         _skyboxShader.SetVector3("sunVector", sunVector);
 
         _skybox.Render(_skyboxShader);

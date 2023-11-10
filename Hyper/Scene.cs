@@ -79,8 +79,8 @@ internal class Scene : IInputSubscriber
                     diffuse: new Vector3(0.8f, 0.8f, 0.8f),
                     specular: new Vector3(1f, 1f, 1f),
                     constant: 1f,
-                    linear: 0.14f,
-                    quadratic: 0.07f));
+                    linear: 0.35f,
+                    quadratic: 0.44f));
             }
         }
 
