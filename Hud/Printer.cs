@@ -19,7 +19,7 @@ public static class Printer
     private static readonly SKPaint Paint;
     private static readonly float CharHeight;
 
-    public const char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than ChaacterCount.
+    public const char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than CharacterCount.
 
     static Printer()
     {

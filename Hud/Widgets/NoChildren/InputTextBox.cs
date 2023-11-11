@@ -26,14 +26,14 @@ public class InputTextBox : SingleChildWidget
                             size: size.Y * 1 / 3,
                             text: text,
                             placeholder: placeholder,
-                            characterlimit: characterLimit
+                            characterLimit: characterLimit
                         );
 
         Child = new SizeBox(
             size: size,
             child: new ClickDetector(
                 action: _inputText.Activate,
-                outsideAction: _inputText.Desactivate,
+                outsideAction: _inputText.Deactivate,
                 child: new Background(
                     color: color,
                     child: new Center(

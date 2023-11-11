@@ -14,24 +14,24 @@ internal class InputText : Widget
 
     private Vector2 _boxSize;
 
-    private float _size;
+    private readonly float _size;
 
     public string Content = "";
 
-    private Vector4 _color;
+    private readonly Vector4 _color;
 
     private int _caretPosition;
 
-    private Stopwatch _stopwatch = new Stopwatch();
+    private readonly Stopwatch _stopwatch = new Stopwatch();
 
-    private int _characterlimit;
+    private readonly int _characterLimit;
 
     private readonly string _placeholder = "";
 
-    public InputText(string text, float size, bool placeholder = false, int characterlimit = -1, Color color = Color.White)
+    public InputText(string text, float size, bool placeholder = false, int characterLimit = -1, Color color = Color.White)
     {
         _size = size;
-        _characterlimit = characterlimit;
+        _characterLimit = characterLimit;
         _color = ColorGetter.GetVector(color);
         if (placeholder)
         {
@@ -78,7 +78,7 @@ internal class InputText : Widget
             _position.Y - _boxSize.Y > position.Y ||
             _position.Y < position.Y)
         {
-            Desactivate();
+            Deactivate();
             return;
         }
 
@@ -91,7 +91,7 @@ internal class InputText : Widget
         _stopwatch.Start();
     }
 
-    public void Desactivate()
+    public void Deactivate()
     {
         _isActive = false;
         _stopwatch.Stop();
@@ -104,45 +104,43 @@ internal class InputText : Widget
 
         var key = e.Key;
 
-        if (key == Keys.Backspace)
+        switch (key)
         {
-            if (_caretPosition > 0)
+            case Keys.Backspace:
             {
-                _caretPosition--;
-                Content = Content.Remove(_caretPosition, 1);
+                if (_caretPosition > 0)
+                {
+                    _caretPosition--;
+                    Content = Content.Remove(_caretPosition, 1);
+                }
+                break;
             }
-
-        }
-        else if (key == Keys.Space)
-        {
-            AddCharacter(" ");
-        }
-        else if (key is >= Keys.A and <= Keys.Z)
-        {
-            if (e.Shift)
+            case Keys.Space:
+                AddCharacter(" ");
+                break;
+            case >= Keys.A and <= Keys.Z when e.Shift:
                 AddCharacter(key.ToString());
-            else
+                break;
+            case >= Keys.A and <= Keys.Z:
                 AddCharacter(key.ToString().ToLower());
-        }
-        else if (key is >= Keys.D0 and <= Keys.D9)
-        {
-            AddCharacter(key.ToString().Substring(1));
-        }
-        else if (key is Keys.Left)
-        {
-            _caretPosition = Math.Max(0, _caretPosition - 1);
-            _stopwatch.Restart();
-        }
-        else if (key is Keys.Right)
-        {
-            _caretPosition = Math.Min(Content.Length, _caretPosition + 1);
-            _stopwatch.Restart();
+                break;
+            case >= Keys.D0 and <= Keys.D9:
+                AddCharacter(key.ToString().Substring(1));
+                break;
+            case Keys.Left:
+                _caretPosition = Math.Max(0, _caretPosition - 1);
+                _stopwatch.Restart();
+                break;
+            case Keys.Right:
+                _caretPosition = Math.Min(Content.Length, _caretPosition + 1);
+                _stopwatch.Restart();
+                break;
         }
     }
 
     private void AddCharacter(string c)
     {
-        if (Content.Length == _characterlimit)
+        if (Content.Length == _characterLimit)
             return;
         Content = Content.Insert(_caretPosition, c);
         _caretPosition++;
