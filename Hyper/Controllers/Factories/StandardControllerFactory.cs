@@ -59,7 +59,7 @@ internal class StandardControllerFactory : IControllerFactory
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter, new CarSpawnStrategy(_scene, settings)),
             new LightSourcesController(_scene, lightSourceShader),
             new BoundingShapesController(_scene, lightSourceShader, _context),
-            new SkyboxController(_scene, skyboxShader, modelShader, objectShader, _context), // skybox has to be rendered just before GUI stuff
+            new SkyboxController(_scene, skyboxShader, modelShader, objectShader), // skybox has to be rendered just before GUI stuff
             new HudController(_scene, _windowHelper, hudShader, _context),
         };
     }

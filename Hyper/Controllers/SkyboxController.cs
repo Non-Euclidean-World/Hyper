@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Common.UserInput;
 using Hyper.Shaders.DataTypes;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -7,7 +6,7 @@ using Hyper.Shaders.SkyboxShader;
 using OpenTK.Mathematics;
 
 namespace Hyper.Controllers;
-internal class SkyboxController : IController, IInputSubscriber
+internal class SkyboxController : IController
 {
     private readonly Scene _scene;
 
@@ -21,11 +20,11 @@ internal class SkyboxController : IController, IInputSubscriber
 
     private readonly Stopwatch _stopwatch = new();
 
-    private readonly float _dayLength = 60; // length of the day in seconds
+    private readonly float _dayLengthSeconds = 60; // length of the day in seconds
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
-    private float _initTime = 50;
+    private float _initTimeSeconds = 0;
 
     private struct Phase
     {
@@ -83,17 +82,15 @@ internal class SkyboxController : IController, IInputSubscriber
         StarsVisibility = 1f
     };
 
-    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader, Context context)
+    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader)
     {
         _scene = scene;
         _skyboxShader = skyboxShader;
         _modelShader = modelShader;
         _objectShader = objectShader;
         _skybox = new Skybox.Skybox(skyboxShader.GlobalScale);
-        _skybox.RotationX = _initTime / 1000.0f / _dayLength * MathF.PI;
-        _initialSunVector = -Vector3.UnitZ * Matrix3.CreateRotationX(_skybox.RotationX);
+        _initialSunVector = -Vector3.UnitZ;
         _stopwatch.Start();
-        RegisterCallbacks(context);
     }
 
     public void Dispose()
@@ -101,23 +98,15 @@ internal class SkyboxController : IController, IInputSubscriber
         _skyboxShader.Dispose();
     }
 
-    public void RegisterCallbacks(Context context)
-    {
-        context.RegisterUpdateFrameCallback((e) =>
-        {
-            _skybox.RotationX = GetCurrentTime() / _dayLength * MathF.PI;
-        });
-    }
-
     // current time in seconds
     private float GetCurrentTime()
     {
-        float currentTime = _stopwatch.ElapsedMilliseconds / 1000f + _initTime;
-        if (currentTime > _dayLength * 2)
+        float currentTime = _stopwatch.ElapsedMilliseconds / 1000.0f + _initTimeSeconds;
+        if (currentTime > _dayLengthSeconds * 2)
         {
             _stopwatch.Restart();
-            if (_initTime != 0)
-                _initTime = 0;
+            if (_initTimeSeconds != 0)
+                _initTimeSeconds = 0;
         }
         return currentTime;
     }
@@ -125,13 +114,13 @@ internal class SkyboxController : IController, IInputSubscriber
     private (Phase, Phase, float) GetInterval(float time)
     {
         float sunriseStartTime = 0f;
-        float dayStartTime = 0.1f * _dayLength;
-        float dayEndTime = 0.9f * _dayLength;
-        float sunsetStartTime = 1f * _dayLength;
-        float duskStartTime = 1.15f * _dayLength;
-        float nightStartTime = 1.3f * _dayLength;
-        float nightEndTime = 1.7f * _dayLength;
-        float dawnStartTime = 1.9f * _dayLength;
+        float dayStartTime = 0.1f * _dayLengthSeconds;
+        float dayEndTime = 0.9f * _dayLengthSeconds;
+        float sunsetStartTime = 1f * _dayLengthSeconds;
+        float duskStartTime = 1.15f * _dayLengthSeconds;
+        float nightStartTime = 1.3f * _dayLengthSeconds;
+        float nightEndTime = 1.7f * _dayLengthSeconds;
+        float dawnStartTime = 1.9f * _dayLengthSeconds;
 
         if (time >= sunriseStartTime && time < dayStartTime)
         {
@@ -166,7 +155,7 @@ internal class SkyboxController : IController, IInputSubscriber
             return (_nightStart, _dawnStart, GetT(nightEndTime, dawnStartTime, time));
         }
 
-        return (_dawnStart, _sunriseStart, GetT(dawnStartTime, 2 * _dayLength, time));
+        return (_dawnStart, _sunriseStart, GetT(dawnStartTime, 2 * _dayLengthSeconds, time));
 
         static float GetT(float begin, float end, float time)
         {
@@ -183,6 +172,7 @@ internal class SkyboxController : IController, IInputSubscriber
         _skyboxShader.SetStruct("nextPhase", interval.Item2);
         _skyboxShader.SetFloat("phaseT", interval.Item3);
 
+        _skybox.RotationX = GetCurrentTime() / _dayLengthSeconds * MathF.PI;
         var sunVector = _initialSunVector * Matrix3.CreateRotationX(_skybox.RotationX);
         DirectionalLight sunLight = new DirectionalLight
         {

@@ -101,24 +101,6 @@
     <None Update="Shaders\skybox_shader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Skybox\Resources\Day\nx.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Skybox\Resources\Day\ny.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Skybox\Resources\Day\nz.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Skybox\Resources\Day\px.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Skybox\Resources\Day\py.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Skybox\Resources\Day\pz.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Skybox\Resources\Night\nx.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -153,6 +135,12 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Hud\Hud.csproj" />
     <ProjectReference Include="..\Physics\Physics.csproj" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Folder Include="Skybox\Resources\Day\" />
   </ItemGroup>
 
 

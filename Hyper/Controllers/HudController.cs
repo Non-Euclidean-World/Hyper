@@ -31,9 +31,9 @@ internal class HudController : IController
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, _scene.Player.Inventory, context),
             new TipText("C to enter the car", () => _scene.TryEnterClosestCar(testOnly: true), top: 0.4f),
+            new TipText("F to flip the car", () => _scene.TryFlipClosestCar(testOnly: true), top: 0.35f),
             new TipText("L to leave the car", () => _scene.PlayersCar != null, top: 0.3f),
-            new TipText("F to flip the car", () => _scene.TryFlipClosestCar(testOnly: true), top: 0.2f),
-            new TipText("P to pick the lamp", () => _scene.TryPickLamp(testOnly: true), top: 0.1f),
+            new TipText("P to pick the lamp", () => _scene.TryPickLamp(testOnly: true), top: 0.25f),
             new PositionPrinter(_scene.Camera, windowHelper)
         };
     }
