@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.Meshes;
 using Hyper.PlayerData;
+using Hyper.PlayerData.Utils;
 using Hyper.Shaders.DataTypes;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -70,7 +71,7 @@ internal abstract class AbstractObjectShader : Shader
         {
             Position = GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve),
             Color = x.Color,
-            Direction = new Vector4(x.Direction, 0),
+            Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve), camera.Curve),
             CutOff = x.CutOff,
             OuterCutOff = x.OuterCutOff,
             Ambient = x.Ambient,
