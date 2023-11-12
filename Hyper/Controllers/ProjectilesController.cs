@@ -44,7 +44,7 @@ internal class ProjectilesController : IController, IInputSubscriber
         {
             if (projectile.IsDead)
                 continue;
-            _shader.SetUp(_scene.Camera, _scene.LightSources, projectile.CurrentSphereId);
+            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, projectile.CurrentSphereId);
             projectile.Mesh.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }

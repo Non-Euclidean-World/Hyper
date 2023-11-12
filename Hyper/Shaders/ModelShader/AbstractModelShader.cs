@@ -28,20 +28,25 @@ internal class AbstractModelShader : Shader
 
     private void SetProjection(Matrix4 projection) => SetMatrix4("projection", projection);
 
-    private void SetNumLights(int numLights) => SetInt("numLights", numLights);
+    private void SetNumPointLights(int numPointLights) => SetInt("numPointLights", numPointLights);
+
+    private void SetNumSpotLights(int numSpotLights) => SetInt("numSpotLights", numSpotLights);
 
     private void SetViewPos(Vector4 viewPos) => SetVector4("viewPos", viewPos);
 
-    private void SetPointLights(PointLight[] lights) => SetStructArray("lightCasters", lights);
+    private void SetPointLights(PointLight[] lights) => SetStructArray("pointLights", lights);
 
-    public virtual void SetUp(Camera camera, List<LightSource> lightSources, int sphere = 0)
+    private void SetSpotLights(DataTypes.SpotLight[] lights) => SetStructArray("spotLights", lights);
+
+    public virtual void SetUp(Camera camera, List<Lamp> lightSources, List<PlayerData.FlashLight> flashLights, int sphere = 0)
     {
         Use();
         SetCurv(camera.Curve);
         SetView(camera.GetViewMatrix());
         SetProjection(camera.GetProjectionMatrix());
 
-        SetNumLights(lightSources.Count);
+        SetNumPointLights(lightSources.Count);
+        SetNumSpotLights(flashLights.Count);
         SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
         SetPointLights(lightSources.Select(x =>
            new PointLight
@@ -55,6 +60,23 @@ internal class AbstractModelShader : Shader
                Linear = x.Linear,
                Quadratic = x.Quadratic,
            }
+        ).ToArray());
+
+        SetSpotLights(flashLights.Select(x =>
+            new SpotLight
+            {
+                Position = GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve),
+                Color = x.Color,
+                Direction = new Vector4(x.Direction, 0),
+                CutOff = x.CutOff,
+                OuterCutOff = x.OuterCutOff,
+                Ambient = x.Ambient,
+                Diffuse = x.Diffuse,
+                Specular = x.Specular,
+                Constant = x.Constant,
+                Linear = x.Linear,
+                Quadratic = x.Quadratic,
+            }
         ).ToArray());
 
         SetBool("isAnimated", true);

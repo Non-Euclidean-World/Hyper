@@ -18,7 +18,7 @@ internal class Lamp : Item
 
     private static void CreateLamp(Scene scene)
     {
-        scene.LightSources.Add(new LightSource(CubeMesh.Vertices,
+        scene.LightSources.Add(new Common.Meshes.Lamp(CubeMesh.Vertices,
                     position: new Vector3(Conversions.ToOpenTKVector(scene.Player.RayOrigin)),
                     color: new Vector3(1, 1, 1),
                     ambient: new Vector3(0.05f, 0.05f, 0.05f),

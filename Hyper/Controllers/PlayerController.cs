@@ -41,7 +41,7 @@ internal class PlayerController : IController, IInputSubscriber
     {
         if (_scene.PlayersCar != null)
             return;
-        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, _scene.Player.CurrentSphereId);
         _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
         if (_scene.Player.Inventory.SelectedItem is Pickaxe pickaxe)

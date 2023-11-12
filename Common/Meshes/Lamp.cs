@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
-public class LightSource : Mesh
+public class Lamp : Mesh
 {
     public Vector3 Color { get; set; }
     public Vector3 Ambient { get; private init; }
@@ -13,7 +13,7 @@ public class LightSource : Mesh
     public float Linear { get; private init; }
     public float Quadratic { get; private init; }
 
-    public LightSource(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic) : base(vertices, position)
+    public Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic) : base(vertices, position)
     {
         Color = color;
         Ambient = ambient;

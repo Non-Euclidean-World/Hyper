@@ -18,7 +18,9 @@ internal class Scene : IInputSubscriber
 {
     public readonly List<Chunk> Chunks;
 
-    public readonly List<LightSource> LightSources = new();
+    public readonly List<Common.Meshes.Lamp> LightSources = new();
+
+    public readonly List<FlashLight> FlashLights = new();
 
     public readonly List<Projectile> Projectiles;
 
@@ -46,6 +48,7 @@ internal class Scene : IInputSubscriber
             new SolveDescription(6, 1));
 
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
+        FlashLights.Add(Player.FlashLight);
         SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
@@ -118,7 +121,7 @@ internal class Scene : IInputSubscriber
                 if (!testOnly)
                 {
                     LightSources.RemoveAt(i);
-                    Player.Inventory.AddItem(new Lamp());
+                    Player.Inventory.AddItem(new PlayerData.InventorySystem.Items.Lamp());
                 }
                 return true;
             }

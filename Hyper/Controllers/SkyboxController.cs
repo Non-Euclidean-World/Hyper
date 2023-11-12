@@ -20,11 +20,11 @@ internal class SkyboxController : IController
 
     private readonly Stopwatch _stopwatch = new();
 
-    private readonly float _dayLengthSeconds = 60; // length of the day in seconds
+    private readonly float _dayLengthSeconds = 60 * 10; // length of the day in seconds
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
-    private float _initTimeSeconds = 0;
+    private float _initTimeSeconds = 60 * 12;
 
     private struct Phase
     {

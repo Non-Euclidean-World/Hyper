@@ -20,6 +20,8 @@ internal class Player : Humanoid, IRayCaster
 {
     public readonly Inventory Inventory;
 
+    public readonly FlashLight FlashLight;
+
     private readonly RayEndpointMarker _rayEndpointMarker;
 
     private const float RayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
@@ -39,6 +41,7 @@ internal class Player : Humanoid, IRayCaster
         new Model(AstronautResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
+        FlashLight = new FlashLight();
         _rayEndpointMarker = new RayEndpointMarker(new Vector3(.5f, .5f, .5f));
     }
 
@@ -97,8 +100,13 @@ internal class Player : Humanoid, IRayCaster
             Character.Animator.Reset();
         }
 
+        //var flashLightPosition = Vector3.Cross(ViewDirection, Vector3.UnitY); // right hand
+        //var flashLightDirection = Conversions.ToOpenTKVector(RayDirection);
+
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
         ViewDirection = viewDirection;
+        FlashLight.Position = Vector3.Cross(ViewDirection, Vector3.UnitY) + Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position); // right hand
+        FlashLight.Direction = Conversions.ToOpenTKVector(RayDirection);
     }
 
     public void Hide()

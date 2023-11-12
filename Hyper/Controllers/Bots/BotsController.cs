@@ -31,7 +31,7 @@ internal class BotsController : IController, IInputSubscriber
 
     public void Render()
     {
-        _modelShader.SetUp(_scene.Camera, _scene.LightSources);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights);
         foreach (var bot in _scene.Bots)
         {
             _modelShader.SetInt("sphere", bot.CurrentSphereId);
