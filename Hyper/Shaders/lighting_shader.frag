@@ -64,6 +64,7 @@ uniform EnvironmentInfo envInfo;
 uniform vec4 viewPos;
 uniform int numPointLights;
 uniform int numSpotLights;
+uniform float shininess; 
 
 uniform float curv;
 
@@ -135,7 +136,7 @@ vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir)
     vec3 diffuse = light.diffuse * diff * sunLightColor;
 
     vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
-    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec * sunLightColor;
 
     return ambient + diffuse + specular;
@@ -150,7 +151,7 @@ vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     vec3 diffuse = light.diffuse * diff * light.color;
         
     vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
-    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec * light.color;
 
     float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
@@ -172,7 +173,7 @@ vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     vec3 diffuse = light.diffuse * diff * light.color;
 
     vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
-    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec * light.color;
 
     float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));

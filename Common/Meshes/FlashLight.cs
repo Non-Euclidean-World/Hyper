@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Hyper.PlayerData;
-internal class FlashLight
+namespace Common.Meshes;
+public class FlashLight
 {
     public Vector3 Position { get; set; }
     public Vector3 Color { get; set; }
@@ -37,20 +37,33 @@ internal class FlashLight
         Diffuse = new Vector3(0.8f, 0.8f, 0.8f);
         Specular = new Vector3(1f, 1f, 1f);
         Constant = 1f;
-        Linear = 0.09f;
-        Quadratic = 0.032f;
+        Linear = 0.2f;
+        Quadratic = 0.3f;
     }
 
-    public static FlashLight CreatePlayerFlashlight()
+    public static FlashLight CreateCarLight(Vector3 color)
     {
-        return new FlashLight(color: new Vector3(1, 1, 1),
+        return new FlashLight(color,
             cutOff: MathF.Cos(MathHelper.DegreesToRadians(15f)),
             outerCutOff: MathF.Cos(MathHelper.DegreesToRadians(30f)),
             ambient: new Vector3(0.1f, 0.1f, 0.1f),
             diffuse: new Vector3(0.8f, 0.8f, 0.8f),
             specular: new Vector3(1f, 1f, 1f),
             constant: 1f,
-            linear: 0.09f,
-            quadratic: 0.032f);
+            linear: 0.1f,
+            quadratic: 0.04f);
+    }
+
+    public static FlashLight CreateCarRearLight(Vector3 color)
+    {
+        return new FlashLight(color,
+            cutOff: MathF.Cos(MathHelper.DegreesToRadians(15f)),
+            outerCutOff: MathF.Cos(MathHelper.DegreesToRadians(30f)),
+            ambient: new Vector3(0.1f, 0.1f, 0.1f),
+            diffuse: new Vector3(0.8f, 0.8f, 0.8f),
+            specular: new Vector3(1f, 1f, 1f),
+            constant: 1f,
+            linear: 0.3f,
+            quadratic: 0.25f);
     }
 }

@@ -24,9 +24,9 @@ internal class SphericalObjectShader : AbstractObjectShader
 
     public void SetSphere(int sphere) => SetInt("sphere", sphere);
 
-    public override void SetUp(Camera camera, List<Lamp> lightSources, List<FlashLight> flashLights, int sphere)
+    public override void SetUp(Camera camera, List<Lamp> lightSources, List<FlashLight> flashLights, float shininess, int sphere)
     {
-        base.SetUp(camera, lightSources, flashLights);
+        base.SetUp(camera, lightSources, flashLights, shininess);
 
         SetSphere(sphere);
         SetLowerSphereCenter(_lowerSphereCenter);

@@ -24,7 +24,7 @@ internal class SkyboxController : IController
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
-    private float _initTimeSeconds = 60 * 12;
+    private float _initTimeSeconds = 60 * 15;
 
     private struct Phase
     {
@@ -178,7 +178,7 @@ internal class SkyboxController : IController
         {
             Ambient = 0.1f,
             Diffuse = 0.8f,
-            Specular = 1f,
+            Specular = 0.1f,
             Direction = new Vector4(sunVector, 0) //GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(sunVector, _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _modelShader.GlobalScale), _scene.Camera.Curve)
         };
 

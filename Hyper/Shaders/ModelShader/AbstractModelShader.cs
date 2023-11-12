@@ -36,9 +36,11 @@ internal class AbstractModelShader : Shader
 
     private void SetPointLights(PointLight[] lights) => SetStructArray("pointLights", lights);
 
-    private void SetSpotLights(DataTypes.SpotLight[] lights) => SetStructArray("spotLights", lights);
+    private void SetSpotLights(SpotLight[] lights) => SetStructArray("spotLights", lights);
 
-    public virtual void SetUp(Camera camera, List<Lamp> lightSources, List<PlayerData.FlashLight> flashLights, int sphere = 0)
+    private void SetShininess(float shininess) => SetFloat("shininess", shininess);
+
+    public virtual void SetUp(Camera camera, List<Lamp> lightSources, List<FlashLight> flashLights, float shininess, int sphere = 0)
     {
         Use();
         SetCurv(camera.Curve);
@@ -47,6 +49,7 @@ internal class AbstractModelShader : Shader
 
         SetNumPointLights(lightSources.Count);
         SetNumSpotLights(flashLights.Count);
+        SetShininess(shininess);
         SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
         SetPointLights(lightSources.Select(x =>
            new PointLight

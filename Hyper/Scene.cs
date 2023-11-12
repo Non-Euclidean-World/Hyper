@@ -6,7 +6,6 @@ using Chunks;
 using Common.Meshes;
 using Common.UserInput;
 using Hyper.PlayerData;
-using Hyper.PlayerData.InventorySystem.Items;
 using OpenTK.Mathematics;
 using Physics;
 using Physics.Collisions;
@@ -72,6 +71,8 @@ internal class Scene : IInputSubscriber
                     FreeCars.Remove(car);
                     Player.Hide();
                     SimulationMembers.Remove(Player);
+                    FlashLights.Remove(Player.FlashLight);
+                    FlashLights.AddRange(PlayersCar.Lights);
                 }
                 return true;
             }
@@ -94,7 +95,9 @@ internal class Scene : IInputSubscriber
                         car.CarBodyPose.Position + System.Numerics.Vector3.UnitY), car.CurrentSphereId);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
                     SimulationMembers.Add(FreeCars[i]);
+
                     SimulationMembers.Remove(car);
+                    FlashLights.RemoveAll(car.Lights.Contains);
                     car.Dispose();
                 }
                 return true;
@@ -138,10 +141,12 @@ internal class Scene : IInputSubscriber
         var position = PlayersCar.CarBodyPose.Position;
         FreeCars.Add(PlayersCar);
         Player.CurrentSphereId = PlayersCar.CurrentSphereId;
+        FlashLights.RemoveAll(PlayersCar.Lights.Contains);
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
         SimulationMembers.Add(Player);
+        FlashLights.Add(Player.FlashLight);
     }
 
     public void RegisterCallbacks(Context context)
