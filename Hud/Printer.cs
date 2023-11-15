@@ -5,7 +5,9 @@ using OpenTK.Mathematics;
 using SkiaSharp;
 
 namespace Hud;
-
+/// <summary>
+/// Prints text to the screen.
+/// </summary>
 public static class Printer
 {
     private static readonly Texture AsciiTexture;
@@ -17,10 +19,12 @@ public static class Printer
     private static readonly SKPaint Paint;
     private static readonly float CharHeight;
 
+    public const char Caret = (char)200; // Just some number that is not used in ASCII but is smaller than CharacterCount.
+
     static Printer()
     {
         var bytes = Enumerable.Range(0, CharacterCount).Select(i => (byte)i).ToArray();
-        string text = Encoding.ASCII.GetString(bytes);
+        string text = string.Join(' ', Encoding.ASCII.GetString(bytes).ToCharArray());
 
         Paint = new SKPaint();
         Paint.Color = SKColors.White;
@@ -71,14 +75,20 @@ public static class Printer
         {
             if (t == '\n')
             {
-                verticalOffset += size * 1.2f;
+                verticalOffset += GetVerticalOffset(size);
                 horizontalOffset = 0;
+                continue;
+            }
+
+            if (t == Caret)
+            {
+                RenderChar(shader, '|', size, x + horizontalOffset, y - verticalOffset);
                 continue;
             }
 
             var charOffset = size * Paint.MeasureText(t.ToString()) / CharHeight;
             RenderChar(shader, t, size, x + horizontalOffset + charOffset, y - verticalOffset);
-            horizontalOffset += 2 * size * Paint.MeasureText(t.ToString()) / CharHeight;
+            horizontalOffset += GetHorizontalOffset(size, t.ToString());
         }
     }
 
@@ -127,7 +137,7 @@ public static class Printer
         var model = Matrix4.CreateTranslation(x, y, 0.0f);
         model = Matrix4.CreateScale(size * Paint.MeasureText(c.ToString()) / CharHeight, size, 1.0f) * model;
         shader.SetMatrix4("model", model);
-        shader.SetVector4("spriteRect", Rectangles[c]);
+        shader.SetVector4("spriteRect", Rectangles[2 * c]);
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
@@ -148,4 +158,27 @@ public static class Printer
 
         return rectangles;
     }
+
+    /// <summary>
+    /// Gets the size of the text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="size">The height of a single letter.</param>
+    /// <returns></returns>
+    public static Vector2 GetTextSize(string text, float size)
+    {
+        var lines = text.Split('\n');
+        float y = GetVerticalOffset(size) * (lines.Length - 1) + size;
+        float x = 0;
+        foreach (var line in lines)
+        {
+            x = Math.Max(x, GetHorizontalOffset(size, text));
+        }
+
+        return new Vector2(x, y);
+    }
+
+    private static float GetVerticalOffset(float size) => size * 1.2f;
+
+    private static float GetHorizontalOffset(float size, string text) => 2 * size * Paint.MeasureText(text) / CharHeight;
 }

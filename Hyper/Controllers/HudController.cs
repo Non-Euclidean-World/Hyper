@@ -5,7 +5,6 @@ using Hud.HUDElements;
 using Hud.Shaders;
 using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.InventoryRendering;
-using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using OpenTK.Graphics.OpenGL4;
 
