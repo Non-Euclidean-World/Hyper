@@ -59,7 +59,7 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F, Keys.Y });
         context.RegisterUpdateFrameCallback((e) =>
         {
             if (_scene.PlayersCar != null)
@@ -149,6 +149,8 @@ internal class PlayerController : IController, IInputSubscriber
             if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.Down();
         });
+        context.RegisterKeyDownCallback(Keys.Y, () =>
+            _scene.Player.FlashLight.Active = !_scene.Player.FlashLight.Active);
     }
 
     private void UpdateCamera(Camera camera, Player player)

@@ -100,9 +100,6 @@ internal class Player : Humanoid, IRayCaster
             Character.Animator.Reset();
         }
 
-        //var flashLightPosition = Vector3.Cross(ViewDirection, Vector3.UnitY); // right hand
-        //var flashLightDirection = Conversions.ToOpenTKVector(RayDirection);
-
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
         ViewDirection = viewDirection;
         FlashLight.Position = Vector3.Cross(ViewDirection, Vector3.UnitY) + Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position); // right hand

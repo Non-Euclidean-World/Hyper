@@ -100,10 +100,8 @@ internal class VehiclesController : IController, IInputSubscriber
             }
         });
 
-        context.RegisterKeyDownCallback(Keys.L, () =>
-        {
-            _scene.LeaveCar();
-        });
+        context.RegisterKeyDownCallback(Keys.L, _scene.LeaveCar);
+        context.RegisterKeyDownCallback(Keys.Y, () => _scene.PlayersCar?.Lights.ForEach(x => x.Active = !x.Active));
     }
 
     private void UpdateCamera(Camera camera, FourWheeledCar car)

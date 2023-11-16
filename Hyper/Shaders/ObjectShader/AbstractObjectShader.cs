@@ -48,7 +48,7 @@ internal abstract class AbstractObjectShader : Shader
         SetView(camera.GetViewMatrix());
         SetProjection(camera.GetProjectionMatrix());
         SetNumPointLights(lightSources.Count);
-        SetNumSpotLights(flashLights.Count);
+        SetNumSpotLights(flashLights.Where(x => x.Active).Count());
         SetShininess(shininess);
         SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
 
@@ -66,7 +66,9 @@ internal abstract class AbstractObjectShader : Shader
            }
         ).ToArray());
 
-        SetSpotLights(flashLights.Select(x =>
+        SetSpotLights(flashLights
+            .Where(x => x.Active)
+            .Select(x =>
         new SpotLight
         {
             Position = GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, GlobalScale), camera.Curve),

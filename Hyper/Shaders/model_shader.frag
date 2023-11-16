@@ -54,11 +54,14 @@ struct EnvironmentInfo
 {
     vec3 prevPhaseSunLightColor;
     vec3 nextPhaseSunLightColor;
+    vec3 prevPhaseMoonLightColor;
+    vec3 nextPhaseMoonLightColor;
     float phaseT;
     float prevPhaseNightAmbient;
     float nextPhaseNightAmbient;
 };
 uniform DirectionalLight sunLight;
+uniform DirectionalLight moonLight;
 uniform EnvironmentInfo envInfo;
 
 uniform vec4 viewPos;
@@ -96,7 +99,7 @@ vec4 direction(vec4 from, vec4 to)
 }
 
 vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
-vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir);
+vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir, vec3 color);
 vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
 
 void main(void)
@@ -116,7 +119,8 @@ void main(void)
 
     if (hasSun)
     {
-        result += CalcDirLight(sunLight, norm, viewDir);
+        result += CalcDirLight(sunLight, norm, viewDir, mix(envInfo.prevPhaseSunLightColor, envInfo.nextPhaseSunLightColor, envInfo.phaseT));
+        result += CalcDirLight(moonLight, norm, viewDir, mix(envInfo.prevPhaseMoonLightColor, envInfo.nextPhaseMoonLightColor, envInfo.phaseT));
         result += mix(envInfo.prevPhaseNightAmbient, envInfo.nextPhaseNightAmbient, envInfo.phaseT) * vec3(1);
     }
     else
@@ -127,18 +131,17 @@ void main(void)
     FragColor = vec4(result * texture(texture0, Texture).rgb, 1.0);
 }
 
-vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir)
+vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir, vec3 color)
 {
-    vec3 sunLightColor = mix(envInfo.prevPhaseSunLightColor, envInfo.nextPhaseSunLightColor, envInfo.phaseT);
-    vec3 ambient = light.ambient * sunLightColor;
+    vec3 ambient = light.ambient * color;
 
     vec4 lightDir = normalize(light.direction);
     float diff = max(dotProduct(normal, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * sunLightColor;
+    vec3 diffuse = light.diffuse * diff * color;
 
     vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
     float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
-    vec3 specular = light.specular * spec * sunLightColor;
+    vec3 specular = light.specular * spec * color;
 
     return ambient + diffuse + specular;
 }

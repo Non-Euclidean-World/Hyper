@@ -20,11 +20,13 @@ internal class SkyboxController : IController
 
     private readonly Stopwatch _stopwatch = new();
 
-    private readonly float _dayLengthSeconds = 60 * 10; // length of the day in seconds
+    private readonly float _dayLengthSeconds = 60 * 5; // length of the day in seconds
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
-    private float _initTimeSeconds = 60 * 15;
+    private readonly Vector3 _initialMoonVector;
+
+    private float _initTimeSeconds = 60 * 5 * 0.5f;
 
     private struct Phase
     {
@@ -90,6 +92,7 @@ internal class SkyboxController : IController
         _objectShader = objectShader;
         _skybox = new Skybox.Skybox(skyboxShader.GlobalScale);
         _initialSunVector = -Vector3.UnitZ;
+        _initialMoonVector = -Vector3.UnitX;
         _stopwatch.Start();
     }
 
@@ -166,37 +169,51 @@ internal class SkyboxController : IController
     public void Render()
     {
         _skyboxShader.SetUp(_scene.Camera);
+        float time = GetCurrentTime();
 
-        var interval = GetInterval(GetCurrentTime());
+        var interval = GetInterval(time);
         _skyboxShader.SetStruct("prevPhase", interval.Item1);
         _skyboxShader.SetStruct("nextPhase", interval.Item2);
         _skyboxShader.SetFloat("phaseT", interval.Item3);
 
-        _skybox.RotationX = GetCurrentTime() / _dayLengthSeconds * MathF.PI;
+        _skybox.RotationX = time / _dayLengthSeconds * MathF.PI;
         var sunVector = _initialSunVector * Matrix3.CreateRotationX(_skybox.RotationX);
+        var moonVector = _initialMoonVector * Matrix3.CreateRotationZ(_skybox.RotationX);
         DirectionalLight sunLight = new DirectionalLight
         {
             Ambient = 0.1f,
             Diffuse = 0.8f,
             Specular = 0.1f,
-            Direction = new Vector4(sunVector, 0) //GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(sunVector, _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _modelShader.GlobalScale), _scene.Camera.Curve)
+            Direction = new Vector4(sunVector, 0)
+        };
+
+        DirectionalLight moonLight = new DirectionalLight
+        {
+            Ambient = 0.05f,
+            Diffuse = 0.2f,
+            Specular = 0.05f,
+            Direction = new Vector4(moonVector, 0)
         };
 
         EnvironmentInfo envInfo = new EnvironmentInfo
         {
-            PrevPhaseSunLightColor = interval.Item1.SunglareColor.Xyz,
-            NextPhaseSunLightColor = interval.Item2.SunglareColor.Xyz,
+            PrevPhaseSunLightColor = interval.Item1.SunglareColor.Xyz * (1 - interval.Item1.StarsVisibility) * (1 - interval.Item1.StarsVisibility),
+            NextPhaseSunLightColor = interval.Item2.SunglareColor.Xyz * (1 - interval.Item2.StarsVisibility) * (1 - interval.Item2.StarsVisibility),
+            PrevPhaseMoonLightColor = new Vector3(0.55f, 0.62f, 0.79f) * interval.Item1.StarsVisibility,
+            NextPhaseMoonLightColor = new Vector3(0.55f, 0.62f, 0.79f) * interval.Item2.StarsVisibility,
             PhaseT = interval.Item3,
-            PrevPhaseNightAmbient = 0.2f * interval.Item1.StarsVisibility,
-            NextPhaseNightAmbient = 0.2f * interval.Item2.StarsVisibility,
+            PrevPhaseNightAmbient = 0.05f * interval.Item1.StarsVisibility,
+            NextPhaseNightAmbient = 0.05f * interval.Item2.StarsVisibility,
         };
 
         _modelShader.SetBool("hasSun", true);
         _modelShader.SetStruct("sunLight", sunLight);
+        _modelShader.SetStruct("moonLight", moonLight);
         _modelShader.SetStruct("envInfo", envInfo);
 
         _objectShader.SetBool("hasSun", true);
         _objectShader.SetStruct("sunLight", sunLight);
+        _objectShader.SetStruct("moonLight", moonLight);
         _objectShader.SetStruct("envInfo", envInfo);
 
         _skyboxShader.SetVector3("sunVector", sunVector);
