@@ -51,7 +51,7 @@ internal class AbstractModelShader : Shader
         SetNumPointLights(lightSources.Count);
         SetNumSpotLights(flashLights.Where(x => x.Active).Count());
         SetShininess(shininess);
-        SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
+        SetViewPos(GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve)); // shouldnt be referencepointpos?
         SetPointLights(lightSources.Select(x =>
            new PointLight
            {
