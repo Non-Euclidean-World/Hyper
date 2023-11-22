@@ -1,4 +1,5 @@
 ﻿using Common;
+using Hyper.Menu;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -7,6 +8,8 @@ namespace Hyper;
 
 public class Window : GameWindow
 {
+    private readonly MainMenu _mainMenu;
+
     private Game _game;
 
     private readonly CommandInterpreter _interpreter;
@@ -14,15 +17,49 @@ public class Window : GameWindow
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, new WindowHelper(this), DefaultSaveName(), geometryType);
+        var windowHelper = new WindowHelper(this);
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
         _interpreter = new CommandInterpreter(this);
+        _mainMenu = GetMainMenu(windowHelper);
         CursorState = CursorState.Grabbed;
+    }
+
+    private MainMenu GetMainMenu(IWindowHelper windowHelper)
+    {
+        var mainMenu = new MainMenu(windowHelper);
+        mainMenu.Resume += () =>
+        {
+            CursorState = CursorState.Grabbed;
+            _game.IsRunning = true;
+        };
+        mainMenu.NewGame += (saveName, geometryType) =>
+        {
+            _game.SaveAndClose();
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, geometryType);
+            CursorState = CursorState.Grabbed;
+        };
+        mainMenu.Delete += (saveName) =>
+        {
+            if (saveName == _game.Settings.SaveName)
+                return;
+            SaveManager.DeleteSaves(new[] { saveName });
+            mainMenu.Reload();
+        };
+        mainMenu.Load += (saveName) =>
+        {
+            _game.SaveAndClose();
+
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, GeometryType.Euclidean);
+            CursorState = CursorState.Grabbed;
+        };
+        mainMenu.Quit += Close;
+
+        return mainMenu;
     }
 
     public override void Close()
     {
-        if (_game.IsRunning)
-            _game.SaveAndClose();
+        _game.SaveAndClose();
         base.Close();
     }
 
@@ -35,10 +72,11 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        if (!_game.IsRunning)
-            return;
+        if (_game.IsRunning)
+            _game.RenderFrame(e);
+        else
+            _mainMenu.Render();
 
-        _game.RenderFrame(e);
         SwapBuffers();
     }
 
@@ -56,20 +94,25 @@ public class Window : GameWindow
     {
         base.OnKeyDown(e);
 
-        if (_game.IsRunning)
-            _game.KeyDown(e.Key);
-
         if (e.Key == Keys.Escape)
         {
-            CloseNoSave();
+            _game.IsRunning = !_game.IsRunning;
+            CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
+            return;
         }
 
-        if (e.Key == Keys.T)
+        if (_game.IsRunning)
         {
-            CursorState = CursorState.Normal;
-            Command();
-            CursorState = CursorState.Grabbed;
+            _game.KeyDown(e.Key);
+            if (e.Key == Keys.T)
+            {
+                CursorState = CursorState.Normal;
+                Command();
+                CursorState = CursorState.Grabbed;
+            }
         }
+        else
+            _mainMenu.KeyDown(e);
     }
 
     protected override void OnKeyUp(KeyboardKeyEventArgs e)
@@ -94,6 +137,8 @@ public class Window : GameWindow
 
         if (_game.IsRunning)
             _game.MouseDown(e.Button);
+        else
+            _mainMenu.Click();
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -121,10 +166,11 @@ public class Window : GameWindow
 
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)
     {
-        if (e.IsFocused)
-            _game.IsRunning = true;
-        else
+        if (!e.IsFocused)
+        {
             _game.IsRunning = false;
+            CursorState = CursorState.Normal;
+        }
     }
 
     private void Command()
