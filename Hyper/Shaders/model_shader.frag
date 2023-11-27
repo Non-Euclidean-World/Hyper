@@ -125,7 +125,7 @@ void main(void)
     }
     else
     {
-        result += 0.1 * vec3(1);
+        result += CalcDirLight(sunLight, norm, viewDir, vec3(1));
     }
         
     FragColor = vec4(result * texture(texture0, Texture).rgb, 1.0);

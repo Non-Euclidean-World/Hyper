@@ -124,7 +124,7 @@ void main()
     }
     else
     {
-        result += 0.1 * vec3(1);
+        result += CalcDirLight(sunLight, norm, viewDir, vec3(1));
     }
 
     FragColor = vec4(result * Color, 1.0);

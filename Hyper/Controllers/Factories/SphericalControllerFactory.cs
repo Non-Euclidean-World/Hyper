@@ -66,6 +66,7 @@ internal class SphericalControllerFactory : IControllerFactory
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter, new CarSpawnStrategy(_scene, settings)),
             new LightSourcesController(_scene, lightSourceShader),
             new HudController(_scene, _windowHelper, hudShader, _context),
+            new SphericalSkyboxController(modelShader, objectShader),
             new BoundingShapesController(_scene, lightSourceShader, _context),
         };
     }

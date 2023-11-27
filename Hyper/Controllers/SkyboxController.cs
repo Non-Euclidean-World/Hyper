@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Common;
 using Hyper.Shaders.DataTypes;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
@@ -20,13 +21,15 @@ internal class SkyboxController : IController
 
     private readonly Stopwatch _stopwatch = new();
 
-    private readonly float _dayLengthSeconds = 60 * 5; // length of the day in seconds
+    private readonly float _dayLengthSeconds = 60 * 10; // length of the day in seconds
 
     private readonly Vector3 _initialSunVector; // vector pointing to the sun
 
     private readonly Vector3 _initialMoonVector;
 
-    private float _initTimeSeconds = 60 * 5 * 0.5f;
+    private float _initTimeSeconds;
+
+    private readonly Settings _settings;
 
     private struct Phase
     {
@@ -84,7 +87,7 @@ internal class SkyboxController : IController
         StarsVisibility = 1f
     };
 
-    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader)
+    public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader, Settings settings)
     {
         _scene = scene;
         _skyboxShader = skyboxShader;
@@ -93,11 +96,14 @@ internal class SkyboxController : IController
         _skybox = new Skybox.Skybox(skyboxShader.GlobalScale);
         _initialSunVector = -Vector3.UnitZ;
         _initialMoonVector = -Vector3.UnitX;
+        _settings = settings;
+        _initTimeSeconds = _settings.TimeInSeconds;
         _stopwatch.Start();
     }
 
     public void Dispose()
     {
+        _settings.TimeInSeconds = GetCurrentTime();
         _skyboxShader.Dispose();
     }
 

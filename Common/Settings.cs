@@ -21,6 +21,8 @@ public class Settings
 
     public int RenderDistance { get; set; } = 2;
 
+    public float TimeInSeconds { get; set; } = 0;
+
     [JsonIgnore]
     public float AspectRatio { get; set; }
 
