@@ -87,9 +87,9 @@ internal class SkyboxController : IController
         StarsVisibility = 1f
     };
 
-    private DirectionalLight sunLight;
+    private DirectionalLight _sunLight;
 
-    private DirectionalLight moonLight;
+    private DirectionalLight _moonLight;
 
     public SkyboxController(Scene scene, AbstractSkyboxShader skyboxShader, StandardModelShader modelShader, StandardObjectShader objectShader, Settings settings)
     {
@@ -102,7 +102,7 @@ internal class SkyboxController : IController
         _initialMoonVector = -Vector3.UnitX;
         _settings = settings;
         _initTimeSeconds = _settings.TimeInSeconds;
-        sunLight = new DirectionalLight
+        _sunLight = new DirectionalLight
         {
             Ambient = 0.1f,
             Diffuse = 0.8f,
@@ -110,7 +110,7 @@ internal class SkyboxController : IController
             Direction = new Vector4(_initialSunVector, 0)
         };
 
-        moonLight = new DirectionalLight
+        _moonLight = new DirectionalLight
         {
             Ambient = 0.05f,
             Diffuse = 0.2f,
@@ -176,9 +176,9 @@ internal class SkyboxController : IController
         static float GetT(float begin, float end, float time) => (time - begin) / (end - begin);
     }
 
-    private void UpdateSunLight(ref Vector3 sunVector) => sunLight.Direction = new Vector4(sunVector, 0);
+    private void UpdateSunLight(ref Vector3 sunVector) => _sunLight.Direction = new Vector4(sunVector, 0);
 
-    private void UpdateMoonLight(ref Vector3 moonVector) => moonLight.Direction = new Vector4(moonVector, 0);
+    private void UpdateMoonLight(ref Vector3 moonVector) => _moonLight.Direction = new Vector4(moonVector, 0);
 
     private static EnvironmentInfo CreateEnvInfo(ref (Phase, Phase, float) interval) => new()
     {
@@ -210,13 +210,13 @@ internal class SkyboxController : IController
         EnvironmentInfo envInfo = CreateEnvInfo(ref interval);
 
         _modelShader.SetBool("hasSun", true);
-        _modelShader.SetStruct("sunLight", sunLight);
-        _modelShader.SetStruct("moonLight", moonLight);
+        _modelShader.SetStruct("sunLight", _sunLight);
+        _modelShader.SetStruct("moonLight", _moonLight);
         _modelShader.SetStruct("envInfo", envInfo);
 
         _objectShader.SetBool("hasSun", true);
-        _objectShader.SetStruct("sunLight", sunLight);
-        _objectShader.SetStruct("moonLight", moonLight);
+        _objectShader.SetStruct("sunLight", _sunLight);
+        _objectShader.SetStruct("moonLight", _moonLight);
         _objectShader.SetStruct("envInfo", envInfo);
 
         _skyboxShader.SetVector3("sunVector", sunVector);

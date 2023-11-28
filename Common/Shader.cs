@@ -120,7 +120,6 @@ public class Shader
 
     /// <summary>
     /// Sets an array of structs on this shader.
-    /// This operation can be slow. Define a dedicated setter if performance is critical.
     /// </summary>
     /// <typeparam name="T">Type of the struct</typeparam>
     /// <param name="name">Name of the uniform array</param>
@@ -136,7 +135,6 @@ public class Shader
 
     /// <summary>
     /// Sets a struct on this shader.
-    /// This operation can be slow. Define a dedicated setter if performance is critical.
     /// </summary>
     /// <typeparam name="T">Type of the struct</typeparam>
     /// <param name="name">Name of the uniform</param>
