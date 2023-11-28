@@ -24,6 +24,15 @@ public class Lamp : Mesh
         Quadratic = quadratic;
     }
 
+    public static Lamp CreateStandardLamp(Vector3 position, Vector3 color)
+        => new(CubeMesh.Vertices, position, color,
+            ambient: new Vector3(0.05f, 0.05f, 0.05f),
+            diffuse: new Vector3(0.8f, 0.8f, 0.8f),
+            specular: new Vector3(1f, 1f, 1f),
+            constant: 1f,
+            linear: 0.35f,
+            quadratic: 0.44f);
+
     public override void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
         var modelLs = Matrix4.CreateTranslation(

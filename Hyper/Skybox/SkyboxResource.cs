@@ -6,7 +6,7 @@ internal class SkyboxResource
     public int Vao { get; }
     public int Vbo { get; }
 
-    public SkyboxResource(float scale)
+    public SkyboxResource()
     {
         int vao = GL.GenVertexArray();
         int vbo = GL.GenBuffer();

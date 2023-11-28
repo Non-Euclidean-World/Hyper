@@ -1,5 +1,4 @@
-﻿using Common.Meshes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using Physics.TypingUtils;
 
 namespace Hyper.PlayerData.InventorySystem.Items;
@@ -16,16 +15,13 @@ internal class Lamp : Item
         CreateLamp(scene);
     }
 
+    public override void SecondaryUse(Scene scene)
+    {
+        scene.TryPickLamp();
+    }
+
     private static void CreateLamp(Scene scene)
     {
-        scene.LightSources.Add(new Common.Meshes.Lamp(CubeMesh.Vertices,
-                    position: new Vector3(Conversions.ToOpenTKVector(scene.Player.RayOrigin)),
-                    color: new Vector3(1, 1, 1),
-                    ambient: new Vector3(0.05f, 0.05f, 0.05f),
-                    diffuse: new Vector3(0.8f, 0.8f, 0.8f),
-                    specular: new Vector3(1f, 1f, 1f),
-                    constant: 1f,
-                    linear: 0.35f,
-                    quadratic: 0.44f));
+        scene.LightSources.Add(Common.Meshes.Lamp.CreateStandardLamp(Conversions.ToOpenTKVector(scene.Player.RayOrigin), Vector3.One));
     }
 }

@@ -3,7 +3,7 @@
 namespace Hyper.Shaders.SkyboxShader;
 internal class SphericalSkyboxShader : AbstractSkyboxShader
 {
-    public SphericalSkyboxShader(float scale) : base(scale)
+    public SphericalSkyboxShader() : base()
     { }
 
     public override void SetUp(Camera camera)

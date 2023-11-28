@@ -7,14 +7,11 @@ namespace Hyper.Skybox;
 internal class Skybox
 {
     /// <summary>
-    /// Cubemap texture for the skybox
-    /// </summary>
-    public Texture Texture { get; private init; }
-
-    /// <summary>
     /// Rotation of the skybox in radians
     /// </summary>
     public float RotationX { get; set; }
+
+    private Texture _texture;
 
     private readonly string[] _dayFaces;
 
@@ -24,7 +21,7 @@ internal class Skybox
 
     private readonly SkyboxResource _skyboxResource;
 
-    public Skybox(float scale)
+    public Skybox()
     {
         _dayFaces = new string[]
         {
@@ -46,13 +43,13 @@ internal class Skybox
             "Night/nz.png",
         };
 
-        _skyboxResource = new(scale);
+        _skyboxResource = new();
 
         string[] paths = new string[6];
         for (int i = 0; i < _dayFaces.Length; i++)
             paths[i] = Path.Combine(_resourceDir, _nightFaces[i]);
 
-        Texture = Texture.LoadCubemap(paths);
+        _texture = Texture.LoadCubemap(paths);
     }
 
     public void Render(AbstractSkyboxShader shader)
@@ -63,7 +60,7 @@ internal class Skybox
         GL.DepthFunc(DepthFunction.Lequal);
         GL.BindVertexArray(_skyboxResource.Vao);
         GL.ActiveTexture(TextureUnit.Texture0);
-        GL.BindTexture(TextureTarget.TextureCubeMap, Texture.Name);
+        GL.BindTexture(TextureTarget.TextureCubeMap, _texture.Name);
         GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         GL.BindVertexArray(0);
         GL.DepthFunc(DepthFunction.Less);

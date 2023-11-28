@@ -117,8 +117,6 @@ internal class PlayerController : IController, IInputSubscriber
 
         context.RegisterKeyDownCallback(Keys.F, () => _scene.TryFlipClosestCar());
 
-        context.RegisterKeyDownCallback(Keys.P, () => _scene.TryPickLamp());
-
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
             if (!_scene.Player.Inventory.IsOpen)

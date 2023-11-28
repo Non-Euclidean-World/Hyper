@@ -6,17 +6,14 @@ using OpenTK.Mathematics;
 namespace Hyper.Shaders.SkyboxShader;
 internal abstract class AbstractSkyboxShader : Shader
 {
-    public float GlobalScale { get; }
-
     private static readonly (string path, ShaderType shaderType)[] ShaderInfo = new[]
     {
         ("Shaders/skybox_shader.vert", ShaderType.VertexShader),
         ("Shaders/skybox_shader.frag", ShaderType.FragmentShader)
     };
 
-    protected AbstractSkyboxShader(float scale) : base(ShaderInfo)
+    protected AbstractSkyboxShader() : base(ShaderInfo)
     {
-        GlobalScale = scale;
     }
 
     private void SetView(Matrix4 view) => SetMatrix4("view", view);

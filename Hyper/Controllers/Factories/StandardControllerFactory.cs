@@ -48,7 +48,7 @@ internal class StandardControllerFactory : IControllerFactory
         var modelShader = StandardModelShader.Create(_globalScale);
         var lightSourceShader = StandardLightSourceShader.Create(_globalScale);
         var hudShader = HudShader.Create();
-        var skyboxShader = StandardSkyboxShader.Create(_globalScale);
+        var skyboxShader = StandardSkyboxShader.Create();
 
         return new IController[]
         {
