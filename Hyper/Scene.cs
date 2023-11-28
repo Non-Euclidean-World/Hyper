@@ -109,28 +109,28 @@ internal class Scene : IInputSubscriber
     }
 
     /// <summary>
-    /// Picks a lamp if it's close enough to the player.
+    /// Picks the lamp that is closest to the player.
     /// </summary>
     /// <param name="testOnly">If true the lamp won't be picked even if it could be</param>
     /// <returns>True if a lamp was (or could be) picked. False otherwise.</returns>
     public bool TryPickLamp(bool testOnly = false)
     {
         const float lampPickRadius = 10f;
-        for (int i = 0; i < LightSources.Count; i++)
+
+        Lamp? closestLamp = LightSources.MinBy(lamp => System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(lamp.Position), Player.PhysicalCharacter.Pose.Position));
+        if (closestLamp == null)
+            return false;
+
+        if (System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(closestLamp.Position), Player.PhysicalCharacter.Pose.Position) > lampPickRadius)
+            return false;
+
+        if (!testOnly)
         {
-            var lamp = LightSources[i];
-            if (System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(lamp.Position), Player.PhysicalCharacter.Pose.Position) <= lampPickRadius)
-            {
-                if (!testOnly)
-                {
-                    LightSources.RemoveAt(i);
-                    Player.Inventory.AddItem(new PlayerData.InventorySystem.Items.Lamp());
-                }
-                return true;
-            }
+            LightSources.Remove(closestLamp);
+            Player.Inventory.AddItem(new PlayerData.InventorySystem.Items.Lamp());
         }
 
-        return false;
+        return true;
     }
 
     public void LeaveCar()

@@ -21,7 +21,7 @@ internal class SkyboxController : IController
 
     private readonly Stopwatch _stopwatch = new();
 
-    private const float DayLengthSeconds = 60 * 0.5f;
+    private const float DayLengthSeconds = 60 * 10f;
 
     private readonly Vector3 _initialSunVector;
 
@@ -205,6 +205,11 @@ internal class SkyboxController : IController
         var sunVector = _initialSunVector * Matrix3.CreateRotationX(_skybox.RotationX);
         var moonVector = _initialMoonVector * Matrix3.CreateRotationZ(_skybox.RotationX);
 
+        _skyboxShader.SetVector3("sunVector", sunVector);
+
+        _skybox.Render(_skyboxShader);
+
+        // TODO refactor: the code below shouldn't be here
         UpdateSunLight(ref sunVector);
         UpdateMoonLight(ref moonVector);
         EnvironmentInfo envInfo = CreateEnvInfo(ref interval);
@@ -218,9 +223,5 @@ internal class SkyboxController : IController
         _objectShader.SetStruct("sunLight", _sunLight);
         _objectShader.SetStruct("moonLight", _moonLight);
         _objectShader.SetStruct("envInfo", envInfo);
-
-        _skyboxShader.SetVector3("sunVector", sunVector);
-
-        _skybox.Render(_skyboxShader);
     }
 }
