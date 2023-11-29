@@ -1,6 +1,10 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hyper.Shaders.DataTypes;
+
+/// <summary>
+/// Shader-compatible description of the environment
+/// </summary>
 internal struct EnvironmentInfo
 {
     public Vector3 PrevPhaseSunLightColor;

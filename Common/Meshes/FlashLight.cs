@@ -1,6 +1,10 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Common.Meshes;
+
+/// <summary>
+/// Class representing a spot light
+/// </summary>
 public class FlashLight
 {
     public bool Active;
@@ -30,6 +34,9 @@ public class FlashLight
         Quadratic = quadratic;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>FlashLight</c> class with default values
+    /// </summary>
     public FlashLight()
     {
         Color = new Vector3(1, 1, 1);
@@ -43,6 +50,11 @@ public class FlashLight
         Quadratic = 0.3f;
     }
 
+    /// <summary>
+    /// Creates a light source for car's headlights
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
     public static FlashLight CreateCarLight(Vector3 color)
     {
         return new FlashLight(color,
@@ -56,16 +68,21 @@ public class FlashLight
             quadratic: 0.04f);
     }
 
+    /// <summary>
+    /// Creates a light source for car's tail lights
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
     public static FlashLight CreateCarRearLight(Vector3 color)
     {
         return new FlashLight(color,
             cutOff: MathF.Cos(MathHelper.DegreesToRadians(15f)),
             outerCutOff: MathF.Cos(MathHelper.DegreesToRadians(30f)),
             ambient: new Vector3(0.1f, 0.1f, 0.1f),
-            diffuse: new Vector3(0.8f, 0.8f, 0.8f),
+            diffuse: new Vector3(0.6f, 0.6f, 0.6f),
             specular: new Vector3(1f, 1f, 1f),
             constant: 1f,
-            linear: 0.3f,
-            quadratic: 0.25f);
+            linear: 0.5f,
+            quadratic: 0.8f);
     }
 }

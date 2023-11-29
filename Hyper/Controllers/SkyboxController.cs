@@ -7,6 +7,10 @@ using Hyper.Shaders.SkyboxShader;
 using OpenTK.Mathematics;
 
 namespace Hyper.Controllers;
+
+/// <summary>
+/// Class that controls the skybox and the properties of the scene's environment.
+/// </summary>
 internal class SkyboxController : IController
 {
     private readonly Scene _scene;

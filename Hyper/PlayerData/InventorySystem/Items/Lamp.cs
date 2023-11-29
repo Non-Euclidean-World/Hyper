@@ -2,6 +2,10 @@
 using Physics.TypingUtils;
 
 namespace Hyper.PlayerData.InventorySystem.Items;
+
+/// <summary>
+/// Item that represents a lamp in the inventory.
+/// </summary>
 internal class Lamp : Item
 {
     public override string Id => "lamp";

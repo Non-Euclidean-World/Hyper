@@ -19,6 +19,9 @@ public class FourWheeledCar : ISimulationMember, IDisposable
 
     public RigidPose CarBodyPose => SimpleCar.CarBodyPose;
 
+    /// <summary>
+    /// Front and rear lights
+    /// </summary>
     public List<FlashLight> Lights { get; private init; }
 
     private readonly FourWheeledCarModel _model;

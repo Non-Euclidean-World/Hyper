@@ -4,6 +4,10 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hyper.Skybox;
+
+/// <summary>
+/// Class representing a skybox
+/// </summary>
 internal class Skybox
 {
     /// <summary>
@@ -11,9 +15,7 @@ internal class Skybox
     /// </summary>
     public float RotationX { get; set; }
 
-    private Texture _texture;
-
-    private readonly string[] _dayFaces;
+    private readonly Texture _texture;
 
     private readonly string[] _nightFaces;
 
@@ -23,16 +25,6 @@ internal class Skybox
 
     public Skybox()
     {
-        _dayFaces = new string[]
-        {
-            "Day/px.png",
-            "Day/nx.png",
-            "Day/ny.png",
-            "Day/py.png",
-            "Day/pz.png",
-            "Day/nz.png",
-        };
-
         _nightFaces = new string[]
         {
             "Night/px.png",
@@ -46,12 +38,16 @@ internal class Skybox
         _skyboxResource = new();
 
         string[] paths = new string[6];
-        for (int i = 0; i < _dayFaces.Length; i++)
+        for (int i = 0; i < _nightFaces.Length; i++)
             paths[i] = Path.Combine(_resourceDir, _nightFaces[i]);
 
         _texture = Texture.LoadCubemap(paths);
     }
 
+    /// <summary>
+    /// Renders the skybox
+    /// </summary>
+    /// <param name="shader"></param>
     public void Render(AbstractSkyboxShader shader)
     {
         var rotation = Matrix4.CreateFromAxisAngle(Vector3.UnitX, RotationX);

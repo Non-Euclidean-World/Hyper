@@ -139,12 +139,6 @@
 
 
 
-  <ItemGroup>
-    <Folder Include="Skybox\Resources\Day\" />
-  </ItemGroup>
-
-
-
 
 
 

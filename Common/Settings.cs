@@ -21,6 +21,9 @@ public class Settings
 
     public int RenderDistance { get; set; } = 2;
 
+    /// <summary>
+    /// Time elapsed since the last day start in seconds
+    /// </summary>
     public float TimeInSeconds { get; set; } = 0;
 
     [JsonIgnore]

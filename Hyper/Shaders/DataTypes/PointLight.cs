@@ -3,9 +3,9 @@
 namespace Hyper.Shaders.DataTypes;
 
 /// <summary>
-/// Point light source description
+/// Shader-compatible point light source description
 /// </summary>
-public struct PointLight
+internal struct PointLight
 {
     public Vector4 Position;
     public Vector3 Color;

@@ -6,8 +6,20 @@ using Hyper.Shaders.DataTypes;
 using OpenTK.Mathematics;
 
 namespace Hyper.Shaders.Helpers;
+
+/// <summary>
+/// Collection of utility functions for setting up shader uniforms.
+/// </summary>
 internal static class ShaderData
 {
+    /// <summary>
+    /// Sets up uniforms related to lighting
+    /// </summary>
+    /// <param name="shader">Shader to set the uniforms on</param>
+    /// <param name="lightSources">List of point light sources</param>
+    /// <param name="flashLights">List of spot lights</param>
+    /// <param name="camera">Camera object</param>
+    /// <param name="globalScale">Global scale parameter</param>
     public static void SetUpLighting(Shader shader, List<Lamp> lightSources, List<FlashLight> flashLights, Camera camera, float globalScale)
     {
         shader.SetInt("numPointLights", lightSources.Count);
@@ -17,6 +29,11 @@ internal static class ShaderData
         shader.SetVector4("viewPos", GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
     }
 
+    /// <summary>
+    /// Sets up uniforms related to coordinate system transformations
+    /// </summary>
+    /// <param name="shader">Shader to set the uniforms on</param>
+    /// <param name="camera">Camera object</param>
     public static void SetUpTransforms(Shader shader, Camera camera)
     {
         shader.SetFloat("curv", camera.Curve);

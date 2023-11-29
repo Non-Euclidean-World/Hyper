@@ -1,6 +1,10 @@
 ﻿using OpenTK.Mathematics;
 
 namespace Hyper.Shaders.DataTypes;
+
+/// <summary>
+/// Shader-compatible spot light description
+/// </summary>
 internal struct SpotLight
 {
     public Vector4 Position;

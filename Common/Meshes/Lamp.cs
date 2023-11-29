@@ -3,6 +3,9 @@ using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
+/// <summary>
+/// Class representing a point light source
+/// </summary>
 public class Lamp : Mesh
 {
     public Vector3 Color { get; set; }
@@ -24,6 +27,12 @@ public class Lamp : Mesh
         Quadratic = quadratic;
     }
 
+    /// <summary>
+    /// Creates a glowing cube
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="color"></param>
+    /// <returns></returns>
     public static Lamp CreateStandardLamp(Vector3 position, Vector3 color)
         => new(CubeMesh.Vertices, position, color,
             ambient: new Vector3(0.05f, 0.05f, 0.05f),
