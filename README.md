@@ -24,4 +24,6 @@ https://www.youtube.com/watch?v=DiIoWrOlIRw
 ## Assets Used
 <a href="https://www.flaticon.com/free-icons/rock" title="rock icons">Rock icons created by Icongeek26 - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/sword" title="sword icons">Sword icons created by Freepik - Flaticon</a> \
-<a href="https://www.flaticon.com/free-icons/hammer" title="hammer icons">Hammer icons created by srip - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/hammer" title="hammer icons">Hammer icons created by srip - Flaticon</a> \
+<a href="https://www.flaticon.com/free-icons/idea" title="idea icons">Idea icons created by Good Ware - Flaticon</a> \
+<a href="https://www.flaticon.com/free-icons/pistol" title="pistol icons">Pistol icons created by Vector Stall - Flaticon</a>

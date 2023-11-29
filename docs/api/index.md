@@ -1,2 +1,2 @@
-# PLACEHOLDER
-TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
+# _Hyper_ documentation
+Welcome to the documentation for the _Hyper_ project.

@@ -1,7 +1,10 @@
 ﻿using BepuPhysics;
+using BepuUtilities;
 using Common;
+using Common.Meshes;
 using OpenTK.Mathematics;
 using Physics.Collisions;
+using Physics.TypingUtils;
 
 namespace Character.Vehicles;
 public class FourWheeledCar : ISimulationMember, IDisposable
@@ -16,6 +19,11 @@ public class FourWheeledCar : ISimulationMember, IDisposable
 
     public RigidPose CarBodyPose => SimpleCar.CarBodyPose;
 
+    /// <summary>
+    /// Front and rear lights
+    /// </summary>
+    public List<FlashLight> Lights { get; private init; }
+
     private readonly FourWheeledCarModel _model;
 
     public FourWheeledCar(SimpleCar simpleCar, FourWheeledCarModel model, int currentSphereId)
@@ -28,6 +36,13 @@ public class FourWheeledCar : ISimulationMember, IDisposable
             SimpleCar.BackLeftWheel.Wheel, SimpleCar.BackRightWheel.Wheel,
             SimpleCar.FrontLeftWheel.Wheel, SimpleCar.FrontRightWheel.Wheel
         };
+        Lights = new List<FlashLight>
+        {
+            FlashLight.CreateCarLight(Vector3.One),
+            FlashLight.CreateCarLight(Vector3.One),
+            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0)),
+            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0)),
+        };
         _model = model;
     }
 
@@ -37,6 +52,15 @@ public class FourWheeledCar : ISimulationMember, IDisposable
     public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
     {
         SimpleCar.Update(simulation, dt, targetSteeringAngle, targetSpeedFraction, zoom, brake);
+
+        for (var i = 0; i < Lights.Count; i++)
+        {
+            var light = Lights[i];
+            QuaternionEx.Transform(SimpleCar.Lights[i], CarBodyPose.Orientation, out var lightPos);
+            light.Position = Conversions.ToOpenTKVector(CarBodyPose.Position + lightPos);
+            QuaternionEx.TransformUnitZ(CarBodyPose.Orientation, out var direction);
+            light.Direction = Conversions.ToOpenTKVector(i <= 1 ? direction : -direction);
+        }
     }
 
     public void Dispose()

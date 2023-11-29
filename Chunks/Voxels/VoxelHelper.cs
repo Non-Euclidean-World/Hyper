@@ -8,9 +8,9 @@ public static class VoxelHelper
     {
         return type switch
         {
-            (VoxelType.Grass) => new Vector3(0.1f, 0.7f, 0.1f),
-            (VoxelType.GrassRock) => new Vector3(0.5f, 0.5f, 0),
-            (VoxelType.Rock) => new Vector3(0.7f, 0.1f, 0.1f),
+            (VoxelType.Grass) => new Vector3(0.57f, 0.63f, 0.22f),
+            (VoxelType.GrassRock) => new Vector3(0.48f, 0.31f, 0.08f),
+            (VoxelType.Rock) => new Vector3(0.33f, 0.33f, 0.28f),
             _ => Vector3.Zero
         };
     }

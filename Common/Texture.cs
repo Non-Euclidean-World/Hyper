@@ -8,6 +8,8 @@ public class Texture
 {
     private readonly int _handle;
 
+    public int Name { get => _handle; }
+
     /// <summary>
     /// Loads a texture from a file.
     /// </summary>
@@ -63,6 +65,35 @@ public class Texture
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+        return new Texture(handle);
+    }
+
+    /// <summary>
+    /// Loads a cubemap from files.
+    /// </summary>
+    /// <param name="paths">Paths to files with faces of the cubemap</param>
+    /// <returns></returns>
+    public static Texture LoadCubemap(string[] paths)
+    {
+        int handle = GL.GenTexture();
+        GL.BindTexture(TextureTarget.TextureCubeMap, handle);
+
+        for (int i = 0; i < paths.Length; i++)
+        {
+            var face = paths[i];
+            using Stream stream = File.OpenRead(face);
+            ImageResult image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlue);
+
+            GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0,
+                PixelInternalFormat.Rgb, image.Width, image.Height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, image.Data);
+        }
+
+        GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+        GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+        GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)TextureWrapMode.ClampToEdge);
 
         return new Texture(handle);
     }

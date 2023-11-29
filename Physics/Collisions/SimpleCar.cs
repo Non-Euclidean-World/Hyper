@@ -19,6 +19,8 @@ public class SimpleCar : IDisposable
     public WheelHandles BackLeftWheel { get; private set; }
     public WheelHandles BackRightWheel { get; private set; }
 
+    public Vector3[] Lights { get; private set; } = null!;
+
     public RigidPose CarBodyPose { get; private set; }
 
     private Vector3 _suspensionDirection;
@@ -102,6 +104,7 @@ public class SimpleCar : IDisposable
         TypedIndex bodyShape, BodyInertia bodyInertia, float bodyFriction, TypedIndex wheelShape, BodyInertia wheelInertia, float wheelFriction,
         Vector3 bodyToFrontLeftSuspension, Vector3 bodyToFrontRightSuspension, Vector3 bodyToBackLeftSuspension, Vector3 bodyToBackRightSuspension,
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
+        Vector3 frontLeftLight, Vector3 frontRightLight, Vector3 backLeftLight, Vector3 backRightLight,
         SimpleCarController controller)
     {
         SimpleCar car = new SimpleCar(controller, simulation);
@@ -122,6 +125,15 @@ public class SimpleCar : IDisposable
         car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
 
+        /*car.FrontLeftLight = frontLeftLight;
+        car.FrontRightLight = frontRightLight;
+        car.BackLeftLight = backLeftLight;
+        car.BackRightLight = backRightLight;*/
+        car.Lights = new Vector3[]
+        {
+            frontLeftLight, frontRightLight, backLeftLight, backRightLight,
+        };
+
         return car;
     }
 
@@ -134,6 +146,7 @@ public class SimpleCar : IDisposable
         float wheelRadius, float wheelWidth, float wheelMass,
         Vector3 bodyToFrontLeftSuspension, Vector3 bodyToFrontRightSuspension, Vector3 bodyToBackLeftSuspension, Vector3 bodyToBackRightSuspension,
         Vector3 suspensionDirection, float suspensionLength, in SpringSettings suspensionSettings, Quaternion localWheelOrientation,
+        Vector3 frontLeftLight, Vector3 frontRightLight, Vector3 backLeftLight, Vector3 backRightLight,
         SimpleCarController controller)
     {
         var builder = new CompoundBuilder(bufferPool, simulation.Shapes, 2);
@@ -151,6 +164,7 @@ public class SimpleCar : IDisposable
             wheelFriction, bodyToFrontLeftSuspension, bodyToFrontRightSuspension,
             bodyToBackLeftSuspension, bodyToBackRightSuspension, suspensionDirection, suspensionLength,
             suspensionSettings, localWheelOrientation,
+            frontLeftLight, frontRightLight, backLeftLight, backRightLight,
             controller);
 
     }
@@ -195,6 +209,10 @@ public class SimpleCar : IDisposable
             suspensionLength: 0.25f,
             new SpringSettings(5f, 0.7f),
             localWheelOrientation: QuaternionEx.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI * 0.5f),
+            frontLeftLight: new Vector3(-0.6f * scale, wheelRadius * 2, 1.5f * scale), // i have no clue
+            frontRightLight: new Vector3(0.6f * scale, wheelRadius * 2, 1.5f * scale),
+            backLeftLight: new Vector3(-0.6f * scale, wheelRadius * 2, -1.5f * scale),
+            backRightLight: new Vector3(0.6f * scale, wheelRadius * 2, -1.5f * scale),
             controller);
     }
 

@@ -41,7 +41,7 @@ internal class PlayerController : IController, IInputSubscriber
     {
         if (_scene.PlayersCar != null)
             return;
-        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.Player.CurrentSphereId);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.Player.CurrentSphereId);
         _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
         if (_scene.Player.Inventory.SelectedItem is Pickaxe pickaxe)
@@ -59,7 +59,7 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F, Keys.Y });
         context.RegisterUpdateFrameCallback((e) =>
         {
             if (_scene.PlayersCar != null)
@@ -147,6 +147,8 @@ internal class PlayerController : IController, IInputSubscriber
             if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.Down();
         });
+        context.RegisterKeyDownCallback(Keys.Y, () =>
+            _scene.Player.FlashLight.Active = !_scene.Player.FlashLight.Active);
     }
 
     private void UpdateCamera(Camera camera, Player player)

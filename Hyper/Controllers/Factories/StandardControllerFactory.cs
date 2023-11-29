@@ -10,6 +10,7 @@ using Hyper.Controllers.Bots.Spawn;
 using Hyper.Shaders.LightSourceShader;
 using Hyper.Shaders.ModelShader;
 using Hyper.Shaders.ObjectShader;
+using Hyper.Shaders.SkyboxShader;
 using Hyper.Transporters;
 
 namespace Hyper.Controllers.Factories;
@@ -47,6 +48,7 @@ internal class StandardControllerFactory : IControllerFactory
         var modelShader = StandardModelShader.Create(_globalScale);
         var lightSourceShader = StandardLightSourceShader.Create(_globalScale);
         var hudShader = HudShader.Create();
+        var skyboxShader = StandardSkyboxShader.Create();
 
         return new IController[]
         {
@@ -56,8 +58,9 @@ internal class StandardControllerFactory : IControllerFactory
             new ProjectilesController(_scene, _context, objectShader, transporter),
             new VehiclesController(_scene, _context, objectShader, lightSourceShader, modelShader, transporter, new CarSpawnStrategy(_scene, settings)),
             new LightSourcesController(_scene, lightSourceShader),
-            new HudController(_scene, _windowHelper, hudShader, _context),
             new BoundingShapesController(_scene, lightSourceShader, _context),
+            new SkyboxController(_scene, skyboxShader, modelShader, objectShader, settings), // skybox has to be rendered just before GUI stuff
+            new HudController(_scene, _windowHelper, hudShader, _context),
         };
     }
 }

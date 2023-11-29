@@ -2,39 +2,194 @@
 
 out vec4 FragColor;
 
+struct PointLight 
+{
+    vec4 position;
+    vec3 color;
+    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    // attenuation parameters
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+struct DirectionalLight
+{
+    vec4 direction;
+
+    float ambient;
+    float diffuse;
+    float specular;
+};
+
+struct SpotLight
+{
+    vec4 position;
+    vec3 color;
+
+    vec4 direction;
+    float cutOff;
+    float outerCutOff;
+  
+    float constant;
+    float linear;
+    float quadratic;
+  
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
 #define MAX_LIGHTS 10
 
-uniform vec3 lightColor[MAX_LIGHTS];
-uniform vec4 lightPos[MAX_LIGHTS];
+uniform PointLight pointLights[MAX_LIGHTS];
+uniform SpotLight spotLights[MAX_LIGHTS];
+uniform bool hasSun;
+
+struct EnvironmentInfo
+{
+    vec3 prevPhaseSunLightColor;
+    vec3 nextPhaseSunLightColor;
+    vec3 prevPhaseMoonLightColor;
+    vec3 nextPhaseMoonLightColor;
+    float phaseT;
+    float prevPhaseNightAmbient;
+    float nextPhaseNightAmbient;
+};
+uniform DirectionalLight sunLight;
+uniform DirectionalLight moonLight;
+uniform EnvironmentInfo envInfo;
+
 uniform vec4 viewPos;
-uniform int numLights;
+uniform int numPointLights;
+uniform int numSpotLights;
+uniform float shininess;
 uniform sampler2D texture0;
+
+uniform float curv;
 
 in vec4 Normal;
 in vec4 FragPos;
 in vec2 Texture;
 
+float dotProduct(vec4 u, vec4 v)
+{
+    return dot(u, v) - ((curv < 0) ? 2 * u.w * v.w : 0);
+}
+
+vec4 direction(vec4 from, vec4 to)
+{
+    if (curv > 0)
+    {
+        float cosd = dotProduct(from, to);
+        float sind = sqrt(1 - cosd * cosd);
+        return (to - from * cosd) / sind;
+    }
+    if (curv < 0)
+    {
+        float coshd = -dotProduct(from, to);
+        float sinhd = sqrt(coshd * coshd - 1);
+        return (to - from * coshd) / sinhd;
+    }
+    return normalize(to - from);
+}
+
+vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
+vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir, vec3 color);
+vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
+
 void main(void)
 {
-	float ambientStrength = 0.1;
-	vec3 ambient = ambientStrength * vec3(1.0);
-	vec3 diffuse = vec3(0.0);
-	vec3 specular = vec3(0.0);
-
 	vec4 norm = normalize(Normal);
-	vec4 viewDir = normalize(viewPos - FragPos);
-	
-	for (int i = 0; i < numLights; ++i)
-	{
-		vec4 lightDir = normalize(lightPos[i] - FragPos);
-		diffuse += max(dot(norm, lightDir), 0.0) * lightColor[i];
+    vec4 viewDir = normalize(direction(FragPos, viewPos));
 
-		float specularStrength = 0.5;
-		vec4 reflectDir = 2 * dot(lightDir, norm) * norm - lightDir;
-		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-		specular += specularStrength * spec * lightColor[i];
-	}
-	
-	vec3 diffuseColour = (ambient + diffuse + specular) * texture(texture0, Texture).xyz;		
-	FragColor = vec4(diffuseColour, 1);
+    vec3 result = vec3(0);
+    for (int i = 0; i < numPointLights; ++i)
+    {
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
+    }
+    for (int i = 0; i < numSpotLights; ++i)
+    {
+        result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
+    }
+
+    if (hasSun)
+    {
+        result += CalcDirLight(sunLight, norm, viewDir, mix(envInfo.prevPhaseSunLightColor, envInfo.nextPhaseSunLightColor, envInfo.phaseT));
+        result += CalcDirLight(moonLight, norm, viewDir, mix(envInfo.prevPhaseMoonLightColor, envInfo.nextPhaseMoonLightColor, envInfo.phaseT));
+        result += mix(envInfo.prevPhaseNightAmbient, envInfo.nextPhaseNightAmbient, envInfo.phaseT) * vec3(1);
+    }
+    else
+    {
+        result += CalcDirLight(sunLight, norm, viewDir, vec3(1));
+    }
+        
+    FragColor = vec4(result * texture(texture0, Texture).rgb, 1.0);
+}
+
+vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir, vec3 color)
+{
+    vec3 ambient = light.ambient * color;
+
+    vec4 lightDir = normalize(light.direction);
+    float diff = max(dotProduct(normal, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * color;
+
+    vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = light.specular * spec * color;
+
+    return ambient + diffuse + specular;
+}
+
+vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
+{
+    vec3 ambient = light.ambient;
+
+    vec4 lightDir = normalize(direction(FragPos, light.position));
+    float diff = max(dotProduct(normal, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff;
+        
+    vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = light.specular * spec;
+
+    float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
+    float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return ambient + diffuse + specular;
+}
+
+vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
+{
+    vec3 ambient = light.ambient * light.color;
+
+    vec4 lightDir = normalize(direction(FragPos, light.position));
+    float diff = max(dotProduct(normal, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * light.color;
+
+    vec4 reflectDir = 2 * dotProduct(lightDir, normal) * normal - lightDir;
+    float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = light.specular * spec * light.color;
+
+    float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
+    float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+
+    float theta = dotProduct(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0, 1);
+
+    ambient *= attenuation * intensity;
+    diffuse *= attenuation * intensity;
+    specular *= attenuation * intensity;
+
+    return ambient + diffuse + specular;
 }

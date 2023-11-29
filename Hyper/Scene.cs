@@ -9,6 +9,7 @@ using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics;
 using Physics.Collisions;
+using Physics.TypingUtils;
 
 namespace Hyper;
 
@@ -16,7 +17,9 @@ internal class Scene : IInputSubscriber
 {
     public readonly List<Chunk> Chunks;
 
-    public readonly List<LightSource> LightSources;
+    public readonly List<Common.Meshes.Lamp> LightSources = new();
+
+    public readonly List<FlashLight> FlashLights = new();
 
     public readonly List<Projectile> Projectiles;
 
@@ -36,9 +39,6 @@ internal class Scene : IInputSubscriber
 
     public Scene(Camera camera, float elevation, Context context)
     {
-        int chunksPerSide = 2;
-
-        LightSources = GetLightSources(chunksPerSide, elevation);
         Projectiles = new List<Projectile>();
 
         SimulationMembers = new SimulationMembers();
@@ -47,6 +47,7 @@ internal class Scene : IInputSubscriber
             new SolveDescription(6, 1));
 
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
+        FlashLights.Add(Player.FlashLight);
         SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
@@ -55,28 +56,6 @@ internal class Scene : IInputSubscriber
         Chunks = new List<Chunk>();
 
         RegisterCallbacks(context);
-    }
-
-    private static List<LightSource> GetLightSources(int chunksPerSide, float elevation)
-    {
-        if (chunksPerSide % 2 != 0)
-            throw new ArgumentException("# of chunks/side must be even");
-
-        List<LightSource> lightSources = new List<LightSource>();
-        for (int x = -chunksPerSide / 2; x < chunksPerSide / 2; x++)
-        {
-            for (int y = -chunksPerSide / 2; y < chunksPerSide / 2; y++)
-            {
-                if (x % 2 == 0 && y % 2 == 0)
-                    continue;
-
-                int offset = Chunk.Size - 1;
-
-                lightSources.Add(new LightSource(CubeMesh.Vertices, new Vector3(offset * x, elevation + 10f, offset * y), new Vector3(1, 1, 1)));
-            }
-        }
-
-        return lightSources;
     }
 
     public bool TryEnterClosestCar(bool testOnly = false)
@@ -92,6 +71,8 @@ internal class Scene : IInputSubscriber
                     FreeCars.Remove(car);
                     Player.Hide();
                     SimulationMembers.Remove(Player);
+                    FlashLights.Remove(Player.FlashLight);
+                    FlashLights.AddRange(PlayersCar.Lights);
                 }
                 return true;
             }
@@ -114,7 +95,9 @@ internal class Scene : IInputSubscriber
                         car.CarBodyPose.Position + System.Numerics.Vector3.UnitY), car.CurrentSphereId);
                     SimulationManager.Simulation.Awakener.AwakenBody(FreeCars[i].BodyHandle);
                     SimulationMembers.Add(FreeCars[i]);
+
                     SimulationMembers.Remove(car);
+                    FlashLights.RemoveAll(car.Lights.Contains);
                     car.Dispose();
                 }
                 return true;
@@ -125,6 +108,31 @@ internal class Scene : IInputSubscriber
         return false;
     }
 
+    /// <summary>
+    /// Picks the lamp that is closest to the player.
+    /// </summary>
+    /// <param name="testOnly">If true the lamp won't be picked even if it could be</param>
+    /// <returns>True if a lamp was (or could be) picked. False otherwise.</returns>
+    public bool TryPickLamp(bool testOnly = false)
+    {
+        const float lampPickRadius = 10f;
+
+        Lamp? closestLamp = LightSources.MinBy(lamp => System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(lamp.Position), Player.PhysicalCharacter.Pose.Position));
+        if (closestLamp == null)
+            return false;
+
+        if (System.Numerics.Vector3.Distance(Conversions.ToNumericsVector(closestLamp.Position), Player.PhysicalCharacter.Pose.Position) > lampPickRadius)
+            return false;
+
+        if (!testOnly)
+        {
+            LightSources.Remove(closestLamp);
+            Player.Inventory.AddItem(new PlayerData.InventorySystem.Items.Lamp());
+        }
+
+        return true;
+    }
+
     public void LeaveCar()
     {
         if (PlayersCar == null)
@@ -133,10 +141,12 @@ internal class Scene : IInputSubscriber
         var position = PlayersCar.CarBodyPose.Position;
         FreeCars.Add(PlayersCar);
         Player.CurrentSphereId = PlayersCar.CurrentSphereId;
+        FlashLights.RemoveAll(PlayersCar.Lights.Contains);
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
         SimulationMembers.Add(Player);
+        FlashLights.Add(Player.FlashLight);
     }
 
     public void RegisterCallbacks(Context context)
