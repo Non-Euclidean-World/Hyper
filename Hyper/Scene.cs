@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using Character.GameEntities;
+using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
@@ -17,7 +18,7 @@ internal class Scene : IInputSubscriber
 {
     public readonly List<Chunk> Chunks;
 
-    public readonly List<Common.Meshes.Lamp> LightSources = new();
+    public readonly List<Lamp> LightSources = new();
 
     public readonly List<FlashLight> FlashLights = new();
 

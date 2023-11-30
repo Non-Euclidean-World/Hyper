@@ -34,7 +34,7 @@ internal class SphericalControllerFactory : IControllerFactory
     {
         _globalScale = globalScale;
         var sphere0Center = new Vector3i(0, 0, 0);
-        var sphere1Center = new Vector3i((int)(MathF.PI / _globalScale), 0, 0);
+        var sphere1Center = new Vector3i((int)(MathF.PI / _globalScale) * 10, 0, 0);
         _sphereCenters = new[] { sphere0Center, sphere1Center };
         _scene = scene;
         _context = context;
