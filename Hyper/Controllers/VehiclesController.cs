@@ -88,6 +88,7 @@ internal class VehiclesController : IController, IInputSubscriber
                     _objectShader.SetInt("characterSphere", targetSphereId);
                     _modelShader.SetInt("characterSphere", targetSphereId);
                     _lightSourceShader.SetInt("characterSphere", targetSphereId);
+                    _scene.PlayersCar.Lights.ForEach(x => x.CurrentSphereId = targetSphereId);
                 }
             }
 

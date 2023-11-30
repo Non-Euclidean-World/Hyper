@@ -8,6 +8,7 @@ namespace Hyper.Shaders.DataTypes;
 internal struct SpotLight
 {
     public Vector4 Position;
+    public int SphereId;
     public Vector3 Color;
 
     public Vector4 Direction;

@@ -107,6 +107,7 @@ internal class PlayerController : IController, IInputSubscriber
                 _objectShader.SetInt("characterSphere", targetSphereId);
                 _modelShader.SetInt("characterSphere", targetSphereId);
                 _rayMarkerShader.SetInt("characterSphere", targetSphereId);
+                _scene.Player.FlashLight.CurrentSphereId = targetSphereId;
             }
         });
 

@@ -47,7 +47,7 @@ internal class Scene : IInputSubscriber
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
 
-        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 5, 0), SimulationManager), context);
+        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 8, 0), SimulationManager), context);
         FlashLights.Add(Player.FlashLight);
         SimulationMembers.Add(Player);
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));

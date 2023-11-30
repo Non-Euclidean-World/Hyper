@@ -5,6 +5,7 @@ out vec4 FragColor;
 struct PointLight 
 {
     vec4 position;
+    int sphereId;
     vec3 color;
     
     vec3 ambient;
@@ -29,6 +30,7 @@ struct DirectionalLight
 struct SpotLight
 {
     vec4 position;
+    int sphereId;
     vec3 color;
 
     vec4 direction;
@@ -70,6 +72,9 @@ uniform int numSpotLights;
 uniform float shininess;
 uniform sampler2D texture0;
 
+uniform vec3 lowerSphereCenter;
+uniform int characterSphere;
+
 uniform float curv;
 
 in vec4 Normal;
@@ -96,6 +101,58 @@ vec4 direction(vec4 from, vec4 to)
         return (to - from * coshd) / sinhd;
     }
     return normalize(to - from);
+}
+
+vec3 flipXZ(vec3 v);
+vec3 flipY(vec3);
+
+vec4 port(vec4 ePoint, int sphere)
+{
+    vec3 p = ePoint.xyz;
+    float d = length(p);
+    if(d < 0.0001 || curv == 0)
+        return ePoint;
+    if(curv > 0)
+    {
+        if(characterSphere == 0)
+        {
+            if(sphere == 0)
+            {
+                d = length(p);
+                return vec4(p / d * sin(d), cos(d));
+            }
+            if(sphere == 1)
+            {
+                p = p - lowerSphereCenter;
+                d = length(p);
+                return vec4(flipXZ(p) / d * sin(d), -cos(d));
+            }
+        }
+        else
+        {
+            if(sphere == 0)
+            {
+                d = length(p);   
+                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
+            }
+            if(sphere == 1)
+            {
+                p = p - lowerSphereCenter;
+                d = length(p);
+                return vec4(flipY(p) / d * sin(d), cos(d));
+            }
+        }
+    }
+
+    return vec4(p / d * sinh(d), cosh(d));
+}
+
+vec3 flipXZ(vec3 v) {
+    return vec3(-v.x, v.y, -v.z);
+}
+
+vec3 flipY(vec3 v) {
+    return vec3(v.x, -v.y, v.z);
 }
 
 vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
@@ -150,7 +207,8 @@ vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
 {
     vec3 ambient = light.ambient;
 
-    vec4 lightDir = normalize(direction(FragPos, light.position));
+    vec4 pos = port(light.position, light.sphereId);
+    vec4 lightDir = normalize(direction(FragPos, pos));
     float diff = max(dotProduct(normal, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff;
         
@@ -158,7 +216,7 @@ vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec;
 
-    float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
+    float dist = sqrt(dotProduct(pos - FragPos, pos - FragPos));
     float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
     ambient *= attenuation;
@@ -172,7 +230,8 @@ vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
 {
     vec3 ambient = light.ambient * light.color;
 
-    vec4 lightDir = normalize(direction(FragPos, light.position));
+    vec4 pos = port(light.position, light.sphereId);
+    vec4 lightDir = normalize(direction(FragPos, pos));
     float diff = max(dotProduct(normal, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * light.color;
 
@@ -180,7 +239,7 @@ vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec * light.color;
 
-    float dist = sqrt(dotProduct(light.position - FragPos, light.position - FragPos));
+    float dist = sqrt(dotProduct(pos - FragPos, pos - FragPos));
     float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
     float theta = dotProduct(lightDir, normalize(-light.direction));
