@@ -1,6 +1,7 @@
 ﻿using Hud.Widgets;
 using Hud.Widgets.MultipleChildren;
 using Hud.Widgets.SingleChild;
+using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
@@ -16,6 +17,8 @@ internal class AppBar : SingleChildWidget
     public event Action Load = null!;
 
     public event Action Delete = null!;
+    
+    public event Action Controls = null!;
 
     public event Action Quit = null!;
 
@@ -38,6 +41,7 @@ internal class AppBar : SingleChildWidget
                         new HyperButton("New Game", () => NewGame.Invoke(), size),
                         new HyperButton("Load", () => Load.Invoke(), size),
                         new HyperButton("Delete", () => Delete.Invoke(), size),
+                        new HyperButton("Controls", () => Controls.Invoke(), size),
                         new HyperButton("Quit", () => Quit.Invoke(), size)
                     }
                 )

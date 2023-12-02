@@ -3,6 +3,7 @@ using Hud.Widgets;
 using Hud.Widgets.Colors;
 using Hud.Widgets.MultipleChildren;
 using Hud.Widgets.SingleChild;
+using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;

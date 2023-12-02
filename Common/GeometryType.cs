@@ -3,5 +3,6 @@ public enum GeometryType
 {
     Euclidean,
     Hyperbolic,
-    Spherical
+    Spherical,
+    None
 }

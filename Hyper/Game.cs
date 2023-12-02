@@ -15,8 +15,6 @@ namespace Hyper;
 
 public class Game
 {
-    public bool IsRunning = true;
-
     private readonly Scene _scene;
 
     private readonly IController[] _controllers;
@@ -37,8 +35,6 @@ public class Game
 
         GL.ClearColor(0f, 0f, 0f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
-        GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         if (!Settings.SaveExists(saveName))
         {
@@ -89,12 +85,10 @@ public class Game
         _scene.Dispose(); // Scene dispose needs to be after controller dispose.
         Settings.Save();
         LogManager.Flush();
-        IsRunning = false;
     }
 
     public void RenderFrame(FrameEventArgs e)
     {
-        if (!IsRunning) return;
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         foreach (var controller in _controllers)

@@ -40,6 +40,8 @@ public class MainMenu
     private readonly NewGame _newGame = new();
 
     private readonly Widget _newGameScreen;
+    
+    private readonly Widget _controlsScreen;
 
     private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
@@ -51,6 +53,7 @@ public class MainMenu
         (_saveGrid, _saveGridScreen) = GetSaveGrid();
         _newGameScreen = GetWidgetWrapped(_newGame);
         _newGame.Create += (saveName, geometryType) => NewGame.Invoke(saveName, geometryType);
+        _controlsScreen = GetWidgetWrapped(new Controls());
     }
 
     public void Reload()
@@ -95,6 +98,10 @@ public class MainMenu
         _appBar.NewGame += () =>
         {
             _activeWidget = _newGameScreen;
+        };
+        _appBar.Controls += () =>
+        {
+            _activeWidget = _controlsScreen;
         };
         _appBar.Quit += () => Quit.Invoke();
     }
