@@ -18,7 +18,7 @@ internal class Program
             Flags = ContextFlags.ForwardCompatible,
         };
 
-        GeometryType geometryType = default;
+        GeometryType geometryType = GeometryType.None;
         if (args.Length > 0)
         {
             geometryType = Enum.Parse<GeometryType>(args[0], ignoreCase: true);
