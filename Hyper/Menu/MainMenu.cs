@@ -31,7 +31,7 @@ public class MainMenu
 
     private Widget _activeWidget;
 
-    private readonly AppBar _appBar = new();
+    private readonly AppBar _appBar;
 
     private readonly SaveGrid _saveGrid;
 
@@ -45,14 +45,20 @@ public class MainMenu
 
     private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
-    public MainMenu(IWindowHelper windowHelper)
+    public MainMenu(IWindowHelper windowHelper, bool isGameLoaded)
     {
         _windowHelper = windowHelper;
+        _appBar = new AppBar(isGameLoaded);
         _activeWidget = _appBar;
         SetUpAppBar();
         (_saveGrid, _saveGridScreen) = GetSaveGrid();
         _newGameScreen = GetWidgetWrapped(_newGame);
-        _newGame.Create += (saveName, geometryType) => NewGame.Invoke(saveName, geometryType);
+        _newGame.Create += (saveName, geometryType) =>
+        {
+            NewGame.Invoke(saveName, geometryType);
+            _appBar.ResumeVisible = true;
+            Reload();
+        };
         _controlsScreen = GetWidgetWrapped(new Controls());
     }
 
@@ -115,9 +121,12 @@ public class MainMenu
             {
                 case SaveGridMode.Load:
                     Load.Invoke(saveName);
+                    _appBar.ResumeVisible = true;
+                    Reload();
                     break;
                 case SaveGridMode.Delete:
                     Delete.Invoke(saveName);
+                    Reload();
                     break;
             }
         };

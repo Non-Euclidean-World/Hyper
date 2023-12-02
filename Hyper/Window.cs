@@ -22,7 +22,7 @@ public class Window : GameWindow
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         
         var windowHelper = new WindowHelper(this);
-        _mainMenu = GetMainMenu(windowHelper);
+        _mainMenu = GetMainMenu(windowHelper, geometryType != GeometryType.None);
         if (geometryType == GeometryType.None)
             return;
         
@@ -31,9 +31,9 @@ public class Window : GameWindow
         _isGameRunning = true;
     }
 
-    private MainMenu GetMainMenu(IWindowHelper windowHelper)
+    private MainMenu GetMainMenu(IWindowHelper windowHelper, bool isGameLoaded)
     {
-        var mainMenu = new MainMenu(windowHelper);
+        var mainMenu = new MainMenu(windowHelper, isGameLoaded);
         mainMenu.Resume += () =>
         {
             if (_game == null)
