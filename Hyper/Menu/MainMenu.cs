@@ -20,7 +20,7 @@ public class MainMenu
     }
 
     public event Action Resume = null!;
-    public event Action<string, GeometryType> NewGame = null!;
+    public event Action<string, SelectedGeometryType> NewGame = null!;
     public event Action<string> Load = null!;
     public event Action<string> Delete = null!;
     public event Action Quit = null!;
@@ -31,7 +31,7 @@ public class MainMenu
 
     private Widget _activeWidget;
 
-    private readonly AppBar _appBar = new();
+    private readonly AppBar _appBar;
 
     private readonly SaveGrid _saveGrid;
 
@@ -40,17 +40,26 @@ public class MainMenu
     private readonly NewGame _newGame = new();
 
     private readonly Widget _newGameScreen;
+    
+    private readonly Widget _controlsScreen;
 
     private SaveGridMode _saveGridMode = SaveGridMode.Load;
 
-    public MainMenu(IWindowHelper windowHelper)
+    public MainMenu(IWindowHelper windowHelper, bool isGameLoaded)
     {
         _windowHelper = windowHelper;
+        _appBar = new AppBar(isGameLoaded);
         _activeWidget = _appBar;
         SetUpAppBar();
         (_saveGrid, _saveGridScreen) = GetSaveGrid();
         _newGameScreen = GetWidgetWrapped(_newGame);
-        _newGame.Create += (saveName, geometryType) => NewGame.Invoke(saveName, geometryType);
+        _newGame.Create += (saveName, geometryType) =>
+        {
+            NewGame.Invoke(saveName, geometryType);
+            _appBar.ResumeVisible = true;
+            Reload();
+        };
+        _controlsScreen = GetWidgetWrapped(new Controls());
     }
 
     public void Reload()
@@ -96,6 +105,10 @@ public class MainMenu
         {
             _activeWidget = _newGameScreen;
         };
+        _appBar.Controls += () =>
+        {
+            _activeWidget = _controlsScreen;
+        };
         _appBar.Quit += () => Quit.Invoke();
     }
 
@@ -108,9 +121,12 @@ public class MainMenu
             {
                 case SaveGridMode.Load:
                     Load.Invoke(saveName);
+                    _appBar.ResumeVisible = true;
+                    Reload();
                     break;
                 case SaveGridMode.Delete:
                     Delete.Invoke(saveName);
+                    Reload();
                     break;
             }
         };

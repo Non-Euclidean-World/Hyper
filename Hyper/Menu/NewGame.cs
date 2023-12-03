@@ -3,6 +3,7 @@ using Hud.Widgets;
 using Hud.Widgets.Colors;
 using Hud.Widgets.MultipleChildren;
 using Hud.Widgets.SingleChild;
+using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
@@ -11,7 +12,7 @@ namespace Hyper.Menu;
 /// </summary>
 public class NewGame : SingleChildWidget
 {
-    public event Action<string, GeometryType> Create = null!;
+    public event Action<string, SelectedGeometryType> Create = null!;
 
     private readonly HyperInputTextBox _gameNameInput;
 
@@ -35,17 +36,17 @@ public class NewGame : SingleChildWidget
                         _gameNameInput,
                         new HyperButton(
                             text: "Start Hyper",
-                            action: () => StartGame(GeometryType.Hyperbolic),
+                            action: () => StartGame(SelectedGeometryType.Hyperbolic),
                             size: size
                             ),
                         new HyperButton(
                             text: "Start Euclidean",
-                            action: () => StartGame(GeometryType.Euclidean),
+                            action: () => StartGame(SelectedGeometryType.Euclidean),
                             size: size
                         ),
                         new HyperButton(
                             text: "Start Spherical",
-                            action: () => StartGame(GeometryType.Spherical),
+                            action: () => StartGame(SelectedGeometryType.Spherical),
                             size: size
                         ),
                     }
@@ -54,13 +55,13 @@ public class NewGame : SingleChildWidget
         );
     }
 
-    private void StartGame(GeometryType geometry)
+    private void StartGame(SelectedGeometryType selectedGeometry)
     {
         var name = _gameNameInput.Text;
         var saveNames = SaveManager.GetSaves();
         if (saveNames.Contains(name) || _gameNameInput.Text == "")
             return;
-        Create?.Invoke(name, geometry);
+        Create?.Invoke(name, selectedGeometry);
     }
 
     public override void Render(Context context)
