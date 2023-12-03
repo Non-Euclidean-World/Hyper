@@ -6,7 +6,9 @@ using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
-
+/// <summary>
+/// The controls menu. It shows the controls of the game.
+/// </summary>
 public class Controls : SingleChildWidget
 {
     private static readonly Dictionary<string, string> KeyMap = new()
