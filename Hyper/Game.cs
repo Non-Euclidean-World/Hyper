@@ -29,7 +29,7 @@ public class Game
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public Game(int width, int height, IWindowHelper windowHelper, string saveName, GeometryType geometryType) // TODO this is definitely getting out of hand
+    public Game(int width, int height, IWindowHelper windowHelper, string saveName, SelectedGeometryType selectedGeometryType) // TODO this is definitely getting out of hand
     {
         _size = new Vector2i(width, height);
 
@@ -39,7 +39,7 @@ public class Game
         if (!Settings.SaveExists(saveName))
         {
             Random rand = new Random();
-            Settings = new Settings(rand.Next(), saveName, (float)width / height, geometryType);
+            Settings = new Settings(rand.Next(), saveName, (float)width / height, selectedGeometryType);
         }
         else
         {
@@ -49,15 +49,15 @@ public class Game
         Logger.Info($"Seed: {Settings.Seed}");
         Settings.Save();
 
-        float curve = Settings.GeometryType switch
+        float curve = Settings.SelectedGeometryType switch
         {
-            GeometryType.Euclidean => 0f,
-            GeometryType.Hyperbolic => -1f,
-            GeometryType.Spherical => 1f,
+            SelectedGeometryType.Euclidean => 0f,
+            SelectedGeometryType.Hyperbolic => -1f,
+            SelectedGeometryType.Spherical => 1f,
             _ => throw new NotImplementedException(),
         };
 
-        if (Settings.GeometryType == GeometryType.Spherical)
+        if (Settings.SelectedGeometryType == SelectedGeometryType.Spherical)
             Chunk.Size = 32;
 
         var scalarFieldGenerator = new ScalarFieldGenerator(Settings.Seed);
@@ -65,11 +65,11 @@ public class Game
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, Settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
-        IControllerFactory controllerFactory = Settings.GeometryType switch
+        _scene = new Scene(camera, Settings.SelectedGeometryType == SelectedGeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        IControllerFactory controllerFactory = Settings.SelectedGeometryType switch
         {
-            GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
-            GeometryType.Hyperbolic or GeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            SelectedGeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            SelectedGeometryType.Hyperbolic or SelectedGeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
             _ => throw new NotImplementedException(),
         };
 

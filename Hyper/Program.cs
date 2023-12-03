@@ -18,12 +18,12 @@ internal class Program
             Flags = ContextFlags.ForwardCompatible,
         };
 
-        GeometryType geometryType = GeometryType.None;
+        SelectedGeometryType selectedGeometryType = SelectedGeometryType.None;
         if (args.Length > 0)
         {
-            geometryType = Enum.Parse<GeometryType>(args[0], ignoreCase: true);
+            selectedGeometryType = Enum.Parse<SelectedGeometryType>(args[0], ignoreCase: true);
         }
-        using var window = new Window(GameWindowSettings.Default, nativeWindowSettings, geometryType);
+        using var window = new Window(GameWindowSettings.Default, nativeWindowSettings, selectedGeometryType);
         window.RenderFrequency = 60.0f; // TODO we *really* need to rein this thing in. My CPU fries otherwise
         window.Run();
     }

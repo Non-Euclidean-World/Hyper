@@ -15,18 +15,18 @@ public class Window : GameWindow
     
     private bool _isGameRunning;
 
-    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
+    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         
         var windowHelper = new WindowHelper(this);
-        _mainMenu = GetMainMenu(windowHelper, geometryType != GeometryType.None);
-        if (geometryType == GeometryType.None)
+        _mainMenu = GetMainMenu(windowHelper, selectedGeometryType != SelectedGeometryType.None);
+        if (selectedGeometryType == SelectedGeometryType.None)
             return;
         
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), selectedGeometryType);
         CursorState = CursorState.Grabbed;
         _isGameRunning = true;
     }
@@ -61,7 +61,7 @@ public class Window : GameWindow
             _isGameRunning = false;
             _game?.SaveAndClose();
 
-            _game = new Game(Size.X, Size.Y, windowHelper, saveName, GeometryType.Euclidean);
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, SelectedGeometryType.Euclidean);
             CursorState = CursorState.Grabbed;
             _isGameRunning = true;
         };
@@ -74,11 +74,6 @@ public class Window : GameWindow
     {
         _isGameRunning = false;
         _game?.SaveAndClose();
-        base.Close();
-    }
-
-    public void CloseNoSave()
-    {
         base.Close();
     }
 
@@ -108,7 +103,7 @@ public class Window : GameWindow
     {
         base.OnKeyDown(e);
 
-        if (e.Key == Keys.Escape)
+        if (e.Key == Keys.Escape && _game != null)
         {
             _isGameRunning = !_isGameRunning;
             CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
@@ -116,14 +111,7 @@ public class Window : GameWindow
         }
 
         if (_isGameRunning)
-        {
             _game?.KeyDown(e.Key);
-            if (e.Key == Keys.T)
-            {
-                CursorState = CursorState.Normal;
-                CursorState = CursorState.Grabbed;
-            }
-        }
         else
             _mainMenu.KeyDown(e);
     }

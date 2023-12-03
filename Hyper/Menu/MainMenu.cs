@@ -20,7 +20,7 @@ public class MainMenu
     }
 
     public event Action Resume = null!;
-    public event Action<string, GeometryType> NewGame = null!;
+    public event Action<string, SelectedGeometryType> NewGame = null!;
     public event Action<string> Load = null!;
     public event Action<string> Delete = null!;
     public event Action Quit = null!;

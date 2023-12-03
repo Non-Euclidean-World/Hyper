@@ -1,5 +1,5 @@
 ﻿namespace Common;
-public enum GeometryType
+public enum SelectedGeometryType
 {
     Euclidean,
     Hyperbolic,
