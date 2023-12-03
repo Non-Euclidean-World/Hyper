@@ -14,8 +14,8 @@ public static class ColorGetter
 
         Color.White => new Vector4(1, 1, 1, 1),
         Color.Black => new Vector4(0, 0, 0, 1),
-        Color.Red => new Vector4(1, 0, 0, 1),
-        Color.Green => new Vector4(0, 1, 0, 1),
+        Color.Red => new Vector4(1, 0.2f, 0.2f, 1),
+        Color.Green => new Vector4(0.58f, 0.85f, 0.46f, 1),
         Color.Blue => new Vector4(0, 0, 1, 1),
         _ => Vector4.One,
     };
