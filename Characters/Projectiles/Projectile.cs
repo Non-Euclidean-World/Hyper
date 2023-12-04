@@ -37,8 +37,14 @@ public class Projectile : ISimulationMember
     /// <param name="mesh"></param>
     /// <param name="lifeTime">Lifetime threshold in seconds</param>
     /// <returns></returns>
-    public static Projectile CreateStandardProjectile(Simulation simulation, CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose, in BodyVelocity initialVelocity, ProjectileMesh mesh, float lifeTime, int currentSphereId = 0)
+    public static Projectile CreateStandardProjectile(
+        Simulation simulation, 
+        CollidableProperty<SimulationProperties> properties,
+        in RigidPose initialPose, 
+        in BodyVelocity initialVelocity, 
+        ProjectileMesh mesh, 
+        float lifeTime, 
+        int currentSphereId = 0)
     {
         var projectileShape = new Box(mesh.Size.X, mesh.Size.Y, mesh.Size.Z);
 
