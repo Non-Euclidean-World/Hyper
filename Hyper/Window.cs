@@ -1,5 +1,6 @@
 ﻿using Common;
 using Hyper.Menu;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -10,47 +11,59 @@ public class Window : GameWindow
 {
     private readonly MainMenu _mainMenu;
 
-    private Game _game;
+    private Game? _game;
+    
+    private bool _isGameRunning;
 
-    private readonly CommandInterpreter _interpreter;
-
-    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, GeometryType geometryType)
+    public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        
         var windowHelper = new WindowHelper(this);
-        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), geometryType);
-        _interpreter = new CommandInterpreter(this);
-        _mainMenu = GetMainMenu(windowHelper);
+        _mainMenu = GetMainMenu(windowHelper, selectedGeometryType != SelectedGeometryType.None);
+        if (selectedGeometryType == SelectedGeometryType.None)
+            return;
+        
+        _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), selectedGeometryType);
         CursorState = CursorState.Grabbed;
+        _isGameRunning = true;
     }
 
-    private MainMenu GetMainMenu(IWindowHelper windowHelper)
+    private MainMenu GetMainMenu(IWindowHelper windowHelper, bool isGameLoaded)
     {
-        var mainMenu = new MainMenu(windowHelper);
+        var mainMenu = new MainMenu(windowHelper, isGameLoaded);
         mainMenu.Resume += () =>
         {
+            if (_game == null)
+                return;
             CursorState = CursorState.Grabbed;
-            _game.IsRunning = true;
+            _isGameRunning = true;
         };
         mainMenu.NewGame += (saveName, geometryType) =>
         {
-            _game.SaveAndClose();
+            _isGameRunning = false;
+            _game?.SaveAndClose();
             _game = new Game(Size.X, Size.Y, windowHelper, saveName, geometryType);
             CursorState = CursorState.Grabbed;
+            _isGameRunning = true;
         };
         mainMenu.Delete += (saveName) =>
         {
-            if (saveName == _game.Settings.SaveName)
+            if (saveName == _game?.Settings.SaveName)
                 return;
             SaveManager.DeleteSaves(new[] { saveName });
             mainMenu.Reload();
         };
         mainMenu.Load += (saveName) =>
         {
-            _game.SaveAndClose();
+            _isGameRunning = false;
+            _game?.SaveAndClose();
 
-            _game = new Game(Size.X, Size.Y, windowHelper, saveName, GeometryType.Euclidean);
+            _game = new Game(Size.X, Size.Y, windowHelper, saveName, SelectedGeometryType.Euclidean);
             CursorState = CursorState.Grabbed;
+            _isGameRunning = true;
         };
         mainMenu.Quit += Close;
 
@@ -59,12 +72,8 @@ public class Window : GameWindow
 
     public override void Close()
     {
-        _game.SaveAndClose();
-        base.Close();
-    }
-
-    public void CloseNoSave()
-    {
+        _isGameRunning = false;
+        _game?.SaveAndClose();
         base.Close();
     }
 
@@ -72,8 +81,8 @@ public class Window : GameWindow
     {
         base.OnRenderFrame(e);
 
-        if (_game.IsRunning)
-            _game.RenderFrame(e);
+        if (_isGameRunning)
+            _game?.RenderFrame(e);
         else
             _mainMenu.Render();
 
@@ -86,31 +95,23 @@ public class Window : GameWindow
 
         if (!IsFocused)
             return;
-        if (_game.IsRunning)
-            _game.UpdateFrame(e);
+        if (_isGameRunning)
+            _game?.UpdateFrame(e);
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
         base.OnKeyDown(e);
 
-        if (e.Key == Keys.Escape)
+        if (e.Key == Keys.Escape && _game != null)
         {
-            _game.IsRunning = !_game.IsRunning;
+            _isGameRunning = !_isGameRunning;
             CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
             return;
         }
 
-        if (_game.IsRunning)
-        {
-            _game.KeyDown(e.Key);
-            if (e.Key == Keys.T)
-            {
-                CursorState = CursorState.Normal;
-                Command();
-                CursorState = CursorState.Grabbed;
-            }
-        }
+        if (_isGameRunning)
+            _game?.KeyDown(e.Key);
         else
             _mainMenu.KeyDown(e);
     }
@@ -119,24 +120,24 @@ public class Window : GameWindow
     {
         base.OnKeyUp(e);
 
-        if (_game.IsRunning)
-            _game.KeyUp(e.Key);
+        if (_isGameRunning)
+            _game?.KeyUp(e.Key);
     }
 
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
         base.OnMouseMove(e);
 
-        if (_game.IsRunning)
-            _game.MouseMove(e);
+        if (_isGameRunning)
+            _game?.MouseMove(e);
     }
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         base.OnMouseDown(e);
 
-        if (_game.IsRunning)
-            _game.MouseDown(e.Button);
+        if (_isGameRunning)
+            _game?.MouseDown(e.Button);
         else
             _mainMenu.Click();
     }
@@ -145,52 +146,31 @@ public class Window : GameWindow
     {
         base.OnMouseUp(e);
 
-        if (_game.IsRunning)
-            _game.MouseUp(e.Button);
+        if (_isGameRunning)
+            _game?.MouseUp(e.Button);
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
 
-        if (_game.IsRunning)
-            _game.MouseWheel(e);
+        if (_isGameRunning)
+            _game?.MouseWheel(e);
     }
 
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
 
-        _game.Resize(e);
+        _game?.Resize(e);
     }
 
     protected override void OnFocusedChanged(FocusedChangedEventArgs e)
     {
         if (!e.IsFocused)
         {
-            _game.IsRunning = false;
+            _isGameRunning = false;
             CursorState = CursorState.Normal;
-        }
-    }
-
-    private void Command()
-    {
-        while (true)
-        {
-            string? line = Console.ReadLine();
-            if (line is null)
-                return;
-            try
-            {
-                _interpreter.ParseLine(line, ref _game, out bool exitCli);
-                Console.WriteLine();
-                if (exitCli)
-                    return;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"[ERROR] {e.Message}");
-            }
         }
     }
 

@@ -17,7 +17,7 @@ public class Settings
 
     public int Seed { get; private set; }
 
-    public GeometryType GeometryType { get; private set; }
+    public SelectedGeometryType SelectedGeometryType { get; private set; }
 
     public int RenderDistance { get; set; } = 2;
 
@@ -29,12 +29,12 @@ public class Settings
     [JsonIgnore]
     public float AspectRatio { get; set; }
 
-    public Settings(int seed, string saveName, float aspectRatio, GeometryType geometryType)
+    public Settings(int seed, string saveName, float aspectRatio, SelectedGeometryType selectedGeometryType)
     {
         Seed = seed;
         SaveName = saveName;
         AspectRatio = aspectRatio;
-        GeometryType = geometryType;
+        SelectedGeometryType = selectedGeometryType;
 
         if (!Directory.Exists(CurrentSaveLocation))
             Directory.CreateDirectory(CurrentSaveLocation);

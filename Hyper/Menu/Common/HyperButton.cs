@@ -3,7 +3,7 @@ using Hud.Widgets.NoChildren;
 using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
-namespace Hyper.Menu;
+namespace Hyper.Menu.Common;
 /// <summary>
 /// Button used in the game. It is the same as a <see cref="Button"/> but with some extra styling.
 /// </summary>
