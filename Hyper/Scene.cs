@@ -38,7 +38,11 @@ internal class Scene : IInputSubscriber
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
-    public Scene(Camera camera, float elevation, Context context)
+    public Vector3i[]? SphereCenters;
+
+    public readonly float GlobalScale;
+
+    public Scene(Camera camera, float elevation, float globalScale, Context context)
     {
         Projectiles = new List<Projectile>();
 
@@ -55,6 +59,8 @@ internal class Scene : IInputSubscriber
         Camera = camera;
 
         Chunks = new List<Chunk>();
+
+        GlobalScale = globalScale;
 
         RegisterCallbacks(context);
     }

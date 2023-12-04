@@ -69,7 +69,7 @@ public class Game
         {
             ReferencePointPosition = (5f + scalarFieldGenerator.AvgElevation) * Vector3.UnitY
         };
-        _scene = new Scene(camera, Settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _context);
+        _scene = new Scene(camera, Settings.GeometryType == GeometryType.Spherical ? 0 : scalarFieldGenerator.AvgElevation, _globalScale, _context);
         IControllerFactory controllerFactory = Settings.GeometryType switch
         {
             GeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
