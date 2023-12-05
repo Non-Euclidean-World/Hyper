@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Common;
+using Hud.Shaders;
 using OpenTK.Mathematics;
 
 namespace Hud.HUDElements;
@@ -28,7 +29,7 @@ public class FpsCounter : IHudElement
         _stopwatch.Start();
     }
 
-    public void Render(Shader shader)
+    public void Render(HudShader shader)
     {
         shader.SetVector4("color", Vector4.One);
         UpdateFps();

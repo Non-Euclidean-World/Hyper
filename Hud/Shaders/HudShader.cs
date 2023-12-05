@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 
 namespace Hud.Shaders;
 
-public class HudShader : Shader
+public class HudShader : Shader, IHudShader
 {
     private HudShader((string path, ShaderType shaderType)[] shaders) : base(shaders) { }
 
@@ -33,4 +33,6 @@ public class HudShader : Shader
     public void UseTexture(bool useTexture) => SetBool("useTexture", useTexture);
 
     public void SetModel(Matrix4 model) => SetMatrix4("model", model);
+    
+    public void SetSpriteRect(Vector4 rect) => SetVector4("spriteRect", rect);
 }

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Common;
+using Hud.Shaders;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using SkiaSharp;
@@ -60,13 +61,13 @@ public static class Printer
     /// <param name="size"></param>
     /// <param name="top"></param>
     /// <param name="left"></param>
-    public static void RenderStringTopLeft(Shader shader, string text, float size, float left, float top)
+    public static void RenderStringTopLeft(IHudShader shader, string text, float size, float left, float top)
     {
         var x = left;
         var y = top - size / 2;
 
         GL.BindVertexArray(SharedVao.Instance.Vao);
-        shader.SetBool("useTexture", true);
+        shader.UseTexture(true);
         AsciiTexture.Use(TextureUnit.Texture0);
 
         float verticalOffset = 0;
@@ -100,7 +101,7 @@ public static class Printer
     /// <param name="size"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    public static void RenderStringTopRight(Shader shader, string text, float size, float x, float y)
+    public static void RenderStringTopRight(IHudShader shader, string text, float size, float x, float y)
     {
         var left = x - 2 * size * Paint.MeasureText(text) / CharHeight;
         var top = y;
@@ -116,7 +117,7 @@ public static class Printer
     /// <param name="size"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    public static void RenderStringBottomRight(Shader shader, string text, float size, float x, float y)
+    public static void RenderStringBottomRight(IHudShader shader, string text, float size, float x, float y)
     {
         var left = x - 2 * size * Paint.MeasureText(text) / CharHeight;
         var top = y + size;
@@ -132,12 +133,12 @@ public static class Printer
     /// <param name="size"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    private static void RenderChar(Shader shader, char c, float size, float x, float y)
+    private static void RenderChar(IHudShader shader, char c, float size, float x, float y)
     {
         var model = Matrix4.CreateTranslation(x, y, 0.0f);
         model = Matrix4.CreateScale(size * Paint.MeasureText(c.ToString()) / CharHeight, size, 1.0f) * model;
-        shader.SetMatrix4("model", model);
-        shader.SetVector4("spriteRect", Rectangles[2 * c]);
+        shader.SetModel(model);
+        shader.SetSpriteRect(Rectangles[2 * c]);
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
@@ -170,7 +171,7 @@ public static class Printer
         var lines = text.Split('\n');
         float y = GetVerticalOffset(size) * (lines.Length - 1) + size;
         float x = 0;
-        foreach (var line in lines)
+        foreach (var _ in lines)
         {
             x = Math.Max(x, GetHorizontalOffset(size, text));
         }

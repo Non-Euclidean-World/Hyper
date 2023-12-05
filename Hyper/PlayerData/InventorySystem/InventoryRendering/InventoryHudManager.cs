@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.UserInput;
 using Hud;
+using Hud.Shaders;
 using Hud.Sprites;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -35,7 +36,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
         RegisterCallbacks(context);
     }
 
-    public void Render(Shader shader)
+    public void Render(IHudShader shader)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);
         _spriteRenderer.UseTexture(shader);
@@ -124,13 +125,13 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
             "inventory");
     }
 
-    private void RenderItemCounts(Shader shader)
+    private void RenderItemCounts(IHudShader shader)
     {
         RenderHotbarItemCounts(shader);
         if (_inventory.IsOpen) RenderInventoryItemCounts(shader);
     }
 
-    private void RenderHotbarItemCounts(Shader shader)
+    private void RenderHotbarItemCounts(IHudShader shader)
     {
         var hotbar = _inventory.Hotbar;
         for (int i = 0; i < 10; i++)
@@ -141,7 +142,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
         }
     }
 
-    private void RenderInventoryItemCounts(Shader shader)
+    private void RenderInventoryItemCounts(IHudShader shader)
     {
         var inventory = _inventory.Items;
         for (int i = 0; i < 10; i++)
@@ -155,7 +156,7 @@ internal class InventoryHudManager : IHudElement, IInputSubscriber
         }
     }
 
-    private void RenderItemCount(Shader shader, int count, Vector2i relativePosition, Vector2 parentPosition, string parentSpriteId)
+    private void RenderItemCount(IHudShader shader, int count, Vector2i relativePosition, Vector2 parentPosition, string parentSpriteId)
     {
         var position = _spriteRenderer.GetPositionRelative(relativePosition, parentPosition, parentSpriteId);
         Printer.RenderStringBottomRight(shader, count.ToString(), 0.3f * HotbarSizeY, position.X + 0.6f * HotbarSizeY, position.Y - 0.6f * HotbarSizeY);
