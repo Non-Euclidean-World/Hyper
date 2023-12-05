@@ -7,7 +7,7 @@ namespace Hyper.Controllers.Bots.Spawn;
 
 internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 {
-    private const int MaxBots = 0;
+    private const int MaxBots = 20;
 
     private static int DistanceFromChunkCenter => Chunk.Size / 4;
 
@@ -22,7 +22,7 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
             var z = Chunk.Size / 2 + Rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
             var position = chunk.Position + new Vector3(x, 0, z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
-            var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager))
+            var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager), Scene.SphereCenters)
             {
                 CurrentSphereId = chunk.Sphere
             };
