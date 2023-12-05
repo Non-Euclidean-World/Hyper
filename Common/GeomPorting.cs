@@ -8,7 +8,7 @@ public static class GeomPorting
     /// Ports a point in Euclidean space to non-Euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
-    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns></returns>
     public static Vector4 EucToCurved(Vector3 eucPoint, float curve)
     {
@@ -19,7 +19,7 @@ public static class GeomPorting
     /// Ports a point in non-Euclidean space to Euclidean space.
     /// </summary>
     /// <param name="eucPoint"></param>
-    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns></returns>
     public static Vector4 EucToCurved(Vector4 eucPoint, float curve)
     {
