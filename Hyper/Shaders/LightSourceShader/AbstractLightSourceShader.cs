@@ -8,18 +8,15 @@ namespace Hyper.Shaders.LightSourceShader;
 
 internal class AbstractLightSourceShader : Shader
 {
-    public float GlobalScale { get; private init; }
-
     private static readonly (string path, ShaderType shaderType)[] ShaderInfo = new[]
         {
             ("Shaders/lighting_shader.vert", ShaderType.VertexShader),
             ("Shaders/light_source_shader.frag", ShaderType.FragmentShader)
         };
 
-    protected AbstractLightSourceShader(float globalScale)
+    protected AbstractLightSourceShader()
         : base(ShaderInfo)
     {
-        GlobalScale = globalScale;
     }
 
     public void SetCurv(float curv) => SetFloat("curv", curv);

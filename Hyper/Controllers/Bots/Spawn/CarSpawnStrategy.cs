@@ -20,7 +20,7 @@ internal class CarSpawnStrategy : AbstractBotSpawnStrategy
     {
         const int x = 5;
         const int z = 11;
-        const float heightOffset = 1f;
+        const float heightOffset = 5f;
         float y = GetSpawnHeight(x, z) + heightOffset;
         var carInitialPosition = new Vector3(x, y, z);
 

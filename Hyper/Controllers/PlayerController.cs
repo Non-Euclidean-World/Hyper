@@ -41,8 +41,8 @@ internal class PlayerController : IController, IInputSubscriber
     {
         if (_scene.PlayersCar != null)
             return;
-        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.Player.CurrentSphereId);
-        _scene.Player.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.GlobalScale, _scene.Player.CurrentSphereId);
+        _scene.Player.Render(_modelShader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.Camera.FirstPerson);
 
         if (_scene.Player.Inventory.SelectedItem is Pickaxe pickaxe)
         {
@@ -50,7 +50,7 @@ internal class PlayerController : IController, IInputSubscriber
             _scene.Player.RenderRay(
                 in _scene.SimulationManager.RayCastingResults[_scene.Player.RayId],
                 _rayMarkerShader,
-                _rayMarkerShader.GlobalScale,
+                _scene.GlobalScale,
                 _scene.Camera.Curve,
                 _scene.Camera.ReferencePointPosition,
                 pickaxe.Radius / 5f);
@@ -107,6 +107,7 @@ internal class PlayerController : IController, IInputSubscriber
                 _objectShader.SetInt("characterSphere", targetSphereId);
                 _modelShader.SetInt("characterSphere", targetSphereId);
                 _rayMarkerShader.SetInt("characterSphere", targetSphereId);
+                _scene.Player.FlashLight.CurrentSphereId = targetSphereId;
             }
         });
 

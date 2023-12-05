@@ -8,6 +8,7 @@ namespace Hyper.Shaders.DataTypes;
 internal struct PointLight
 {
     public Vector4 Position;
+    public int SphereId;
     public Vector3 Color;
 
     public Vector3 Ambient;

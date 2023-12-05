@@ -1,12 +1,16 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using BepuPhysics;
+using Common;
+using Common.Meshes;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using Physics.Collisions;
 
-namespace Common.Meshes;
+namespace Character.LightSources;
 
 /// <summary>
 /// Class representing a point light source
 /// </summary>
-public class Lamp : Mesh
+public class Lamp : Mesh, ISimulationMember
 {
     public Vector3 Color { get; set; }
     public Vector3 Ambient { get; private init; }
@@ -16,7 +20,11 @@ public class Lamp : Mesh
     public float Linear { get; private init; }
     public float Quadratic { get; private init; }
 
-    public Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic) : base(vertices, position)
+    public IList<BodyHandle> BodyHandles => throw new NotImplementedException();
+
+    public int CurrentSphereId { get; set; }
+
+    public Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId) : base(vertices, position)
     {
         Color = color;
         Ambient = ambient;
@@ -25,6 +33,7 @@ public class Lamp : Mesh
         Constant = constant;
         Linear = linear;
         Quadratic = quadratic;
+        CurrentSphereId = sphereId;
     }
 
     /// <summary>
@@ -33,14 +42,15 @@ public class Lamp : Mesh
     /// <param name="position"></param>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static Lamp CreateStandardLamp(Vector3 position, Vector3 color)
+    public static Lamp CreateStandardLamp(Vector3 position, Vector3 color, int sphereId)
         => new(CubeMesh.Vertices, position, color,
             ambient: new Vector3(0.05f, 0.05f, 0.05f),
             diffuse: new Vector3(0.8f, 0.8f, 0.8f),
             specular: new Vector3(1f, 1f, 1f),
             constant: 1f,
             linear: 0.35f,
-            quadratic: 0.44f);
+            quadratic: 0.44f,
+            sphereId);
 
     public override void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {

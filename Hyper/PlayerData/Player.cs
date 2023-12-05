@@ -28,10 +28,15 @@ internal class Player : Humanoid, IRayCaster
 
     public float RayMaximumT => 20.0f;
 
-    public System.Numerics.Vector3 RayDirection => Conversions.ToNumericsVector(ViewDirection);
+    public System.Numerics.Vector3 RayDirection
+    {
+        get => CurrentSphereId == 0
+            ? Conversions.ToNumericsVector(ViewDirection)
+            : new System.Numerics.Vector3(ViewDirection.X, -ViewDirection.Y, ViewDirection.Z);
+    }
 
     public System.Numerics.Vector3 RayOrigin => PhysicalCharacter.Pose.Position
-            + Conversions.ToNumericsVector(ViewDirection) * RayOffset;
+            + RayDirection * RayOffset;
 
     public int RayId => 0;
 
@@ -41,7 +46,7 @@ internal class Player : Humanoid, IRayCaster
         new Model(AstronautResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter, currentSphereId)
     {
         Inventory = new Inventory(context, starterItems: true);
-        FlashLight = new FlashLight();
+        FlashLight = new FlashLight(CurrentSphereId);
         _rayEndpointMarker = new RayEndpointMarker(new Vector3(.5f, .5f, .5f));
     }
 
@@ -58,7 +63,7 @@ internal class Player : Humanoid, IRayCaster
     }
 
     public Vector3 GetRayEndpoint(in RayHit hit)
-        => Conversions.ToOpenTKVector(RayOrigin) + ViewDirection * hit.T;
+        => Conversions.ToOpenTKVector(RayOrigin) + Conversions.ToOpenTKVector(RayDirection) * hit.T;
 
     public override void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers)
     {
@@ -102,8 +107,10 @@ internal class Player : Humanoid, IRayCaster
 
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
         ViewDirection = viewDirection;
-        FlashLight.Position = Vector3.Cross(ViewDirection, Vector3.UnitY) + Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position); // right hand
-        FlashLight.Direction = Conversions.ToOpenTKVector(RayDirection);
+        FlashLight.Position =
+             (CurrentSphereId == 0 ? Vector3.Cross(ViewDirection, Vector3.UnitY) : -Vector3.Cross(ViewDirection, Vector3.UnitY))
+             + Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position); // right hand
+        FlashLight.Direction = ViewDirection;
     }
 
     public void Hide()

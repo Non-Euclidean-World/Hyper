@@ -26,6 +26,6 @@ internal class Lamp : Item
 
     private static void CreateLamp(Scene scene)
     {
-        scene.LightSources.Add(Common.Meshes.Lamp.CreateStandardLamp(Conversions.ToOpenTKVector(scene.Player.RayOrigin), Vector3.One));
+        scene.LightSources.Add(Character.LightSources.Lamp.CreateStandardLamp(Conversions.ToOpenTKVector(scene.Player.RayOrigin), Vector3.One, scene.Player.CurrentSphereId));
     }
 }

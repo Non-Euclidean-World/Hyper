@@ -38,10 +38,10 @@ public class FourWheeledCar : ISimulationMember, IDisposable
         };
         Lights = new List<FlashLight>
         {
-            FlashLight.CreateCarLight(Vector3.One),
-            FlashLight.CreateCarLight(Vector3.One),
-            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0)),
-            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0)),
+            FlashLight.CreateCarLight(Vector3.One, currentSphereId),
+            FlashLight.CreateCarLight(Vector3.One, currentSphereId),
+            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0), currentSphereId),
+            FlashLight.CreateCarRearLight(new Vector3(1, 0, 0), currentSphereId),
         };
         _model = model;
     }

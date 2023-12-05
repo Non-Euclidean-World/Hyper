@@ -20,8 +20,9 @@ public class FlashLight
     public float Constant { get; private init; }
     public float Linear { get; private init; }
     public float Quadratic { get; private init; }
+    public int CurrentSphereId { get; set; }
 
-    public FlashLight(Vector3 color, float cutOff, float outerCutOff, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic)
+    public FlashLight(Vector3 color, float cutOff, float outerCutOff, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int currentSphereId)
     {
         Color = color;
         CutOff = cutOff;
@@ -32,22 +33,24 @@ public class FlashLight
         Constant = constant;
         Linear = linear;
         Quadratic = quadratic;
+        CurrentSphereId = currentSphereId;
     }
 
     /// <summary>
     /// Initializes a new instance of the <c>FlashLight</c> class with default values
     /// </summary>
-    public FlashLight()
+    public FlashLight(int sphere)
     {
         Color = new Vector3(1, 1, 1);
         CutOff = MathF.Cos(MathHelper.DegreesToRadians(15f));
         OuterCutOff = MathF.Cos(MathHelper.DegreesToRadians(30f));
-        Ambient = new Vector3(0.1f, 0.1f, 0.1f);
-        Diffuse = new Vector3(0.8f, 0.8f, 0.8f);
+        Ambient = new Vector3(0.3f, 0.3f, 0.3f);
+        Diffuse = new Vector3(0.95f, 0.95f, 0.95f);
         Specular = new Vector3(1f, 1f, 1f);
         Constant = 1f;
         Linear = 0.2f;
         Quadratic = 0.3f;
+        CurrentSphereId = sphere;
     }
 
     /// <summary>
@@ -55,7 +58,7 @@ public class FlashLight
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static FlashLight CreateCarLight(Vector3 color)
+    public static FlashLight CreateCarLight(Vector3 color, int sphere)
     {
         return new FlashLight(color,
             cutOff: MathF.Cos(MathHelper.DegreesToRadians(15f)),
@@ -65,7 +68,8 @@ public class FlashLight
             specular: new Vector3(1f, 1f, 1f),
             constant: 1f,
             linear: 0.1f,
-            quadratic: 0.04f);
+            quadratic: 0.04f,
+            sphere);
     }
 
     /// <summary>
@@ -73,7 +77,7 @@ public class FlashLight
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static FlashLight CreateCarRearLight(Vector3 color)
+    public static FlashLight CreateCarRearLight(Vector3 color, int sphere)
     {
         return new FlashLight(color,
             cutOff: MathF.Cos(MathHelper.DegreesToRadians(15f)),
@@ -83,6 +87,7 @@ public class FlashLight
             specular: new Vector3(1f, 1f, 1f),
             constant: 1f,
             linear: 0.5f,
-            quadratic: 0.8f);
+            quadratic: 0.8f,
+            sphere);
     }
 }

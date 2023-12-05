@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using Character.LightSources;
+using Common;
 using Common.Meshes;
 using Hyper.PlayerData;
 using Hyper.PlayerData.Utils;
@@ -47,9 +48,8 @@ internal static class ShaderData
             .Select(x =>
                 new PointLight
                 {
-                    Position = GeomPorting.EucToCurved(
-                        GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale),
-                        camera.Curve),
+                    Position = new Vector4(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), 1),
+                    SphereId = x.CurrentSphereId,
                     Color = x.Color,
                     Ambient = x.Ambient,
                     Diffuse = x.Diffuse,
@@ -68,9 +68,8 @@ internal static class ShaderData
             .Select(x =>
                 new SpotLight
                 {
-                    Position = GeomPorting.EucToCurved(
-                        GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale),
-                        camera.Curve),
+                    Position = new Vector4(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), 1),
+                    SphereId = x.CurrentSphereId,
                     Color = x.Color,
                     Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), camera.Curve), camera.Curve),
                     CutOff = x.CutOff,

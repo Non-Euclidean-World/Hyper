@@ -31,11 +31,11 @@ internal class BotsController : IController, IInputSubscriber
 
     public void Render()
     {
-        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32);
+        _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.GlobalScale);
         foreach (var bot in _scene.Bots)
         {
             _modelShader.SetInt("sphere", bot.CurrentSphereId);
-            bot.Render(_modelShader, _modelShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            bot.Render(_modelShader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

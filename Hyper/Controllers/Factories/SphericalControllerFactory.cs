@@ -34,9 +34,10 @@ internal class SphericalControllerFactory : IControllerFactory
     {
         _globalScale = globalScale;
         var sphere0Center = new Vector3i(0, 0, 0);
-        var sphere1Center = new Vector3i((int)(MathF.PI / _globalScale), 0, 0);
+        var sphere1Center = new Vector3i((int)(MathF.PI / _globalScale) * 10, 0, 0);
         _sphereCenters = new[] { sphere0Center, sphere1Center };
         _scene = scene;
+        _scene.SphereCenters = _sphereCenters;
         _context = context;
         _windowHelper = windowHelper;
         _scalarFieldGenerator = scalarFieldGenerator;
@@ -52,9 +53,9 @@ internal class SphericalControllerFactory : IControllerFactory
         var chunkWorker = new NonGenerativeChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, meshGenerator);
         var transporter = new SphericalTransporter(cutoffRadius, _sphereCenters);
 
-        var objectShader = SphericalObjectShader.Create(_globalScale, _lowerSphereCenter);
-        var modelShader = SphericalModelShader.Create(_globalScale, _lowerSphereCenter);
-        var lightSourceShader = SphericalLightSourceShader.Create(_globalScale, _lowerSphereCenter);
+        var objectShader = SphericalObjectShader.Create(_lowerSphereCenter);
+        var modelShader = SphericalModelShader.Create(_lowerSphereCenter);
+        var lightSourceShader = SphericalLightSourceShader.Create(_lowerSphereCenter);
         var hudShader = HudShader.Create();
 
         return new IController[]

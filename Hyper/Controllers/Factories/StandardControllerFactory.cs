@@ -24,15 +24,12 @@ internal class StandardControllerFactory : IControllerFactory
 
     private readonly ScalarFieldGenerator _scalarFieldGenerator;
 
-    private readonly float _globalScale;
-
-    public StandardControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator, float globalScale)
+    public StandardControllerFactory(Scene scene, Context context, IWindowHelper windowHelper, ScalarFieldGenerator scalarFieldGenerator)
     {
         _scene = scene;
         _context = context;
         _windowHelper = windowHelper;
         _scalarFieldGenerator = scalarFieldGenerator;
-        _globalScale = globalScale;
     }
 
     public IController[] CreateControllers(Settings settings)
@@ -44,9 +41,9 @@ internal class StandardControllerFactory : IControllerFactory
         var chunkWorker = new ChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, meshGenerator, settings.RenderDistance);
         var transporter = new NullTransporter();
 
-        var objectShader = StandardObjectShader.Create(_globalScale);
-        var modelShader = StandardModelShader.Create(_globalScale);
-        var lightSourceShader = StandardLightSourceShader.Create(_globalScale);
+        var objectShader = StandardObjectShader.Create();
+        var modelShader = StandardModelShader.Create();
+        var lightSourceShader = StandardLightSourceShader.Create();
         var hudShader = HudShader.Create();
         var skyboxShader = StandardSkyboxShader.Create();
 
