@@ -8,15 +8,15 @@ internal class SphericalLightSourceShader : AbstractLightSourceShader
 {
     private Vector3 _lowerSphereCenter;
 
-    private SphericalLightSourceShader(float globalScale, Vector3 lowerSphereCenter)
-        : base(globalScale)
+    private SphericalLightSourceShader(Vector3 lowerSphereCenter)
+        : base()
     {
         _lowerSphereCenter = lowerSphereCenter;
     }
 
-    public static SphericalLightSourceShader Create(float globalScale, Vector3 lowerSphereCenter)
+    public static SphericalLightSourceShader Create(Vector3 lowerSphereCenter)
     {
-        return new SphericalLightSourceShader(globalScale, lowerSphereCenter);
+        return new SphericalLightSourceShader(lowerSphereCenter);
     }
 
     public void SetLowerSphereCenter(Vector3 lowerSphereCenter) => SetVector3("lowerSphereCenter", lowerSphereCenter);

@@ -20,7 +20,7 @@ internal class LightSourcesController : IController
         foreach (var light in _scene.LightSources)
         {
             _shader.SetUp(_scene.Camera, light.CurrentSphereId);
-            light.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            light.Render(_shader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

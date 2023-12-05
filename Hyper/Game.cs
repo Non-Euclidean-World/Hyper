@@ -69,7 +69,7 @@ public class Game
         IControllerFactory controllerFactory = Settings.SelectedGeometryType switch
         {
             SelectedGeometryType.Spherical => new SphericalControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
-            SelectedGeometryType.Hyperbolic or SelectedGeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator, _globalScale),
+            SelectedGeometryType.Hyperbolic or SelectedGeometryType.Euclidean => new StandardControllerFactory(_scene, _context, windowHelper, scalarFieldGenerator),
             _ => throw new NotImplementedException(),
         };
 

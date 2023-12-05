@@ -53,9 +53,9 @@ internal class SphericalControllerFactory : IControllerFactory
         var chunkWorker = new NonGenerativeChunkWorker(_scene.Chunks, _scene.SimulationManager, chunkFactory, chunkHandler, meshGenerator);
         var transporter = new SphericalTransporter(cutoffRadius, _sphereCenters);
 
-        var objectShader = SphericalObjectShader.Create(_globalScale, _lowerSphereCenter);
-        var modelShader = SphericalModelShader.Create(_globalScale, _lowerSphereCenter);
-        var lightSourceShader = SphericalLightSourceShader.Create(_globalScale, _lowerSphereCenter);
+        var objectShader = SphericalObjectShader.Create(_lowerSphereCenter);
+        var modelShader = SphericalModelShader.Create(_lowerSphereCenter);
+        var lightSourceShader = SphericalLightSourceShader.Create(_lowerSphereCenter);
         var hudShader = HudShader.Create();
 
         return new IController[]

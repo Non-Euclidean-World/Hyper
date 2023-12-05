@@ -73,10 +73,10 @@ internal class BoundingShapesController : IController, IInputSubscriber
     {
         var translation = Matrix4.CreateTranslation(
             GeomPorting.CreateTranslationTarget(
-                Conversions.ToOpenTKVector(box.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _shader.GlobalScale));
+                Conversions.ToOpenTKVector(box.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _scene.GlobalScale));
 
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(box.Pose.Orientation));
-        var globalScale = Matrix4.CreateScale(_shader.GlobalScale);
+        var globalScale = Matrix4.CreateScale(_scene.GlobalScale);
         var localScale = Matrix4.CreateScale(new Vector3(box.HalfWidth, box.HalfHeight, box.HalfLength));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
@@ -89,10 +89,10 @@ internal class BoundingShapesController : IController, IInputSubscriber
     {
         var translation = Matrix4.CreateTranslation(
             GeomPorting.CreateTranslationTarget(
-                Conversions.ToOpenTKVector(capsule.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _shader.GlobalScale));
+                Conversions.ToOpenTKVector(capsule.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _scene.GlobalScale));
 
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(capsule.Pose.Orientation));
-        var globalScale = Matrix4.CreateScale(_shader.GlobalScale);
+        var globalScale = Matrix4.CreateScale(_scene.GlobalScale);
         var localScale = Matrix4.CreateScale(new Vector3(capsule.Radius, capsule.HalfLength, capsule.Radius));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 
@@ -105,10 +105,10 @@ internal class BoundingShapesController : IController, IInputSubscriber
     {
         var translation = Matrix4.CreateTranslation(
             GeomPorting.CreateTranslationTarget(
-                Conversions.ToOpenTKVector(cylinder.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _shader.GlobalScale));
+                Conversions.ToOpenTKVector(cylinder.Pose.Position), _scene.Camera.ReferencePointPosition, _scene.Camera.Curve, _scene.GlobalScale));
 
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(cylinder.Pose.Orientation));
-        var globalScale = Matrix4.CreateScale(_shader.GlobalScale);
+        var globalScale = Matrix4.CreateScale(_scene.GlobalScale);
         var localScale = Matrix4.CreateScale(new Vector3(cylinder.Radius, cylinder.HalfLength, cylinder.Radius));
         _shader.SetMatrix4("model", localScale * globalScale * rotation * translation);
 

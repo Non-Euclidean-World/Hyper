@@ -3,11 +3,11 @@
 
 internal class StandardLightSourceShader : AbstractLightSourceShader
 {
-    private StandardLightSourceShader(float globalScale) : base(globalScale)
+    private StandardLightSourceShader() : base()
     { }
 
-    public static StandardLightSourceShader Create(float globalScale)
+    public static StandardLightSourceShader Create()
     {
-        return new StandardLightSourceShader(globalScale);
+        return new StandardLightSourceShader();
     }
 }

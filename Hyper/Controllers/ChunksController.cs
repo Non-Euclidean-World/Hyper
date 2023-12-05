@@ -25,8 +25,8 @@ internal class ChunksController : IController, IInputSubscriber
     {
         foreach (var chunk in _scene.Chunks)
         {
-            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 1f, chunk.Sphere);
-            chunk.Render(_shader, _shader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
+            _shader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 1f, _scene.GlobalScale, chunk.Sphere);
+            chunk.Render(_shader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition);
         }
     }
 

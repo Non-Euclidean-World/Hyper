@@ -44,16 +44,16 @@ internal class VehiclesController : IController, IInputSubscriber
     {
         foreach (var car in _scene.FreeCars)
         {
-            _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, car.CurrentSphereId);
+            _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.GlobalScale, car.CurrentSphereId);
             _modelShader.SetBool("isAnimated", false);
-            car.Render(_modelShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.SimulationManager.Simulation.Bodies);
+            car.Render(_modelShader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.SimulationManager.Simulation.Bodies);
         }
 
         if (_scene.PlayersCar != null)
         {
-            _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.PlayersCar.CurrentSphereId);
+            _modelShader.SetUp(_scene.Camera, _scene.LightSources, _scene.FlashLights, shininess: 32, _scene.GlobalScale, _scene.PlayersCar.CurrentSphereId);
             _modelShader.SetBool("isAnimated", false);
-            _scene.PlayersCar.Render(_modelShader, _objectShader.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.SimulationManager.Simulation.Bodies);
+            _scene.PlayersCar.Render(_modelShader, _scene.GlobalScale, _scene.Camera.Curve, _scene.Camera.ReferencePointPosition, _scene.SimulationManager.Simulation.Bodies);
         }
     }
 

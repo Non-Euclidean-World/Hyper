@@ -1,12 +1,12 @@
 ﻿namespace Hyper.Shaders.ObjectShader;
 internal class StandardObjectShader : AbstractObjectShader
 {
-    private StandardObjectShader(float globalScale) : base(globalScale)
+    private StandardObjectShader() : base()
     {
     }
 
-    public static StandardObjectShader Create(float globalScale)
+    public static StandardObjectShader Create()
     {
-        return new StandardObjectShader(globalScale);
+        return new StandardObjectShader();
     }
 }
