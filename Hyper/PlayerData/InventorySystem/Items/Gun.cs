@@ -22,7 +22,9 @@ internal class Gun : Item
             scene.SimulationManager.Properties,
             new RigidPose(scene.Player.RayOrigin, q),
             scene.Player.RayDirection * 15,
-            new ProjectileMesh(0.4f, 0.1f, 0.1f), lifeTime: 5, scene.Player.CurrentSphereId); // let's throw some refrigerators
+            new ProjectileMesh(0.4f, 0.1f, 0.1f),
+            lifeTime: 5,
+            scene.Player.CurrentSphereId); // let's throw some refrigerators
         scene.Projectiles.Add(projectile);
         scene.SimulationMembers.Add(projectile);
     }
