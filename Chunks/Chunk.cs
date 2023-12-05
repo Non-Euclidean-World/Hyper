@@ -51,26 +51,8 @@ public class Chunk
     /// <param name="deltaTime"></param>
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
-    public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius)
-    {
-        var x = (int)location.X - Position.X;
-        var y = (int)location.Y - Position.Y;
-        var z = (int)location.Z - Position.Z;
-
-        for (int xi = Math.Max(0, x - radius); xi <= Math.Min(TotalSize - 1, x + radius); xi++)
-        {
-            for (int yi = Math.Max(0, y - radius); yi <= Math.Min(TotalSize - 1, y + radius); yi++)
-            {
-                for (int zi = Math.Max(0, z - radius); zi <= Math.Min(TotalSize - 1, z + radius); zi++)
-                {
-                    if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
-                    {
-                        Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
-                    }
-                }
-            }
-        }
-    }
+    public void Mine(Vector3 location, float deltaTime, float brushWeight, int radius) =>
+        UpdateVoxels(location, deltaTime, brushWeight, radius, true);
 
     /// <summary>
     /// Fills the selected voxel and all voxels within the radius. Then updates the mesh.
@@ -79,7 +61,10 @@ public class Chunk
     /// <param name="deltaTime"></param>
     /// <param name="brushWeight"></param>
     /// <param name="radius"></param>
-    public void Build(Vector3 location, float deltaTime, float brushWeight, int radius)
+    public void Build(Vector3 location, float deltaTime, float brushWeight, int radius) =>
+        UpdateVoxels(location, deltaTime, brushWeight, radius, false);
+
+    private void UpdateVoxels(Vector3 location, float deltaTime, float brushWeight, int radius, bool mine)
     {
         var x = (int)location.X - Position.X;
         var y = (int)location.Y - Position.Y;
@@ -93,7 +78,10 @@ public class Chunk
                 {
                     if (DistanceSquared(x, y, z, xi, yi, zi) <= radius * radius)
                     {
-                        Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        if (mine)
+                            Voxels[xi, yi, zi].Value += deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
+                        else
+                            Voxels[xi, yi, zi].Value -= deltaTime * brushWeight * Gaussian(xi, yi, zi, x, y, z, 0.1f);
                     }
                 }
             }
