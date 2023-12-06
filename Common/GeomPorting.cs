@@ -4,6 +4,8 @@ namespace Common;
 
 public static class GeomPorting
 {
+    public static readonly Vector4 GeometryOrigin = Vector4.UnitW;
+
     /// <summary>
     /// Ports a point in Euclidean space to non-Euclidean space.
     /// </summary>
@@ -56,5 +58,20 @@ public static class GeomPorting
     public static Vector3 ReflectVector(Vector3 v, Vector3 surfaceNormal)
     {
         return v - 2 * Vector3.Dot(v, surfaceNormal) * surfaceNormal;
+    }
+
+    /// <summary>
+    /// Calculates the generalized dot product
+    /// </summary>
+    /// <param name="u"></param>
+    /// <param name="v"></param>
+    /// <param name="curve">Curvature</param>
+    /// <returns></returns>
+    public static float DotProduct(Vector4 u, Vector4 v, float curve)
+    {
+        if (curve < 0)
+            return Vector4.Dot(u, v) - 2 * u.W * v.W;
+
+        return Vector4.Dot(u, v);
     }
 }

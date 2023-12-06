@@ -4,7 +4,7 @@ using Hyper.PlayerData.InventorySystem;
 using Hyper.PlayerData.InventorySystem.Items;
 using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 
-namespace HyperTest.PlayerTests;
+namespace HyperTest.PlayerData.InventorySystem;
 
 [TestFixture]
 public class InventoryTests
@@ -50,8 +50,8 @@ public class InventoryTests
         var context = new Context();
         var inventory = new Inventory(context);
         var item = new Bullet();
-        int count1 = 10;
-        int count2 = 5;
+        var count1 = 10;
+        var count2 = 5;
 
         // Act
         inventory.AddItem(item, count1);
@@ -61,5 +61,27 @@ public class InventoryTests
         // Assert
         inventory.Items[0, 0].Item!.Id.Should().Be(item.Id);
         inventory.Items[0, 0].Count.Should().Be(count1 + count2);
+    }
+
+    [Test]
+    public void ShouldRemoveItem()
+    {
+        // Arrange
+        var context = new Context();
+        var inventory = new Inventory(context);
+        var count0 = 1;
+        var count1 = 0;
+        inventory.AddItem(new Lamp(), count0);
+
+        // Act
+        inventory.Items[0, 0].Count.Should().Be(1);
+
+        var result0 = inventory.TryRemoveItem("lamp");
+        result0.Should().BeTrue();
+        inventory.Items[0, 0].Count.Should().Be(count1);
+
+        var result1 = inventory.TryRemoveItem("lamp");
+        result1.Should().BeFalse();
+        inventory.Items[0, 0].Count.Should().Be(count1);
     }
 }

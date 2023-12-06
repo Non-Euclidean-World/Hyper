@@ -8,10 +8,10 @@ public static class Matrices
     /// <summary>
     /// Gets the view matrix.
     /// </summary>
-    /// <param name="position"></param>
-    /// <param name="front"></param>
-    /// <param name="up"></param>
-    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <param name="position">Camera position in Euclidean space</param>
+    /// <param name="front">Camera's front vector in Euclidean space</param>
+    /// <param name="up">Camera's up vector in Euclidean space</param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns></returns>
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve)
     {
@@ -35,8 +35,8 @@ public static class Matrices
         Matrix4 nonEuclidView = new Matrix4(
             icp.X, jcp.X, kcp.X, curve * geomEye.X,
             icp.Y, jcp.Y, kcp.Y, curve * geomEye.Y,
-        icp.Z, jcp.Z, kcp.Z, curve * geomEye.Z,
-        curve * icp.W, curve * jcp.W, curve * kcp.W, geomEye.W);
+            icp.Z, jcp.Z, kcp.Z, curve * geomEye.Z,
+            curve * icp.W, curve * jcp.W, curve * kcp.W, geomEye.W);
 
         return nonEuclidView;
     }
@@ -44,9 +44,9 @@ public static class Matrices
     /// <summary>
     /// Gets the translation matrix.
     /// </summary>
-    /// <param name="to"></param>
-    /// <param name="curve"></param>
-    /// <returns>If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</returns>
+    /// <param name="to">Translation point</param>
+    /// <param name="curve">Curvature</param>
+    /// <returns>If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in hyperbolic space and if greater than 0 in spherical.</returns>
     public static Matrix4 TranslationMatrix(Vector4 to, float curve)
     {
         Matrix4 t;
@@ -77,7 +77,7 @@ public static class Matrices
     /// <param name="near"></param>
     /// <param name="far"></param>
     /// <param name="aspectRatio"></param>
-    /// <param name="curve">If curve is equal 0 we get the matrix in euclidean space. If its smaller than 0 in spherical space and if greater than 0 in hyperbolic.</param>
+    /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns></returns>
     public static Matrix4 ProjectionMatrix(float fov, float near, float far, float aspectRatio, float curve)
     {
