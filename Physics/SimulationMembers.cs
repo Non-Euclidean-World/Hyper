@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Diagnostics.CodeAnalysis;
+using BepuPhysics;
 using Physics.Collisions;
 
 namespace Physics;
@@ -11,6 +12,10 @@ public class SimulationMembers
 {
     private readonly Dictionary<BodyHandle, ISimulationMember> _simulationMembers = new();
 
+    /// <summary>
+    /// Adds a simulation member and its body handles to the collection.
+    /// </summary>
+    /// <param name="member"></param>
     public void Add(ISimulationMember member)
     {
         var bodyHandles = member.BodyHandles;
@@ -20,11 +25,22 @@ public class SimulationMembers
         }
     }
 
-    public bool TryGetByHandle(BodyHandle handle, out ISimulationMember? member)
+    /// <summary>
+    /// Gets a simulation member with a given body handle.
+    /// </summary>
+    /// <param name="handle">Body handle to find the simulation member by</param>
+    /// <param name="member">Simulation member that uses the body handle or null if it couldn't be found</param>
+    /// <returns>True if there is a simulation member using the given body handle, false otherwise</returns>
+    public bool TryGetByHandle(BodyHandle handle, [MaybeNullWhen(false)] out ISimulationMember member)
     {
         return _simulationMembers.TryGetValue(handle, out member);
     }
 
+    /// <summary>
+    /// Removes all body handles associated with a simulation member.
+    /// </summary>
+    /// <param name="member"></param>
+    /// <returns>True if all body handles were removed successfully, false otherwise</returns>
     public bool Remove(ISimulationMember member)
     {
         var bodyHandles = member.BodyHandles;
@@ -37,11 +53,21 @@ public class SimulationMembers
         return notFound;
     }
 
+    /// <summary>
+    /// Checks if there is a simulation member with a given handle.
+    /// </summary>
+    /// <param name="handle">Handle to find the simulation member by</param>
+    /// <returns>True if there is a simulation member with the given handle, false otherwise</returns>
     public bool Contains(BodyHandle handle)
     {
         return _simulationMembers.ContainsKey(handle);
     }
 
+    /// <summary>
+    /// Gets a simulation member that uses the given body handle
+    /// </summary>
+    /// <param name="handle"></param>
+    /// <returns></returns>
     public ISimulationMember this[BodyHandle handle]
     {
         get { return _simulationMembers[handle]; }
