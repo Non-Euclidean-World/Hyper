@@ -46,6 +46,10 @@ public class Context
         RegisterMouseButtonUpCallback(button, () => HeldButtons[button] = false);
     }
 
+    /// <summary>
+    /// Registers keys to be handled
+    /// </summary>
+    /// <param name="keys"></param>
     public void RegisterKeys(List<Keys> keys)
     {
         foreach (var key in keys)
@@ -54,6 +58,10 @@ public class Context
         }
     }
 
+    /// <summary>
+    /// Registers mouse buttons to be handled
+    /// </summary>
+    /// <param name="mouseButtons"></param>
     public void RegisterMouseButtons(List<MouseButton> mouseButtons)
     {
         foreach (var button in mouseButtons)
@@ -75,41 +83,79 @@ public class Context
         }
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a key is pressed down
+    /// </summary>
+    /// <param name="key">Key to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterKeyDownCallback(Keys key, Action callback)
     {
         RegisterCallback(key, callback, KeyDownCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a key is released
+    /// </summary>
+    /// <param name="key">Key to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterKeyUpCallback(Keys key, Action callback)
     {
         RegisterCallback(key, callback, KeyUpCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a key is held
+    /// </summary>
+    /// <param name="key">Key to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterKeyHeldCallback(Keys key, Action<FrameEventArgs> callback)
     {
         RegisterCallback(key, callback, KeyHeldCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a mouse button is pressed down
+    /// </summary>
+    /// <param name="button">Mouse button to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterMouseButtonDownCallback(MouseButton button, Action callback)
     {
         RegisterCallback(button, callback, ButtonDownCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a mouse button is released
+    /// </summary>
+    /// <param name="button">Mouse button to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterMouseButtonUpCallback(MouseButton button, Action callback)
     {
         RegisterCallback(button, callback, ButtonUpCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a mouse button is held down
+    /// </summary>
+    /// <param name="button">Mouse button to associate the action with</param>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterMouseButtonHeldCallback(MouseButton button, Action<FrameEventArgs> callback)
     {
         RegisterCallback(button, callback, ButtonHeldCallbacks);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when a new frame is rendered
+    /// </summary>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterUpdateFrameCallback(Action<FrameEventArgs> callback)
     {
         FrameUpdateCallbacks.Add(callback);
     }
 
+    /// <summary>
+    /// Register a callback action that will be performed when the mouse is moved
+    /// </summary>
+    /// <param name="callback">Action that will be performed</param>
     public void RegisterMouseMoveCallback(Action<MouseMoveEventArgs> callback)
     {
         MouseMoveCallbacks.Add(callback);
@@ -132,6 +178,11 @@ public class Context
         }
     }
 
+    /// <summary>
+    /// Executes all callbacks that should be called when the input is held down
+    /// </summary>
+    /// <param name="inputType">Type of the input</param>
+    /// <param name="e"></param>
     public void ExecuteAllHeldCallbacks(InputType inputType, FrameEventArgs e)
     {
         switch (inputType)

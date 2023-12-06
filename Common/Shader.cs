@@ -15,9 +15,9 @@ public class Shader
         _handle = GL.CreateProgram();
 
         var shadersToDelete = new List<int>();
-        foreach (var shader in shaders)
+        foreach (var (path, shaderType) in shaders)
         {
-            var createdShader = CreateShader(shader.path, shader.shaderType);
+            var createdShader = CreateShader(path, shaderType);
             shadersToDelete.Add(createdShader);
         }
 

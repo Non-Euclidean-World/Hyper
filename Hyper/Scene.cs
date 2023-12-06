@@ -16,13 +16,13 @@ namespace Hyper;
 
 internal class Scene : IInputSubscriber
 {
-    public readonly List<Chunk> Chunks;
+    public readonly List<Chunk> Chunks = new();
 
     public readonly List<Lamp> LightSources = new();
 
     public readonly List<FlashLight> FlashLights = new();
 
-    public readonly List<Projectile> Projectiles;
+    public readonly List<Projectile> Projectiles = new();
 
     public readonly List<Humanoid> Bots = new();
 
@@ -34,7 +34,7 @@ internal class Scene : IInputSubscriber
 
     public readonly Camera Camera;
 
-    public readonly SimulationMembers SimulationMembers;
+    public readonly SimulationMembers SimulationMembers = new();
 
     public readonly SimulationManager<PoseIntegratorCallbacks> SimulationManager;
 
@@ -44,9 +44,6 @@ internal class Scene : IInputSubscriber
 
     public Scene(Camera camera, float elevation, float globalScale, Context context)
     {
-        Projectiles = new List<Projectile>();
-
-        SimulationMembers = new SimulationMembers();
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1));
@@ -57,14 +54,16 @@ internal class Scene : IInputSubscriber
         SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
 
         Camera = camera;
-
-        Chunks = new List<Chunk>();
-
         GlobalScale = globalScale;
 
         RegisterCallbacks(context);
     }
 
+    /// <summary>
+    /// Makes the player enter the closest car.
+    /// </summary>
+    /// <param name="testOnly">If set to true, the player won't actually enter the car</param>
+    /// <returns>True if the player could enter the car, false otherwise</returns>
     public bool TryEnterClosestCar(bool testOnly = false)
     {
         const float carEnterRadius = 10f;
@@ -88,6 +87,11 @@ internal class Scene : IInputSubscriber
         return false;
     }
 
+    /// <summary>
+    /// Flips the car closest to the player.
+    /// </summary>
+    /// <param name="testOnly">If set to true, the car won't actually be flipped</param>
+    /// <returns>True if the car could be flipped, false otherwise</returns>
     public bool TryFlipClosestCar(bool testOnly = false)
     {
         const float carEnterRadius = 10f;
@@ -140,6 +144,9 @@ internal class Scene : IInputSubscriber
         return true;
     }
 
+    /// <summary>
+    /// Makes the player leave the car.
+    /// </summary>
     public void LeaveCar()
     {
         if (PlayersCar == null)
