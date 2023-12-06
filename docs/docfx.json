@@ -8,10 +8,11 @@
             "**/**.csproj"
           ],
           "exclude": [
-            "WpfMenu/*.csproj",
+            "CharactersTest/*.csproj",
             "ChunksTest/*.csproj",
-            "PlayerTest/*.csproj",
-            "HyperTest/*.csproj"
+            "CommonTest/*.csproj",
+            "HyperTest/*.csproj",
+            "PhysicsTest/*.csproj"
           ]
         }
       ],
