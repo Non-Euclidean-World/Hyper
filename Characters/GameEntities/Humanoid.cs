@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using Character.Projectiles;
 using Common;
 using OpenTK.Mathematics;
 using Physics;
@@ -20,6 +21,8 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     public IList<BodyHandle> BodyHandles { get; private set; }
 
+    public bool IsAlive { get; private set; } = true;
+
     protected Vector3 ViewDirection;
 
     protected DateTime LastContactTime = DateTime.MinValue;
@@ -27,6 +30,8 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
     protected BodyHandle? LastContactBody;
 
     protected static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 500);
+
+    private int _hp = 10;
 
     protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)
     {
@@ -58,6 +63,16 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
         if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
             Console.WriteLine($"Bot collided with {otherBody}");
+            if (otherBody.GetType() == typeof(Projectile)) // TODO this is terrible we need to change that to IDs in ISimulationMember
+            {
+                _hp--;
+                if (_hp == 0)
+                {
+                    IsAlive = false;
+                    Console.WriteLine("Bot is dead!");
+                }
+
+            }
         }
         else
         {

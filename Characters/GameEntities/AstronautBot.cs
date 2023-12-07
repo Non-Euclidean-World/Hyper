@@ -27,7 +27,7 @@ public class AstronautBot : Humanoid
 
     public override void UpdateCharacterGoals(Simulation simulation, float time)
     {
-        if (_isMoving == false)
+        /*if (_isMoving == false)
         {
             _idleTime += time;
             if (_idleTime > _moveTime)
@@ -38,11 +38,11 @@ public class AstronautBot : Humanoid
                 _moveTime = random.Next(5);
                 _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position) + new Vector3(random.Next(-10, 10), 0, random.Next(-10, 10));
             }
-        }
+        }*/
 
         ViewDirection = AdjustSphere(_goalPosition) - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
-        var movementDirection = System.Numerics.Vector2.UnitY;
-        if (ViewDirection is { X: < 0.1f, Z: < 0.1f })
+        var movementDirection = System.Numerics.Vector2.Zero;
+        if (true)
         {
             movementDirection = System.Numerics.Vector2.Zero;
             ViewDirection = Vector3.Zero;

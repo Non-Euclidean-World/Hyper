@@ -44,19 +44,30 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     public override void Despawn()
     {
-        Scene.Bots.RemoveAll(bot =>
+        for (int i = 0; i < Scene.Bots.Count; i++)
         {
-            var distance = bot.PhysicalCharacter.Pose.Position - Conversions.ToNumericsVector(Scene.Camera.ReferencePointPosition);
+            var bot = Scene.Bots[i];
+            if (IsTooFar(bot) || !bot.IsAlive)
+            {
+                Scene.Bots.RemoveAt(i);
+                Scene.SimulationMembers.Remove(bot);
+                if (!Scene.SimulationManager.UnregisterContactCallback(bot.BodyHandle))
+                    throw new ApplicationException("Invalid simulation state!");
+                bot.Dispose();
+            }
+        }
+    }
 
-            if (!(Math.Abs(distance.X) > _despawnRadius ||
-                  Math.Abs(distance.Y) > _despawnRadius ||
-                  Math.Abs(distance.Z) > _despawnRadius)) return false;
+    private bool IsTooFar(Humanoid bot)
+    {
+        var distance = bot.PhysicalCharacter.Pose.Position - Conversions.ToNumericsVector(Scene.Camera.ReferencePointPosition);
+
+        if (!(Math.Abs(distance.X) > _despawnRadius ||
+              Math.Abs(distance.Y) > _despawnRadius ||
+              Math.Abs(distance.Z) > _despawnRadius)) return false;
 #if DEBUG
-            Console.WriteLine($"Despawning bot {bot.BodyHandle}");
+        Console.WriteLine($"Despawning bot {bot.BodyHandle}");
 #endif
-            bot.Dispose();
-            Scene.SimulationMembers.Remove(bot);
-            return true;
-        });
+        return true;
     }
 }
