@@ -161,7 +161,8 @@ public class Window : GameWindow
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
-
+        
+        GL.Viewport(0, 0, e.Width, e.Height);
         _game?.Resize(e);
     }
 

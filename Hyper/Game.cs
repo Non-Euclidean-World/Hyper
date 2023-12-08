@@ -167,7 +167,6 @@ public class Game
 
     public void Resize(ResizeEventArgs e)
     {
-        GL.Viewport(0, 0, e.Width, e.Height);
         _scene.Camera.AspectRatio = e.Width / (float)e.Height;
         Settings.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
