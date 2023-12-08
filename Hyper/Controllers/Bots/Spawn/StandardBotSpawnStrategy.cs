@@ -16,6 +16,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     private readonly int _maxSpawnRadius;
 
+    private static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 200);
+
     public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
         _maxBots = 10 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
@@ -47,7 +49,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
         for (int i = 0; i < Scene.Bots.Count; i++)
         {
             var bot = Scene.Bots[i];
-            if (IsTooFar(bot) || !bot.IsAlive)
+            if (IsTooFar(bot) || IsDead(bot))
             {
                 Scene.Bots.RemoveAt(i);
                 Scene.SimulationMembers.Remove(bot);
@@ -69,5 +71,10 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
         Console.WriteLine($"Despawning bot {bot.BodyHandle}");
 #endif
         return true;
+    }
+
+    private static bool IsDead(Humanoid bot)
+    {
+        return !bot.IsAlive && (DateTime.UtcNow - bot.DeathTime > EpsTime);
     }
 }

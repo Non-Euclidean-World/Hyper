@@ -73,10 +73,10 @@ internal class Player : Humanoid, IRayCaster
         if (collidableReference.Mobility != CollidableMobility.Dynamic)
             return;
         if (collidableReference.BodyHandle == LastContactBody
-            && DateTime.Now - LastContactTime < EpsTime)
+            && DateTime.UtcNow - LastContactTime < EpsTime)
             return;
 
-        LastContactTime = DateTime.Now;
+        LastContactTime = DateTime.UtcNow;
         LastContactBody = collidableReference.BodyHandle;
 #if DEBUG
         // TODO replace with something more sensible

@@ -23,6 +23,8 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     public bool IsAlive { get; private set; } = true;
 
+    public DateTime DeathTime = DateTime.MinValue;
+
     protected Vector3 ViewDirection;
 
     protected DateTime LastContactTime = DateTime.MinValue;
@@ -31,7 +33,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     protected static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 500);
 
-    private int _hp = 10;
+    private int _hp = 3;
 
     protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)
     {
@@ -53,10 +55,10 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
             return;
 
         if (collidableReference.BodyHandle == LastContactBody
-            && DateTime.Now - LastContactTime < EpsTime)
+            && DateTime.UtcNow - LastContactTime < EpsTime)
             return;
 
-        LastContactTime = DateTime.Now;
+        LastContactTime = DateTime.UtcNow;
         LastContactBody = collidableReference.BodyHandle;
 #if DEBUG
         // TODO replace with something more sensible
@@ -69,9 +71,9 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
                 if (_hp == 0)
                 {
                     IsAlive = false;
+                    DeathTime = DateTime.UtcNow;
                     Console.WriteLine("Bot is dead!");
                 }
-
             }
         }
         else
