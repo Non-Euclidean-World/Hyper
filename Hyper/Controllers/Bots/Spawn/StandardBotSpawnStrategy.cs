@@ -20,9 +20,9 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
-        _maxBots = 10 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
-        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 2f / 3;
-        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 4f / 5;
+        _maxBots = 4 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
+        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 0.5f;
+        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 1.6f;
         _despawnRadius = Chunk.Size * settings.RenderDistance;
     }
 
@@ -30,9 +30,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
     {
         for (int i = 0; i < _maxBots - Scene.Bots.Count; i++)
         {
-            var x = Rand.Next(0, 2) == 0 ? GetRandomFloat(-_maxSpawnRadius, -_minSpawnRadius) : GetRandomFloat(_minSpawnRadius, _maxSpawnRadius);
-            var z = Rand.Next(0, 2) == 0 ? GetRandomFloat(-_maxSpawnRadius, -_minSpawnRadius) : GetRandomFloat(_minSpawnRadius, _maxSpawnRadius);
-            var position = new Vector3(x + Scene.Camera.ReferencePointPosition.X, 0, z + Scene.Camera.ReferencePointPosition.Z);
+            Vector2 randomVec = GetRandomVector(_minSpawnRadius, _maxSpawnRadius);
+            var position = new Vector3(randomVec.X + Scene.Camera.ReferencePointPosition.X, 0, randomVec.Y + Scene.Camera.ReferencePointPosition.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
 #if DEBUG
@@ -60,8 +59,13 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
         }
     }
 
-    private float GetRandomFloat(float min, float max)
-        => Rand.NextSingle() * (max - min) + min;
+    private Vector2 GetRandomVector(float minRadius, float maxRadius)
+    {
+        float radius = Rand.NextSingle() * (maxRadius - minRadius) + minRadius;
+        float angle = Rand.NextSingle() * MathF.Tau;
+
+        return new Vector2(radius * MathF.Cos(angle), radius * MathF.Sin(angle));
+    }
 
     private bool IsTooFar(Humanoid bot)
     {

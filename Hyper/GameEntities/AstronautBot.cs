@@ -20,17 +20,18 @@ public class AstronautBot : Humanoid
 
     private readonly Vector3i[]? _sphereCenters;
 
-    private bool _isFriendly = false;
+    private bool _isFriendly;
 
-    private static readonly float VisibilityRadius = 20f;
+    private static readonly float VisibilityRadius = 15f;
 
-    private Random _random = new Random();
+    private Random _random = new();
 
     public AstronautBot(PhysicalCharacter physicalCharacter, Vector3i[]? sphereCenters = null) : base(
         new Model(AstronautBotResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter)
     {
         _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
         _sphereCenters = sphereCenters;
+        _isFriendly = _random.Next(0, 2) == 0;
     }
 
     public override void UpdateCharacterGoals(Simulation simulation, float time)
@@ -40,7 +41,7 @@ public class AstronautBot : Humanoid
 
     internal void UpdateCharacterGoals(Simulation simulation, float time, Scene scene)
     {
-        if (!_isFriendly && !scene.Player.Hidden)
+        if (!_isFriendly && !scene.Player.Hidden && scene.Player.CurrentSphereId == CurrentSphereId)
         {
             UpdateBotGoalsWhenHostile(simulation, time, scene);
         }
