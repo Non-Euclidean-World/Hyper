@@ -18,6 +18,10 @@ public class AstronautBot : Humanoid
 
     private Vector3i[]? _sphereCenters;
 
+    private bool _isFriendly = false;
+
+    private static readonly float VisibilityRadius = 20f;
+
     public AstronautBot(PhysicalCharacter physicalCharacter, Vector3i[]? sphereCenters = null) : base(
         new Model(AstronautBotResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter)
     {
@@ -27,7 +31,24 @@ public class AstronautBot : Humanoid
 
     public override void UpdateCharacterGoals(Simulation simulation, float time)
     {
-        /*if (_isMoving == false)
+        throw new NotImplementedException();
+    }
+
+    public void UpdateCharacterGoals(Simulation simulation, float time, PhysicalCharacter player)
+    {
+        if (_isFriendly)
+        {
+            UpdateBotGoalsWhenFriendly(simulation, time);
+        }
+        else
+        {
+            UpdateBotGoalsWhenHostile(simulation, time, player);
+        }
+    }
+
+    private void UpdateBotGoalsWhenFriendly(Simulation simulation, float time)
+    {
+        if (_isMoving == false)
         {
             _idleTime += time;
             if (_idleTime > _moveTime)
@@ -38,11 +59,11 @@ public class AstronautBot : Humanoid
                 _moveTime = random.Next(5);
                 _goalPosition = Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position) + new Vector3(random.Next(-10, 10), 0, random.Next(-10, 10));
             }
-        }*/
+        }
 
         ViewDirection = AdjustSphere(_goalPosition) - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
-        var movementDirection = System.Numerics.Vector2.Zero;
-        if (true)
+        var movementDirection = System.Numerics.Vector2.UnitY;
+        if (FlatLength(ViewDirection) < 0.2)
         {
             movementDirection = System.Numerics.Vector2.Zero;
             ViewDirection = Vector3.Zero;
@@ -57,6 +78,7 @@ public class AstronautBot : Humanoid
         {
             Idle();
         }
+
         PhysicalCharacter.UpdateCharacterGoals(simulation,
             Conversions.ToNumericsVector(ViewDirection),
             time,
@@ -64,6 +86,46 @@ public class AstronautBot : Humanoid
             sprint: false,
             movementDirection);
     }
+
+    private void UpdateBotGoalsWhenHostile(Simulation simulation, float time, PhysicalCharacter player)
+    {
+        if (System.Numerics.Vector3.Distance(PhysicalCharacter.Pose.Position, player.Pose.Position) > VisibilityRadius)
+        {
+            UpdateBotGoalsWhenFriendly(simulation, time);
+            return;
+        }
+
+        _goalPosition = Conversions.ToOpenTKVector(player.Pose.Position);
+        ViewDirection = AdjustSphere(_goalPosition) - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
+        _isMoving = true;
+        var movementDirection = System.Numerics.Vector2.UnitY;
+
+        if (FlatLength(ViewDirection) < 0.2)
+        {
+            movementDirection = System.Numerics.Vector2.Zero;
+            ViewDirection = Vector3.Zero;
+            _isMoving = false;
+        }
+
+        if (_isMoving)
+        {
+            Run();
+        }
+        else
+        {
+            Idle();
+        }
+
+        PhysicalCharacter.UpdateCharacterGoals(simulation,
+            Conversions.ToNumericsVector(ViewDirection),
+            time,
+            tryJump: false,
+            sprint: false,
+            movementDirection);
+    }
+
+    private static float FlatLength(Vector3 v)
+        => v.Xz.LengthFast;
 
     private Vector3 AdjustSphere(Vector3 position)
     {

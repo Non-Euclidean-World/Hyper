@@ -24,7 +24,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Projectile> Projectiles = new();
 
-    public readonly List<Humanoid> Bots = new();
+    public readonly List<AstronautBot> Bots = new();
 
     public readonly List<FourWheeledCar> FreeCars = new();
 
