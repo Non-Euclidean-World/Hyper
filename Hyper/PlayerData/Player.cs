@@ -2,6 +2,7 @@
 using BepuPhysics.Collidables;
 using Character;
 using Character.Characters;
+using Character.Projectiles;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
@@ -27,6 +28,10 @@ internal class Player : Humanoid, IRayCaster
     private const float RayOffset = 3f; // arbitrary offset to make sure that the ray won't intersect with the player's own collidable
 
     public float RayMaximumT => 20.0f;
+
+    public readonly int MaxHP = 20;
+
+    public int HP { get; private set; } = 20;
 
     public System.Numerics.Vector3 RayDirection
     {
@@ -83,6 +88,10 @@ internal class Player : Humanoid, IRayCaster
         if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
             Console.WriteLine($"Player collided with {otherBody}");
+            if (otherBody.GetType() == typeof(Projectile))
+            {
+                HP--;
+            }
         }
         else
         {
