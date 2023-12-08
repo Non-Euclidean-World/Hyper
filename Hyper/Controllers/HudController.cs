@@ -31,7 +31,9 @@ internal class HudController : IController
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, _scene.Player.Inventory, context),
             new PositionPrinter(_scene.Camera, windowHelper),
+#if DEBUG
             new HPCounter(windowHelper, _scene.Player),
+#endif
         };
     }
 

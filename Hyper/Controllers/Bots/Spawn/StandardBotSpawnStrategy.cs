@@ -12,17 +12,17 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     private readonly int _maxBots;
 
-    private readonly int _minSpawnRadius;
+    private readonly float _minSpawnRadius;
 
-    private readonly int _maxSpawnRadius;
+    private readonly float _maxSpawnRadius;
 
     private static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 200);
 
     public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
-        _maxBots = 1;//1 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
-        _minSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
-        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 2 / 3;
+        _maxBots = 10 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
+        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 2f / 3;
+        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 4f / 5;
         _despawnRadius = Chunk.Size * settings.RenderDistance;
     }
 
@@ -30,8 +30,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
     {
         for (int i = 0; i < _maxBots - Scene.Bots.Count; i++)
         {
-            var x = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
-            var z = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
+            var x = Rand.Next(0, 2) == 0 ? GetRandomFloat(-_maxSpawnRadius, -_minSpawnRadius) : GetRandomFloat(_minSpawnRadius, _maxSpawnRadius);
+            var z = Rand.Next(0, 2) == 0 ? GetRandomFloat(-_maxSpawnRadius, -_minSpawnRadius) : GetRandomFloat(_minSpawnRadius, _maxSpawnRadius);
             var position = new Vector3(x + Scene.Camera.ReferencePointPosition.X, 0, z + Scene.Camera.ReferencePointPosition.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
@@ -59,6 +59,9 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
             }
         }
     }
+
+    private float GetRandomFloat(float min, float max)
+        => Rand.NextSingle() * (max - min) + min;
 
     private bool IsTooFar(Humanoid bot)
     {
