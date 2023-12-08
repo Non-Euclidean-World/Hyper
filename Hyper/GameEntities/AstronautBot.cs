@@ -101,7 +101,8 @@ public class AstronautBot : Humanoid
         }
 
         _goalPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
-        ViewDirection = AdjustSphere(_goalPosition) - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
+        ViewDirection = _goalPosition // no adjustment for spherical space because bot & player are in the same sphere
+            - Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position);
         _isMoving = true;
         var movementDirection = System.Numerics.Vector2.UnitY;
 

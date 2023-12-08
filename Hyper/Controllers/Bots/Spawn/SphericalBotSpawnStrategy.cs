@@ -7,7 +7,7 @@ namespace Hyper.Controllers.Bots.Spawn;
 
 internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 {
-    private const int MaxBots = 10;
+    private const int MaxBots = 7;
 
     private static int DistanceFromChunkCenter => Chunk.Size / 4;
 
@@ -37,7 +37,18 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 
     public override void Despawn()
     {
-        // Nothing to do here.
+        for (int i = 0; i < Scene.Bots.Count; i++)
+        {
+            var bot = Scene.Bots[i];
+            if (IsDead(bot))
+            {
+                Scene.Bots.RemoveAt(i);
+                Scene.SimulationMembers.Remove(bot);
+                if (!Scene.SimulationManager.UnregisterContactCallback(bot.BodyHandle))
+                    throw new ApplicationException("Invalid simulation state!");
+                bot.Dispose();
+            }
+        }
     }
 
     private Chunk GetRandomChunk(Random rand)
