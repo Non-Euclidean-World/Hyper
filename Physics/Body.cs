@@ -26,6 +26,7 @@ public class Body : IDisposable
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(RigidPose.Orientation));
 
         shader.SetMatrix4("model", scaleMatrix * rotation * translation);
+        shader.SetMatrix4("normalRotation", rotation);
 
         GL.BindVertexArray(Mesh.VaoId);
         GL.DrawArrays(PrimitiveType.Triangles, 0, Mesh.Vertices.Length);

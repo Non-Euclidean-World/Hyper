@@ -26,6 +26,7 @@ public class Mesh
         var model = Matrix4.CreateTranslation(GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale));
         var scaleMatrix = Matrix4.CreateScale(scale);
         shader.SetMatrix4("model", scaleMatrix * model);
+        shader.SetMatrix4("normalRotation", Matrix4.Identity);
 
         GL.BindVertexArray(VaoId);
         GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length);

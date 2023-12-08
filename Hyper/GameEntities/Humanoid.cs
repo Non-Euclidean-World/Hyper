@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using Character;
 using Character.Projectiles;
 using Common;
 using OpenTK.Mathematics;
@@ -8,7 +9,7 @@ using Physics.Collisions;
 using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
-namespace Character.GameEntities;
+namespace Hyper.GameEntities;
 public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisposable
 {
     public Model Character { get; init; }

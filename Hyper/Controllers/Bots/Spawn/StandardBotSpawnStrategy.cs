@@ -1,6 +1,6 @@
-﻿using Character.GameEntities;
-using Chunks;
+﻿using Chunks;
 using Common;
+using Hyper.GameEntities;
 using OpenTK.Mathematics;
 using Physics.TypingUtils;
 

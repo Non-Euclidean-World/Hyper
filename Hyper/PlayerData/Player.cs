@@ -2,10 +2,10 @@
 using BepuPhysics.Collidables;
 using Character;
 using Character.Characters;
-using Character.GameEntities;
 using Common;
 using Common.Meshes;
 using Common.UserInput;
+using Hyper.GameEntities;
 using Hyper.PlayerData.InventorySystem;
 using OpenTK.Mathematics;
 using Physics;
@@ -40,7 +40,7 @@ internal class Player : Humanoid, IRayCaster
 
     public int RayId => 0;
 
-    private bool _hidden;
+    public bool Hidden { get; private set; }
 
     public Player(PhysicalCharacter physicalCharacter, Context context, int currentSphereId = 0) : base(
         new Model(AstronautResources.Instance, localScale: 0.45f, localTranslation: new Vector3(0, -4.4f, 0)), physicalCharacter, currentSphereId)
@@ -52,7 +52,7 @@ internal class Player : Humanoid, IRayCaster
 
     public void Render(Shader modelShader, float scale, float curve, Vector3 cameraPosition, bool isFirstPerson)
     {
-        if (!isFirstPerson && !_hidden)
+        if (!isFirstPerson && !Hidden)
             Character.Render(PhysicalCharacter.Pose, modelShader, scale, curve, cameraPosition);
     }
 
@@ -115,25 +115,25 @@ internal class Player : Humanoid, IRayCaster
 
     public void Hide()
     {
-        if (_hidden)
+        if (Hidden)
             return;
 
         PhysicalCharacter.Dispose();
-        _hidden = true;
+        Hidden = true;
     }
 
     public void Show(PhysicalCharacter physicalCharacter)
     {
-        if (!_hidden)
+        if (!Hidden)
             return;
 
         PhysicalCharacter = physicalCharacter;
-        _hidden = false;
+        Hidden = false;
     }
 
     public override void Dispose()
     {
-        if (!_hidden)
+        if (!Hidden)
             base.Dispose();
     }
 }

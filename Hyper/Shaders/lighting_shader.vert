@@ -5,6 +5,7 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec3 aColor;
 
 uniform mat4 model;
+uniform mat4 normalRotation;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float curv;
@@ -95,6 +96,6 @@ void main(void)
 
     gl_Position = port(eucPos * model) * view * projection;
     FragPos = port(eucPos * model);
-    Normal = vec4(aNormal, 0) * TranslateMatrix(port(eucPos * model));
+    Normal = vec4(aNormal, 0) * normalRotation * TranslateMatrix(port(eucPos * model));
     Color = aColor;
 }

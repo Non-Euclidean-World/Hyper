@@ -1,11 +1,11 @@
 ﻿using BepuPhysics;
-using Character.GameEntities;
 using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
 using Common.Meshes;
 using Common.UserInput;
+using Hyper.GameEntities;
 using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics;
