@@ -105,7 +105,7 @@ internal class SkyboxController : IController
         _initialSunVector = -Vector3.UnitZ;
         _initialMoonVector = -Vector3.UnitX;
         _settings = settings;
-        _initTimeSeconds = DayLengthSeconds * 0.5f;//_settings.TimeInSeconds;
+        _initTimeSeconds = _settings.TimeInSeconds;
         _sunLight = new DirectionalLight
         {
             Ambient = 0.1f,
