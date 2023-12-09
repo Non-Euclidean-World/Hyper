@@ -22,6 +22,8 @@ public class Controls : SingleChildWidget
         {"Left Mouse", "Use Item"},
         {"Right Mouse", "Alt Use Item"},
         {"Esc", "Show/Hide Menu"},
+        {"Tab", "Switch camera"},
+        {"Scroll", "Change FOV"},
         {"0-9", "Select Item"},
         {"C", "Enter Car"},
         {"F", "Flip Car"},

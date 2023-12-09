@@ -61,27 +61,31 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
         LastContactTime = DateTime.UtcNow;
         LastContactBody = collidableReference.BodyHandle;
-#if DEBUG
+
         // TODO replace with something more sensible
         if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
             Console.WriteLine($"Bot collided with {otherBody}");
-            if (otherBody.GetType() == typeof(Projectile)) // TODO this is terrible we need to change that to IDs in ISimulationMember
+            if (otherBody is Projectile) // TODO this is terrible we need to change that to IDs in ISimulationMember
             {
                 _hp--;
                 if (_hp == 0)
                 {
                     IsAlive = false;
                     DeathTime = DateTime.UtcNow;
+#if DEBUG
                     Console.WriteLine("Bot is dead!");
+#endif
                 }
             }
         }
         else
         {
+#if DEBUG
             Console.WriteLine("Bot collided with something");
-        }
 #endif
+        }
+
     }
 
     public virtual void UpdateCharacterGoals(Simulation simulation, float time) { }
