@@ -106,14 +106,14 @@ internal class InputText : Widget
         switch (key)
         {
             case Keys.Backspace:
-            {
-                if (_caretPosition > 0)
                 {
-                    _caretPosition--;
-                    Content = Content.Remove(_caretPosition, 1);
+                    if (_caretPosition > 0)
+                    {
+                        _caretPosition--;
+                        Content = Content.Remove(_caretPosition, 1);
+                    }
+                    break;
                 }
-                break;
-            }
             case Keys.Space:
                 AddCharacter(" ");
                 break;
@@ -136,7 +136,7 @@ internal class InputText : Widget
                 break;
         }
     }
-    
+
     public void Activate()
     {
         _isActive = true;

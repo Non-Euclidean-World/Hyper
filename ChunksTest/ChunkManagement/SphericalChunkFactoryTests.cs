@@ -14,7 +14,7 @@ public class SphericalChunkFactoryTests
     private const float GlobalScale = 1;
     private SphericalMeshGenerator _meshGenerator = null!;
     private const int ChunksPerSide = 4;
-    
+
     [SetUp]
     public void Setup()
     {
@@ -24,7 +24,7 @@ public class SphericalChunkFactoryTests
         _sphereCenters = new[] { sphere0Center, sphere1Center };
         _meshGenerator = new SphericalMeshGenerator(10, _sphereCenters);
     }
-    
+
     [Test]
     public void GenerateChunk_ShouldCreateChunkWithExpectedProperties()
     {
@@ -37,7 +37,7 @@ public class SphericalChunkFactoryTests
         // Assert
         chunks.Should().NotBeEmpty();
     }
-    
+
     [Test]
     public void GenerateChunk_WithSameParameters_ShouldCreateConsistentChunks()
     {

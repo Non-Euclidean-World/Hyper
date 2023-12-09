@@ -12,7 +12,7 @@ public class Window : GameWindow
     private readonly MainMenu _mainMenu;
 
     private Game? _game;
-    
+
     private bool _isGameRunning;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)
@@ -20,12 +20,12 @@ public class Window : GameWindow
     {
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-        
+
         var windowHelper = new WindowHelper(this);
         _mainMenu = GetMainMenu(windowHelper, selectedGeometryType != SelectedGeometryType.None);
         if (selectedGeometryType == SelectedGeometryType.None)
             return;
-        
+
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), selectedGeometryType);
         CursorState = CursorState.Grabbed;
         _isGameRunning = true;
@@ -161,7 +161,7 @@ public class Window : GameWindow
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
-        
+
         GL.Viewport(0, 0, e.Width, e.Height);
         _game?.Resize(e);
     }

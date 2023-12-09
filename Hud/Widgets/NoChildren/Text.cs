@@ -19,7 +19,7 @@ public class Text : Widget
     /// The color of the text.
     /// </summary>
     public Vector4 Color;
-    
+
     /// <summary>
     /// Creates an instance of Text class.
     /// </summary>

@@ -29,7 +29,7 @@ public class MeshHelperTests
         result.Should().NotBeNull();
         result!.Value.Triangles.Length.Should().Be(vertices.Length / 3);
     }
-    
+
     [Test]
     public void CreateCollisionSurface_WithEmptyMesh_ShouldReturnNull()
     {
