@@ -13,14 +13,17 @@ public class Projectile : ISimulationMember
     /// Whether or not the projectile is dead and should be removed from the scene.
     /// </summary>
     public bool IsDead { get; private set; }
+    
     /// <summary>
     /// The mesh of the projectile.
     /// </summary>
     public ProjectileMesh Mesh { get; }
+    
     /// <summary>
     /// The id of the sphere the projectile is currently in.
     /// </summary>
     public int CurrentSphereId { get; set; }
+    
     /// <summary>
     /// A list of all the body handles that make up the projectile.
     /// </summary>

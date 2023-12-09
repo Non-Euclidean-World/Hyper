@@ -64,10 +64,10 @@ public class FourWheeledCar : ISimulationMember, IDisposable
     /// Updates the car.
     /// </summary>
     /// <param name="simulation">The physics simulation.</param>
-    /// <param name="dt">The time since last Update.</param>
+    /// <param name="dt">The time since last update.</param>
     /// <param name="targetSteeringAngle">The target steering angle.</param>
     /// <param name="targetSpeedFraction">The target speed fraction.</param>
-    /// <param name="zoom">The zoom of the car.</param>
+    /// <param name="zoom">Whether the car is in turbo (moves faster than usual).</param>
     /// <param name="brake">If the car is breaking.</param>
     public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
     {

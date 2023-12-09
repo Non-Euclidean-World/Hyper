@@ -30,7 +30,7 @@ public class ProjectileMesh : IDisposable
     }
 
     /// <summary>
-    /// Initializes a new instance of the &lt;see cref="ProjectileMesh"/&gt; class.
+    /// Initializes a new instance of the <see cref="ProjectileMesh"/> class.
     /// </summary>
     /// <param name="sizeX">Width of the mesh.</param>
     /// <param name="sizeY">Height of the mesh.</param>

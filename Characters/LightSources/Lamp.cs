@@ -29,15 +29,15 @@ public class Lamp : Mesh, ISimulationMember
     /// </summary>
     public Vector3 Specular { get; private init; }
     /// <summary>
-    /// The specular attenuation factor.
+    /// The constant attenuation factor.
     /// </summary>
     public float Constant { get; private init; }
     /// <summary>
-    /// The constant attenuation factor.
+    /// The linear attenuation factor.
     /// </summary>
     public float Linear { get; private init; }
     /// <summary>
-    /// The linear attenuation factor.
+    /// The quadratic attenuation factor.
     /// </summary>
     public float Quadratic { get; private init; }
     /// <summary>
@@ -85,7 +85,7 @@ public class Lamp : Mesh, ISimulationMember
     /// </summary>
     /// <param name="shader">The shader used for rendering.</param>
     /// <param name="scale">The scale of the scene.</param>
-    /// <param name="curve">The curvature of the screen.</param>
+    /// <param name="curve">The curvature of the scene.</param>
     /// <param name="cameraPosition">The camera position in the scene.</param>
     public override void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
