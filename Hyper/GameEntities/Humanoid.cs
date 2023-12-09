@@ -62,7 +62,6 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
         LastContactTime = DateTime.UtcNow;
         LastContactBody = collidableReference.BodyHandle;
 
-        // TODO replace with something more sensible
         if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
 #if DEBUG
