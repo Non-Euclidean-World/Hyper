@@ -137,12 +137,18 @@ internal class InputText : Widget
         }
     }
 
+    /// <summary>
+    /// Activates the widget. It will start accepting input.
+    /// </summary>
     public void Activate()
     {
         _isActive = true;
         _stopwatch.Start();
     }
 
+    /// <summary>
+    /// Deactivates the widget. It will stop accepting input.
+    /// </summary>
     public void Deactivate()
     {
         _isActive = false;
