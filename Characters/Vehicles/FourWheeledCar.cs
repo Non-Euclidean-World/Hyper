@@ -26,7 +26,7 @@ public class FourWheeledCar : ISimulationMember, IDisposable
 
     private readonly FourWheeledCarModel _model;
 
-    public FourWheeledCar(SimpleCar simpleCar, FourWheeledCarModel model, int currentSphereId)
+    protected FourWheeledCar(SimpleCar simpleCar, FourWheeledCarModel model, int currentSphereId)
     {
         SimpleCar = simpleCar;
         CurrentSphereId = currentSphereId;

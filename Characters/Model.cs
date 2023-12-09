@@ -7,9 +7,14 @@ using Physics.TypingUtils;
 using PrimitiveType = OpenTK.Graphics.OpenGL4.PrimitiveType;
 
 namespace Character;
-
+/// <summary>
+/// Represents a 3D model.
+/// </summary>
 public class Model
 {
+    /// <summary>
+    /// Is responsible for animating the model.
+    /// </summary>
     public readonly Animator Animator;
 
     private readonly ModelResource _modelResources;
@@ -17,7 +22,13 @@ public class Model
     private readonly float _localScale;
 
     private readonly Vector3 _localTranslation;
-
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Model"/> class.
+    /// </summary>
+    /// <param name="modelResources">The resources for the model.</param>
+    /// <param name="localScale">The scale of the model.</param>
+    /// <param name="localTranslation">The transformation for the model.</param>
     public Model(ModelResource modelResources, float localScale, Vector3 localTranslation)
     {
         _modelResources = modelResources;
@@ -26,6 +37,15 @@ public class Model
         _localTranslation = localTranslation;
     }
 
+    /// <summary>
+    /// Renders the model.
+    /// </summary>
+    /// <param name="rigidPose">The pose of the model.</param>
+    /// <param name="shader">The shader used for rendering.</param>
+    /// <param name="globalScale">The global scale of the scene.</param>
+    /// <param name="curve">The curvature of the scene.</param>
+    /// <param name="cameraPosition">The position of the camera in the scene.</param>
+    /// <exception cref="InvalidOperationException">Some resource was not provided.</exception>
     public void Render(RigidPose rigidPose, Shader shader, float globalScale, float curve, Vector3 cameraPosition)
     {
         if (_modelResources.Texture == null)
