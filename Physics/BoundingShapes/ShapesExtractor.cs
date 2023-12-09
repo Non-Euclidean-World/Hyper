@@ -6,18 +6,35 @@ using BepuUtilities.Collections;
 using BepuUtilities.Memory;
 
 namespace Physics.BoundingShapes;
+
+/// <summary>
+/// Extracts and manages various shapes (bounding boxes, capsules, cylinders) from a simulation.
+/// </summary>
 public class ShapesExtractor : IDisposable
 {
     private readonly Simulation _simulation;
 
     private readonly BufferPool _pool;
 
+    /// <summary>
+    /// List of bounding boxes extracted from the simulation.
+    /// </summary>
     public QuickList<BoundingBox> Boxes;
 
+    /// <summary>
+    /// List of bounding capsules extracted from the simulation.
+    /// </summary>
     public QuickList<BoundingCapsule> Capsules;
 
+    /// <summary>
+    /// List of bounding cylinders extracted from the simulation.
+    /// </summary>
     public QuickList<BoundingCylinder> Cylinders;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShapesExtractor"/> class with a provided simulation.
+    /// </summary>
+    /// <param name="simulation">The simulation from which shapes will be extracted.</param>
     public ShapesExtractor(Simulation simulation)
     {
         _simulation = simulation;
@@ -29,6 +46,9 @@ public class ShapesExtractor : IDisposable
         Cylinders = new QuickList<BoundingCylinder>(initialCapacity, _pool);
     }
 
+    /// <summary>
+    /// Clears the cached lists of shapes.
+    /// </summary>
     public void ClearCache()
     {
         Boxes.Count = 0;
@@ -43,6 +63,10 @@ public class ShapesExtractor : IDisposable
         Cylinders.Dispose(_pool);
     }
 
+    /// <summary>
+    /// Extracts shapes from the simulation and adds them to the respective lists.
+    /// </summary>
+    /// <param name="simulationMembers">Members of the simulation to extract shapes from.</param>
     public void AddShapes(SimulationMembers simulationMembers)
     {
         for (int setIndex = 0; setIndex < _simulation.Bodies.Sets.Length; setIndex++)

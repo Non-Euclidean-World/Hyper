@@ -15,7 +15,7 @@ public class SimulationMembers
     /// <summary>
     /// Adds a simulation member and its body handles to the collection.
     /// </summary>
-    /// <param name="member"></param>
+    /// <param name="member">The simulation member to add</param>
     public void Add(ISimulationMember member)
     {
         var bodyHandles = member.BodyHandles;
@@ -39,7 +39,7 @@ public class SimulationMembers
     /// <summary>
     /// Removes all body handles associated with a simulation member.
     /// </summary>
-    /// <param name="member"></param>
+    /// <param name="member">The simulation member whose body handles should be removed</param>
     /// <returns>True if all body handles were removed successfully, false otherwise</returns>
     public bool Remove(ISimulationMember member)
     {
@@ -64,10 +64,10 @@ public class SimulationMembers
     }
 
     /// <summary>
-    /// Gets a simulation member that uses the given body handle
+    /// Gets or sets a simulation member that uses the given body handle.
     /// </summary>
-    /// <param name="handle"></param>
-    /// <returns></returns>
+    /// <param name="handle">The body handle to get or set the associated simulation member</param>
+    /// <returns>The simulation member associated with the provided body handle</returns>
     public ISimulationMember this[BodyHandle handle]
     {
         get { return _simulationMembers[handle]; }
