@@ -5,6 +5,9 @@ using OpenTK.Mathematics;
 using Physics.TypingUtils;
 
 namespace Character.Vehicles;
+/// <summary>
+/// A model of a car and 4 wheels.
+/// </summary>
 public class FourWheeledCarModel
 {
     private readonly CarBodyResource _bodyResource;
@@ -13,6 +16,12 @@ public class FourWheeledCarModel
 
     private readonly float _scale;
 
+    /// <summary>
+    /// Creates an instance of the <see cref="FourWheeledCarModel"/> class.
+    /// </summary>
+    /// <param name="bodyResource">The resources of the car model.</param>
+    /// <param name="wheelResource">THe resource of the wheels.</param>
+    /// <param name="scale">The scale of the car.</param>
     public FourWheeledCarModel(CarBodyResource bodyResource, CarWheelResource wheelResource, float scale)
     {
         _bodyResource = bodyResource;
@@ -20,6 +29,15 @@ public class FourWheeledCarModel
         _scale = scale;
     }
 
+    /// <summary>
+    /// Renders the model of the car.
+    /// </summary>
+    /// <param name="car">The car.</param>
+    /// <param name="shader">The shader used for rendering.</param>
+    /// <param name="globalScale">The scale of the scene.</param>
+    /// <param name="curve">The curvature of the scene.</param>
+    /// <param name="cameraPosition">The position of the camera in the scene.</param>
+    /// <param name="simulationBodies">The bodies in the simulation.</param>
     public void Render(FourWheeledCar car, Shader shader, float globalScale, float curve, Vector3 cameraPosition, Bodies simulationBodies)
     {
         RenderBody(car.CarBodyPose, shader, globalScale, curve, cameraPosition);

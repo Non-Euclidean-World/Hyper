@@ -7,6 +7,9 @@ using Physics.Collisions;
 using Physics.TypingUtils;
 
 namespace Character.Vehicles;
+/// <summary>
+/// A car with four wheels.
+/// </summary>
 public class FourWheeledCar : ISimulationMember, IDisposable
 {
     public SimpleCar SimpleCar { get; private init; }
@@ -26,7 +29,7 @@ public class FourWheeledCar : ISimulationMember, IDisposable
 
     private readonly FourWheeledCarModel _model;
 
-    public FourWheeledCar(SimpleCar simpleCar, FourWheeledCarModel model, int currentSphereId)
+    protected FourWheeledCar(SimpleCar simpleCar, FourWheeledCarModel model, int currentSphereId)
     {
         SimpleCar = simpleCar;
         CurrentSphereId = currentSphereId;
@@ -46,9 +49,26 @@ public class FourWheeledCar : ISimulationMember, IDisposable
         _model = model;
     }
 
+    /// <summary>
+    /// Renders the car.
+    /// </summary>
+    /// <param name="shader">The shader used for rendering.</param>
+    /// <param name="globalScale">The scale of the scene.</param>
+    /// <param name="curve">The curvature of the scene.</param>
+    /// <param name="cameraPosition">The camera position in the scene.</param>
+    /// <param name="simulationBodies">The bodies in the physics simulation.</param>
     public void Render(Shader shader, float globalScale, float curve, Vector3 cameraPosition, Bodies simulationBodies)
         => _model.Render(this, shader, globalScale, curve, cameraPosition, simulationBodies);
 
+    /// <summary>
+    /// Updates the car.
+    /// </summary>
+    /// <param name="simulation">The physics simulation.</param>
+    /// <param name="dt">The time since last update.</param>
+    /// <param name="targetSteeringAngle">The target steering angle.</param>
+    /// <param name="targetSpeedFraction">The target speed fraction.</param>
+    /// <param name="zoom">Whether the car is in turbo (moves faster than usual).</param>
+    /// <param name="brake">If the car is breaking.</param>
     public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
     {
         SimpleCar.Update(simulation, dt, targetSteeringAngle, targetSpeedFraction, zoom, brake);
@@ -63,6 +83,9 @@ public class FourWheeledCar : ISimulationMember, IDisposable
         }
     }
 
+    /// <summary>
+    /// Disposes of the car.
+    /// </summary>
     public void Dispose()
     {
         SimpleCar.Dispose();

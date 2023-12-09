@@ -3,7 +3,9 @@ using Assimp;
 using Quaternion = Assimp.Quaternion;
 
 namespace Character;
-
+/// <summary>
+/// This class is responsible for animating the model.
+/// </summary>
 public class Animator
 {
     private int _animationIndex = 0;
@@ -11,13 +13,22 @@ public class Animator
     private bool _isAnimationRunning = false;
 
     private readonly Stopwatch _stopwatch;
-
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Animator"/> class.
+    /// </summary>
     public Animator()
     {
         _stopwatch = new Stopwatch();
         _stopwatch.Start();
     }
 
+    /// <summary>
+    /// Gets the transforms of the bones.
+    /// </summary>
+    /// <param name="model">Model from which we get the transforms.</param>
+    /// <param name="meshIndex">Index of the mesh of the model.</param>
+    /// <returns>The transforms of the bones.</returns>
     public Matrix4x4[] GetBoneTransforms(Scene model, int meshIndex)
     {
         if (!_isAnimationRunning)
@@ -30,17 +41,10 @@ public class Animator
             bone.OffsetMatrix * dict[bone.Name]).ToArray();
     }
 
-    private void GetBoneDict(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
-    {
-        var transform = node.Transform * parentTransform;
-        bones.Add(node.Name, transform);
-
-        foreach (var child in node.Children)
-        {
-            GetBoneDict(child, transform, ref bones);
-        }
-    }
-
+    /// <summary>
+    /// Animates the model.
+    /// </summary>
+    /// <param name="model">The model that is animated.</param>
     public void Animate(Scene model)
     {
         if (!_isAnimationRunning) return;
@@ -56,12 +60,19 @@ public class Animator
         }
     }
 
+    /// <summary>
+    /// Resets the animation.
+    /// </summary>
     public void Reset()
     {
         _stopwatch.Reset();
         _isAnimationRunning = false;
     }
 
+    /// <summary>
+    /// Starts playing the animation.
+    /// </summary>
+    /// <param name="index">Index of the animation what is played.</param>
     public void Play(int index)
     {
         if (_animationIndex == index && _isAnimationRunning) return;
@@ -69,7 +80,7 @@ public class Animator
         Restart(index);
     }
 
-    public void Restart(int index)
+    private void Restart(int index)
     {
         _animationIndex = index;
         _isAnimationRunning = true;
@@ -81,6 +92,17 @@ public class Animator
         var seconds = _stopwatch.ElapsedMilliseconds / 1000.0;
         var ticks = seconds * model.Animations[_animationIndex].TicksPerSecond / 2;
         return ticks % model.Animations[_animationIndex].DurationInTicks;
+    }
+    
+    private void GetBoneDict(Node node, Matrix4x4 parentTransform, ref Dictionary<string, Matrix4x4> bones)
+    {
+        var transform = node.Transform * parentTransform;
+        bones.Add(node.Name, transform);
+
+        foreach (var child in node.Children)
+        {
+            GetBoneDict(child, transform, ref bones);
+        }
     }
 
     private Matrix4x4 CalculateNodeTransform(NodeAnimationChannel channel, float time)

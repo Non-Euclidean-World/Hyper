@@ -12,19 +12,46 @@ namespace Character.LightSources;
 /// </summary>
 public class Lamp : Mesh, ISimulationMember
 {
+    /// <summary>
+    /// Color of the lamp.
+    /// </summary>
     public Vector3 Color { get; set; }
+    /// <summary>
+    /// Ambient color of the lamp.
+    /// </summary>
     public Vector3 Ambient { get; private init; }
+    /// <summary>
+    /// Diffuse color of the lamp.
+    /// </summary>
     public Vector3 Diffuse { get; private init; }
+    /// <summary>
+    /// Specular color of the lamp.
+    /// </summary>
     public Vector3 Specular { get; private init; }
+    /// <summary>
+    /// The constant attenuation factor.
+    /// </summary>
     public float Constant { get; private init; }
+    /// <summary>
+    /// The linear attenuation factor.
+    /// </summary>
     public float Linear { get; private init; }
+    /// <summary>
+    /// The quadratic attenuation factor.
+    /// </summary>
     public float Quadratic { get; private init; }
-
+    /// <summary>
+    /// List of body handles of the lamp.
+    /// </summary>
+    /// <exception cref="NotImplementedException">This should not be used. It's only because <see cref="Lamp"/> implements <see cref="ISimulationMember"/>.</exception>
     public IList<BodyHandle> BodyHandles => throw new NotImplementedException();
 
+    /// <summary>
+    /// The id of the sphere the lamp is in.
+    /// </summary>
     public int CurrentSphereId { get; set; }
-
-    public Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId) : base(vertices, position)
+    
+    private Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId) : base(vertices, position)
     {
         Color = color;
         Ambient = ambient;
@@ -37,12 +64,13 @@ public class Lamp : Mesh, ISimulationMember
     }
 
     /// <summary>
-    /// Creates a glowing cube
+    /// Creates a lamp (a glowing cube).
     /// </summary>
-    /// <param name="position"></param>
-    /// <param name="color"></param>
-    /// <returns></returns>
-    public static Lamp CreateStandardLamp(Vector3 position, Vector3 color, int sphereId)
+    /// <param name="position">The position of the lamp.</param>
+    /// <param name="color">The color of the lamp.</param>
+    /// <param name="sphereId">The id of the sphere the lamp is in.</param>
+    /// <returns>An instance of the <see cref="Lamp"/> class.</returns>
+    public static Lamp CreateStandardLamp(Vector3 position, Vector3 color, int sphereId = 0)
         => new(CubeMesh.Vertices, position, color,
             ambient: new Vector3(0.05f, 0.05f, 0.05f),
             diffuse: new Vector3(0.8f, 0.8f, 0.8f),
@@ -52,6 +80,13 @@ public class Lamp : Mesh, ISimulationMember
             quadratic: 0.44f,
             sphereId);
 
+    /// <summary>
+    /// Renders the lamp.
+    /// </summary>
+    /// <param name="shader">The shader used for rendering.</param>
+    /// <param name="scale">The scale of the scene.</param>
+    /// <param name="curve">The curvature of the scene.</param>
+    /// <param name="cameraPosition">The camera position in the scene.</param>
     public override void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
         var modelLs = Matrix4.CreateTranslation(
