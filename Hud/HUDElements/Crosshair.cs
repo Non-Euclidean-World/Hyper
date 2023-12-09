@@ -4,7 +4,9 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hud.HUDElements;
-
+/// <summary>
+/// A crosshair that is rendered in the middle of the screen.
+/// </summary>
 public class Crosshair : IHudElement
 {
     public bool Visible { get; set; } = true;
@@ -59,7 +61,7 @@ public class Crosshair : IHudElement
             builder.SetPosition(0, -1).Build()
         };
     }
-
+    
     public void Dispose()
     {
         GL.DeleteVertexArray(_vao);

@@ -3,7 +3,9 @@ using Common;
 using OpenTK.Mathematics;
 
 namespace Hud.HUDElements;
-
+/// <summary>
+/// Displays the current FPS in the top right corner of the screen.
+/// </summary>
 public class FpsCounter : IHudElement
 {
     public bool Visible { get; set; } = true;
@@ -22,6 +24,10 @@ public class FpsCounter : IHudElement
 
     private readonly IWindowHelper _windowHelper;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="FpsCounter"/> class.
+    /// </summary>
+    /// <param name="windowHelper"></param>
     public FpsCounter(IWindowHelper windowHelper)
     {
         _windowHelper = windowHelper;
