@@ -5,7 +5,6 @@ using Common.UserInput;
 using Hyper.Controllers;
 using Hyper.Controllers.Factories;
 using Hyper.PlayerData;
-using NLog;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -27,8 +26,6 @@ public class Game
 
     private readonly float _globalScale = 0.05f;
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
     public Game(int width, int height, IWindowHelper windowHelper, string saveName, SelectedGeometryType selectedGeometryType) // TODO this is definitely getting out of hand
     {
         _size = new Vector2i(width, height);
@@ -46,7 +43,9 @@ public class Game
             Settings = Settings.Load(saveName); // TODO it's confusing as hell but geometryType variable is INVALID from this point onward
             Settings.AspectRatio = (float)width / height;
         }
-        Logger.Info($"Seed: {Settings.Seed}");
+#if DEBUG
+        Console.WriteLine($"Seed: {Settings.Seed}");
+#endif
         Settings.Save();
 
         float curve = Settings.SelectedGeometryType switch
@@ -84,7 +83,6 @@ public class Game
         }
         _scene.Dispose(); // Scene dispose needs to be after controller dispose.
         Settings.Save();
-        LogManager.Flush();
     }
 
     public void RenderFrame(FrameEventArgs e)

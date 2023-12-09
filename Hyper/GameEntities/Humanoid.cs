@@ -65,7 +65,9 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
         // TODO replace with something more sensible
         if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
         {
+#if DEBUG
             Console.WriteLine($"Bot collided with {otherBody}");
+#endif
             if (otherBody is Projectile) // TODO this is terrible we need to change that to IDs in ISimulationMember
             {
                 _hp--;

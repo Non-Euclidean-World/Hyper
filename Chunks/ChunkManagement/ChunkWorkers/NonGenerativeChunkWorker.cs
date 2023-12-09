@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using Chunks.MarchingCubes.MeshGenerators;
-using NLog;
 using OpenTK.Mathematics;
 using Physics.Collisions;
 
@@ -47,8 +46,6 @@ public class NonGenerativeChunkWorker : IChunkWorker
     private readonly SphericalChunkFactory _chunkFactory;
 
     private readonly SphericalMeshGenerator _meshGenerator;
-
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
     {

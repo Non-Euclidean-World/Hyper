@@ -23,12 +23,6 @@
     <ProjectReference Include="..\Hyper\Hyper.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="NLog.Test.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 
   <ItemGroup>
     <Folder Include="ControllerTests\" />
