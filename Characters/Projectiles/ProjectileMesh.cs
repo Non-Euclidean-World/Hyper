@@ -10,10 +10,12 @@ public class ProjectileMesh : IDisposable
     public Body Body { get; private set; }
     public Vector3 Size { get; private set; }
 
+    public static readonly Vector3 Color = new(1, 0, 0);
+
     public ProjectileMesh(Vector3 size)
     {
         Size = size;
-        Body = new Body(BoxMesh.Create(size));
+        Body = new Body(BoxMesh.Create(size, Color));
     }
 
     public ProjectileMesh(float sizeX, float sizeY, float sizeZ)

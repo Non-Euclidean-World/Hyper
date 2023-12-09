@@ -53,7 +53,7 @@ internal class BotsController : IController, IInputSubscriber
     {
         foreach (var bot in _scene.Bots)
         {
-            bot.UpdateCharacterGoals(_scene.SimulationManager.Simulation, time);
+            bot.UpdateCharacterGoals(_scene.SimulationManager.Simulation, time, _scene);
 
             int targetSphereId = 1 - bot.CurrentSphereId;
             _transporter.TryTeleportTo(targetSphereId, bot, _scene.SimulationManager.Simulation, out _);

@@ -1,11 +1,11 @@
 ﻿using BepuPhysics;
-using Character.GameEntities;
 using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
 using Chunks;
 using Common.Meshes;
 using Common.UserInput;
+using Hyper.GameEntities;
 using Hyper.PlayerData;
 using OpenTK.Mathematics;
 using Physics;
@@ -24,7 +24,7 @@ internal class Scene : IInputSubscriber
 
     public readonly List<Projectile> Projectiles = new();
 
-    public readonly List<Humanoid> Bots = new();
+    public readonly List<AstronautBot> Bots = new();
 
     public readonly List<FourWheeledCar> FreeCars = new();
 

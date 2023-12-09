@@ -1,6 +1,6 @@
-﻿using Character.GameEntities;
-using Chunks;
+﻿using Chunks;
 using Common;
+using Hyper.GameEntities;
 using OpenTK.Mathematics;
 using Physics.TypingUtils;
 
@@ -12,15 +12,15 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     private readonly int _maxBots;
 
-    private readonly int _minSpawnRadius;
+    private readonly float _minSpawnRadius;
 
-    private readonly int _maxSpawnRadius;
+    private readonly float _maxSpawnRadius;
 
     public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
-        _maxBots = 10 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
-        _minSpawnRadius = Chunk.Size * settings.RenderDistance / 3;
-        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 2 / 3;
+        _maxBots = 4 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
+        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 0.7f;
+        _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 1f;
         _despawnRadius = Chunk.Size * settings.RenderDistance;
     }
 
@@ -28,9 +28,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
     {
         for (int i = 0; i < _maxBots - Scene.Bots.Count; i++)
         {
-            var x = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
-            var z = Rand.Next(0, 2) == 0 ? Rand.Next(-_maxSpawnRadius, -_minSpawnRadius) : Rand.Next(_minSpawnRadius, _maxSpawnRadius);
-            var position = new Vector3(x + Scene.Camera.ReferencePointPosition.X, 0, z + Scene.Camera.ReferencePointPosition.Z);
+            Vector2 randomVec = GetRandomVector(_minSpawnRadius, _maxSpawnRadius);
+            var position = new Vector3(randomVec.X + Scene.Camera.ReferencePointPosition.X, 0, randomVec.Y + Scene.Camera.ReferencePointPosition.Z);
             position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
             var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
 #if DEBUG
@@ -44,19 +43,38 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     public override void Despawn()
     {
-        Scene.Bots.RemoveAll(bot =>
+        for (int i = 0; i < Scene.Bots.Count; i++)
         {
-            var distance = bot.PhysicalCharacter.Pose.Position - Conversions.ToNumericsVector(Scene.Camera.ReferencePointPosition);
+            var bot = Scene.Bots[i];
+            if (IsTooFar(bot) || IsDead(bot))
+            {
+                Scene.Bots.RemoveAt(i);
+                Scene.SimulationMembers.Remove(bot);
+                if (!Scene.SimulationManager.UnregisterContactCallback(bot.BodyHandle))
+                    throw new ApplicationException("Invalid simulation state!");
+                bot.Dispose();
+            }
+        }
+    }
 
-            if (!(Math.Abs(distance.X) > _despawnRadius ||
-                  Math.Abs(distance.Y) > _despawnRadius ||
-                  Math.Abs(distance.Z) > _despawnRadius)) return false;
+    private Vector2 GetRandomVector(float minRadius, float maxRadius)
+    {
+        float radius = Rand.NextSingle() * (maxRadius - minRadius) + minRadius;
+        float angle = Rand.NextSingle() * MathF.Tau;
+
+        return new Vector2(radius * MathF.Cos(angle), radius * MathF.Sin(angle));
+    }
+
+    private bool IsTooFar(Humanoid bot)
+    {
+        var distance = bot.PhysicalCharacter.Pose.Position - Conversions.ToNumericsVector(Scene.Camera.ReferencePointPosition);
+
+        if (!(Math.Abs(distance.X) > _despawnRadius ||
+              Math.Abs(distance.Y) > _despawnRadius ||
+              Math.Abs(distance.Z) > _despawnRadius)) return false;
 #if DEBUG
-            Console.WriteLine($"Despawning bot {bot.BodyHandle}");
+        Console.WriteLine($"Despawning bot {bot.BodyHandle}");
 #endif
-            bot.Dispose();
-            Scene.SimulationMembers.Remove(bot);
-            return true;
-        });
+        return true;
     }
 }
