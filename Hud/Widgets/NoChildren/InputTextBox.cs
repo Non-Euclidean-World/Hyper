@@ -10,6 +10,9 @@ public class InputTextBox : SingleChildWidget
 {
     private readonly InputText _inputText;
 
+    /// <summary>
+    /// The content of the text box.
+    /// </summary>
     public string Content => _inputText.Content;
 
     /// <summary>

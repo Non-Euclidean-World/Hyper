@@ -8,10 +8,16 @@ namespace Hud.Widgets.NoChildren;
 /// </summary>
 public class Text : Widget
 {
+    /// <summary>
+    /// The content of the text.
+    /// </summary>
     public string Content;
 
     private readonly float _size;
 
+    /// <summary>
+    /// The color of the text.
+    /// </summary>
     public Vector4 Color;
     
     /// <summary>

@@ -10,7 +10,7 @@ public abstract class Widget
     /// <summary>
     /// Gets the minimum size the widget can be.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The size of the widget.</returns>
     public abstract Vector2 GetSize();
 
     /// <summary>
