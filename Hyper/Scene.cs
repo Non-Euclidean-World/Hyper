@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Diagnostics;
+using BepuPhysics;
 using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
@@ -163,14 +164,32 @@ internal class Scene : IInputSubscriber
         FlashLights.Add(Player.FlashLight);
     }
 
+    private double _timeAccumulator = 0;
+
+    private readonly Stopwatch _stopwatch = new Stopwatch();
+
+    private double _prev = 0;
+
+    private float _timeStep = 1 / 60f;
+
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterUpdateFrameCallback((e) =>
+        _stopwatch.Start();
+        context.RegisterUpdateFrameCallback((_) => // I dont know what e.Time is but it's a freakin lie
         {
-            SimulationManager.Timestep((float)e.Time);
-            SimulationManager.FlushContactEvents();
-            SimulationManager.ResetRayCastingResult(Player, Player.RayId);
-            SimulationManager.RayCast(Player, Player.RayId);
+            double now = _stopwatch.ElapsedTicks;
+            double dt = (now - _prev) / Stopwatch.Frequency;
+            _timeAccumulator += dt;
+            _prev = now;
+            while (_timeAccumulator >= _timeStep)
+            {
+                SimulationManager.Timestep(_timeStep);
+                SimulationManager.FlushContactEvents();
+                SimulationManager.ResetRayCastingResult(Player, Player.RayId);
+                SimulationManager.RayCast(Player, Player.RayId);
+
+                _timeAccumulator -= _timeStep;
+            }
         });
     }
 
