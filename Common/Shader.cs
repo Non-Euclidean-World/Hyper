@@ -60,8 +60,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform int on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetInt(string name, int data)
     {
         GL.UseProgram(_handle);
@@ -71,8 +71,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform float on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetFloat(string name, float data)
     {
         GL.UseProgram(_handle);
@@ -82,8 +82,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform Matrix4 on this shader
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     /// <remarks>
     ///   <para>
     ///   The matrix is transposed before being sent to the shader.
@@ -98,8 +98,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform Vector3 on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetVector3(string name, Vector3 data)
     {
         GL.UseProgram(_handle);
@@ -109,8 +109,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform Vector4 on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetVector4(string name, Vector4 data)
     {
         GL.UseProgram(_handle);
@@ -120,8 +120,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform bool on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetBool(string name, bool data)
     {
         GL.UseProgram(_handle);
@@ -131,10 +131,10 @@ public class Shader
     /// <summary>
     /// Sets an array of structs on this shader.
     /// </summary>
-    /// <typeparam name="T">Type of the struct</typeparam>
-    /// <param name="name">Name of the uniform array</param>
-    /// <param name="data">The data to set</param>
-    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct</exception>
+    /// <typeparam name="T">Type of the struct.</typeparam>
+    /// <param name="name">Name of the uniform array.</param>
+    /// <param name="data">The data to set.</param>
+    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct.</exception>
     public void SetStructArray<T>(string name, T[] data) where T : struct
     {
         for (int i = 0; i < data.Length; i++)
@@ -146,10 +146,10 @@ public class Shader
     /// <summary>
     /// Sets a struct on this shader.
     /// </summary>
-    /// <typeparam name="T">Type of the struct</typeparam>
-    /// <param name="name">Name of the uniform</param>
-    /// <param name="data">The data to set</param>
-    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct</exception>
+    /// <typeparam name="T">Type of the struct.</typeparam>
+    /// <param name="name">Name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
+    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct.</exception>
     public void SetStruct<T>(string name, T data) where T : struct
     {
         SetFields(name, data);
@@ -187,8 +187,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform array of Vector3 on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetVector3Array(string name, Vector3[] data)
     {
         float[] vectorData = new float[data.Length * 3];
@@ -205,8 +205,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform array of Vector4 on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetVector4Array(string name, Vector4[] data)
     {
         float[] vectorData = new float[data.Length * 4];
@@ -224,8 +224,8 @@ public class Shader
     /// <summary>
     /// Sets a uniform array of Matrix4 on this shader.
     /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
+    /// <param name="name">The name of the uniform.</param>
+    /// <param name="data">The data to set.</param>
     public void SetMatrix4Array(string name, Matrix4[] data)
     {
         float[] matrixData = new float[data.Length * 16];
