@@ -11,7 +11,7 @@ namespace Hyper.Menu;
 /// <summary>
 /// The main menu of the game. It lets the user start a new game, load a game, delete a game, or quit the game.
 /// </summary>
-public class MainMenu
+internal class MainMenu
 {
     private enum SaveGridMode
     {
@@ -40,7 +40,7 @@ public class MainMenu
     private readonly NewGame _newGame = new();
 
     private readonly Widget _newGameScreen;
-    
+
     private readonly Widget _controlsScreen;
 
     private SaveGridMode _saveGridMode = SaveGridMode.Load;

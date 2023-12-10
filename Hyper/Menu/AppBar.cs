@@ -5,6 +5,7 @@ using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
+
 /// <summary>
 /// A bar the lets the user navigate the menu.
 /// </summary>
@@ -17,13 +18,13 @@ internal class AppBar : SingleChildWidget
     public event Action Load = null!;
 
     public event Action Delete = null!;
-    
+
     public event Action Controls = null!;
 
     public event Action Quit = null!;
-    
+
     private Visibility _resumeWidget = null!;
-    
+
     public bool ResumeVisible { set => _resumeWidget.Visible = value; }
 
     public AppBar(bool resumeVisible)

@@ -7,10 +7,11 @@ using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
+
 /// <summary>
 /// A menu for creating a new game.
 /// </summary>
-public class NewGame : SingleChildWidget
+internal class NewGame : SingleChildWidget
 {
     public event Action<string, SelectedGeometryType> Create = null!;
 

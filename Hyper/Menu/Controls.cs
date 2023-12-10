@@ -6,10 +6,11 @@ using Hyper.Menu.Common;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu;
+
 /// <summary>
 /// The controls menu. It shows the controls of the game.
 /// </summary>
-public class Controls : SingleChildWidget
+internal class Controls : SingleChildWidget
 {
     private static readonly Dictionary<string, string> KeyMap = new()
     {
@@ -30,7 +31,7 @@ public class Controls : SingleChildWidget
         {"L", "Leave Car"},
         {"Y", "Toggle Flashlight"},
     };
-    
+
     public Controls()
     {
         Child = GetChild();
@@ -59,7 +60,7 @@ public class Controls : SingleChildWidget
         const float width = 0.6f;
         const float height = 0.1f;
         var padding = new Vector2(0.03f);
-        
+
         return new Padding(
             size: 0.01f,
             child: new SizeBox(

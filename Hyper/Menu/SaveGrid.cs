@@ -5,10 +5,11 @@ using Hud.Widgets.NoChildren;
 using Hud.Widgets.SingleChild;
 
 namespace Hyper.Menu;
+
 /// <summary>
 /// A menu that displays a grid of save files. Can be used for loading or deleting the saves.
 /// </summary>
-public class SaveGrid : SingleChildWidget
+internal class SaveGrid : SingleChildWidget
 {
     private const int GamesPerRow = 3;
 

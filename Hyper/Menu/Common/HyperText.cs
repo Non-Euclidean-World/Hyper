@@ -4,10 +4,11 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu.Common;
+
 /// <summary>
 /// Text used in the game. It is the same as a <see cref="Text"/> but with some extra styling.
 /// </summary>
-public class HyperText : SingleChildWidget
+internal class HyperText : SingleChildWidget
 {
     public HyperText(string text, Vector2 size)
     {

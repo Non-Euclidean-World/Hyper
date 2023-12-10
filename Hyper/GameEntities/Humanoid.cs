@@ -10,7 +10,8 @@ using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
 namespace Hyper.GameEntities;
-public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisposable
+
+internal abstract class Humanoid : ISimulationMember, IContactEventListener, IDisposable
 {
     public Model Character { get; init; }
 

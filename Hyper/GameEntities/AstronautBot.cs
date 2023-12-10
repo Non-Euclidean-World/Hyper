@@ -8,7 +8,7 @@ using Physics.TypingUtils;
 
 namespace Hyper.GameEntities;
 
-public class AstronautBot : Humanoid
+internal class AstronautBot : Humanoid
 {
     private Vector3 _goalPosition;
 

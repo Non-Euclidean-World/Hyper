@@ -3,6 +3,7 @@ using Hud.Widgets.SingleChild;
 using OpenTK.Mathematics;
 
 namespace Hyper.Menu.Common;
+
 /// <summary>
 /// Input text box used in the game. It is the same as a <see cref="InputTextBox"/> but with some extra styling.
 /// </summary>

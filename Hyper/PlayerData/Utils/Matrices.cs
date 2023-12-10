@@ -3,8 +3,13 @@ using OpenTK.Mathematics;
 
 namespace Hyper.PlayerData.Utils;
 
+/// <summary>
+/// Provides methods for creating matrices representing transformations between coordinate systems.
+/// </summary>
 public static class Matrices
 {
+    private const float Eps = 0.0001f;
+
     /// <summary>
     /// Gets the view matrix.
     /// </summary>
@@ -27,7 +32,7 @@ public static class Matrices
         Vector4 jcp = jc * eyeTranslate;
         Vector4 kcp = kc * eyeTranslate;
 
-        if (MathHelper.Abs(curve) < Constants.Eps)
+        if (MathHelper.Abs(curve) < Eps)
         {
             return v;
         }
@@ -50,7 +55,7 @@ public static class Matrices
     public static Matrix4 TranslationMatrix(Vector4 to, float curve)
     {
         Matrix4 t;
-        if (MathHelper.Abs(curve) < Constants.Eps)
+        if (MathHelper.Abs(curve) < Eps)
         {
             t = new Matrix4(
             1, 0, 0, 0,
@@ -86,7 +91,7 @@ public static class Matrices
         float sFovY = p.Column1.Y;
         float fp = near; // scale front clipping plane according to the global scale factor of the scene
 
-        if (curve <= Constants.Eps)
+        if (curve <= Eps)
         {
             return p;
         }
