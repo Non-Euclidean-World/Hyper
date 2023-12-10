@@ -4,12 +4,19 @@ using OpenTK.Mathematics;
 
 namespace Common;
 
+/// <summary>
+/// Represents a shader program used for rendering.
+/// </summary>
 public class Shader
 {
     private readonly int _handle;
 
     private readonly Dictionary<string, int> _uniformLocations;
 
+    /// <summary>
+    /// Constructs a shader program from provided shader files.
+    /// </summary>
+    /// <param name="shaders">An array of tuples containing paths and types of shader files.</param>
     public Shader((string path, ShaderType shaderType)[] shaders)
     {
         _handle = GL.CreateProgram();
@@ -42,6 +49,9 @@ public class Shader
         }
     }
 
+    /// <summary>
+    /// Activates the shader program for use in rendering.
+    /// </summary>
     public void Use()
     {
         GL.UseProgram(_handle);
@@ -124,7 +134,7 @@ public class Shader
     /// <typeparam name="T">Type of the struct</typeparam>
     /// <param name="name">Name of the uniform array</param>
     /// <param name="data">The data to set</param>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct</exception>
     public void SetStructArray<T>(string name, T[] data) where T : struct
     {
         for (int i = 0; i < data.Length; i++)
@@ -139,7 +149,7 @@ public class Shader
     /// <typeparam name="T">Type of the struct</typeparam>
     /// <param name="name">Name of the uniform</param>
     /// <param name="data">The data to set</param>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotImplementedException">Thrown when attempting to set fields of an unsupported type within the struct</exception>
     public void SetStruct<T>(string name, T data) where T : struct
     {
         SetFields(name, data);

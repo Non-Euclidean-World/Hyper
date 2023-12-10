@@ -3,13 +3,29 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Common;
 
+/// <summary>
+/// Provides methods to load models for rendering.
+/// </summary>
 public static class ModelLoader
 {
+    /// <summary>
+    /// Loads a model from the specified file path using the provided Assimp context.
+    /// </summary>
+    /// <param name="path">The path to the model file.</param>
+    /// <param name="importer">The Assimp context used for importing the model.</param>
+    /// <returns>The loaded scene representing the model.</returns>
     public static Scene GetModel(string path, AssimpContext importer)
     {
         return importer.ImportFile(path);
     }
 
+    /// <summary>
+    /// Generates vertex array objects (VAOs) for meshes within the specified model scene.
+    /// </summary>
+    /// <param name="model">The scene containing meshes to process.</param>
+    /// <param name="texture">Indicates whether to include texture coordinates in the setup.</param>
+    /// <param name="bones">Indicates whether to include bone data in the setup.</param>
+    /// <returns>An array of generated vertex array object (VAO) IDs.</returns>
     public static int[] GetVaos(Scene model, bool texture = false, bool bones = false)
     {
         var vaos = new List<int>();

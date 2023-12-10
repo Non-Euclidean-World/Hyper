@@ -3,6 +3,9 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Common.UserInput;
 
+/// <summary>
+/// Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.
+/// </summary>
 public class Context
 {
     public Dictionary<Keys, List<Action<FrameEventArgs>>> KeyHeldCallbacks = new();
@@ -49,8 +52,8 @@ public class Context
     /// <summary>
     /// Registers keys to be handled
     /// </summary>
-    /// <param name="keys"></param>
-    public void RegisterKeys(List<Keys> keys)
+    /// <param name="keys">The collection of keys to register.</param>
+    public void RegisterKeys(ICollection<Keys> keys)
     {
         foreach (var key in keys)
         {
@@ -61,8 +64,8 @@ public class Context
     /// <summary>
     /// Registers mouse buttons to be handled
     /// </summary>
-    /// <param name="mouseButtons"></param>
-    public void RegisterMouseButtons(List<MouseButton> mouseButtons)
+    /// <param name="mouseButtons">The collection of mouse buttons to register.</param>
+    public void RegisterMouseButtons(ICollection<MouseButton> mouseButtons)
     {
         foreach (var button in mouseButtons)
         {
@@ -182,7 +185,7 @@ public class Context
     /// Executes all callbacks that should be called when the input is held down
     /// </summary>
     /// <param name="inputType">Type of the input</param>
-    /// <param name="e"></param>
+    /// <param name="e">Arguments for frame event</param>
     public void ExecuteAllHeldCallbacks(InputType inputType, FrameEventArgs e)
     {
         switch (inputType)

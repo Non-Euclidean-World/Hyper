@@ -7,21 +7,74 @@ namespace Common.Meshes;
 /// </summary>
 public class FlashLight
 {
+    /// <summary>
+    /// Indicates whether the flashlight is active or not.
+    /// </summary>
     public bool Active;
 
+    /// <summary>
+    /// The position of the flashlight in 3D space.
+    /// </summary>
     public Vector3 Position { get; set; }
+
+    /// <summary>
+    /// The color of the flashlight.
+    /// </summary>
     public Vector3 Color { get; set; }
+
+    /// <summary>
+    /// The direction the flashlight is pointing.
+    /// </summary>
     public Vector3 Direction { get; set; }
+
+    /// <summary>
+    /// The inner angle of the spotlight cone.
+    /// </summary>
     public float CutOff { get; private init; }
+
+    /// <summary>
+    /// The outer angle of the spotlight cone.
+    /// </summary>
     public float OuterCutOff { get; private init; }
+
+    /// <summary>
+    /// The ambient light color emitted by the flashlight.
+    /// </summary>
     public Vector3 Ambient { get; private init; }
+
+    /// <summary>
+    /// The diffuse light color emitted by the flashlight.
+    /// </summary>
     public Vector3 Diffuse { get; private init; }
+
+    /// <summary>
+    /// The specular light color emitted by the flashlight.
+    /// </summary>
     public Vector3 Specular { get; private init; }
+
+    /// <summary>
+    /// The constant attenuation factor of the flashlight.
+    /// </summary>
     public float Constant { get; private init; }
+
+    /// <summary>
+    /// The linear attenuation factor of the flashlight.
+    /// </summary>
     public float Linear { get; private init; }
+
+    /// <summary>
+    /// The quadratic attenuation factor of the flashlight.
+    /// </summary>
     public float Quadratic { get; private init; }
+
+    /// <summary>
+    /// The ID of the hypersphere the flashlight is located in.
+    /// </summary>
     public int CurrentSphereId { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FlashLight"/> class with specified parameters.
+    /// </summary>
     public FlashLight(Vector3 color, float cutOff, float outerCutOff, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int currentSphereId)
     {
         Color = color;
@@ -37,7 +90,7 @@ public class FlashLight
     }
 
     /// <summary>
-    /// Initializes a new instance of the <c>FlashLight</c> class with default values
+    /// Initializes a new instance of the <see cref="FlashLight"/> class with default values
     /// </summary>
     public FlashLight(int sphere)
     {
@@ -54,10 +107,11 @@ public class FlashLight
     }
 
     /// <summary>
-    /// Creates a light source for car's headlights
+    /// Creates a spotlight for car's headlights with specified color.
     /// </summary>
-    /// <param name="color"></param>
-    /// <returns></returns>
+    /// <param name="color">The color of the headlight.</param>
+    /// <param name="sphere">The ID of the sphere the headlight is in..</param>
+    /// <returns>A spotlight representing a car's headlight.</returns>
     public static FlashLight CreateCarLight(Vector3 color, int sphere)
     {
         return new FlashLight(color,
@@ -73,10 +127,11 @@ public class FlashLight
     }
 
     /// <summary>
-    /// Creates a light source for car's tail lights
+    /// Creates a spotlight for car's tail lights with specified color.
     /// </summary>
-    /// <param name="color"></param>
-    /// <returns></returns>
+    /// <param name="color">The color of the tail light.</param>
+    /// <param name="sphere">The ID of the sphere associated with the tail light.</param>
+    /// <returns>A spotlight representing a car's tail light.</returns>
     public static FlashLight CreateCarRearLight(Vector3 color, int sphere)
     {
         return new FlashLight(color,

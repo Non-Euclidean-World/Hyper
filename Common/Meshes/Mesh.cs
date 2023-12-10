@@ -4,14 +4,29 @@ using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
+// <summary>
+/// Represents a mesh consisting of vertices for rendering in a 3D environment.
+/// </summary>
 public class Mesh
 {
+    /// <summary>
+    /// The position of the mesh in 3D space.
+    /// </summary>
     public Vector3 Position { get; set; }
 
+    /// <summary>
+    /// The Vertex Array Object (VAO) ID used for OpenGL rendering.
+    /// </summary>
     public int VaoId;
 
+    /// <summary>
+    /// The Vertex Buffer Object (VBO) ID used for OpenGL rendering.
+    /// </summary>
     protected int VboId;
 
+    /// <summary>
+    /// The array of vertices comprising the mesh.
+    /// </summary>
     public Vertex[] Vertices { get; set; }
 
     public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
@@ -21,6 +36,12 @@ public class Mesh
         Position = position;
     }
 
+    /// <summary>
+    /// Constructs a <see cref="Mesh"/> object with the given vertices and position.
+    /// </summary>
+    /// <param name="vertices">The array of vertices defining the mesh.</param>
+    /// <param name="position">The position of the mesh in 3D space.</param>
+    /// <param name="createVertexArrayObject">Determines if a Vertex Array Object (VAO) should be created.</param>
     public virtual void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
         var model = Matrix4.CreateTranslation(GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale));
@@ -32,6 +53,9 @@ public class Mesh
         GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length);
     }
 
+    /// <summary>
+    /// Creates a Vertex Array Object (VAO) for the mesh and sets up vertex attribute pointers.
+    /// </summary>
     public void CreateVertexArrayObject()
     {
         int vaoId = GL.GenVertexArray();
@@ -59,6 +83,9 @@ public class Mesh
         VboId = vboId;
     }
 
+    /// <summary>
+    /// Updates the mesh's vertex buffer data in the GPU.
+    /// </summary>
     public void Update()
     {
         GL.BindVertexArray(VaoId);
@@ -75,6 +102,9 @@ public class Mesh
         GL.UnmapBuffer(BufferTarget.ArrayBuffer);
     }
 
+    /// <summary>
+    /// Disposes of allocated OpenGL resources associated with the mesh.
+    /// </summary>
     public void Dispose()
     {
         GL.DeleteBuffer(VboId);
