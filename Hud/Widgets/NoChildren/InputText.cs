@@ -32,7 +32,7 @@ internal class InputText : Widget
     private readonly string _placeholder = "";
 
     /// <summary>
-    /// Creates an instance of InputText class.
+    /// Creates an instance of <see cref="InputText"/> class.
     /// </summary>
     /// <param name="text">The initial text.</param>
     /// <param name="size">The size of the widget.</param>

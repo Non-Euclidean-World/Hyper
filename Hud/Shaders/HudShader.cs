@@ -30,7 +30,7 @@ public class HudShader : Shader
     /// <summary>
     /// Sets up the shader.
     /// </summary>
-    /// <param name="aspectRatio"></param>
+    /// <param name="aspectRatio">The screen aspect ratio.</param>
     public void SetUp(float aspectRatio)
     {
         Use();

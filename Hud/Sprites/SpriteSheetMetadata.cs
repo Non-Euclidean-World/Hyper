@@ -29,7 +29,7 @@ public class SpriteSheetMetadata
     /// <summary>
     /// Gets the rectangles of the sprites in the sprite sheet. Rectangles describe the position of a sprite in the sprite sheet.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Item1: Dictionary from item name to a rectangle that describes items position and size. Item2: Width of the sprite sheet. Item3: Height of the sprite sheet.</returns>
     public (Dictionary<string, Vector4>, int, int) GetRectangles()
     {
         var result = new Dictionary<string, Vector4>();

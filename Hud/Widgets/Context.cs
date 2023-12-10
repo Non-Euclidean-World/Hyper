@@ -12,7 +12,7 @@ namespace Hud.Widgets;
 public record Context(HudShader Shader, Vector2 Position, Vector2 Size)
 {
     /// <summary>
-    /// Creates a new Context with the same shader and size but a different position.
+    /// Creates a new context with the same shader and size but a different position.
     /// </summary>
     /// <param name="oldContext">The old context.</param>
     /// <param name="newPosition">The new position.</param>
@@ -21,7 +21,7 @@ public record Context(HudShader Shader, Vector2 Position, Vector2 Size)
     { }
 
     /// <summary>
-    /// Creates a new Context with the same shader but a position and a different size.
+    /// Creates a new context with the same shader but a position and a different size.
     /// </summary>
     /// <param name="oldContext">The old context.</param>
     /// <param name="newPosition">The new position.</param>
