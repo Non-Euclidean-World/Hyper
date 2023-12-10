@@ -10,17 +10,45 @@ using BepuUtilities;
 using BepuUtilities.Memory;
 
 namespace Physics.Collisions;
+
+/// <summary>
+/// Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.
+/// </summary>
 public class SimpleCar : IDisposable
 {
+    /// <summary>
+    /// Gets the handle of the body associated with the car in the physics simulation.
+    /// </summary>
     public BodyHandle BodyHandle { get; private set; }
 
+    /// <summary>
+    /// Gets the handle of the body associated with the front left wheel in the physics simulation.
+    /// </summary>
     public WheelHandles FrontLeftWheel { get; private set; }
+
+    /// <summary>
+    /// Gets the handle of the body associated with the front right wheel in the physics simulation.
+    /// </summary>
     public WheelHandles FrontRightWheel { get; private set; }
+
+    /// <summary>
+    /// Gets the handle of the body associated with the back left wheel in the physics simulation.
+    /// </summary>
     public WheelHandles BackLeftWheel { get; private set; }
+
+    /// <summary>
+    /// Gets the handle of the body associated with the back right wheel in the physics simulation.
+    /// </summary>
     public WheelHandles BackRightWheel { get; private set; }
 
+    /// <summary>
+    /// Positions of car's lights in the car's local space. 
+    /// </summary>
     public Vector3[] Lights { get; private set; } = null!;
 
+    /// <summary>
+    /// Position and orientation of the car.
+    /// </summary>
     public RigidPose CarBodyPose { get; private set; }
 
     private Vector3 _suspensionDirection;
@@ -36,6 +64,12 @@ public class SimpleCar : IDisposable
         _simulation = simulation;
     }
 
+    /// <summary>
+    /// Steers a specific wheel of the car in the simulation.
+    /// </summary>
+    /// <param name="simulation">The physics simulation.</param>
+    /// <param name="wheel">The wheel to steer.</param>
+    /// <param name="angle">The angle to steer.</param>
     public void Steer(Simulation simulation, in WheelHandles wheel, float angle)
     {
         var steeredHinge = _hingeDescription;
@@ -44,6 +78,13 @@ public class SimpleCar : IDisposable
         simulation.Solver.ApplyDescription(wheel.Hinge, steeredHinge);
     }
 
+    /// <summary>
+    /// Sets the speed for a specific wheel of the car in the simulation.
+    /// </summary>
+    /// <param name="simulation">The physics simulation.</param>
+    /// <param name="wheel">The wheel to set the speed for.</param>
+    /// <param name="speed">The speed to set.</param>
+    /// <param name="maximumForce">The maximum force for the wheel.</param>
     public static void SetSpeed(Simulation simulation, in WheelHandles wheel, float speed, float maximumForce)
     {
         simulation.Solver.ApplyDescription(wheel.Motor, new AngularAxisMotor
@@ -125,10 +166,6 @@ public class SimpleCar : IDisposable
         car.FrontLeftWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontLeftSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
         car.FrontRightWheel = CreateWheel(simulation, properties, pose, wheelShape, wheelInertia, wheelFriction, car.BodyHandle, ref bodyProperties.Filter, bodyToFrontRightSuspension, suspensionDirection, suspensionLength, car._hingeDescription, suspensionSettings, localWheelOrientation);
 
-        /*car.FrontLeftLight = frontLeftLight;
-        car.FrontRightLight = frontRightLight;
-        car.BackLeftLight = backLeftLight;
-        car.BackRightLight = backRightLight;*/
         car.Lights = new Vector3[]
         {
             frontLeftLight, frontRightLight, backLeftLight, backRightLight,
@@ -138,7 +175,7 @@ public class SimpleCar : IDisposable
     }
 
 
-    public static SimpleCar Create(Simulation simulation, BufferPool bufferPool, CollidableProperty<SimulationProperties> properties,
+    private static SimpleCar Create(Simulation simulation, BufferPool bufferPool, CollidableProperty<SimulationProperties> properties,
         in RigidPose initialPose,
         Box lowerPart, RigidPose lowerPartOrientation, float lowerPartWeight,
         Box upperPart, RigidPose upperPartOrientation, float upperPartWeight,
@@ -170,14 +207,14 @@ public class SimpleCar : IDisposable
     }
 
     /// <summary>
-    /// Creates a physical vehicle corresponding to the Ford Mustang model
+    /// Creates a physical vehicle corresponding to the Ford Mustang model with specific parameters.
     /// </summary>
-    /// <param name="simulation"></param>
-    /// <param name="bufferPool"></param>
-    /// <param name="properties"></param>
-    /// <param name="initialPose"></param>
-    /// <param name="scale"></param>
-    /// <returns></returns>
+    /// <param name="simulation">The physics simulation where the car will be placed.</param>
+    /// <param name="bufferPool">The buffer pool used for computations.</param>
+    /// <param name="properties">Collidable properties of the simulation.</param>
+    /// <param name="initialPose">The initial pose of the car in the simulation.</param>
+    /// <param name="scale">The scaling factor applied to the car's dimensions (default: 2).</param>
+    /// <returns>A new instance of the SimpleCar class representing the Ford Mustang model with specified parameters.</returns>
     public static SimpleCar CreateStandardCar(Simulation simulation, BufferPool bufferPool, CollidableProperty<SimulationProperties> properties,
         in RigidPose initialPose, float scale = 2f)
     {
@@ -216,6 +253,15 @@ public class SimpleCar : IDisposable
             controller);
     }
 
+    /// <summary>
+    /// Updates the state of the car based on various input parameters.
+    /// </summary>
+    /// <param name="simulation">The physics simulation associated with the car.</param>
+    /// <param name="dt">The time elapsed since the last update.</param>
+    /// <param name="targetSteeringAngle">The desired steering angle for the car.</param>
+    /// <param name="targetSpeedFraction">The target speed fraction for the car.</param>
+    /// <param name="zoom">A boolean indicating whether the car is in "turbo mode" (i.e. moving faster than usual).</param>
+    /// <param name="brake">A boolean indicating whether the brake is applied.</param>
     public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)
     {
         _controller.Update(simulation, this, dt, targetSteeringAngle, targetSpeedFraction, zoom, brake);

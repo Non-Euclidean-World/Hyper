@@ -8,7 +8,7 @@ using Physics.Collisions;
 namespace Character.LightSources;
 
 /// <summary>
-/// Class representing a point light source
+/// Class representing a point light source.
 /// </summary>
 public class Lamp : Mesh, ISimulationMember
 {
@@ -16,30 +16,37 @@ public class Lamp : Mesh, ISimulationMember
     /// Color of the lamp.
     /// </summary>
     public Vector3 Color { get; set; }
+
     /// <summary>
     /// Ambient color of the lamp.
     /// </summary>
     public Vector3 Ambient { get; private init; }
+
     /// <summary>
     /// Diffuse color of the lamp.
     /// </summary>
     public Vector3 Diffuse { get; private init; }
+
     /// <summary>
     /// Specular color of the lamp.
     /// </summary>
     public Vector3 Specular { get; private init; }
+
     /// <summary>
     /// The constant attenuation factor.
     /// </summary>
     public float Constant { get; private init; }
+
     /// <summary>
     /// The linear attenuation factor.
     /// </summary>
     public float Linear { get; private init; }
+
     /// <summary>
     /// The quadratic attenuation factor.
     /// </summary>
     public float Quadratic { get; private init; }
+
     /// <summary>
     /// List of body handles of the lamp.
     /// </summary>
@@ -50,7 +57,7 @@ public class Lamp : Mesh, ISimulationMember
     /// The id of the sphere the lamp is in.
     /// </summary>
     public int CurrentSphereId { get; set; }
-    
+
     private Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId) : base(vertices, position)
     {
         Color = color;

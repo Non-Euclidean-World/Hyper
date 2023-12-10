@@ -5,25 +5,42 @@ using System.Numerics;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities;
-using Common;
-using Common.Meshes;
-using OpenTK.Graphics.OpenGL4;
 
 namespace Physics.Collisions;
 
+/// <summary>
+/// Represents a physical character within a simulation, capable of movement and interaction.
+/// </summary>
 public class PhysicalCharacter
 {
+    /// <summary>
+    /// The pose (position and orientation) of the character.
+    /// </summary>
     public RigidPose Pose { get; private set; }
 
+    /// <summary>
+    /// The handle of the body associated with the character.
+    /// </summary>
     public BodyHandle BodyHandle { get => _bodyHandle; }
-
-    public Body BoundingBox { get; private set; }
 
     private BodyHandle _bodyHandle;
     private readonly CharacterControllers _characters;
     private readonly float _speed;
     private Capsule _shape;
 
+    /// <summary>
+    /// Initializes a new instance of the PhysicalCharacter class.
+    /// </summary>
+    /// <param name="characters">The character controllers managing this character.</param>
+    /// <param name="properties">Collidable properties of the simulation.</param>
+    /// <param name="initialPosition">The initial position of the character.</param>
+    /// <param name="minimumSpeculativeMargin">The minimum speculative margin for continuous collision detection.</param>
+    /// <param name="mass">The mass of the character.</param>
+    /// <param name="maximumHorizontalForce">The maximum horizontal force that can be applied to the character.</param>
+    /// <param name="maximumVerticalGlueForce">The maximum vertical glue force applied to the character.</param>
+    /// <param name="jumpVelocity">The velocity applied when the character jumps.</param>
+    /// <param name="speed">The movement speed of the character.</param>
+    /// <param name="maximumSlope">The maximum slope angle the character can navigate.</param>
     public PhysicalCharacter(CharacterControllers characters, CollidableProperty<SimulationProperties> properties, Vector3 initialPosition,
         float minimumSpeculativeMargin, float mass, float maximumHorizontalForce, float maximumVerticalGlueForce,
         float jumpVelocity, float speed, float maximumSlope = MathF.PI * 0.25f)
@@ -51,9 +68,17 @@ public class PhysicalCharacter
         bodyProperties = new SimulationProperties { Friction = 2f, Filter = new SubgroupCollisionFilter(_bodyHandle.Value, 0) };
 
         _speed = speed;
-        BoundingBox = new Body(BoxMesh.Create(new OpenTK.Mathematics.Vector3(_shape.Radius * 2, _shape.Length + _shape.Radius * 2, _shape.Radius * 2)));
     }
 
+    /// <summary>
+    /// Updates the goals and state of the character based on user input and the physics simulation.
+    /// </summary>
+    /// <param name="simulation">The physics simulation.</param>
+    /// <param name="viewDirection">The view direction of the character.</param>
+    /// <param name="simulationTimestepDuration">The duration of the simulation timestep.</param>
+    /// <param name="tryJump">A flag indicating whether the character is trying to jump.</param>
+    /// <param name="sprint">A flag indicating whether the character is sprinting.</param>
+    /// <param name="movementDirection">The direction of movement input.</param>
     public void UpdateCharacterGoals(Simulation simulation, Vector3 viewDirection, float simulationTimestepDuration, bool tryJump, bool sprint, Vector2 movementDirection)
     {
         var movementDirectionLengthSquared = movementDirection.LengthSquared();
@@ -117,21 +142,7 @@ public class PhysicalCharacter
         float angle = MathF.Atan2(viewDirection.X, viewDirection.Z);
         body.Pose.Orientation = QuaternionEx.CreateFromAxisAngle(Vector3.UnitY, angle);
 
-        BoundingBox.RigidPose = body.Pose;
         Pose = body.Pose;
-    }
-
-    /// <summary>
-    /// Disregards physics of the character and changes its pose.
-    /// The intention is that this method should only be used for teleportation functionality
-    /// </summary>
-    /// <param name="simulation"></param>
-    /// <param name="pose"></param>
-    public void ForcePoseChange(Simulation simulation, RigidPose pose, Func<Vector3, Vector3> velocityTransform) // TODO we need to also change the velocity vector
-    {
-        var body = new BodyReference(_bodyHandle, simulation.Bodies);
-        body.Pose = pose;
-        body.Velocity.Linear = velocityTransform(body.Velocity.Linear);
     }
 
     /// <summary>
@@ -142,22 +153,5 @@ public class PhysicalCharacter
         _characters.Simulation.Shapes.Remove(new BodyReference(_bodyHandle, _characters.Simulation.Bodies).Collidable.Shape);
         _characters.Simulation.Bodies.Remove(_bodyHandle);
         _characters.RemoveCharacterByBodyHandle(_bodyHandle);
-    }
-
-    public void RenderBoundingBox(Shader shaderBoundingBox, float scale, float curve, OpenTK.Mathematics.Vector3 cameraPosition)
-    {
-        TurnOnWireframe();
-        BoundingBox.RenderFullDescription(shaderBoundingBox, scale, curve, cameraPosition);
-        TurnOffWireframe();
-    }
-
-    private static void TurnOnWireframe()
-    {
-        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-    }
-
-    private static void TurnOffWireframe()
-    {
-        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
     }
 }

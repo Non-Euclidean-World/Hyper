@@ -1,6 +1,10 @@
 ﻿using System.Numerics;
 
 namespace Physics.RayCasting;
+
+/// <summary>
+/// Represents an interface for a ray caster used in raycasting operations.
+/// </summary>
 public interface IRayCaster
 {
     /// <summary>
