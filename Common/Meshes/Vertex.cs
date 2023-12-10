@@ -3,6 +3,9 @@ using OpenTK.Mathematics;
 
 namespace Common.Meshes;
 
+/// <summary>
+/// Represents a vertex in a 3D environment, defining position, normal, and color attributes.
+/// </summary>
 [StructLayout(LayoutKind.Explicit)]
 public struct Vertex
 {
@@ -33,6 +36,15 @@ public struct Vertex
     [FieldOffset(32)]
     public float B = 1f;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Vertex"/> struct with specified position and normal.
+    /// </summary>
+    /// <param name="x">The X-coordinate of the vertex position.</param>
+    /// <param name="y">The Y-coordinate of the vertex position.</param>
+    /// <param name="z">The Z-coordinate of the vertex position.</param>
+    /// <param name="nx">The X-component of the vertex normal.</param>
+    /// <param name="ny">The Y-component of the vertex normal.</param>
+    /// <param name="nz">The Z-component of the vertex normal.</param>
     public Vertex(float x, float y, float z, float nx, float ny, float nz)
     {
         X = x;
@@ -44,6 +56,12 @@ public struct Vertex
         Nz = nz;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Vertex"/> struct with specified position, normal, and color.
+    /// </summary>
+    /// <param name="position">The position of the vertex.</param>
+    /// <param name="normal">The normal vector of the vertex.</param>
+    /// <param name="color">The color of the vertex.</param>
     public Vertex(Vector3 position, Vector3 normal, Vector3 color)
     {
         X = position.X;
@@ -59,5 +77,8 @@ public struct Vertex
         B = color.Z;
     }
 
+    /// <summary>
+    /// Gets the position of the vertex as a <see cref="Vector3"/>.
+    /// </summary>
     public readonly Vector3 Position => new Vector3(X, Y, Z);
 }

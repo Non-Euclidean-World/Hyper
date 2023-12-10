@@ -13,22 +13,22 @@ public class Projectile : ISimulationMember
     /// Whether or not the projectile is dead and should be removed from the scene.
     /// </summary>
     public bool IsDead { get; private set; }
-    
+
     /// <summary>
     /// The mesh of the projectile.
     /// </summary>
     public ProjectileMesh Mesh { get; }
-    
+
     /// <summary>
     /// The id of the sphere the projectile is currently in.
     /// </summary>
     public int CurrentSphereId { get; set; }
-    
+
     /// <summary>
     /// A list of all the body handles that make up the projectile.
     /// </summary>
     public IList<BodyHandle> BodyHandles { get; private set; } = null!;
-    
+
     private BodyHandle _bodyHandle;
 
     private TypedIndex _shape;
@@ -50,16 +50,16 @@ public class Projectile : ISimulationMember
     /// <param name="initialPose">The initial pose of the projectile.</param>
     /// <param name="initialVelocity">The initial velocity of the projectile.</param>
     /// <param name="mesh">The mesh of the projectile.</param>
-    /// <param name="lifeTime">Lifetime threshold in seconds</param>
+    /// <param name="lifeTime">Lifetime threshold in seconds.</param>
     /// <param name="currentSphereId">The id of the sphere the projectile is created in.</param>
     /// <returns>An instance of the <see cref="Projectile"/> class.</returns>
     public static Projectile CreateStandardProjectile(
-        Simulation simulation, 
+        Simulation simulation,
         CollidableProperty<SimulationProperties> properties,
-        in RigidPose initialPose, 
-        in BodyVelocity initialVelocity, 
-        ProjectileMesh mesh, 
-        float lifeTime, 
+        in RigidPose initialPose,
+        in BodyVelocity initialVelocity,
+        ProjectileMesh mesh,
+        float lifeTime,
         int currentSphereId = 0)
     {
         var projectileShape = new Box(mesh.Size.X, mesh.Size.Y, mesh.Size.Z);
@@ -92,10 +92,9 @@ public class Projectile : ISimulationMember
     /// Updates the projectile's position.
     /// Removes the projectile from the simulation once it's been existing longer than the lifetime threshold.
     /// </summary>
-    /// <param name="simulation"></param>
-    /// <param name="dt"></param>
-    /// <param name="pool"></param>
-    public void Update(Simulation simulation, float dt, BufferPool pool)
+    /// <param name="simulation">The physics simulation.</param>
+    /// <param name="dt">Timestep of the simulation.</param>
+    public void Update(Simulation simulation, float dt)
     {
         var body = new BodyReference(_bodyHandle, simulation.Bodies);
         Mesh.Update(body.Pose);

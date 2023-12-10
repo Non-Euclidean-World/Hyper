@@ -11,7 +11,7 @@ namespace Character.Projectiles;
 public class ProjectileMesh : IDisposable
 {
     private readonly Body _body;
-    
+
     /// <summary>
     /// Size of the projectile.
     /// </summary>
@@ -41,7 +41,7 @@ public class ProjectileMesh : IDisposable
     /// <summary>
     /// Updated the pose of the mesh.
     /// </summary>
-    /// <param name="bodyPose"></param>
+    /// <param name="bodyPose">Desired pose.</param>
     public void Update(RigidPose bodyPose)
     {
         _body.RigidPose = bodyPose;

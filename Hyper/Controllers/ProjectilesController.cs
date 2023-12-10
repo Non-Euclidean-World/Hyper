@@ -25,7 +25,7 @@ internal class ProjectilesController : IController, IInputSubscriber
         _scene.Projectiles.RemoveAll(x => x.IsDead);
         foreach (var projectile in _scene.Projectiles)
         {
-            projectile.Update(_scene.SimulationManager.Simulation, dt, _scene.SimulationManager.BufferPool);
+            projectile.Update(_scene.SimulationManager.Simulation, dt);
 
             int targetSphereId = 1 - projectile.CurrentSphereId;
             _transporter.TryTeleportTo(targetSphereId, projectile, _scene.SimulationManager.Simulation, out _);

@@ -1,14 +1,13 @@
-﻿using OpenTK.Mathematics;
+﻿namespace Common.Meshes;
 
-namespace Common.Meshes;
-
+/// <summary>
+/// A utility class for creating cube meshes.
+/// </summary>
 public static class CubeMesh
 {
-    public static Mesh Create(Vector3 position)
-    {
-        return new Mesh(Vertices, position);
-    }
-
+    /// <summary>
+    /// Defines the vertices for a cube mesh.
+    /// </summary>
     public static readonly Vertex[] Vertices =
     {
         new(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f),

@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Common;
 
+/// <summary>
+/// Manages and persists game settings including save data, geometry types, rendering, and time tracking.
+/// </summary>
 public class Settings
 {
     private static readonly string AppDataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyper");
@@ -29,6 +32,13 @@ public class Settings
     [JsonIgnore]
     public float AspectRatio { get; set; }
 
+    /// <summary>
+    /// Creates an instance of game settings with provided initial values.
+    /// </summary>
+    /// <param name="seed">Seed for procedural generation.</param>
+    /// <param name="saveName">Name of the save.</param>
+    /// <param name="aspectRatio">Aspect ratio of the game window.</param>
+    /// <param name="selectedGeometryType">Type of selected geometry.</param>
     public Settings(int seed, string saveName, float aspectRatio, SelectedGeometryType selectedGeometryType)
     {
         Seed = seed;
@@ -40,11 +50,21 @@ public class Settings
             Directory.CreateDirectory(CurrentSaveLocation);
     }
 
+    /// <summary>
+    /// Checks if a save exists.
+    /// </summary>
+    /// <param name="saveName">Name of the save.</param>
+    /// <returns>True if the save exists, otherwise false.</returns>
     public static bool SaveExists(string saveName)
     {
         return Directory.Exists(Path.Combine(SavesLocation, saveName));
     }
 
+    /// <summary>
+    /// Loads settings from the specified save.
+    /// </summary>
+    /// <param name="saveName">Name of the save.</param>
+    /// <returns>Loaded settings.</returns>
     public static Settings Load(string saveName)
     {
         var json = File.ReadAllText(Path.Combine(SavesLocation, saveName, SaveFileName));
@@ -53,6 +73,9 @@ public class Settings
         return retrievedSettings;
     }
 
+    /// <summary>
+    /// Saves the current settings.
+    /// </summary>
     public void Save()
     {
         var json = JsonSerializer.Serialize(this);

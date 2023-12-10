@@ -4,17 +4,23 @@ using StbImageSharp;
 
 namespace Common;
 
+/// <summary>
+/// Represents a texture in OpenGL.
+/// </summary>
 public class Texture
 {
     private readonly int _handle;
 
+    /// <summary>
+    /// Gets the OpenGL handle for this texture.
+    /// </summary>
     public int Name { get => _handle; }
 
     /// <summary>
     /// Loads a texture from a file.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <param name="path">Path to the texture file</param>
+    /// <returns>The loaded texture</returns>
     public static Texture LoadFromFile(string path)
     {
         int handle = GL.GenTexture();
@@ -43,10 +49,10 @@ public class Texture
     }
 
     /// <summary>
-    /// Loads a texture from a bitmap.
+    /// Loads a texture from a SKBitmap object.
     /// </summary>
-    /// <param name="bitmap"></param>
-    /// <returns></returns>
+    /// <param name="bitmap">The bitmap containing the texture data</param>
+    /// <returns>The loaded texture</returns>
     public static Texture LoadFromBitmap(SKBitmap bitmap)
     {
         int handle = GL.GenTexture();
@@ -73,7 +79,7 @@ public class Texture
     /// Loads a cubemap from files.
     /// </summary>
     /// <param name="paths">Paths to files with faces of the cubemap</param>
-    /// <returns></returns>
+    /// <returns>The loaded cubemap texture</returns>
     public static Texture LoadCubemap(string[] paths)
     {
         int handle = GL.GenTexture();
@@ -103,6 +109,10 @@ public class Texture
         _handle = glHandle;
     }
 
+    /// <summary>
+    /// Makes this texture active on the specified texture unit.
+    /// </summary>
+    /// <param name="unit">The OpenGL texture unit to bind the texture to</param>
     public void Use(TextureUnit unit)
     {
         GL.ActiveTexture(unit);
