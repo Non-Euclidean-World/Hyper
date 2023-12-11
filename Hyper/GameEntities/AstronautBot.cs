@@ -146,6 +146,9 @@ public class AstronautBot : Humanoid
 
     private void CreateProjectile(Scene scene)
     {
+        if (ViewDirection == Vector3.Zero)
+            return;
+
         var normalizedView = Conversions.ToNumericsVector(Vector3.NormalizeFast(ViewDirection));
         var q = Helpers.CreateQuaternionFromTwoVectors(System.Numerics.Vector3.UnitX, normalizedView);
         var projectile = Projectile.CreateStandardProjectile(scene.SimulationManager.Simulation,
