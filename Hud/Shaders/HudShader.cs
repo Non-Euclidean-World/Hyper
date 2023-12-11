@@ -41,18 +41,18 @@ public class HudShader : Shader
     /// <summary>
     /// Sets the color of the rendered object.
     /// </summary>
-    /// <param name="color"></param>
+    /// <param name="color">The color in (r,g,b,a) format.</param>
     public void SetColor(Vector4 color) => SetVector4("color", color);
 
     /// <summary>
     /// Sets the texture of the rendered object.
     /// </summary>
-    /// <param name="useTexture"></param>
+    /// <param name="useTexture">The texture to be used.</param>
     public void UseTexture(bool useTexture) => SetBool("useTexture", useTexture);
 
     /// <summary>
     /// Sets the model matrix of the rendered object.
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">The model matrix.</param>
     public void SetModel(Matrix4 model) => SetMatrix4("model", model);
 }
