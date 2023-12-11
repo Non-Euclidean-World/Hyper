@@ -8,7 +8,7 @@ namespace Hud.Widgets.SingleChild;
 public class Visibility : SingleChildWidget
 {
     public bool Visible;
-    
+
     /// <summary>
     /// Creates an instance of Visibility class.
     /// </summary>
@@ -19,13 +19,13 @@ public class Visibility : SingleChildWidget
         Child = child;
         Visible = visible;
     }
-    
+
     public override void Render(Context context)
     {
         if (Visible)
             Child.Render(context);
     }
-    
+
     public override Vector2 GetSize()
     {
         return Visible ? Child.GetSize() : Vector2.Zero;

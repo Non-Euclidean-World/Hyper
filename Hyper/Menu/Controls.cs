@@ -30,7 +30,7 @@ public class Controls : SingleChildWidget
         {"L", "Leave Car"},
         {"Y", "Toggle Flashlight"},
     };
-    
+
     public Controls()
     {
         Child = GetChild();
@@ -59,7 +59,7 @@ public class Controls : SingleChildWidget
         const float width = 0.6f;
         const float height = 0.1f;
         var padding = new Vector2(0.03f);
-        
+
         return new Padding(
             size: 0.01f,
             child: new SizeBox(

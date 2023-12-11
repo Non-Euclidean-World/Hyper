@@ -11,32 +11,32 @@ public class AssimpConversionsTest
         // Arrange
         var v = new Assimp.Vector3D(1, 2, 3);
         var expected = new System.Numerics.Vector3(1, 2, 3);
-        
+
         // Act
         var actual = AssimpConversions.ToNumericsVector(v);
-        
+
         // Assert
         actual.X.Should().Be(expected.X);
         actual.Y.Should().Be(expected.Y);
         actual.Z.Should().Be(expected.Z);
     }
-    
+
     [Test]
     public void ToOpenTkVectorTest()
     {
         // Arrange
         var v = new Assimp.Vector3D(1, 2, 3);
         var expected = new OpenTK.Mathematics.Vector3(1, 2, 3);
-        
+
         // Act
         var actual = AssimpConversions.ToOpenTKVector(v);
-        
+
         // Assert
         actual.X.Should().Be(expected.X);
         actual.Y.Should().Be(expected.Y);
         actual.Z.Should().Be(expected.Z);
     }
-    
+
     [Test]
     public void ToOpenTkMatrixTest()
     {
@@ -45,16 +45,16 @@ public class AssimpConversionsTest
             1, 2, 3, 4,
             5, 6, 7, 8,
             9, 10, 11, 12,
-            13, 14 ,15, 16);
+            13, 14, 15, 16);
         var expected = new OpenTK.Mathematics.Matrix4(
             1, 2, 3, 4,
             5, 6, 7, 8,
             9, 10, 11, 12,
-            13, 14 ,15, 16);
-        
+            13, 14, 15, 16);
+
         // Act
         var actual = AssimpConversions.ToOpenTKMatrix(m);
-        
+
         // Assert
         actual.M11.Should().Be(expected.M11);
         actual.M12.Should().Be(expected.M12);

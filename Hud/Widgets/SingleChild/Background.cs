@@ -20,11 +20,6 @@ public class Background : SingleChildWidget
         Color = ColorGetter.GetVector(color);
     }
 
-    public Background(Widget child, Vector4 color) : base(child)
-    {
-        Color = color;
-    }
-
     public override void Render(Context context)
     {
         GL.BindVertexArray(SharedVao.Instance.Vao);

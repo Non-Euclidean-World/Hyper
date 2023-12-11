@@ -2,13 +2,21 @@
 using OpenTK.Graphics.OpenGL4;
 
 namespace Hud;
-
+/// <summary>
+/// The shader VAO used for all HUD elements.
+/// </summary>
 public class SharedVao
 {
     private static readonly Lazy<SharedVao> InternalInstance = new(() => new SharedVao());
 
+    /// <summary>
+    /// Instance of the shared VAO. Implemented as a singleton.
+    /// </summary>
     public static SharedVao Instance => InternalInstance.Value;
 
+    /// <summary>
+    /// The VAO.
+    /// </summary>
     public readonly int Vao;
 
     private SharedVao()

@@ -10,7 +10,7 @@ public class ChunkTests
 {
     private const int ChunkSize = 5;
     private static readonly Vector3i ChunkPosition = Vector3i.Zero;
-    
+
     [SetUp]
     public void SetUp()
     {
@@ -36,7 +36,7 @@ public class ChunkTests
         chunk.Voxels[0, 1, 0].Value.Should().BeGreaterThan(0);
         chunk.Voxels[0, 0, 1].Value.Should().BeGreaterThan(0);
     }
-    
+
     [Test]
     public void MineShouldNotUpdateMeshOutsideRadius()
     {
@@ -53,7 +53,7 @@ public class ChunkTests
         // Assert
         chunk.Voxels[3, 3, 3].Value.Should().Be(0);
     }
-    
+
     [Test]
     public void BuildShouldUpdateMeshInsideRadius()
     {
@@ -73,7 +73,7 @@ public class ChunkTests
         chunk.Voxels[0, 1, 0].Value.Should().BeLessThan(0);
         chunk.Voxels[0, 0, 1].Value.Should().BeLessThan(0);
     }
-    
+
     [Test]
     public void BuildShouldNotUpdateMeshOutsideRadius()
     {
@@ -90,7 +90,7 @@ public class ChunkTests
         // Assert
         chunk.Voxels[3, 3, 3].Value.Should().Be(0);
     }
-    
+
     [Test]
     public void DistanceFromChunkShouldReturnZeroWhenInside()
     {
@@ -104,7 +104,7 @@ public class ChunkTests
         // Assert
         distance.Should().Be(0);
     }
-    
+
     [Test]
     public void DistanceFromChunkShouldReturnDistance()
     {

@@ -40,7 +40,7 @@ public class MainMenu
     private readonly NewGame _newGame = new();
 
     private readonly Widget _newGameScreen;
-    
+
     private readonly Widget _controlsScreen;
 
     private SaveGridMode _saveGridMode = SaveGridMode.Load;

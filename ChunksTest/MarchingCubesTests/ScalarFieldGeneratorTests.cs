@@ -8,7 +8,7 @@ namespace ChunksTest.MarchingCubesTests;
 public class ScalarFieldGeneratorTests
 {
     public static readonly int Extra = Chunk.Overlap + 1;
-    
+
     [Test]
     public void Generate_WithSpecificSize_ShouldCreateCorrectlySizedVoxelArray()
     {
@@ -25,7 +25,7 @@ public class ScalarFieldGeneratorTests
         voxelArray.GetLength(1).Should().Be(height + Extra);
         voxelArray.GetLength(2).Should().Be(depth + Extra);
     }
-    
+
     [Test]
     public void Generate_WithUniformSize_ShouldCreateCorrectlySizedVoxelArray()
     {

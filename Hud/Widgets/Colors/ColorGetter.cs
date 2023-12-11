@@ -2,10 +2,15 @@
 
 namespace Hud.Widgets.Colors;
 /// <summary>
-/// Converts Color to Vector4.
+/// Converts color to <see cref="Vector4"/>.
 /// </summary>
 public static class ColorGetter
 {
+    /// <summary>
+    /// Gets the Vector4 representation of the Color.
+    /// </summary>
+    /// <param name="color">The color.</param>
+    /// <returns>The <see cref="Vector4"/> representation of the Color.</returns>
     public static Vector4 GetVector(Color color) => color switch
     {
         Color.Primary => new Vector4(0.15f, 0.22f, 0.35f, 1),

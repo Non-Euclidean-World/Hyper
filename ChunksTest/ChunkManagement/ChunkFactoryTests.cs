@@ -11,13 +11,13 @@ public class ChunkFactoryTests
 {
     private static readonly ScalarFieldGenerator ScalarFieldGenerator = new(0);
     private static readonly MeshGenerator MeshGenerator = new();
-    
+
     [SetUp]
     public void Setup()
     {
         Chunk.Size = 16;
     }
-    
+
     [Test]
     public void GenerateChunk_ShouldCreateChunkWithExpectedProperties()
     {
@@ -33,7 +33,7 @@ public class ChunkFactoryTests
         chunk.Position.Should().Be(position);
         chunk.Voxels.Should().NotBeNull();
     }
-    
+
     [Test]
     public void GenerateChunk_WithSameParameters_ShouldCreateConsistentChunks()
     {

@@ -3,11 +3,17 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Hud.Shaders;
-
+/// <summary>
+/// A shader that is used to render 2D elements.
+/// </summary>
 public class HudShader : Shader
 {
     private HudShader((string path, ShaderType shaderType)[] shaders) : base(shaders) { }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="HudShader"/> class.
+    /// </summary>
+    /// <returns>A new <see cref="HudShader"/>.</returns>
     public static HudShader Create()
     {
         var shader = new[]
@@ -19,8 +25,12 @@ public class HudShader : Shader
         return new HudShader(shader);
     }
 
-    public void SetProjection(Matrix4 projection) => SetMatrix4("projection", projection);
+    private void SetProjection(Matrix4 projection) => SetMatrix4("projection", projection);
 
+    /// <summary>
+    /// Sets up the shader.
+    /// </summary>
+    /// <param name="aspectRatio">The screen aspect ratio.</param>
     public void SetUp(float aspectRatio)
     {
         Use();
@@ -28,9 +38,21 @@ public class HudShader : Shader
         SetProjection(projection);
     }
 
+    /// <summary>
+    /// Sets the color of the rendered object.
+    /// </summary>
+    /// <param name="color">The color in (r,g,b,a) format.</param>
     public void SetColor(Vector4 color) => SetVector4("color", color);
 
+    /// <summary>
+    /// Sets the texture of the rendered object.
+    /// </summary>
+    /// <param name="useTexture">The texture to be used.</param>
     public void UseTexture(bool useTexture) => SetBool("useTexture", useTexture);
 
+    /// <summary>
+    /// Sets the model matrix of the rendered object.
+    /// </summary>
+    /// <param name="model">The model matrix.</param>
     public void SetModel(Matrix4 model) => SetMatrix4("model", model);
 }

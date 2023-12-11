@@ -46,7 +46,7 @@ public class SphericalMeshGeneratorTests
         // Assert
         result.Should().NotBeEmpty();
     }
-    
+
     [Test]
     public void GetMesh_ShouldReturnEmpty_WhenOutsideRadius()
     {

@@ -16,6 +16,9 @@ internal class InputText : Widget
 
     private readonly float _size;
 
+    /// <summary>
+    /// The content of the text.
+    /// </summary>
     public string Content = "";
 
     private readonly Vector4 _color;
@@ -28,6 +31,14 @@ internal class InputText : Widget
 
     private readonly string _placeholder = "";
 
+    /// <summary>
+    /// Creates an instance of <see cref="InputText"/> class.
+    /// </summary>
+    /// <param name="text">The initial text.</param>
+    /// <param name="size">The size of the widget.</param>
+    /// <param name="placeholder">Whether the initial text is a placeholder.</param>
+    /// <param name="characterLimit">The maximum number of characters. If negative there is no limit.</param>
+    /// <param name="color">The color of the widget.</param>
     public InputText(string text, float size, bool placeholder = false, int characterLimit = -1, Color color = Color.White)
     {
         _size = size;
@@ -85,18 +96,6 @@ internal class InputText : Widget
         Activate();
     }
 
-    public void Activate()
-    {
-        _isActive = true;
-        _stopwatch.Start();
-    }
-
-    public void Deactivate()
-    {
-        _isActive = false;
-        _stopwatch.Stop();
-    }
-
     public override void KeyboardInput(KeyboardKeyEventArgs e)
     {
         if (!_isActive)
@@ -107,14 +106,14 @@ internal class InputText : Widget
         switch (key)
         {
             case Keys.Backspace:
-            {
-                if (_caretPosition > 0)
                 {
-                    _caretPosition--;
-                    Content = Content.Remove(_caretPosition, 1);
+                    if (_caretPosition > 0)
+                    {
+                        _caretPosition--;
+                        Content = Content.Remove(_caretPosition, 1);
+                    }
+                    break;
                 }
-                break;
-            }
             case Keys.Space:
                 AddCharacter(" ");
                 break;
@@ -136,6 +135,24 @@ internal class InputText : Widget
                 _stopwatch.Restart();
                 break;
         }
+    }
+
+    /// <summary>
+    /// Activates the widget. It will start accepting input.
+    /// </summary>
+    public void Activate()
+    {
+        _isActive = true;
+        _stopwatch.Start();
+    }
+
+    /// <summary>
+    /// Deactivates the widget. It will stop accepting input.
+    /// </summary>
+    public void Deactivate()
+    {
+        _isActive = false;
+        _stopwatch.Stop();
     }
 
     private void AddCharacter(string c)
