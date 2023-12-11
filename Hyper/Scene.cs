@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using BepuPhysics;
+﻿using BepuPhysics;
 using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
@@ -47,7 +46,8 @@ internal class Scene : IInputSubscriber
     {
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
-            new SolveDescription(6, 1));
+            new SolveDescription(6, 1),
+            timeStepSeconds: 1 / 60f);
 
         Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 8, 0), SimulationManager), context);
         FlashLights.Add(Player.FlashLight);
@@ -58,6 +58,7 @@ internal class Scene : IInputSubscriber
         GlobalScale = globalScale;
 
         RegisterCallbacks(context);
+        SimulationManager.RegisterUpdateAction(UpdateAction);
     }
 
     /// <summary>
@@ -164,32 +165,12 @@ internal class Scene : IInputSubscriber
         FlashLights.Add(Player.FlashLight);
     }
 
-    private double _timeAccumulator = 0;
-
-    private readonly Stopwatch _stopwatch = new Stopwatch();
-
-    private double _prev = 0;
-
-    private float _timeStep = 1 / 60f;
-
     public void RegisterCallbacks(Context context)
     {
-        _stopwatch.Start();
-        context.RegisterUpdateFrameCallback((_) => // I dont know what e.Time is but it's a freakin lie
+        SimulationManager.Start();
+        context.RegisterUpdateFrameCallback((_) =>
         {
-            double now = _stopwatch.ElapsedTicks;
-            double dt = (now - _prev) / Stopwatch.Frequency;
-            _timeAccumulator += dt;
-            _prev = now;
-            while (_timeAccumulator >= _timeStep)
-            {
-                SimulationManager.Timestep(_timeStep);
-                SimulationManager.FlushContactEvents();
-                SimulationManager.ResetRayCastingResult(Player, Player.RayId);
-                SimulationManager.RayCast(Player, Player.RayId);
-
-                _timeAccumulator -= _timeStep;
-            }
+            SimulationManager.Update();
         });
     }
 
@@ -215,5 +196,12 @@ internal class Scene : IInputSubscriber
         Player.Dispose();
 
         SimulationManager.Dispose();
+    }
+
+    private void UpdateAction()
+    {
+        SimulationManager.FlushContactEvents();
+        SimulationManager.ResetRayCastingResult(Player, Player.RayId);
+        SimulationManager.RayCast(Player, Player.RayId);
     }
 }

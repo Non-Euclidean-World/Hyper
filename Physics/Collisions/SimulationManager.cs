@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Diagnostics;
+using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
 using Physics.ContactCallbacks;
@@ -53,14 +54,24 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
 
     private HitHandler _hitHandler;
 
+    private readonly List<Action> _updateActions = new();
+
     private bool _disposed = false;
+
+    private double _timeAccumulator = 0;
+
+    private readonly Stopwatch _stopwatch = new();
+
+    private float _timeStepSeconds;
+
+    private double _prev = 0;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SimulationManager{TPoseIntegratorCallbacks}"/> class.
     /// </summary>
     /// <param name="poseIntegratorCallbacks">Callbacks for pose integration.</param>
     /// <param name="solveDescription">Description of the solver to use.</param>
-    public SimulationManager(TPoseIntegratorCallbacks poseIntegratorCallbacks, SolveDescription solveDescription)
+    public SimulationManager(TPoseIntegratorCallbacks poseIntegratorCallbacks, SolveDescription solveDescription, float timeStepSeconds)
 
     {
         BufferPool = new BufferPool();
@@ -79,13 +90,49 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
 
         BufferPool.Take(1, out RayCastingResults);
         _hitHandler = new HitHandler { Hits = RayCastingResults };
+        _timeStepSeconds = timeStepSeconds;
+    }
+
+    /// <summary>
+    /// Starts the simulation's internal clock.
+    /// </summary>
+    public void Start()
+    {
+        _stopwatch.Start();
+    }
+
+    /// <summary>
+    /// Register actions that should happen at each time step of the simulation.
+    /// </summary>
+    /// <param name="updateActions">Actions to be performed on each time step.</param>
+    public void RegisterUpdateAction(Action updateAction)
+    {
+        _updateActions.Add(updateAction);
+    }
+
+    /// <summary>
+    /// Updates the simulation.
+    /// </summary>
+    public void Update()
+    {
+        double now = _stopwatch.ElapsedTicks;
+        double dt = (now - _prev) / Stopwatch.Frequency;
+        _timeAccumulator += dt;
+        _prev = now;
+        while (_timeAccumulator >= _timeStepSeconds)
+        {
+            Timestep(_timeStepSeconds);
+            _updateActions.ForEach(a => a.Invoke());
+
+            _timeAccumulator -= _timeStepSeconds;
+        }
     }
 
     /// <summary>
     /// Advances the simulation by a specified time increment.
     /// </summary>
     /// <param name="dt">Time increment for the simulation step.</param>
-    public void Timestep(float dt)
+    private void Timestep(float dt)
     {
         Simulation.Timestep(dt, _threadDispatcher);
     }
