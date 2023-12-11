@@ -175,7 +175,6 @@ internal class Scene : IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        SimulationManager.Start();
         context.RegisterUpdateFrameCallback((_) =>
         {
             SimulationManager.Update();

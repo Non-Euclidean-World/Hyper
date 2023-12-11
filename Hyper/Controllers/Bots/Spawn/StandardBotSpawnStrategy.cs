@@ -18,8 +18,8 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
 
     public StandardBotSpawnStrategy(Scene scene, Settings settings) : base(scene, settings)
     {
-        _maxBots = 300;
-        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 0.7f;
+        _maxBots = 4 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
+        _minSpawnRadius = Chunk.Size * settings.RenderDistance * 0.8f;
         _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 1f;
         _despawnRadius = Chunk.Size * settings.RenderDistance * 4;
     }

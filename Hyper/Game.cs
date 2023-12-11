@@ -73,6 +73,7 @@ public class Game
         };
 
         _controllers = controllerFactory.CreateControllers(Settings);
+        _scene.SimulationManager.Start();
     }
 
     public void SaveAndClose()
