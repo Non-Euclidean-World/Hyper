@@ -58,6 +58,8 @@ internal class SphericalControllerFactory : IControllerFactory
         var lightSourceShader = SphericalLightSourceShader.Create(_lowerSphereCenter);
         var hudShader = HudShader.Create();
 
+        _scene.SpawnPlayer(new PlayerSpawnStrategy(_scene, settings).GetSpawnLocation());
+
         return new IController[]
         {
             new PlayerController(_scene, chunkWorker, _context, modelShader, objectShader, lightSourceShader, transporter),

@@ -18,6 +18,12 @@ public class AstronautBot : Humanoid
 
     private float _moveTime;
 
+    private const float MaxNotShootingTime = 4;
+
+    private float _notShootingTime;
+
+    private float _shootTime = 4;
+
     private readonly Vector3i[]? _sphereCenters;
 
     private bool _isFriendly;
@@ -106,7 +112,7 @@ public class AstronautBot : Humanoid
         _isMoving = true;
         var movementDirection = System.Numerics.Vector2.UnitY;
 
-        if (FlatLength(ViewDirection) < 0.2)
+        if (FlatLength(ViewDirection) < 2.5)
         {
             movementDirection = System.Numerics.Vector2.Zero;
             ViewDirection = Vector3.Zero;
@@ -122,8 +128,13 @@ public class AstronautBot : Humanoid
             Idle();
         }
 
-        if (_random.Next(5000) == 0)
+        _notShootingTime += time;
+        if (_notShootingTime >= _shootTime)
+        {
             CreateProjectile(scene);
+            _shootTime = _random.NextSingle() * MaxNotShootingTime;
+            _notShootingTime = 0;
+        }
 
         PhysicalCharacter.UpdateCharacterGoals(simulation,
             Conversions.ToNumericsVector(ViewDirection),

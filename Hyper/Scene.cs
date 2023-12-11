@@ -30,7 +30,7 @@ internal class Scene : IInputSubscriber
 
     public FourWheeledCar? PlayersCar { get; private set; }
 
-    public Player Player { get; private set; }
+    public Player Player { get; private set; } = null!;
 
     public readonly Camera Camera;
 
@@ -42,23 +42,31 @@ internal class Scene : IInputSubscriber
 
     public readonly float GlobalScale;
 
-    public Scene(Camera camera, float elevation, float globalScale, Context context)
+    private Context _context;
+
+    public Scene(Camera camera, float globalScale, Context context)
     {
         SimulationManager = new SimulationManager<PoseIntegratorCallbacks>(
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0, -10, 0)),
             new SolveDescription(6, 1),
             timeStepSeconds: 1 / 60f);
 
-        Player = new Player(Humanoid.CreatePhysicalCharacter(new Vector3(0, elevation + 8, 0), SimulationManager), context);
-        FlashLights.Add(Player.FlashLight);
-        SimulationMembers.Add(Player);
-        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
+        _context = context;
+
 
         Camera = camera;
         GlobalScale = globalScale;
 
         RegisterCallbacks(context);
         SimulationManager.RegisterUpdateAction(UpdateAction);
+    }
+
+    public void SpawnPlayer(Vector3 location)
+    {
+        Player = new Player(Humanoid.CreatePhysicalCharacter(location, SimulationManager), _context);
+        FlashLights.Add(Player.FlashLight);
+        SimulationMembers.Add(Player);
+        SimulationManager.RegisterContactCallback(Player.BodyHandle, contactInfo => Player.ContactCallback(contactInfo, SimulationMembers));
     }
 
     /// <summary>

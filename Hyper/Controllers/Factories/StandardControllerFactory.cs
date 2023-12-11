@@ -47,6 +47,8 @@ internal class StandardControllerFactory : IControllerFactory
         var hudShader = HudShader.Create();
         var skyboxShader = StandardSkyboxShader.Create();
 
+        _scene.SpawnPlayer(new PlayerSpawnStrategy(_scene, settings).GetSpawnLocation());
+
         return new IController[]
         {
             new PlayerController(_scene, chunkWorker, _context, modelShader, objectShader, lightSourceShader, transporter),
