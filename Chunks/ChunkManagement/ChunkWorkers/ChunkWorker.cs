@@ -172,7 +172,6 @@ public class ChunkWorker : IChunkWorker
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
         {
             IsUpdating = false; // TODO is this ever hit?
-            //Console.WriteLine("just chekin ...");
             return;
         }
 
