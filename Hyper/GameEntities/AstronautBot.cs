@@ -112,7 +112,9 @@ public class AstronautBot : Humanoid
         _isMoving = true;
         var movementDirection = System.Numerics.Vector2.UnitY;
 
-        if (FlatLength(ViewDirection) < 2.5)
+        const float minDistanceFromPlayer = 2.5f;
+
+        if (FlatLength(ViewDirection) < minDistanceFromPlayer)
         {
             movementDirection = System.Numerics.Vector2.Zero;
             ViewDirection = Vector3.Zero;

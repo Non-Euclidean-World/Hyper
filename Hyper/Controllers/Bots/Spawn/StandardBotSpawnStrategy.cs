@@ -21,7 +21,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
         _maxBots = 4 * settings.RenderDistance * settings.RenderDistance * Chunk.Size / 32 * Chunk.Size / 32;
         _minSpawnRadius = Chunk.Size * settings.RenderDistance * 0.8f;
         _maxSpawnRadius = Chunk.Size * settings.RenderDistance * 1f;
-        _despawnRadius = Chunk.Size * settings.RenderDistance * 4;
+        _despawnRadius = Chunk.Size * settings.RenderDistance;
     }
 
     public override void Spawn()
@@ -30,7 +30,7 @@ internal class StandardBotSpawnStrategy : AbstractBotSpawnStrategy
         {
             Vector2 randomVec = GetRandomVector(_minSpawnRadius, _maxSpawnRadius);
             var position = new Vector3(randomVec.X + Scene.Camera.ReferencePointPosition.X, 0, randomVec.Y + Scene.Camera.ReferencePointPosition.Z);
-            position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
+            position.Y = SpawnUtils.GetSpawnHeight((int)position.X, (int)position.Z, Scene);
             var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager));
 #if DEBUG
             Console.WriteLine($"Spawning bot {bot.BodyHandle}");
