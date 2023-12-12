@@ -51,8 +51,6 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ConcurrentQueue<Chunk> _chunksToUpdateQueue = new();
 
-    private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
-
     private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
@@ -61,7 +59,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly int _renderDistance;
 
-    private const int NumberOfThreads = 2;
+    private const int NumberOfThreads = 1;
 
     private readonly ChunkHandler _chunkHandler;
 
@@ -173,7 +171,7 @@ public class ChunkWorker : IChunkWorker
     {
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
         {
-            IsUpdating = false;
+            IsUpdating = false; // TODO is this ever hit?
             return;
         }
 
@@ -240,11 +238,7 @@ public class ChunkWorker : IChunkWorker
 
     public void EnqueueUpdatingChunk(Chunk chunk)
     {
-        if (_chunksToUpdateHashSet.Contains(chunk))
-            return;
-
         IsUpdating = true;
-        _chunksToUpdateHashSet.Add(chunk);
         _chunksToUpdateQueue.Enqueue(chunk);
         _jobs.Add(JobType.Update);
     }
@@ -261,11 +255,12 @@ public class ChunkWorker : IChunkWorker
 
     private void ResolveUpdatedChunks()
     {
+        // TODO I think we should update a whole batch (everything that was pumped into the queue by a single invocation the Pickaxe.ModifyTerrain)
+        // instead of individual chunks, because otherwise we're getting those gaps between chunks
         while (_updatedChunks.TryDequeue(out var chunk))
         {
             chunk.Mesh.Update();
             chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-            _chunksToUpdateHashSet.Remove(chunk);
         }
     }
 

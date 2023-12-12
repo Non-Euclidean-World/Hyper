@@ -67,7 +67,7 @@ internal abstract class Pickaxe : Item
             {
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
-                    modifier(chunk)(location, time + modificationTime, BrushWeight, Radius);
+                    modifier(chunk)(location, time + modificationTime, BrushWeight, Radius); // TODO why this is not done on the other thread? *Possible* advantages: faster & eliminate race condition we potentially get in ChunkWorker, line 179
                     chunkWorker.EnqueueUpdatingChunk(chunk);
                 }
 
@@ -75,7 +75,7 @@ internal abstract class Pickaxe : Item
                     continue;
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
-                    chunk.Mine(otherSphereLocation.Value, time + modificationTime, BrushWeight, Radius);
+                    modifier(chunk)(otherSphereLocation.Value, time + modificationTime, BrushWeight, Radius);
                     chunkWorker.EnqueueUpdatingChunk(chunk);
                 }
             }

@@ -21,7 +21,7 @@ internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
             var x = Chunk.Size / 2 + Rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
             var z = Chunk.Size / 2 + Rand.Next(-DistanceFromChunkCenter, DistanceFromChunkCenter);
             var position = chunk.Position + new Vector3(x, 0, z);
-            position.Y = GetSpawnHeight((int)position.X, (int)position.Z);
+            position.Y = SpawnUtils.GetSpawnHeight((int)position.X, (int)position.Z, Scene);
             var bot = new AstronautBot(Humanoid.CreatePhysicalCharacter(position, Scene.SimulationManager), Scene.SphereCenters)
             {
                 CurrentSphereId = chunk.Sphere

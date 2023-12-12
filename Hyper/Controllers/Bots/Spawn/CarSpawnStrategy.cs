@@ -20,8 +20,8 @@ internal class CarSpawnStrategy : AbstractBotSpawnStrategy
     {
         const int x = 5;
         const int z = 11;
-        const float heightOffset = 5f;
-        float y = GetSpawnHeight(x, z) + heightOffset;
+        const float heightOffset = 2f;
+        float y = SpawnUtils.GetSpawnHeight(x, z, Scene) + heightOffset;
         var carInitialPosition = new Vector3(x, y, z);
 
         var car = new SpaceMustang(SimpleCar.CreateStandardCar(Scene.SimulationManager.Simulation, Scene.SimulationManager.BufferPool, Scene.SimulationManager.Properties,
