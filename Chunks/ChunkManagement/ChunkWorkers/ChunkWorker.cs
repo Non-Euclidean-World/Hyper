@@ -171,8 +171,8 @@ public class ChunkWorker : IChunkWorker
     {
         if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
         {
-            IsUpdating = false; // is this ever hit?
-            //Console.WriteLine("hello");
+            IsUpdating = false; // TODO is this ever hit?
+            //Console.WriteLine("just chekin ...");
             return;
         }
 
@@ -256,6 +256,8 @@ public class ChunkWorker : IChunkWorker
 
     private void ResolveUpdatedChunks()
     {
+        // TODO I think we should update a whole batch (everything that was pumped into the queue by a single invocation the Pickaxe.ModifyTerrain)
+        // instead of individual chunks, because otherwise we're getting those gaps between chunks
         while (_updatedChunks.TryDequeue(out var chunk))
         {
             chunk.Mesh.Update();

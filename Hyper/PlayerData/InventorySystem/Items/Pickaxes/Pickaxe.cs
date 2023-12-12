@@ -67,7 +67,7 @@ internal abstract class Pickaxe : Item
             {
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
-                    modifier(chunk)(location, time + modificationTime, BrushWeight, Radius); // why this is not done on the other thread?
+                    modifier(chunk)(location, time + modificationTime, BrushWeight, Radius); // TODO why this is not done on the other thread? *Possible* advantages: faster & eliminate race condition we potentially get in ChunkWorker, line 179
                     chunkWorker.EnqueueUpdatingChunk(chunk);
                 }
 
