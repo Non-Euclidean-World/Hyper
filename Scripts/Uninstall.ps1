@@ -36,5 +36,10 @@ $confirmation = Read-Host "Do you want to remove the game (y/n)? This will remov
 
 Set-Location $rootDirectory
 if ($confirmation -eq "y") {
+    $scriptDirName = Split-Path -Path $scriptDirectory -Leaf
+    if ($scriptDirName -notmatch "Hyper-v\d+\.\d+\.\d+") {
+        Write-Host "$scriptDirName not recognized as the installation directory. Aborting."
+        exit
+    }
     Get-ChildItem -Path $scriptDirectory -Recurse | Foreach-object { Remove-item -Recurse -path $_.FullName }
 }
