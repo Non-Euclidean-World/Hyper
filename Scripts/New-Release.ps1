@@ -1,4 +1,5 @@
 <#
+
 .SYNOPSIS
 Creates a new release of the Hyper project.
     
@@ -8,16 +9,24 @@ Name of the release.
 .PARAMETER MainBranchCheck
 Indicates whether to check if the release is being done from the main branch.
 
+.PARAMETER CreateSourceArchive
+Indicates whether to create an archive with the source code.
+
 .EXAMPLE
 
 PS> ./Scripts/New-Release.ps1 -ReleaseName Hyper-v0.0.0
+
+.EXAMPLE
+
+PS> ./Scripts/New-Release.ps1 -ReleaseName Hyper-v0.0.0 -CreateSourceArchive $false -MainBranchCheck $false
 
 #>
 
 param(
     [Parameter(Mandatory)]
     [string]$ReleaseName,
-    [bool]$MainBranchCheck = $true
+    [bool]$MainBranchCheck = $true,
+    [bool]$CreateSourceArchive = $true
 )
 
 function CheckIfMainBranchIsTracked {
@@ -118,19 +127,25 @@ foreach ($runtime in $runtimes) {
         exit
     }
 
+    # copy the uninstall script
+    $uninstallScriptPath = Join-Path -Path $scriptDirectory -ChildPath "Uninstall.ps1"
+    Copy-Item -Path $uninstallScriptPath -Destination $runtimePublishPath
+
     # create a zip archive
     $releaseArchive = Join-Path -Path $releasePath -ChildPath "$runtime.zip"
     Compress-Archive -Path $runtimePublishPath -DestinationPath $releaseArchive
 }
 
-# create a new directory with fresh version of the source code
-$repoCopy = Join-Path -Path $publishPath -ChildPath "src" | Join-Path -ChildPath $ReleaseName
-New-Item -ItemType Directory -Force -Path $repoCopy
-git clone "https://github.com/Non-Euclidean-World/Hyper.git" $repoCopy
+if ($CreateSourceArchive -eq $true) {
+    # create a new directory with fresh version of the source code
+    $repoCopy = Join-Path -Path $publishPath -ChildPath "src" | Join-Path -ChildPath $ReleaseName
+    New-Item -ItemType Directory -Force -Path $repoCopy
+    git clone "https://github.com/Non-Euclidean-World/Hyper.git" $repoCopy
 
-# create a zip archive of the source code
-$releaseArchive = Join-Path -Path $releasePath -ChildPath "source.zip"
-Compress-Archive -Path $repoCopy -DestinationPath $releaseArchive
+    # create a zip archive of the source code
+    $releaseArchive = Join-Path -Path $releasePath -ChildPath "source.zip"
+    Compress-Archive -Path $repoCopy -DestinationPath $releaseArchive
+}
 
 Write-Host "The release archives created in $releasePath."
 

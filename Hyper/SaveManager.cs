@@ -6,6 +6,9 @@ public static class SaveManager
 {
     public static List<string> GetSaves()
     {
+        if (!Directory.Exists(Settings.SavesLocation))
+            return new List<string>();
+
         return Directory.GetDirectories(Settings.SavesLocation)
             .Select(f => new FileInfo(f))
             .OrderByDescending(f => f.LastWriteTime)
