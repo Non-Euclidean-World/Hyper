@@ -127,9 +127,9 @@ foreach ($runtime in $runtimes) {
         exit
     }
 
-    # copy the uninstall script
-    $uninstallScriptPath = Join-Path -Path $scriptDirectory -ChildPath "Uninstall.ps1"
-    Copy-Item -Path $uninstallScriptPath -Destination $runtimePublishPath
+    # copy the readme file
+    $readmePath = Join-Path -Path $rootDirectory -ChildPath "README.md"
+    Copy-Item -Path $readmePath -Destination $runtimePublishPath
 
     # create a zip archive
     $releaseArchive = Join-Path -Path $releasePath -ChildPath "$runtime.zip"
