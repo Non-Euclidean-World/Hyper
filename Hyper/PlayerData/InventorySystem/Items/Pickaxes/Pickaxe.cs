@@ -51,10 +51,7 @@ internal abstract class Pickaxe : Item
                 otherSphereLocation = GetOtherSphereLocation(scene.Camera.Sphere, location, scene);
             }
 
-            ModificationArgs modificationArgs = new ModificationArgs
-            {
-                BatchNumber = _batchNumber++
-            };
+            ModificationArgs modificationArgs = new ModificationArgs();
 
             foreach (var chunk in chunkWorker.Chunks)
             {

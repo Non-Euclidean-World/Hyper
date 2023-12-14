@@ -16,5 +16,4 @@ public struct ModificationArgs
     public float BrushWeight;
     public int Radius;
     public Chunk Chunk;
-    public uint BatchNumber;
 }
