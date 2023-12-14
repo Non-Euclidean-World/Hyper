@@ -8,7 +8,7 @@ public interface IChunkWorker : IDisposable
 
     public bool IsUpdating { get; }
 
-    void EnqueueUpdatingChunk(Chunk chunk);
+    public void EnqueueModification(ModificationArgs modificationArgs);
 
     void Update(Vector3 currentPosition);
 }

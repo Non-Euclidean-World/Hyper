@@ -27,7 +27,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
 
     public List<Chunk> Chunks { get; }
 
-    private readonly BlockingCollection<Chunk> _chunksToUpdate = new(new ConcurrentQueue<Chunk>());
+    private readonly BlockingCollection<ModificationArgs> _modificationsToPerform = new(new ConcurrentQueue<ModificationArgs>());
 
     private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
 
@@ -80,11 +80,30 @@ public class NonGenerativeChunkWorker : IChunkWorker
     {
         try
         {
-            while (_chunksToUpdate.TryTake(out var chunk, Timeout.Infinite, _cancellationTokenSource.Token))
+            while (_modificationsToPerform.TryTake(out var modification, Timeout.Infinite, _cancellationTokenSource.Token))
             {
+                var modificationType = modification.ModificationType;
+                ref var location = ref modification.Location;
+                var time = modification.Time;
+                var brushWeight = modification.BrushWeight;
+                var radius = modification.Radius;
+                var chunk = modification.Chunk;
+
+                if (modificationType == ModificationType.Mine)
+                {
+                    chunk.Mine(location, time, brushWeight, radius);
+                }
+                else if (modificationType == ModificationType.Build)
+                {
+                    chunk.Build(location, time, brushWeight, radius);
+                }
+                else
+                    throw new NotImplementedException();
+
+
                 chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
-                if (_chunksToUpdate.Count == 0)
+                if (_modificationsToPerform.Count == 0)
                     IsUpdating = false;
             }
         }
@@ -117,14 +136,10 @@ public class NonGenerativeChunkWorker : IChunkWorker
         }
     }
 
-    public void EnqueueUpdatingChunk(Chunk chunk)
+    public void EnqueueModification(ModificationArgs modificationArgs)
     {
-        if (_chunksToUpdateHashSet.Contains(chunk))
-            return;
-
         IsUpdating = true;
-        _chunksToUpdateHashSet.Add(chunk);
-        _chunksToUpdate.Add(chunk);
+        _modificationsToPerform.Add(modificationArgs);
     }
 
     public void Dispose()

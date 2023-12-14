@@ -49,7 +49,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly HashSet<Vector3i> _savedChunks = new();
 
-    private readonly ConcurrentQueue<Chunk> _chunksToUpdateQueue = new();
+    private readonly ConcurrentQueue<ModificationArgs> _modificationsToPerform = new();
 
     private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
 
@@ -116,12 +116,12 @@ public class ChunkWorker : IChunkWorker
             {
                 foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
                 {
-                    while (!_chunksToUpdateQueue.IsEmpty)
+                    while (!_modificationsToPerform.IsEmpty)
                     {
                         UpdateChunks();
                     }
 
-                    if (_chunksToUpdateQueue.IsEmpty)
+                    if (_modificationsToPerform.IsEmpty)
                         IsUpdating = false;
 
                     switch (jobType)
@@ -169,11 +169,29 @@ public class ChunkWorker : IChunkWorker
 
     private void UpdateChunks()
     {
-        if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
+        if (!_modificationsToPerform.TryDequeue(out var modification))
         {
             IsUpdating = false; // TODO is this ever hit?
             return;
         }
+
+        var modificationType = modification.ModificationType;
+        ref var location = ref modification.Location;
+        var time = modification.Time;
+        var brushWeight = modification.BrushWeight;
+        var radius = modification.Radius;
+        var chunk = modification.Chunk;
+
+        if (modificationType == ModificationType.Mine)
+        {
+            chunk.Mine(location, time, brushWeight, radius);
+        }
+        else if (modificationType == ModificationType.Build)
+        {
+            chunk.Build(location, time, brushWeight, radius);
+        }
+        else
+            throw new NotImplementedException();
 
         chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
         _updatedChunks.Enqueue(chunk);
@@ -236,10 +254,10 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
-    public void EnqueueUpdatingChunk(Chunk chunk)
+    public void EnqueueModification(ModificationArgs modificationArgs)
     {
         IsUpdating = true;
-        _chunksToUpdateQueue.Enqueue(chunk);
+        _modificationsToPerform.Enqueue(modificationArgs);
         _jobs.Add(JobType.Update);
     }
 
