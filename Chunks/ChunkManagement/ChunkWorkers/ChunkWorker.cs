@@ -69,8 +69,6 @@ public class ChunkWorker : IChunkWorker
 
     private readonly MeshGenerator _meshGenerator;
 
-    private readonly object _lockUpdatedChunk = new object();
-
     public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator, int renderDistance)
     {
         Chunks = chunks;
@@ -197,7 +195,7 @@ public class ChunkWorker : IChunkWorker
 
         var mesh = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
 
-        lock (_lockUpdatedChunk)
+        lock (chunk.UpdatingLock)
             chunk.Mesh.Vertices = mesh;
 
         _updatedChunks.Enqueue(chunk);
@@ -281,7 +279,7 @@ public class ChunkWorker : IChunkWorker
     {
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            lock (_lockUpdatedChunk)
+            lock (chunk.UpdatingLock)
             {
                 chunk.Mesh.Update();
                 chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);

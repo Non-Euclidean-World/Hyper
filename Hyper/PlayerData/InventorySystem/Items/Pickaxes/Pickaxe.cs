@@ -17,8 +17,6 @@ internal abstract class Pickaxe : Item
 
     private float _buildTime = 0;
 
-    private uint _batchNumber;
-
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
         ModifyTerrain(scene, chunkWorker, time, ModificationType.Mine, ref _mineTime);

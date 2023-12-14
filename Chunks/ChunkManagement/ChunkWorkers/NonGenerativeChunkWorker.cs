@@ -45,8 +45,6 @@ public class NonGenerativeChunkWorker : IChunkWorker
 
     private readonly SphericalMeshGenerator _meshGenerator;
 
-    private readonly object _lockUpdatedChunk = new object();
-
     public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
     {
         _simulationManager = simulationManager;
@@ -101,7 +99,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
                     throw new NotImplementedException();
 
                 var mesh = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
-                lock (_lockUpdatedChunk)
+                lock (chunk.UpdatingLock)
                     chunk.Mesh.Vertices = mesh;
 
                 _updatedChunks.Enqueue(chunk);
@@ -122,7 +120,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
     {
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            lock (_lockUpdatedChunk)
+            lock (chunk.UpdatingLock)
             {
                 chunk.Mesh.Update();
                 chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
