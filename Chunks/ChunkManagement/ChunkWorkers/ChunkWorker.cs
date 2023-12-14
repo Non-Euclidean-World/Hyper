@@ -51,7 +51,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ConcurrentQueue<ModificationArgs> _modificationsToPerform = new();
 
-    private readonly ConcurrentQueue<(Chunk, uint)> _updatedChunks = new();
+    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -69,7 +69,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly MeshGenerator _meshGenerator;
 
-    private readonly object _lockBatch = new object();
+    private readonly object _lockUpdatedChunk = new object();
 
     public ChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, ChunkFactory chunkFactory, ChunkHandler chunkHandler, MeshGenerator meshGenerator, int renderDistance)
     {
@@ -197,10 +197,10 @@ public class ChunkWorker : IChunkWorker
 
         var mesh = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
 
-        lock (_lockBatch)
+        lock (_lockUpdatedChunk)
             chunk.Mesh.Vertices = mesh;
 
-        _updatedChunks.Enqueue((chunk, modification.BatchNumber));
+        _updatedChunks.Enqueue(chunk);
     }
 
     public void Update(Vector3 currentPosition)
@@ -277,28 +277,14 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
-    private readonly List<Chunk> _currentBatch = new();
-    private uint _currentBatchNumber = 0;
-
     private void ResolveUpdatedChunks()
     {
-        while (_updatedChunks.TryPeek(out var peeked))
+        while (_updatedChunks.TryDequeue(out var chunk))
         {
-            if (peeked.Item2 == _currentBatchNumber)
+            lock (_lockUpdatedChunk)
             {
-                _ = _updatedChunks.TryDequeue(out var chunk);
-                _currentBatch.Add(chunk.Item1);
-            }
-            else // whole batch has been consumed
-            {
-                lock (_lockBatch)
-                    foreach (var chunk in _currentBatch)
-                    {
-                        chunk.Mesh.Update();
-                        chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-                    }
-                _currentBatch.Clear();
-                _currentBatchNumber = peeked.Item2;
+                chunk.Mesh.Update();
+                chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
             }
         }
     }

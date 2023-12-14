@@ -29,8 +29,6 @@ public class NonGenerativeChunkWorker : IChunkWorker
 
     private readonly BlockingCollection<ModificationArgs> _modificationsToPerform = new(new ConcurrentQueue<ModificationArgs>());
 
-    private readonly ConcurrentHashSet<Chunk> _chunksToUpdateHashSet = new();
-
     private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
@@ -46,6 +44,8 @@ public class NonGenerativeChunkWorker : IChunkWorker
     private readonly SphericalChunkFactory _chunkFactory;
 
     private readonly SphericalMeshGenerator _meshGenerator;
+
+    private readonly object _lockUpdatedChunk = new object();
 
     public NonGenerativeChunkWorker(List<Chunk> chunks, SimulationManager<PoseIntegratorCallbacks> simulationManager, SphericalChunkFactory chunkFactory, ChunkHandler chunkHandler, SphericalMeshGenerator meshGenerator)
     {
@@ -100,8 +100,10 @@ public class NonGenerativeChunkWorker : IChunkWorker
                 else
                     throw new NotImplementedException();
 
+                var mesh = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
+                lock (_lockUpdatedChunk)
+                    chunk.Mesh.Vertices = mesh;
 
-                chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = chunk.Sphere, Voxels = chunk.Voxels });
                 _updatedChunks.Enqueue(chunk);
                 if (_modificationsToPerform.Count == 0)
                     IsUpdating = false;
@@ -120,9 +122,11 @@ public class NonGenerativeChunkWorker : IChunkWorker
     {
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            chunk.Mesh.Update();
-            chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
-            _chunksToUpdateHashSet.Remove(chunk);
+            lock (_lockUpdatedChunk)
+            {
+                chunk.Mesh.Update();
+                chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            }
         }
     }
 
