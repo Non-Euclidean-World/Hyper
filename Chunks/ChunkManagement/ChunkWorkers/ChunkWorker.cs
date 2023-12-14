@@ -51,7 +51,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ConcurrentQueue<ModificationArgs> _modificationsToPerform = new();
 
-    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
+    private readonly ConcurrentQueue<(Chunk, uint)> _updatedChunks = new();
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -182,6 +182,10 @@ public class ChunkWorker : IChunkWorker
         var radius = modification.Radius;
         var chunk = modification.Chunk;
 
+        /*if (_currentBatch.Contains(chunk))
+            throw new Exception("Modification of chunk waited for updated by the main thread");*/
+
+
         if (modificationType == ModificationType.Mine)
         {
             chunk.Mine(location, time, brushWeight, radius);
@@ -194,7 +198,8 @@ public class ChunkWorker : IChunkWorker
             throw new NotImplementedException();
 
         chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
-        _updatedChunks.Enqueue(chunk);
+
+        _updatedChunks.Enqueue((chunk, modification.BatchNumber));
     }
 
     public void Update(Vector3 currentPosition)
@@ -271,14 +276,32 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
+    private readonly List<Chunk> _currentBatch = new();
+    private uint _currentBatchNumber = 0;
+
     private void ResolveUpdatedChunks()
     {
-        // TODO I think we should update a whole batch (everything that was pumped into the queue by a single invocation the Pickaxe.ModifyTerrain)
-        // instead of individual chunks, because otherwise we're getting those gaps between chunks
-        while (_updatedChunks.TryDequeue(out var chunk))
+        // TODO this doesn't work: 
+        // it's still possible that when we're processing a 1st element of a batch,
+        // the worker thread will mutate the 2nd element of the batch, again leading to gaps
+        while (_updatedChunks.TryPeek(out var peeked))
         {
-            chunk.Mesh.Update();
-            chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            if (peeked.Item2 == _currentBatchNumber)
+            {
+                _ = _updatedChunks.TryDequeue(out var chunk);
+                _currentBatch.Add(chunk.Item1);
+            }
+            else // whole batch has been consumed
+            {
+                foreach (var chunk in _currentBatch)
+                {
+                    chunk.Mesh.Update();
+                    chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                }
+
+                _currentBatch.Clear();
+                _currentBatchNumber = peeked.Item2;
+            }
         }
     }
 

@@ -29,6 +29,8 @@ public class Mesh
     /// </summary>
     public Vertex[] Vertices { get; set; }
 
+    private int _vertexCount;
+
     public Mesh(Vertex[] vertices, Vector3 position, bool createVertexArrayObject = true)
     {
         Vertices = vertices;
@@ -50,7 +52,7 @@ public class Mesh
         shader.SetMatrix4("normalRotation", Matrix4.Identity);
 
         GL.BindVertexArray(VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _vertexCount);
     }
 
     /// <summary>
@@ -81,6 +83,8 @@ public class Mesh
 
         VaoId = vaoId;
         VboId = vboId;
+
+        _vertexCount = Vertices.Length;
     }
 
     /// <summary>
@@ -90,8 +94,8 @@ public class Mesh
     {
         GL.BindVertexArray(VaoId);
         GL.BindBuffer(BufferTarget.ArrayBuffer, VboId);
-        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), IntPtr.Zero, BufferUsageHint.StaticDraw);
-        IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
+        GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices, BufferUsageHint.StaticDraw);
+        /*IntPtr ptr = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
         unsafe
         {
             fixed (Vertex* source = Vertices)
@@ -99,7 +103,8 @@ public class Mesh
                 System.Buffer.MemoryCopy(source, ptr.ToPointer(), Vertices.Length * Marshal.SizeOf<Vertex>(), Vertices.Length * Marshal.SizeOf<Vertex>());
             }
         }
-        GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+        GL.UnmapBuffer(BufferTarget.ArrayBuffer);*/
+        _vertexCount = Vertices.Length;
     }
 
     /// <summary>

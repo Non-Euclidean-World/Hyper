@@ -1,7 +1,5 @@
-﻿using Chunks;
-using Chunks.ChunkManagement.ChunkWorkers;
+﻿using Chunks.ChunkManagement.ChunkWorkers;
 using OpenTK.Mathematics;
-using ModificationFunc = System.Action<OpenTK.Mathematics.Vector3, float, float, int>;
 
 namespace Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 
@@ -19,11 +17,7 @@ internal abstract class Pickaxe : Item
 
     private float _buildTime = 0;
 
-    private static readonly Func<Chunk, ModificationFunc> Mining
-        = (Chunk chunk) => (ModificationFunc)Delegate.CreateDelegate(typeof(ModificationFunc), chunk, typeof(Chunk).GetMethod("Mine")!);
-
-    private static readonly Func<Chunk, ModificationFunc> Building
-        = (Chunk chunk) => (ModificationFunc)Delegate.CreateDelegate(typeof(ModificationFunc), chunk, typeof(Chunk).GetMethod("Build")!);
+    private uint _batchNumber;
 
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
@@ -57,7 +51,10 @@ internal abstract class Pickaxe : Item
                 otherSphereLocation = GetOtherSphereLocation(scene.Camera.Sphere, location, scene);
             }
 
-            ModificationArgs modificationArgs = new ModificationArgs();
+            ModificationArgs modificationArgs = new ModificationArgs
+            {
+                BatchNumber = _batchNumber++
+            };
 
             foreach (var chunk in chunkWorker.Chunks)
             {
