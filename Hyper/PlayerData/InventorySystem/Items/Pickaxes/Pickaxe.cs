@@ -49,17 +49,19 @@ internal abstract class Pickaxe : Item
                 otherSphereLocation = GetOtherSphereLocation(scene.Camera.Sphere, location, scene);
             }
 
-            ModificationArgs modificationArgs = new ModificationArgs();
+            ModificationArgs modificationArgs = new ModificationArgs
+            {
+                ModificationType = modificationType,
+                Location = location,
+                Time = time + modificationTime,
+                BrushWeight = BrushWeight,
+                Radius = Radius
+            };
 
             foreach (var chunk in chunkWorker.Chunks)
             {
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
-                    modificationArgs.ModificationType = modificationType;
-                    modificationArgs.Location = location;
-                    modificationArgs.Time = time + modificationTime;
-                    modificationArgs.BrushWeight = BrushWeight;
-                    modificationArgs.Radius = Radius;
                     modificationArgs.Chunk = chunk;
                     chunkWorker.EnqueueModification(modificationArgs);
                 }
@@ -68,11 +70,6 @@ internal abstract class Pickaxe : Item
                     continue;
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
-                    modificationArgs.ModificationType = modificationType;
-                    modificationArgs.Location = location;
-                    modificationArgs.Time = time + modificationTime;
-                    modificationArgs.BrushWeight = BrushWeight;
-                    modificationArgs.Radius = Radius;
                     modificationArgs.Chunk = chunk;
                     chunkWorker.EnqueueModification(modificationArgs);
                 }
