@@ -60,9 +60,9 @@ internal abstract class Pickaxe : Item
 
             foreach (var chunk in chunkWorker.Chunks)
             {
+                modificationArgs.Chunk = chunk;
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
-                    modificationArgs.Chunk = chunk;
                     chunkWorker.EnqueueModification(modificationArgs);
                 }
 
@@ -70,7 +70,7 @@ internal abstract class Pickaxe : Item
                     continue;
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
-                    modificationArgs.Chunk = chunk;
+                    modificationArgs.Location = otherSphereLocation.Value;
                     chunkWorker.EnqueueModification(modificationArgs);
                 }
             }
