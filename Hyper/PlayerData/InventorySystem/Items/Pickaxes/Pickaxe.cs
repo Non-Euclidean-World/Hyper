@@ -63,6 +63,7 @@ internal abstract class Pickaxe : Item
                 modificationArgs.Chunk = chunk;
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
+                    modificationArgs.Location = location;
                     chunkWorker.EnqueueModification(modificationArgs);
                 }
 

@@ -78,10 +78,10 @@ public class NonGenerativeChunkWorker : IChunkWorker
     {
         try
         {
-            while (_modificationsToPerform.TryTake(out var modification, Timeout.Infinite, _cancellationTokenSource.Token))
+            foreach (var modification in _modificationsToPerform.GetConsumingEnumerable(_cancellationTokenSource.Token))
             {
                 var modificationType = modification.ModificationType;
-                ref var location = ref modification.Location;
+                var location = modification.Location;
                 var time = modification.Time;
                 var brushWeight = modification.BrushWeight;
                 var radius = modification.Radius;
