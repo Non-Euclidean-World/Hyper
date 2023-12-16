@@ -1,4 +1,5 @@
-﻿using Chunks.ChunkManagement.ChunkWorkers;
+﻿using System.Diagnostics;
+using Chunks.ChunkManagement.ChunkWorkers;
 using OpenTK.Mathematics;
 
 namespace Hyper.PlayerData.InventorySystem.Items.Pickaxes;
@@ -17,14 +18,28 @@ internal abstract class Pickaxe : Item
 
     private float _buildTime = 0;
 
+    private double _timeAccumulator = 0;
+
+    private readonly Stopwatch _stopwatch = new();
+
+    private const float TimeStepSeconds = 1 / 30f;
+
+    private double _prev = 0;
+
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
-        ModifyTerrain(scene, chunkWorker, time, ModificationType.Mine, ref _mineTime);
+        ModifyTerrainTimeStepped(scene, chunkWorker, time, ModificationType.Mine, ref _mineTime);
     }
 
     public override void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time)
     {
-        ModifyTerrain(scene, chunkWorker, time, ModificationType.Build, ref _buildTime);
+        ModifyTerrainTimeStepped(scene, chunkWorker, time, ModificationType.Build, ref _buildTime);
+    }
+
+    public void StartUsing()
+    {
+        _prev = 0;
+        _stopwatch.Restart();
     }
 
     public override void Up()
@@ -35,6 +50,20 @@ internal abstract class Pickaxe : Item
     public override void Down()
     {
         Radius = Math.Max(Radius - 1, 1);
+    }
+
+    private void ModifyTerrainTimeStepped(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
+    {
+        double now = _stopwatch.ElapsedTicks;
+        double dt = (now - _prev) / Stopwatch.Frequency;
+        _timeAccumulator += dt;
+        _prev = now;
+        while (_timeAccumulator >= TimeStepSeconds)
+        {
+            ModifyTerrain(scene, chunkWorker, TimeStepSeconds, modificationType, ref modificationTime);
+
+            _timeAccumulator -= TimeStepSeconds;
+        }
     }
 
     private void ModifyTerrain(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
