@@ -156,7 +156,7 @@ public class ChunkWorker : IChunkWorker
         }
 
         var modificationType = modification.ModificationType;
-        ref var location = ref modification.Location;
+        var location = modification.Location;
         var time = modification.Time;
         var brushWeight = modification.BrushWeight;
         var radius = modification.Radius;
