@@ -8,6 +8,8 @@ public interface IChunkWorker : IDisposable
 
     public bool IsUpdating { get; }
 
+    public bool IsProcessingBatch { get; set; }
+
     public void EnqueueModification(ModificationArgs modificationArgs);
 
     void Update(Vector3 currentPosition);

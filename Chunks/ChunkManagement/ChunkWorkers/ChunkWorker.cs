@@ -51,7 +51,7 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ConcurrentQueue<ModificationArgs> _modificationsToPerform = new();
 
-    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
+    private readonly ConcurrentQueue<(Chunk, int)> _updatedChunks = new();
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -64,6 +64,8 @@ public class ChunkWorker : IChunkWorker
     private readonly ChunkHandler _chunkHandler;
 
     private int TotalChunks => (2 * _renderDistance + 1) * (2 * _renderDistance + 1) * (2 * _renderDistance + 1);
+
+    public bool IsProcessingBatch { get; set; }
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -181,6 +183,7 @@ public class ChunkWorker : IChunkWorker
         var brushWeight = modification.BrushWeight;
         var radius = modification.Radius;
         var chunk = modification.Chunk;
+        var batchSize = modification.BatchSize;
 
         if (modificationType == ModificationType.Mine)
         {
@@ -198,7 +201,7 @@ public class ChunkWorker : IChunkWorker
         lock (chunk.UpdatingLock)
             chunk.Mesh.Vertices = mesh;
 
-        _updatedChunks.Enqueue(chunk);
+        _updatedChunks.Enqueue((chunk, batchSize));
     }
 
     public void Update(Vector3 currentPosition)
@@ -275,16 +278,30 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
+    private readonly List<Chunk> _currentBatch = new();
+
     private void ResolveUpdatedChunks()
     {
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            lock (chunk.UpdatingLock)
+            _currentBatch.Add(chunk.Item1);
+
+            if (_currentBatch.Count == chunk.Item2)
             {
-                chunk.Mesh.Update();
-                chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                foreach (var c in _currentBatch)
+                {
+                    lock (c.UpdatingLock)
+                    {
+                        c.Mesh.Update();
+                        c.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                    }
+                }
+                IsProcessingBatch = false;
+                _currentBatch.Clear();
             }
         }
+
+
     }
 
     private static Vector3i GetCurrentChunkId(Vector3 position)

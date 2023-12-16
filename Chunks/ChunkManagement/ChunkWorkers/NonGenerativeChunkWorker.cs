@@ -26,6 +26,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
     }
 
     public List<Chunk> Chunks { get; }
+    public bool IsProcessingBatch { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     private readonly BlockingCollection<ModificationArgs> _modificationsToPerform = new(new ConcurrentQueue<ModificationArgs>());
 

@@ -69,7 +69,7 @@ internal abstract class Pickaxe : Item
     private void ModifyTerrain(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
     {
         bool zeroTime = false;
-        if (!chunkWorker.IsUpdating)
+        if (!chunkWorker.IsUpdating && !chunkWorker.IsProcessingBatch)
         {
             var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             Vector3? otherSphereLocation = null;
@@ -87,13 +87,14 @@ internal abstract class Pickaxe : Item
                 Radius = Radius
             };
 
+            List<ModificationArgs> buffer = new List<ModificationArgs>();
             foreach (var chunk in chunkWorker.Chunks)
             {
                 modificationArgs.Chunk = chunk;
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
                     modificationArgs.Location = location;
-                    chunkWorker.EnqueueModification(modificationArgs);
+                    buffer.Add(modificationArgs);
                 }
 
                 if (otherSphereLocation == null)
@@ -101,8 +102,17 @@ internal abstract class Pickaxe : Item
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
                     modificationArgs.Location = otherSphereLocation.Value;
-                    chunkWorker.EnqueueModification(modificationArgs);
+                    buffer.Add(modificationArgs);
                 }
+            }
+
+            chunkWorker.IsProcessingBatch = true;
+
+            for (int i = 0; i < buffer.Count; i++)
+            {
+                var args = buffer[i];
+                args.BatchSize = buffer.Count;
+                chunkWorker.EnqueueModification(args);
             }
 
             zeroTime = true;
