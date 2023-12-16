@@ -66,10 +66,12 @@ internal abstract class Pickaxe : Item
         }
     }
 
+    private readonly List<ModificationArgs> _buffer = new();
+
     private void ModifyTerrain(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
     {
         bool zeroTime = false;
-        if (!chunkWorker.IsUpdating && !chunkWorker.IsProcessingBatch)
+        if (!chunkWorker.IsProcessingBatch)
         {
             var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             Vector3? otherSphereLocation = null;
@@ -87,14 +89,14 @@ internal abstract class Pickaxe : Item
                 Radius = Radius
             };
 
-            List<ModificationArgs> buffer = new List<ModificationArgs>();
+            _buffer.Clear();
             foreach (var chunk in chunkWorker.Chunks)
             {
                 modificationArgs.Chunk = chunk;
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
                     modificationArgs.Location = location;
-                    buffer.Add(modificationArgs);
+                    _buffer.Add(modificationArgs);
                 }
 
                 if (otherSphereLocation == null)
@@ -102,16 +104,16 @@ internal abstract class Pickaxe : Item
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
                     modificationArgs.Location = otherSphereLocation.Value;
-                    buffer.Add(modificationArgs);
+                    _buffer.Add(modificationArgs);
                 }
             }
 
             chunkWorker.IsProcessingBatch = true;
 
-            for (int i = 0; i < buffer.Count; i++)
+            for (int i = 0; i < _buffer.Count; i++)
             {
-                var args = buffer[i];
-                args.BatchSize = buffer.Count;
+                var args = _buffer[i];
+                args.BatchSize = _buffer.Count;
                 chunkWorker.EnqueueModification(args);
             }
 

@@ -8,24 +8,6 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class ChunkWorker : IChunkWorker
 {
-    private bool _isUpdatingUnlocked;
-
-    private readonly object _lockObj = new();
-
-    public bool IsUpdating
-    {
-        get
-        {
-            lock (_lockObj)
-                return _isUpdatingUnlocked;
-        }
-        private set
-        {
-            lock (_lockObj)
-                _isUpdatingUnlocked = value;
-        }
-    }
-
     private enum JobType
     {
         Load,
@@ -123,9 +105,6 @@ public class ChunkWorker : IChunkWorker
                         UpdateChunks();
                     }
 
-                    if (_modificationsToPerform.IsEmpty)
-                        IsUpdating = false;
-
                     switch (jobType)
                     {
                         case JobType.Load:
@@ -173,7 +152,6 @@ public class ChunkWorker : IChunkWorker
     {
         if (!_modificationsToPerform.TryDequeue(out var modification))
         {
-            IsUpdating = false; // TODO is this ever hit?
             return;
         }
 
@@ -263,7 +241,6 @@ public class ChunkWorker : IChunkWorker
 
     public void EnqueueModification(ModificationArgs modificationArgs)
     {
-        IsUpdating = true;
         _modificationsToPerform.Enqueue(modificationArgs);
         _jobs.Add(JobType.Update);
     }
@@ -300,8 +277,6 @@ public class ChunkWorker : IChunkWorker
                 _currentBatch.Clear();
             }
         }
-
-
     }
 
     private static Vector3i GetCurrentChunkId(Vector3 position)

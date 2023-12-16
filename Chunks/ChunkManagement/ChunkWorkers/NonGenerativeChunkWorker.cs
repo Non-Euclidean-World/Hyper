@@ -7,30 +7,13 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class NonGenerativeChunkWorker : IChunkWorker
 {
-    private bool _isUpdatingUnlocked;
-
-    private readonly object _lockObj = new();
-
-    public bool IsUpdating
-    {
-        get
-        {
-            lock (_lockObj)
-                return _isUpdatingUnlocked;
-        }
-        private set
-        {
-            lock (_lockObj)
-                _isUpdatingUnlocked = value;
-        }
-    }
-
     public List<Chunk> Chunks { get; }
-    public bool IsProcessingBatch { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public bool IsProcessingBatch { get; set; }
 
     private readonly BlockingCollection<ModificationArgs> _modificationsToPerform = new(new ConcurrentQueue<ModificationArgs>());
 
-    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
+    private readonly ConcurrentQueue<(Chunk, int)> _updatedChunks = new();
 
     private readonly ConcurrentQueue<Chunk> _loadedChunks = new();
 
@@ -87,6 +70,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
                 var brushWeight = modification.BrushWeight;
                 var radius = modification.Radius;
                 var chunk = modification.Chunk;
+                var batchSize = modification.BatchSize;
 
                 if (modificationType == ModificationType.Mine)
                 {
@@ -103,9 +87,7 @@ public class NonGenerativeChunkWorker : IChunkWorker
                 lock (chunk.UpdatingLock)
                     chunk.Mesh.Vertices = mesh;
 
-                _updatedChunks.Enqueue(chunk);
-                if (_modificationsToPerform.Count == 0)
-                    IsUpdating = false;
+                _updatedChunks.Enqueue((chunk, batchSize));
             }
         }
         catch (OperationCanceledException) { }
@@ -117,14 +99,26 @@ public class NonGenerativeChunkWorker : IChunkWorker
         ResolveUpdatedChunks();
     }
 
+    private readonly List<Chunk> _currentBatch = new();
+
     private void ResolveUpdatedChunks()
     {
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            lock (chunk.UpdatingLock)
+            _currentBatch.Add(chunk.Item1);
+
+            if (_currentBatch.Count == chunk.Item2)
             {
-                chunk.Mesh.Update();
-                chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                foreach (var c in _currentBatch)
+                {
+                    lock (c.UpdatingLock)
+                    {
+                        c.Mesh.Update();
+                        c.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                    }
+                }
+                IsProcessingBatch = false;
+                _currentBatch.Clear();
             }
         }
     }
@@ -141,7 +135,6 @@ public class NonGenerativeChunkWorker : IChunkWorker
 
     public void EnqueueModification(ModificationArgs modificationArgs)
     {
-        IsUpdating = true;
         _modificationsToPerform.Add(modificationArgs);
     }
 
