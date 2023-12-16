@@ -170,4 +170,28 @@ public class Game
         Settings.AspectRatio = e.Width / (float)e.Height;
         _size = e.Size;
     }
+
+    public void StopClocks()
+    {
+        _scene.SimulationManager.Stop();
+        foreach (var controller in _controllers)
+        {
+            if (controller is SkyboxController skyboxController)
+            {
+                skyboxController.Stop();
+            }
+        }
+    }
+
+    public void ResumeClocks()
+    {
+        _scene.SimulationManager.Start();
+        foreach (var controller in _controllers)
+        {
+            if (controller is SkyboxController skyboxController)
+            {
+                skyboxController.Start();
+            }
+        }
+    }
 }
