@@ -33,6 +33,8 @@ public class Chunk
 
     public readonly int Sphere;
 
+    public object UpdatingLock = new object();
+
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int sphere = 0, bool createVao = true)
     {
         Voxels = voxels;

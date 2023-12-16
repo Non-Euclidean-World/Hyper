@@ -11,7 +11,7 @@ public abstract class BaseMeshGenerator
 
     public abstract Vertex[] GetMesh(Vector3i chunkPosition, ChunkData chunkData);
 
-    protected List<Vertex> GetTriangles(int x, int y, int z, Voxel[,,] scalarField)
+    protected static List<Vertex> GetTriangles(int x, int y, int z, Voxel[,,] scalarField)
     {
         var vertices = new List<Vertex>();
 
@@ -29,7 +29,7 @@ public abstract class BaseMeshGenerator
         return vertices;
     }
 
-    private Vertex CreateVertex(int index, int[] edges, float[] cubeValues, Vector3[] normals, Vector3[] colors, Vector3 position)
+    private static Vertex CreateVertex(int index, int[] edges, float[] cubeValues, Vector3[] normals, Vector3[] colors, Vector3 position)
     {
         int edge0 = MarchingCubesTables.EdgeConnections[edges[index]][0];
         int edge1 = MarchingCubesTables.EdgeConnections[edges[index]][1];
@@ -46,6 +46,7 @@ public abstract class BaseMeshGenerator
         float[] cubeValues = new float[8];
         Vector3[] colors = new Vector3[8];
         Vector3[] normals = new Vector3[8];
+
         for (int i = 0; i < 8; i++)
         {
             Vector3i offset = MarchingCubesTables.CubeCorners[i];
@@ -64,7 +65,7 @@ public abstract class BaseMeshGenerator
         return (cubeValues, normals, colors);
     }
 
-    private int[] GetEdges(float[] cubeValues)
+    private static int[] GetEdges(float[] cubeValues)
     {
         int cubeIndex = 0;
         if (cubeValues[0] < IsoLevel) cubeIndex |= 1;
@@ -79,7 +80,7 @@ public abstract class BaseMeshGenerator
         return MarchingCubesTables.TriTable[cubeIndex];
     }
 
-    private Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
+    private static Vector3 Interpolate(Vector3 edgeVertex1, float valueAtVertex1, Vector3 edgeVertex2, float valueAtVertex2)
     {
         return edgeVertex1 + (IsoLevel - valueAtVertex1) * (edgeVertex2 - edgeVertex1) / (valueAtVertex2 - valueAtVertex1);
     }

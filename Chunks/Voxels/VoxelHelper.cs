@@ -1,9 +1,11 @@
-﻿using OpenTK.Mathematics;
+﻿using System.Runtime.CompilerServices;
+using OpenTK.Mathematics;
 
 namespace Chunks.Voxels;
 
 public static class VoxelHelper
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 GetColor(VoxelType type)
     {
         return type switch

@@ -128,6 +128,22 @@ internal class PlayerController : IController, IInputSubscriber
             if (!_scene.Player.Inventory.IsOpen)
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene);
         });
+        context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
+        {
+            var selectedItem = _scene.Player.Inventory.SelectedItem;
+            if (selectedItem == null)
+                return;
+            if (!_scene.Player.Inventory.IsOpen && selectedItem is Pickaxe pickaxe)
+                pickaxe.StartUsing();
+        });
+        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
+        {
+            var selectedItem = _scene.Player.Inventory.SelectedItem;
+            if (selectedItem == null)
+                return;
+            if (!_scene.Player.Inventory.IsOpen && selectedItem is Pickaxe pickaxe)
+                pickaxe.StartUsing();
+        });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
             if (!_scene.Player.Inventory.IsOpen)

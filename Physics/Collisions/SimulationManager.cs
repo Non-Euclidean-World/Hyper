@@ -62,7 +62,7 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
 
     private readonly Stopwatch _stopwatch = new();
 
-    private float _timeStepSeconds;
+    private readonly float _timeStepSeconds;
 
     private double _prev = 0;
 

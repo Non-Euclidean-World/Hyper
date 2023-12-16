@@ -1,7 +1,6 @@
-﻿using Chunks;
+﻿using System.Diagnostics;
 using Chunks.ChunkManagement.ChunkWorkers;
 using OpenTK.Mathematics;
-using ModificationFunc = System.Action<OpenTK.Mathematics.Vector3, float, float, int>;
 
 namespace Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 
@@ -19,20 +18,28 @@ internal abstract class Pickaxe : Item
 
     private float _buildTime = 0;
 
-    private static readonly Func<Chunk, ModificationFunc> Mining
-        = (Chunk chunk) => (ModificationFunc)Delegate.CreateDelegate(typeof(ModificationFunc), chunk, typeof(Chunk).GetMethod("Mine")!);
+    private double _timeAccumulator = 0;
 
-    private static readonly Func<Chunk, ModificationFunc> Building
-        = (Chunk chunk) => (ModificationFunc)Delegate.CreateDelegate(typeof(ModificationFunc), chunk, typeof(Chunk).GetMethod("Build")!);
+    private readonly Stopwatch _stopwatch = new();
+
+    private const float TimeStepSeconds = 1 / 30f;
+
+    private double _prev = 0;
 
     public override void Use(Scene scene, IChunkWorker chunkWorker, float time)
     {
-        ModifyTerrain(scene, chunkWorker, time, Mining, ref _mineTime);
+        ModifyTerrainTimeStepped(scene, chunkWorker, time, ModificationType.Mine, ref _mineTime);
     }
 
     public override void SecondaryUse(Scene scene, IChunkWorker chunkWorker, float time)
     {
-        ModifyTerrain(scene, chunkWorker, time, Building, ref _buildTime);
+        ModifyTerrainTimeStepped(scene, chunkWorker, time, ModificationType.Build, ref _buildTime);
+    }
+
+    public void StartUsing()
+    {
+        _prev = 0;
+        _stopwatch.Restart();
     }
 
     public override void Up()
@@ -45,16 +52,26 @@ internal abstract class Pickaxe : Item
         Radius = Math.Max(Radius - 1, 1);
     }
 
-    private enum ModificationType
+    private void ModifyTerrainTimeStepped(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
     {
-        Mining,
-        Building
+        double now = _stopwatch.ElapsedTicks;
+        double dt = (now - _prev) / Stopwatch.Frequency;
+        _timeAccumulator += dt;
+        _prev = now;
+        while (_timeAccumulator >= TimeStepSeconds)
+        {
+            ModifyTerrain(scene, chunkWorker, TimeStepSeconds, modificationType, ref modificationTime);
+
+            _timeAccumulator -= TimeStepSeconds;
+        }
     }
 
-    private void ModifyTerrain(Scene scene, IChunkWorker chunkWorker, float time, Func<Chunk, ModificationFunc> modifier, ref float modificationTime)
+    private readonly List<ModificationArgs> _buffer = new();
+
+    private void ModifyTerrain(Scene scene, IChunkWorker chunkWorker, float time, ModificationType modificationType, ref float modificationTime)
     {
         bool zeroTime = false;
-        if (!chunkWorker.IsUpdating)
+        if (!chunkWorker.IsProcessingBatch)
         {
             var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
             Vector3? otherSphereLocation = null;
@@ -63,21 +80,41 @@ internal abstract class Pickaxe : Item
                 otherSphereLocation = GetOtherSphereLocation(scene.Camera.Sphere, location, scene);
             }
 
+            ModificationArgs modificationArgs = new ModificationArgs
+            {
+                ModificationType = modificationType,
+                Location = location,
+                Time = time + modificationTime,
+                BrushWeight = BrushWeight,
+                Radius = Radius
+            };
+
+            _buffer.Clear();
             foreach (var chunk in chunkWorker.Chunks)
             {
+                modificationArgs.Chunk = chunk;
                 if (chunk.DistanceFromChunk(location) < Radius)
                 {
-                    modifier(chunk)(location, time + modificationTime, BrushWeight, Radius); // TODO why this is not done on the other thread? *Possible* advantages: faster & eliminate race condition we potentially get in ChunkWorker, line 179
-                    chunkWorker.EnqueueUpdatingChunk(chunk);
+                    modificationArgs.Location = location;
+                    _buffer.Add(modificationArgs);
                 }
 
                 if (otherSphereLocation == null)
                     continue;
                 if (chunk.DistanceFromChunk(otherSphereLocation.Value) < Radius)
                 {
-                    modifier(chunk)(otherSphereLocation.Value, time + modificationTime, BrushWeight, Radius);
-                    chunkWorker.EnqueueUpdatingChunk(chunk);
+                    modificationArgs.Location = otherSphereLocation.Value;
+                    _buffer.Add(modificationArgs);
                 }
+            }
+
+            chunkWorker.IsProcessingBatch = true;
+
+            for (int i = 0; i < _buffer.Count; i++)
+            {
+                var args = _buffer[i];
+                args.BatchSize = _buffer.Count;
+                chunkWorker.EnqueueModification(args);
             }
 
             zeroTime = true;

@@ -8,24 +8,6 @@ namespace Chunks.ChunkManagement.ChunkWorkers;
 
 public class ChunkWorker : IChunkWorker
 {
-    private bool _isUpdatingUnlocked;
-
-    private readonly object _lockObj = new();
-
-    public bool IsUpdating
-    {
-        get
-        {
-            lock (_lockObj)
-                return _isUpdatingUnlocked;
-        }
-        private set
-        {
-            lock (_lockObj)
-                _isUpdatingUnlocked = value;
-        }
-    }
-
     private enum JobType
     {
         Load,
@@ -49,9 +31,9 @@ public class ChunkWorker : IChunkWorker
 
     private readonly HashSet<Vector3i> _savedChunks = new();
 
-    private readonly ConcurrentQueue<Chunk> _chunksToUpdateQueue = new();
+    private readonly ConcurrentQueue<ModificationArgs> _modificationsToPerform = new();
 
-    private readonly ConcurrentQueue<Chunk> _updatedChunks = new();
+    private readonly ConcurrentQueue<(Chunk, int)> _updatedChunks = new();
 
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
@@ -64,6 +46,8 @@ public class ChunkWorker : IChunkWorker
     private readonly ChunkHandler _chunkHandler;
 
     private int TotalChunks => (2 * _renderDistance + 1) * (2 * _renderDistance + 1) * (2 * _renderDistance + 1);
+
+    public bool IsProcessingBatch { get; set; }
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -116,13 +100,10 @@ public class ChunkWorker : IChunkWorker
             {
                 foreach (var jobType in _jobs.GetConsumingEnumerable(_cancellationTokenSource.Token))
                 {
-                    while (!_chunksToUpdateQueue.IsEmpty)
+                    while (!_modificationsToPerform.IsEmpty)
                     {
                         UpdateChunks();
                     }
-
-                    if (_chunksToUpdateQueue.IsEmpty)
-                        IsUpdating = false;
 
                     switch (jobType)
                     {
@@ -169,14 +150,36 @@ public class ChunkWorker : IChunkWorker
 
     private void UpdateChunks()
     {
-        if (!_chunksToUpdateQueue.TryDequeue(out var chunk))
+        if (!_modificationsToPerform.TryDequeue(out var modification))
         {
-            IsUpdating = false; // TODO is this ever hit?
             return;
         }
 
-        chunk.Mesh.Vertices = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
-        _updatedChunks.Enqueue(chunk);
+        var modificationType = modification.ModificationType;
+        var location = modification.Location;
+        var time = modification.Time;
+        var brushWeight = modification.BrushWeight;
+        var radius = modification.Radius;
+        var chunk = modification.Chunk;
+        var batchSize = modification.BatchSize;
+
+        if (modificationType == ModificationType.Mine)
+        {
+            chunk.Mine(location, time, brushWeight, radius);
+        }
+        else if (modificationType == ModificationType.Build)
+        {
+            chunk.Build(location, time, brushWeight, radius);
+        }
+        else
+            throw new NotImplementedException();
+
+        var mesh = _meshGenerator.GetMesh(chunk.Position, new ChunkData { SphereId = 0, Voxels = chunk.Voxels });
+
+        lock (chunk.UpdatingLock)
+            chunk.Mesh.Vertices = mesh;
+
+        _updatedChunks.Enqueue((chunk, batchSize));
     }
 
     public void Update(Vector3 currentPosition)
@@ -236,10 +239,9 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
-    public void EnqueueUpdatingChunk(Chunk chunk)
+    public void EnqueueModification(ModificationArgs modificationArgs)
     {
-        IsUpdating = true;
-        _chunksToUpdateQueue.Enqueue(chunk);
+        _modificationsToPerform.Enqueue(modificationArgs);
         _jobs.Add(JobType.Update);
     }
 
@@ -253,14 +255,27 @@ public class ChunkWorker : IChunkWorker
         }
     }
 
+    private readonly List<Chunk> _currentBatch = new();
+
     private void ResolveUpdatedChunks()
     {
-        // TODO I think we should update a whole batch (everything that was pumped into the queue by a single invocation the Pickaxe.ModifyTerrain)
-        // instead of individual chunks, because otherwise we're getting those gaps between chunks
         while (_updatedChunks.TryDequeue(out var chunk))
         {
-            chunk.Mesh.Update();
-            chunk.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+            _currentBatch.Add(chunk.Item1);
+
+            if (_currentBatch.Count == chunk.Item2)
+            {
+                foreach (var c in _currentBatch)
+                {
+                    lock (c.UpdatingLock)
+                    {
+                        c.Mesh.Update();
+                        c.UpdateCollisionSurface(_simulationManager.Simulation, _simulationManager.BufferPool);
+                    }
+                }
+                IsProcessingBatch = false;
+                _currentBatch.Clear();
+            }
         }
     }
 
