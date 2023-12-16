@@ -125,6 +125,22 @@ internal class SkyboxController : IController
         _stopwatch.Start();
     }
 
+    /// <summary>
+    /// Stops passage of time in the day-night cycle
+    /// </summary>
+    public void Stop()
+    {
+        _stopwatch.Stop();
+    }
+
+    /// <summary>
+    /// Starts or resumes the passage of time in the day-night cycle
+    /// </summary>
+    public void Start()
+    {
+        _stopwatch.Start();
+    }
+
     public void Dispose()
     {
         _settings.TimeInSeconds = GetCurrentTime();

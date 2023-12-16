@@ -40,6 +40,7 @@ public class Window : GameWindow
                 return;
             CursorState = CursorState.Grabbed;
             _isGameRunning = true;
+            _game.ResumeClocks();
         };
         mainMenu.NewGame += (saveName, geometryType) =>
         {
@@ -107,6 +108,10 @@ public class Window : GameWindow
         {
             _isGameRunning = !_isGameRunning;
             CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
+            if (!_isGameRunning)
+            {
+                _game.StopClocks();
+            }
             return;
         }
 

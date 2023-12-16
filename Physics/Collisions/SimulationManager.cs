@@ -94,11 +94,19 @@ public class SimulationManager<TPoseIntegratorCallbacks> : IDisposable
     }
 
     /// <summary>
-    /// Starts the simulation's internal clock.
+    /// Starts or resumes the simulation's internal clock.
     /// </summary>
     public void Start()
     {
         _stopwatch.Start();
+    }
+
+    /// <summary>
+    /// Stops the simulation's internal clock.
+    /// </summary>
+    public void Stop()
+    {
+        _stopwatch.Stop();
     }
 
     /// <summary>
