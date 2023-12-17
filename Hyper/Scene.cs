@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Diagnostics;
+using BepuPhysics;
 using Character.LightSources;
 using Character.Projectiles;
 using Character.Vehicles;
@@ -169,6 +170,8 @@ internal class Scene : IInputSubscriber
         PlayersCar = null;
 
         Player.Show(Humanoid.CreatePhysicalCharacter(new Vector3(position.X, position.Y + 5, position.Z), SimulationManager));
+        Debug.Assert(Player.BodyHandle == Player.BodyHandles[0]);
+
         SimulationMembers.Add(Player);
         FlashLights.Add(Player.FlashLight);
     }

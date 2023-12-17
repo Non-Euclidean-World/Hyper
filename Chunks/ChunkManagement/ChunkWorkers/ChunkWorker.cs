@@ -61,10 +61,6 @@ public class ChunkWorker : IChunkWorker
         _chunkHandler = chunkHandler;
         _renderDistance = renderDistance;
         _meshGenerator = meshGenerator;
-        foreach (var chunk in Chunks)
-        {
-            _existingChunks.Add(chunk.Position / Chunk.Size);
-        }
 
         Start();
     }

@@ -29,6 +29,8 @@ public class Chunk
 
     private TypedIndex _shape;
 
+    private bool _registered = false; // chunk's collision surface is registered in the physics engine
+
     public readonly Mesh Mesh;
 
     public readonly int Sphere;
@@ -105,14 +107,14 @@ public class Chunk
 
     public void UpdateCollisionSurface(Simulation simulation, BufferPool bufferPool)
     {
-        if (Mesh.Vertices.Length == 0)
+        if (Mesh.Vertices.Length == 0 && _registered)
         {
-            if (_shape.Exists)
-                simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
-            else return;
+            simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
+            simulation.Statics.Remove(_handle);
+            _registered = false;
         }
 
-        if (!_shape.Exists)
+        if (!_registered)
         {
             CreateCollisionSurface(simulation, bufferPool);
             return;
@@ -140,11 +142,12 @@ public class Chunk
             new System.Numerics.Vector3(position.X, position.Y, position.Z),
             QuaternionEx.Identity,
             _shape));
+        _registered = true;
     }
 
     public void Dispose(Simulation simulation, BufferPool bufferPool)
     {
-        if (_shape.Exists)
+        if (_registered)
         {
             simulation.Shapes.RemoveAndDispose(_shape, bufferPool);
             simulation.Statics.Remove(_handle);

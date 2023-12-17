@@ -20,7 +20,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     public int CurrentSphereId { get; set; }
 
-    public IList<BodyHandle> BodyHandles { get; private set; }
+    public IList<BodyHandle> BodyHandles { get; protected set; }
 
     public bool IsAlive { get; private set; } = true;
 

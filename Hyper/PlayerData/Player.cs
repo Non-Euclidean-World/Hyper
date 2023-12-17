@@ -137,6 +137,7 @@ internal class Player : Humanoid, IRayCaster
             return;
 
         PhysicalCharacter = physicalCharacter;
+        BodyHandles = new BodyHandle[1] { physicalCharacter.BodyHandle };
         Hidden = false;
     }
 
