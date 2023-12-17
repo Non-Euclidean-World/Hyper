@@ -27,7 +27,7 @@ public class Settings
     /// <summary>
     /// Time elapsed since the last day start in seconds
     /// </summary>
-    public float TimeInSeconds { get; set; } = 0;
+    public float TimeInSeconds { get; set; } = 60;
 
     [JsonIgnore]
     public float AspectRatio { get; set; }
