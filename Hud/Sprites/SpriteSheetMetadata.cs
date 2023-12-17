@@ -41,7 +41,7 @@ public class SpriteSheetMetadata
             var x = (float)item.X / Width;
             var y = 1.0f - (float)item.Y / Height - height;
 
-            result.Add(item.Name, new Vector4(x, y, width, height));
+            result.Add(item.Name, new Vector4(x, y - 0.0001f, width, height - 0.0001f));
         }
 
         return (result, Width, Height);

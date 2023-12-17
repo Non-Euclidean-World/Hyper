@@ -109,9 +109,9 @@ public class Window : GameWindow
             _isGameRunning = !_isGameRunning;
             CursorState = CursorState == CursorState.Grabbed ? CursorState.Normal : CursorState.Grabbed;
             if (!_isGameRunning)
-            {
                 _game.StopClocks();
-            }
+            else
+                _game.ResumeClocks();
             return;
         }
 
