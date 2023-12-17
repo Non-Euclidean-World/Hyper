@@ -22,7 +22,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     public IList<BodyHandle> BodyHandles { get; protected set; }
 
-    public bool IsAlive { get; private set; } = true;
+    public bool IsAlive { get; protected set; } = true;
 
     public DateTime DeathTime = DateTime.MinValue;
 
@@ -34,7 +34,7 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 
     protected static readonly TimeSpan EpsTime = new(0, 0, 0, 0, milliseconds: 500);
 
-    private int _hp = 3;
+    protected int Hp = 3;
 
     protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)
     {
@@ -69,8 +69,8 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
 #endif
             if (otherBody is Projectile) // TODO this is terrible we need to change that to IDs in ISimulationMember
             {
-                _hp--;
-                if (_hp == 0)
+                Hp--;
+                if (Hp == 0)
                 {
                     IsAlive = false;
                     DeathTime = DateTime.UtcNow;
@@ -86,7 +86,6 @@ public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisp
             Console.WriteLine("Bot collided with something");
 #endif
         }
-
     }
 
     public virtual void UpdateCharacterGoals(Simulation simulation, float time) { }
