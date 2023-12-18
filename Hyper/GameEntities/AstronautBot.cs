@@ -1,9 +1,12 @@
 ﻿using BepuPhysics;
+using BepuPhysics.Collidables;
 using Character;
 using Character.Characters;
 using Character.Projectiles;
 using OpenTK.Mathematics;
+using Physics;
 using Physics.Collisions;
+using Physics.ContactCallbacks;
 using Physics.TypingUtils;
 
 namespace Hyper.GameEntities;
@@ -18,7 +21,7 @@ public class AstronautBot : Humanoid
 
     private float _moveTime;
 
-    private const float MaxNotShootingTime = 4;
+    private const float MaxNotShootingTime = 3;
 
     private float _notShootingTime;
 
@@ -112,21 +115,20 @@ public class AstronautBot : Humanoid
         _isMoving = true;
         var movementDirection = System.Numerics.Vector2.UnitY;
 
-        const float minDistanceFromPlayer = 2.5f;
+        const float minDistanceFromPlayer = 10f;
+        float distanceFromPlayer = FlatLength(ViewDirection);
 
-        if (FlatLength(ViewDirection) < minDistanceFromPlayer)
-        {
-            movementDirection = System.Numerics.Vector2.Zero;
-            ViewDirection = Vector3.Zero;
-            _isMoving = false;
-        }
+        if (distanceFromPlayer < minDistanceFromPlayer)
+            movementDirection *= -1;
 
         if (_isMoving)
-        {
             Run();
-        }
         else
+            Idle();
+
+        if (Math.Abs(distanceFromPlayer - minDistanceFromPlayer) < 3)
         {
+            movementDirection = System.Numerics.Vector2.Zero;
             Idle();
         }
 
@@ -144,6 +146,48 @@ public class AstronautBot : Humanoid
             tryJump: false,
             sprint: false,
             movementDirection);
+    }
+
+    public override void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers)
+    {
+        var pair = collisionInfo.CollidablePair;
+        var collidableReference
+            = pair.A.BodyHandle == BodyHandle ? pair.B : pair.A;
+        if (collidableReference.Mobility != CollidableMobility.Dynamic)
+            return;
+
+        if (collidableReference.BodyHandle == LastContactBody
+            && DateTime.UtcNow - LastContactTime < EpsTime)
+            return;
+
+        LastContactTime = DateTime.UtcNow;
+        LastContactBody = collidableReference.BodyHandle;
+
+        if (simulationMembers.TryGetByHandle(collidableReference.BodyHandle, out var otherBody))
+        {
+#if DEBUG
+            Console.WriteLine($"Bot collided with {otherBody}");
+#endif
+            if (otherBody is Projectile) // TODO this is terrible we need to change that to IDs in ISimulationMember
+            {
+                _isFriendly = false;
+                Hp--;
+                if (Hp == 0)
+                {
+                    IsAlive = false;
+                    DeathTime = DateTime.UtcNow;
+#if DEBUG
+                    Console.WriteLine("Bot is dead!");
+#endif
+                }
+            }
+        }
+        else
+        {
+#if DEBUG
+            Console.WriteLine("Bot collided with something");
+#endif
+        }
     }
 
     private void CreateProjectile(Scene scene)
