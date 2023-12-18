@@ -1,7 +1,10 @@
-﻿using Common;
+﻿
+using Common;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.Desktop;
+using StbImageSharp;
 
 namespace Hyper;
 
@@ -20,6 +23,7 @@ internal class Program
         {
             Size = new Vector2i(height * 16 / 9, height),
             Title = "Hyper",
+            Icon = CreateWindowIcon(),
             // This is needed to run on macos
             Flags = ContextFlags.ForwardCompatible,
         };
@@ -50,5 +54,14 @@ internal class Program
             File.WriteAllText(logFilePath, errorMessage);
         }
 #endif
+    }
+
+    private static WindowIcon CreateWindowIcon()
+    {
+        using Stream stream = File.OpenRead("./GlobalAssets/logo.png");
+        ImageResult image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+        var windowIcon = new WindowIcon(new Image(image.Width, image.Height, image.Data));
+
+        return windowIcon;
     }
 }

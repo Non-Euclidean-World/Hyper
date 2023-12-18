@@ -26,7 +26,8 @@ https://www.youtube.com/watch?v=DiIoWrOlIRw
 <a href="https://www.flaticon.com/free-icons/sword" title="sword icons">Sword icons created by Freepik - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/hammer" title="hammer icons">Hammer icons created by srip - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/idea" title="idea icons">Idea icons created by Good Ware - Flaticon</a> \
-<a href="https://www.flaticon.com/free-icons/pistol" title="pistol icons">Pistol icons created by Vector Stall - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/pistol" title="pistol icons">Pistol icons created by Vector Stall - Flaticon</a> \
+<a href="https://www.flaticon.com/free-icons/letter-h" title="letter h icons">Letter h icons created by Alphabets Number - Flaticon</a>
 
 ## Uninstalling _Hyper_
 
