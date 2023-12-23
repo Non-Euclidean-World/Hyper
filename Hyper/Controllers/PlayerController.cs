@@ -120,29 +120,29 @@ internal class PlayerController : IController, IInputSubscriber
 
         context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
         {
-            if (!_scene.Player.Inventory.IsOpen)
+            var selectedItem = _scene.Player.Inventory.SelectedItem;
+            if (selectedItem == null)
+                return;
+
+            if (!_scene.Player.Inventory.IsOpen && !_scene.Player.Hidden)
+            {
+                if (selectedItem is Pickaxe pickaxe)
+                    pickaxe.StartUsing();
                 _scene.Player.Inventory.SelectedItem?.Use(_scene);
+            }
         });
         context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
         {
-            if (!_scene.Player.Inventory.IsOpen)
+            var selectedItem = _scene.Player.Inventory.SelectedItem;
+            if (selectedItem == null)
+                return;
+
+            if (!_scene.Player.Inventory.IsOpen && !_scene.Player.Hidden)
+            {
+                if (!_scene.Player.Inventory.IsOpen && selectedItem is Pickaxe pickaxe)
+                    pickaxe.StartUsing();
                 _scene.Player.Inventory.SelectedItem?.SecondaryUse(_scene);
-        });
-        context.RegisterMouseButtonDownCallback(MouseButton.Right, () =>
-        {
-            var selectedItem = _scene.Player.Inventory.SelectedItem;
-            if (selectedItem == null)
-                return;
-            if (!_scene.Player.Inventory.IsOpen && selectedItem is Pickaxe pickaxe)
-                pickaxe.StartUsing();
-        });
-        context.RegisterMouseButtonDownCallback(MouseButton.Left, () =>
-        {
-            var selectedItem = _scene.Player.Inventory.SelectedItem;
-            if (selectedItem == null)
-                return;
-            if (!_scene.Player.Inventory.IsOpen && selectedItem is Pickaxe pickaxe)
-                pickaxe.StartUsing();
+            }
         });
         context.RegisterMouseButtonHeldCallback(MouseButton.Left, (e) =>
         {
