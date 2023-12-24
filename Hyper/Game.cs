@@ -51,7 +51,7 @@ public class Game
         float curve = Settings.SelectedGeometryType switch
         {
             SelectedGeometryType.Euclidean => 0f,
-            SelectedGeometryType.Hyperbolic => -3f,
+            SelectedGeometryType.Hyperbolic => -1f,
             SelectedGeometryType.Spherical => 1f,
             _ => throw new NotImplementedException(),
         };

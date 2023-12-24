@@ -65,7 +65,7 @@ internal class Camera : IInputSubscriber
         Curve = curve;
         _near = near;
         _far = far;
-        _fixedViewPosition = Vector3.UnitY * scale;
+        _fixedViewPosition = 20 * Vector3.UnitY * scale;
         _scale = scale;
 
         RegisterCallbacks(context);
