@@ -174,6 +174,7 @@ internal class PlayerController : IController, IInputSubscriber
         {
             camera.ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
                 + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                + GetHyperbolicOffset(camera)
                 - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
         }
         else
@@ -182,12 +183,20 @@ internal class PlayerController : IController, IInputSubscriber
             playerPos.Y *= -1;
             camera.ReferencePointPosition = playerPos
                 + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+                + GetHyperbolicOffset(camera)
                 - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
         }
     }
 
+    private Vector3 GetHyperbolicOffset(Camera camera)
+    {
+        if (camera.Curve >= 0)
+            return Vector3.Zero;
+        return -HyperCameraPosition.Multiplier * Vector3.UnitY;
+    }
+
     private Vector3 GetThirdPersonCameraOffset(Camera camera)
-        => -Vector3.UnitY * 20 + camera.Up * 1f - camera.Front * 5f;
+        => camera.Up * 1f - camera.Front * 5f;
 
     public void Dispose()
     {

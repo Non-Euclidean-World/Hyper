@@ -22,7 +22,7 @@ public class Settings
 
     public SelectedGeometryType SelectedGeometryType { get; private set; }
 
-    public int RenderDistance { get; set; } = 2;
+    public int RenderDistance { get; set; } = 3;
 
     /// <summary>
     /// Time elapsed since the last day start in seconds
