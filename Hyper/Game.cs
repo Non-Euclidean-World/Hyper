@@ -24,7 +24,7 @@ public class Game
 
     public readonly Settings Settings;
 
-    private readonly float _globalScale = 0.065f;
+    private readonly float _globalScale = 0.05f;
 
     public Game(int width, int height, IWindowHelper windowHelper, string saveName, SelectedGeometryType selectedGeometryType) // TODO this is definitely getting out of hand
     {
