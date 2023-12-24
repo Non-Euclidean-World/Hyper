@@ -187,7 +187,7 @@ internal class PlayerController : IController, IInputSubscriber
     }
 
     private Vector3 GetThirdPersonCameraOffset(Camera camera)
-        => camera.Up * 1f - camera.Front * 5f;
+        => -Vector3.UnitY * 7 + camera.Up * 1f - camera.Front * 5f;
 
     public void Dispose()
     {
