@@ -28,7 +28,7 @@ internal class SphericalTransporter : ITransporter
 
         if (Vector3.Distance(bodyPositionXZ, _sphereCenters[currentSphereId]) > _radius)
         {
-            var posAfterTeleportXZ = _sphereCenters[targetSphereId] + FlipXZ(bodyPositionXZ - _sphereCenters[currentSphereId]);
+            var posAfterTeleportXZ = _sphereCenters[targetSphereId] + 0.9f * FlipXZ(bodyPositionXZ - _sphereCenters[currentSphereId]);
             var posAfterTeleport = new Vector3(posAfterTeleportXZ.X, bodyPosition.Y, posAfterTeleportXZ.Z);
 
             bodyReference.Pose = new RigidPose(Conversions.ToNumericsVector(posAfterTeleport), bodyReference.Pose.Orientation);
