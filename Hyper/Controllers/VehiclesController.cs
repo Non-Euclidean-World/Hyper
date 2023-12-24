@@ -111,6 +111,7 @@ internal class VehiclesController : IController, IInputSubscriber
         {
             camera.ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
                + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+               + GetHyperbolicOffset(camera)
                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
         }
         else
@@ -119,8 +120,16 @@ internal class VehiclesController : IController, IInputSubscriber
             playerCarPos.Y *= -1;
             camera.ReferencePointPosition = playerCarPos
                 + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+                + GetHyperbolicOffset(camera)
                 - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
         }
+    }
+    
+    private Vector3 GetHyperbolicOffset(Camera camera)
+    {
+        if (camera.Curve >= 0)
+            return Vector3.Zero;
+        return -HyperCameraPosition.Multiplier * Vector3.UnitY;
     }
 
     private Vector3 GetThirdPersonCameraOffset(Camera camera)
