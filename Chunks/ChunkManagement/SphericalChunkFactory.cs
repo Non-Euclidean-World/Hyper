@@ -73,11 +73,11 @@ public class SphericalChunkFactory
                 var sfPos0 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[0] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation - heightOffset, 0);
                 Vertex[] data0 = _meshGenerator.GetMesh(sfPos0, new ChunkData { SphereId = 0, Voxels = averageScalarField0 });
 
-                var sfPos1 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[1] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation - heightOffset, 0);
-                Vertex[] data1 = _meshGenerator.GetMesh(sfPos1, new ChunkData { SphereId = 1, Voxels = averageScalarField1 });
+                //var sfPos1 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[1] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation - heightOffset, 0);
+                //Vertex[] data1 = _meshGenerator.GetMesh(sfPos1, new ChunkData { SphereId = 1, Voxels = averageScalarField1 });
 
                 spheres.Add(new Chunk(data0, sfPos0, averageScalarField0, sphere: 0, generateVao));
-                spheres.Add(new Chunk(data1, sfPos1, averageScalarField1, sphere: 1, generateVao));
+                //spheres.Add(new Chunk(data1, sfPos1, averageScalarField1, sphere: 1, generateVao));
             }
         }
 

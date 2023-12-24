@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Common.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -46,9 +47,11 @@ public class Mesh
     /// <param name="createVertexArrayObject">Determines if a Vertex Array Object (VAO) should be created.</param>
     public virtual void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
-        var model = Matrix4.CreateTranslation(GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale));
+        var translation = Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale), curve), curve);
         var scaleMatrix = Matrix4.CreateScale(scale);
-        shader.SetMatrix4("model", scaleMatrix * model);
+        shader.SetMatrix4("model", scaleMatrix);
+        shader.SetMatrix4("translation", translation);
+        shader.SetMatrix4("rotation", Matrix4.Identity);
         shader.SetMatrix4("normalRotation", Matrix4.Identity);
 
         GL.BindVertexArray(VaoId);

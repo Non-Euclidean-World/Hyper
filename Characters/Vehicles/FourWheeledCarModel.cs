@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using Common;
+using Common.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Physics.TypingUtils;
@@ -59,15 +60,15 @@ public class FourWheeledCarModel
             throw new InvalidOperationException("No texture provided");
         _bodyResource.Texture.Use(TextureUnit.Texture0);
 
-        var translation = Matrix4.CreateTranslation(
-        GeomPorting.CreateTranslationTarget(
-                Conversions.ToOpenTKVector(bodyPose.Position), cameraPosition, curve, globalScale));
+        var translation = Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(Conversions.ToOpenTKVector(bodyPose.Position), cameraPosition, curve, globalScale), curve), curve);
 
         var rotation = Matrix4.CreateRotationX(-MathF.PI / 2)
             * Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(bodyPose.Orientation));
         var globalScaleMatrix = Matrix4.CreateScale(globalScale);
         var localScale = Matrix4.CreateScale(_scale);
-        shader.SetMatrix4("model", localScale * globalScaleMatrix * rotation * translation);
+        shader.SetMatrix4("model", localScale * globalScaleMatrix);
+        shader.SetMatrix4("rotation", rotation);
+        shader.SetMatrix4("translation", translation);
         shader.SetMatrix4("normalRotation", rotation);
 
         for (int i = 0; i < _bodyResource.Model.Meshes.Count; i++)
@@ -84,9 +85,7 @@ public class FourWheeledCarModel
             throw new InvalidOperationException("No texture provided");
         _wheelResource.Texture.Use(TextureUnit.Texture0);
 
-        var translation = Matrix4.CreateTranslation(
-       GeomPorting.CreateTranslationTarget(
-               Conversions.ToOpenTKVector(wheelPose.Position), cameraPosition, curve, globalScale));
+        var translation = Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(Conversions.ToOpenTKVector(wheelPose.Position), cameraPosition, curve, globalScale), curve), curve);
 
         Matrix4 importRotation;
         if (isOnLeftSide)
@@ -102,7 +101,9 @@ public class FourWheeledCarModel
 
         var globalScaleMatrix = Matrix4.CreateScale(globalScale);
         var localScale = Matrix4.CreateScale(_scale);
-        shader.SetMatrix4("model", localScale * globalScaleMatrix * rotation * translation);
+        shader.SetMatrix4("model", localScale * globalScaleMatrix);
+        shader.SetMatrix4("translation", translation);
+        shader.SetMatrix4("rotation", rotation);
         shader.SetMatrix4("normalRotation", rotation);
 
         for (int i = 0; i < _wheelResource.Model.Meshes.Count; i++)

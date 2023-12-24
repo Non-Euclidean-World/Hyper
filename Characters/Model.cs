@@ -1,6 +1,7 @@
 ﻿using BepuPhysics;
 using Common;
 using Common.ResourceClasses;
+using Common.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Physics.TypingUtils;
@@ -22,7 +23,7 @@ public class Model
     private readonly float _localScale;
 
     private readonly Vector3 _localTranslation;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Model"/> class.
     /// </summary>
@@ -53,13 +54,14 @@ public class Model
         _modelResources.Texture.Use(TextureUnit.Texture0);
 
         var localTranslationMatrix = Matrix4.CreateTranslation(_localTranslation);
-        var translation = Matrix4.CreateTranslation(
-            GeomPorting.CreateTranslationTarget(Conversions.ToOpenTKVector(rigidPose.Position), cameraPosition, curve, globalScale));
+        var translation = Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(Conversions.ToOpenTKVector(rigidPose.Position), cameraPosition, curve, globalScale), curve), curve);
         var localScaleMatrix = Matrix4.CreateScale(_localScale);
         var rotation = Conversions.ToOpenTKMatrix(System.Numerics.Matrix4x4.CreateFromQuaternion(rigidPose.Orientation));
         var globalScaleMatrix = Matrix4.CreateScale(globalScale);
 
-        shader.SetMatrix4("model", localTranslationMatrix * localScaleMatrix * globalScaleMatrix * rotation * translation);
+        shader.SetMatrix4("model", localTranslationMatrix * localScaleMatrix * globalScaleMatrix);
+        shader.SetMatrix4("rotation", rotation);
+        shader.SetMatrix4("translation", translation);
         shader.SetMatrix4("normalRotation", rotation);
 
         Animator.Animate(_modelResources.Model);

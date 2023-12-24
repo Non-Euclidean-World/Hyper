@@ -5,6 +5,8 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec3 aColor;
 
 uniform mat4 model;
+uniform mat4 rotation;
+uniform mat4 translation;
 uniform mat4 normalRotation;
 uniform mat4 view;
 uniform mat4 projection;
@@ -35,12 +37,12 @@ vec4 port(vec4 ePoint)
                 d = length(p);
                 return vec4(p / d * sin(d), cos(d));
             }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipXZ(p) / d * sin(d), -cos(d));
-            }
+            //if(sphere == 1)
+            //{
+            //    p = p - lowerSphereCenter;
+            //    d = length(p);
+            //    return vec4(flipXZ(p) / d * sin(d), -cos(d));
+            //}
         }
         else
         {
@@ -94,7 +96,7 @@ void main(void)
 {
     vec4 eucPos = vec4(aPosition, 1);
 
-    gl_Position = port(eucPos * model) * view * projection;
+    gl_Position = port(eucPos * model) * rotation * translation * view * projection;
     FragPos = port(eucPos * model);
     Normal = vec4(aNormal, 0) * normalRotation * TranslateMatrix(port(eucPos * model));
     Color = aColor;

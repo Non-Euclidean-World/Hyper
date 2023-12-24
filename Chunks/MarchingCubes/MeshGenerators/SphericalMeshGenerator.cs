@@ -30,14 +30,19 @@ public class SphericalMeshGenerator : BaseMeshGenerator
                     var xAbs = chunkPosition.X + x - sphereCenter.X;
                     var yAbs = chunkPosition.Y + y - sphereCenter.Y;
                     var zAbs = chunkPosition.Z + z - sphereCenter.Z;
-                    if (xAbs * xAbs + yAbs * yAbs + zAbs * zAbs >= _cutoffRadius * _cutoffRadius)
-                        continue;
+                    /*if (xAbs * xAbs + yAbs * yAbs + zAbs * zAbs >= _cutoffRadius * _cutoffRadius)
+                        continue;*/
 
                     vertices.AddRange(GetTriangles(x, y, z, chunkData.Voxels));
                 }
             }
         }
 
+        //vertices.ForEach((v) => { v.X -= Chunk.Size / 2; v.Y -= Chunk.Size / 2; v.Z -= Chunk.Size / 2; });
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] = new Vertex(vertices[i].Position - Vector3.One * Chunk.Size / 2, vertices[i].Normal, vertices[i].Color);
+        }
         return vertices.ToArray();
     }
 }

@@ -1,5 +1,5 @@
 using Common.UserInput;
-using Hyper.PlayerData.Utils;
+using Common.Utils;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 

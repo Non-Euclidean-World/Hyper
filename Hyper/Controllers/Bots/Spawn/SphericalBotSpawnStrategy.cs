@@ -7,7 +7,7 @@ namespace Hyper.Controllers.Bots.Spawn;
 
 internal class SphericalBotSpawnStrategy : AbstractBotSpawnStrategy
 {
-    private const int MaxBots = 7;
+    private const int MaxBots = 0;
 
     private static int DistanceFromChunkCenter => Chunk.Size / 4;
 

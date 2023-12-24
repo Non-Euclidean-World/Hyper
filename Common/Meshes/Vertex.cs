@@ -81,4 +81,8 @@ public struct Vertex
     /// Gets the position of the vertex as a <see cref="Vector3"/>.
     /// </summary>
     public readonly Vector3 Position => new Vector3(X, Y, Z);
+
+    public readonly Vector3 Normal => new Vector3(Nx, Ny, Nz);
+
+    public readonly Vector3 Color => new Vector3(R, G, B);
 }

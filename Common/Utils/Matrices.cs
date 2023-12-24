@@ -1,7 +1,6 @@
-﻿using Common;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
-namespace Hyper.PlayerData.Utils;
+namespace Common.Utils;
 
 public static class Matrices
 {

@@ -17,6 +17,8 @@ uniform float curv;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat4 rotation;
+uniform mat4 translation;
 uniform mat4 normalRotation;
 uniform mat4 boneTransforms[MAX_BONES];
 uniform int sphere; // 0 for upper, 1 for lower
@@ -42,12 +44,12 @@ vec4 port(vec4 ePoint)
                 d = length(p);
                 return vec4(p / d * sin(d), cos(d));
             }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipXZ(p) / d * sin(d), -cos(d));
-            }
+            //if(sphere == 1)
+            //{
+            //    p = p - lowerSphereCenter;
+            //    d = length(p);
+            //    return vec4(flipXZ(p) / d * sin(d), -cos(d));
+            //}
         }
         else
         {
@@ -103,7 +105,7 @@ void main(void)
 	{
 		vec4 eucPos = vec4(in_position, 1);
 
-		gl_Position = port(eucPos * model) * view * projection;
+		gl_Position = port(eucPos * model) * rotation * translation * view * projection;
 		FragPos = port(eucPos * model);
 		Normal = vec4(in_normal, 0) * normalRotation * TranslateMatrix(port(eucPos * model));
 		Texture = in_textureCoords;
@@ -125,7 +127,7 @@ void main(void)
 	}
 
 	totalLocalPos /= totalLocalPos.w;
-	gl_Position = port(totalLocalPos * model) * view * projection;
+	gl_Position = port(totalLocalPos * model) * rotation * translation * view * projection;
 	FragPos = port(totalLocalPos * model);
 	Normal = totalNormal * normalRotation * TranslateMatrix(port(totalLocalPos * model));
 	Texture = in_textureCoords;

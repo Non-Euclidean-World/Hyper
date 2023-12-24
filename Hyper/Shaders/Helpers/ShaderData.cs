@@ -1,8 +1,8 @@
 ﻿using Character.LightSources;
 using Common;
 using Common.Meshes;
+using Common.Utils;
 using Hyper.PlayerData;
-using Hyper.PlayerData.Utils;
 using Hyper.Shaders.DataTypes;
 using OpenTK.Mathematics;
 

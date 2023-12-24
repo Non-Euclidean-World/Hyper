@@ -37,11 +37,13 @@ public class Chunk
 
     public object UpdatingLock = new object();
 
+    public Vector3 Center { get => Position + Vector3.One * Size / 2; }
+
     public Chunk(Vertex[] vertices, Vector3i position, Voxel[,,] voxels, int sphere = 0, bool createVao = true)
     {
         Voxels = voxels;
         Position = position;
-        Mesh = new Mesh(vertices, position, createVao);
+        Mesh = new Mesh(vertices, Center, createVao);
         Sphere = sphere;
     }
 
@@ -134,7 +136,7 @@ public class Chunk
             return;
 
         var collisionSurface = MeshHelper.CreateCollisionSurface(Mesh, bufferPool);
-        var position = Position;
+        var position = Center;
         if (collisionSurface is null)
             return;
         _shape = simulation.Shapes.Add(collisionSurface.Value);
