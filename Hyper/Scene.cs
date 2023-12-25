@@ -189,9 +189,6 @@ internal class Scene : IInputSubscriber
         foreach (var chunk in Chunks)
             chunk.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
 
-        foreach (var lightSource in LightSources)
-            lightSource.Dispose();
-
         foreach (var projectile in Projectiles)
             projectile.Dispose(SimulationManager.Simulation, SimulationManager.BufferPool);
 

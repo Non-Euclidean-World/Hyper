@@ -67,9 +67,9 @@ public class ScalarFieldGenerator
                     float value = density - _maxAmp;
 
                     VoxelType type;
-                    if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
-                    else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
-                    else type = VoxelType.Grass;
+                    if (y < 10) type = VoxelType.Bottom;
+                    else if (y < 18) type = VoxelType.Middle;
+                    else type = VoxelType.Top;
 
                     scalarField[x - position.X, y - position.Y, z - position.Z] = new Voxel(value, type);
                 }

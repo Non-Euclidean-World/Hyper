@@ -60,9 +60,9 @@ public class SphericalChunkFactory
                             averageScalarField1[x, y, z].Value = SmoothStepUp(d, radius) * boundaryValue + SmoothStepDown(d, radius) * scalarField1[x, y, z].Value;
 
                             VoxelType type;
-                            if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
-                            else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
-                            else type = VoxelType.Grass;
+                            if (y < Chunk.Size / 2.5) type = VoxelType.Bottom;
+                            else if (y < Chunk.Size / 2) type = VoxelType.Middle;
+                            else type = VoxelType.Top;
 
                             averageScalarField0[x, y, z].Type = averageScalarField1[x, y, z].Type = type;
                         }

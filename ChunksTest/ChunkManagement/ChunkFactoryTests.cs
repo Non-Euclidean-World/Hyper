@@ -10,7 +10,7 @@ namespace ChunksTest.ChunkManagement;
 public class ChunkFactoryTests
 {
     private static readonly ScalarFieldGenerator ScalarFieldGenerator = new(0);
-    private static readonly MeshGenerator MeshGenerator = new();
+    private static readonly MeshGenerator MeshGenerator = new(0);
 
     [SetUp]
     public void Setup()

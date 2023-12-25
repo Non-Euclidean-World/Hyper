@@ -2,7 +2,7 @@
 
 public enum VoxelType
 {
-    Grass,
-    GrassRock,
-    Rock,
+    Top,
+    Middle,
+    Bottom,
 }

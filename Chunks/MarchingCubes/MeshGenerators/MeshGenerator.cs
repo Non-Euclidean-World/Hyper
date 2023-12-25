@@ -7,6 +7,8 @@ namespace Chunks.MarchingCubes.MeshGenerators;
 
 public class MeshGenerator : BaseMeshGenerator
 {
+    public MeshGenerator(int seed) : base(seed) { }
+    
     public override Vertex[] GetMesh(/*unused*/ Vector3i chunkPosition, ChunkData chunkData)
     {
         Voxel[,,] scalarField = chunkData.Voxels;
