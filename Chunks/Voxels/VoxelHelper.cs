@@ -16,9 +16,9 @@ public class VoxelHelper
         var index = seed % 5;
         if (index == 0) // Volcanic
         {
-            _topColor = new Vector3(1.0f, 0.3f, 0.0f);
+            _topColor = new Vector3(0.4f, 0.35f, 0.35f);
             _middleRockColor = new Vector3(0.3f, 0.3f, 0.3f);
-            _bottomColor = new Vector3(0.4f, 0.35f, 0.35f);
+            _bottomColor = new Vector3(1.0f, 0.3f, 0.0f);
         }
         else if (index == 1) // Dessert
         {
@@ -51,9 +51,9 @@ public class VoxelHelper
     {
         return type switch
         {
-            (VoxelType.Bottom) => _bottomColor,
-            (VoxelType.Middle) => _middleRockColor,
             (VoxelType.Top) => _topColor,
+            (VoxelType.Middle) => _middleRockColor,
+            (VoxelType.Bottom) => _bottomColor,
             _ => Vector3.Zero
         };
     }
