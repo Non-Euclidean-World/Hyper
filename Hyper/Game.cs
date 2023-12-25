@@ -161,7 +161,9 @@ public class Game
 
     public void MouseWheel(MouseWheelEventArgs e)
     {
-        _scene.Camera.Fov -= e.OffsetY;
+        HyperCameraPosition.Multiplier += e.OffsetY;
+        HyperCameraPosition.Multiplier = Math.Min(HyperCameraPosition.Multiplier, 20f);
+        HyperCameraPosition.Multiplier = Math.Max(HyperCameraPosition.Multiplier, 0f);
     }
 
     public void Resize(ResizeEventArgs e)

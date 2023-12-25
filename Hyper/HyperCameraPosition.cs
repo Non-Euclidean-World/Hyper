@@ -2,5 +2,5 @@
 
 public static class HyperCameraPosition
 {
-    public const float Multiplier = 10f;
+    public static float Multiplier = 10f;
 }

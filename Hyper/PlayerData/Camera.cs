@@ -29,14 +29,12 @@ internal class Camera : IInputSubscriber
 
     private readonly float _scale;
 
-    private readonly Vector3 _fixedViewPosition;
+    private Vector3 FixedViewPosition => HyperCameraPosition.Multiplier * Vector3.UnitY * _scale;
 
-    public Vector3 ViewPosition
-    {
-        get => Curve >= 0
+    public Vector3 ViewPosition =>
+        Curve >= 0
             ? ReferencePointPosition * _scale
-            : _fixedViewPosition;
-    }
+            : FixedViewPosition;
 
     /// <summary>
     /// Sphere the camera is in
@@ -65,7 +63,6 @@ internal class Camera : IInputSubscriber
         Curve = curve;
         _near = near;
         _far = far;
-        _fixedViewPosition = HyperCameraPosition.Multiplier * Vector3.UnitY * scale;
         _scale = scale;
 
         RegisterCallbacks(context);
