@@ -106,7 +106,7 @@ internal class Camera : IInputSubscriber
 
     public Matrix4 GetViewMatrix()
     {
-        return Matrices.ViewMatrix(ViewPosition, Front, Up, Curve);
+        return Matrices.ViewMatrix(ViewPosition, Front, Up, Curve, Sphere, SphereCenter * _scale);
     }
 
     public Matrix4 GetProjectionMatrix()
@@ -121,9 +121,10 @@ internal class Camera : IInputSubscriber
 
     public void UpdateVectors()
     {
-        float adjustedPitch = Sphere == 0 ? _pitch : _pitch + MathF.PI;
+        float adjustedPitch = _pitch;
         float adjustedYaw = _yaw;
         Front = new Vector3(MathF.Cos(adjustedPitch) * MathF.Cos(adjustedYaw), MathF.Sin(adjustedPitch), MathF.Cos(adjustedPitch) * MathF.Sin(adjustedYaw));
+
 
         Front = FrontTransform(Vector3.Normalize(Front));
 

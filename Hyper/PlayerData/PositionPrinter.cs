@@ -1,5 +1,6 @@
 ﻿using Common;
 using Hud;
+using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
 
 namespace Hyper.PlayerData;
@@ -29,10 +30,20 @@ internal class PositionPrinter : IHudElement
 
     private string GetPositionString()
     {
-        var position = _camera.ReferencePointPosition;
-        return $"X:{Math.Round(position.X, 1)}" +
-               $"\nY:{Math.Round(position.Y, 1)}" +
-               $"\nZ:{Math.Round(position.Z, 1)}";
+        if (MathF.Abs(_camera.Curve) < Constants.Eps)
+        {
+            var position = _camera.ReferencePointPosition;
+            return $"X:{Math.Round(position.X, 1)}" +
+                   $"\nY:{Math.Round(position.Y, 1)}" +
+                   $"\nZ:{Math.Round(position.Z, 1)}";
+        }
+
+        var positionNonEuc = GeomPorting.EucToCurved(_camera.ViewPosition, _camera.Curve, _camera.Sphere, _camera.SphereCenter);
+        return $"X:{Math.Round(positionNonEuc.X, 1)}" +
+               $"\nY:{Math.Round(positionNonEuc.Y, 1)}" +
+               $"\nZ:{Math.Round(positionNonEuc.Z, 1)}" +
+               $"\nW:{Math.Round(positionNonEuc.W, 1)}" +
+               $"\nD = {Math.Round(GeomPorting.DotProduct(positionNonEuc, positionNonEuc, _camera.Curve), 1)}";
     }
 
     public void Dispose()

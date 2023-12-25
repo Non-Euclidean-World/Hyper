@@ -18,9 +18,9 @@ public static class GeomPorting
     /// <param name="eucPoint">Point in Euclidean space.</param>
     /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns>The point in the specified non-Euclidean space.</returns>
-    public static Vector4 EucToCurved(Vector3 eucPoint, float curve)
+    public static Vector4 EucToCurved(Vector3 eucPoint, float curve, int sphere, Vector3 sphereCenter)
     {
-        return EucToCurved(new Vector4(eucPoint, 1), curve);
+        return EucToCurved(new Vector4(eucPoint, 1), curve, sphere, sphereCenter);
     }
 
     /// <summary>
@@ -29,15 +29,35 @@ public static class GeomPorting
     /// <param name="eucPoint">Point in Euclidean space.</param>
     /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns>The point in the specified non-Euclidean space.</returns>
-    public static Vector4 EucToCurved(Vector4 eucPoint, float curve)
+    public static Vector4 EucToCurved(Vector4 eucPoint, float curve, int sphere, Vector3 sphereCenter)
     {
-        Vector3 p = eucPoint.Xyz;
+        Vector3 p;
+        if (sphere == 0)
+        {
+            p = eucPoint.Xyz;
+        }
+        else
+        {
+            // we're not shifting here because it's only used for the view matrix and the camera position is already shifted by the transporter
+            // TODO this is hellishly error-prone but I can't get it to work, too many things rely on the shift in spherical transporter. This needs to be sorted out some day.
+            p = eucPoint.Xyz /*- sphereCenter*/;
+        }
+
         float dist = p.Length;
         if (dist < 0.0001f) return eucPoint;
-        if (curve > 0) return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
-        if (curve < 0) return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
+        if (curve > 0)
+        {
+            if (sphere == 0)
+                return new Vector4(p / dist * (float)MathHelper.Sin(dist), (float)MathHelper.Cos(dist));
+            else
+                return new Vector4(FlipXZ(p) / dist * (float)MathHelper.Sin(dist), -(float)MathHelper.Cos(dist));
+        }
+        if (curve < 0)
+            return new Vector4(p / dist * (float)MathHelper.Sinh(dist), (float)MathHelper.Cosh(dist));
         return eucPoint;
     }
+
+    private static Vector3 FlipXZ(Vector3 v) => new(-v.X, v.Y, -v.Z);
 
     /// <summary>
     /// Creates translation target valid in all geometries.

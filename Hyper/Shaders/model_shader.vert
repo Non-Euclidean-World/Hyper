@@ -54,13 +54,13 @@ vec4 port(vec4 ePoint)
             if(sphere == 0)
             {
                 d = length(p);   
-                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
+                return vec4(flipY((p)) / d * sin(d), cos(d));
             }
             if(sphere == 1)
             {
                 p = p - lowerSphereCenter;
                 d = length(p);
-                return vec4(flipY(p) / d * sin(d), cos(d));
+                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
             }
         }
     }

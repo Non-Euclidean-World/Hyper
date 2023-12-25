@@ -87,7 +87,7 @@ internal class SphericalTransporter : ITransporter
         camera.SphereCenter = _sphereCenters[targetSphereId];
 
         if (targetSphereId == 1)
-            camera.FrontTransform = (f) => ReflectFront(f, _sphereCenters[currentSphereId], exitPoint);
+            camera.FrontTransform = Camera.IdentityTransform;
         else
             camera.FrontTransform = Camera.IdentityTransform;
 
