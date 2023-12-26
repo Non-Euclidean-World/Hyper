@@ -25,7 +25,7 @@ internal class SkyboxController : IController
 
     private readonly Stopwatch _stopwatch = new();
 
-    private const float DayLengthSeconds = 60 * 3f;
+    private const float DayLengthSeconds = 60 * 5f;
 
     private readonly Vector3 _initialSunVector;
 
