@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System.Diagnostics;
+using Common;
 using Hyper.Menu;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
@@ -14,7 +15,9 @@ public class Window : GameWindow
     private Game? _game;
 
     private bool _isGameRunning;
-
+    
+    private readonly Stopwatch _sinceGameStartStopwatch = new();
+    
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {
@@ -49,6 +52,7 @@ public class Window : GameWindow
             _game = new Game(Size.X, Size.Y, windowHelper, saveName, geometryType);
             CursorState = CursorState.Grabbed;
             _isGameRunning = true;
+            _sinceGameStartStopwatch.Restart();
         };
         mainMenu.Delete += (saveName) =>
         {
@@ -65,6 +69,7 @@ public class Window : GameWindow
             _game = new Game(Size.X, Size.Y, windowHelper, saveName, SelectedGeometryType.Euclidean);
             CursorState = CursorState.Grabbed;
             _isGameRunning = true;
+            _sinceGameStartStopwatch.Restart();
         };
         mainMenu.Quit += Close;
 
@@ -142,7 +147,11 @@ public class Window : GameWindow
         base.OnMouseDown(e);
 
         if (_isGameRunning)
+        {
+            if (!IsGameReady())
+                return;
             _game?.MouseDown(e.Button);
+        }
         else
             _mainMenu.Click();
     }
@@ -178,6 +187,11 @@ public class Window : GameWindow
             _isGameRunning = false;
             CursorState = CursorState.Normal;
         }
+    }
+
+    private bool IsGameReady()
+    {
+        return _sinceGameStartStopwatch.ElapsedMilliseconds > 1000;
     }
 
     private static string DefaultSaveName()
