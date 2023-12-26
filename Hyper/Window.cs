@@ -32,6 +32,7 @@ public class Window : GameWindow
         _game = new Game(nativeWindowSettings.Size.X, nativeWindowSettings.Size.Y, windowHelper, DefaultSaveName(), selectedGeometryType);
         CursorState = CursorState.Grabbed;
         _isGameRunning = true;
+        _sinceGameStartStopwatch.Restart();
     }
 
     private MainMenu GetMainMenu(IWindowHelper windowHelper, bool isGameLoaded)
