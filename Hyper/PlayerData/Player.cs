@@ -115,7 +115,7 @@ internal class Player : Humanoid, IRayCaster
         PhysicalCharacter.UpdateCharacterGoals(simulation, Conversions.ToNumericsVector(viewDirection), time, tryJump, sprint, Conversions.ToNumericsVector(movementDirection));
         ViewDirection = viewDirection;
         FlashLight.Position =
-             (CurrentSphereId == 0 ? Vector3.Cross(ViewDirection, Vector3.UnitY) : -Vector3.Cross(ViewDirection, Vector3.UnitY))
+             Vector3.Cross(ViewDirection, Vector3.UnitY)
              + Conversions.ToOpenTKVector(PhysicalCharacter.Pose.Position); // right hand
         FlashLight.Direction = ViewDirection;
     }

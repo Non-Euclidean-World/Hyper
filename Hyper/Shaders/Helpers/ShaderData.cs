@@ -27,7 +27,7 @@ internal static class ShaderData
         shader.SetInt("numSpotLights", flashLights.Where(x => x.Active).Count());
         shader.SetStructArray("pointLights", GetPointLights(lightSources, camera, globalScale));
         shader.SetStructArray("spotLights", GetSpotLights(flashLights, camera, globalScale));
-        shader.SetVector4("viewPos", GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve, camera.Sphere, camera.SphereCenter));
+        shader.SetVector4("viewPos", GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve, 0, camera.SphereCenter));
     }
 
     /// <summary>

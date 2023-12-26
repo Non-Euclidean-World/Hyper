@@ -47,11 +47,11 @@ vec4 port(vec4 ePoint)
             if(sphere == 0)
             {
                 d = length(p);   
-                return vec4(flipY((p)) / d * sin(d), cos(d));
+                return vec4(flipY(p) / d * sin(d), cos(d));
             }
             if(sphere == 1)
             {
-              p = p - lowerSphereCenter;
+                p = p - lowerSphereCenter;
                 d = length(p);
                 return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
             }
@@ -81,6 +81,9 @@ mat4 TranslateMatrix(vec4 to)
     }
     else
     {
+        if(curv > 0 && to.w < 0) { // this is just to remove the black spot caused by division by zero
+            to.w *= -1;
+        }
         float denom = 1 + to.w;
         return transpose(mat4(
             1 - curv * to.x * to.x / denom, -curv * to.x * to.y / denom, -curv * to.x * to.z / denom, -curv * to.x,
