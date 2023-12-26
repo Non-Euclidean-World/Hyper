@@ -12,7 +12,7 @@ public class MeshGeneratorTests
     public void GetMesh_WithEmptyScalarField_ShouldReturnEmptyVertexArray()
     {
         // Arrange
-        var meshGenerator = new MeshGenerator();
+        var meshGenerator = new MeshGenerator(0);
         var emptyScalarField = new Voxel[1, 1, 1];
         var chunkData = new ChunkData { Voxels = emptyScalarField };
         var chunkPosition = new Vector3i(0, 0, 0);
@@ -28,9 +28,9 @@ public class MeshGeneratorTests
     public void GetMesh_WithNonEmptyScalarField_ShouldReturnNonEmptyVertexArray()
     {
         // Arrange
-        var meshGenerator = new MeshGenerator();
+        var meshGenerator = new MeshGenerator(0);
         var scalarField = new Voxel[8, 8, 8];
-        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Grass);
+        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Top);
         var chunkData = new ChunkData { Voxels = scalarField };
         var chunkPosition = new Vector3i(0, 0, 0);
 

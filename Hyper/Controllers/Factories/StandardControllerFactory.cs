@@ -34,7 +34,7 @@ internal class StandardControllerFactory : IControllerFactory
 
     public IController[] CreateControllers(Settings settings)
     {
-        var meshGenerator = new MeshGenerator();
+        var meshGenerator = new MeshGenerator(settings.Seed);
         var chunkFactory = new ChunkFactory(_scalarFieldGenerator, meshGenerator);
 
         var chunkHandler = new ChunkHandler(settings.SaveName, meshGenerator);

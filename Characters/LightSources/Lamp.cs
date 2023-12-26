@@ -1,6 +1,7 @@
 ﻿using BepuPhysics;
 using Common;
 using Common.Meshes;
+using Common.ResourceClasses;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Physics.Collisions;
@@ -10,7 +11,7 @@ namespace Character.LightSources;
 /// <summary>
 /// Class representing a point light source.
 /// </summary>
-public class Lamp : Mesh, ISimulationMember
+public class Lamp : ISimulationMember
 {
     /// <summary>
     /// Color of the lamp.
@@ -58,8 +59,13 @@ public class Lamp : Mesh, ISimulationMember
     /// </summary>
     public int CurrentSphereId { get; set; }
 
-    private Lamp(Vertex[] vertices, Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId) : base(vertices, position)
+    public Vector3 Position;
+    
+    private readonly SphereResource _sphereResource = SphereResource.Instance;
+    
+    private Lamp(Vector3 position, Vector3 color, Vector3 ambient, Vector3 diffuse, Vector3 specular, float constant, float linear, float quadratic, int sphereId)
     {
+        Position = position;
         Color = color;
         Ambient = ambient;
         Diffuse = diffuse;
@@ -78,7 +84,7 @@ public class Lamp : Mesh, ISimulationMember
     /// <param name="sphereId">The id of the sphere the lamp is in.</param>
     /// <returns>An instance of the <see cref="Lamp"/> class.</returns>
     public static Lamp CreateStandardLamp(Vector3 position, Vector3 color, int sphereId = 0)
-        => new(CubeMesh.Vertices, position, color,
+        => new(position, color,
             ambient: new Vector3(0.05f, 0.05f, 0.05f),
             diffuse: new Vector3(0.8f, 0.8f, 0.8f),
             specular: new Vector3(1f, 1f, 1f),
@@ -94,7 +100,7 @@ public class Lamp : Mesh, ISimulationMember
     /// <param name="scale">The scale of the scene.</param>
     /// <param name="curve">The curvature of the scene.</param>
     /// <param name="cameraPosition">The camera position in the scene.</param>
-    public override void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
+    public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)
     {
         var modelLs = Matrix4.CreateTranslation(
             GeomPorting.CreateTranslationTarget(Position, cameraPosition, curve, scale));
@@ -102,7 +108,8 @@ public class Lamp : Mesh, ISimulationMember
         shader.SetMatrix4("model", scaleLs * modelLs);
         shader.SetVector3("color", Color);
 
-        GL.BindVertexArray(VaoId);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        GL.BindVertexArray(_sphereResource.Vaos[0]);
+        GL.DrawElements(PrimitiveType.Triangles, _sphereResource.Model.Meshes[0].FaceCount * 3,
+            DrawElementsType.UnsignedInt, 0);
     }
 }

@@ -7,29 +7,30 @@ public class ScalarFieldGenerator
 {
     private readonly int _seed;
 
-    private readonly int _octaves;
+    private int _octaves = 3;
 
-    private readonly float _initialFreq;
+    private float _initialFreq = 0.25f;
 
-    private readonly float _freqMul;
+    private float _freqMul = 2f;
 
-    private readonly float _initialAmp;
+    private float _initialAmp = 16f;
 
-    private readonly float _ampMul;
+    private float _ampMul = 0.5f;
 
     private readonly float _maxAmp;
+    
+    private float _verticalOffset = 0f;
+
+    private float _middleLevel = 10;
+    
+    private float _topLevel = 18;
 
     public float AvgElevation { get; private set; } = 0f;
 
-    public ScalarFieldGenerator(int seed, int octaves = 3, float initialFreq = 0.25f, float freqMul = 2f, float initialAmp = 16f, float ampMul = 0.5f)
+    public ScalarFieldGenerator(int seed)
     {
         _seed = seed;
-        _octaves = octaves;
-        _initialFreq = initialFreq;
-        _freqMul = freqMul;
-        _initialAmp = initialAmp;
-        _ampMul = ampMul;
-
+        GetToxic();
         _maxAmp = AvgElevation = GetMaxAmp();
     }
 
@@ -64,12 +65,12 @@ public class ScalarFieldGenerator
                         freq *= _freqMul;
                         amp *= _ampMul;
                     }
-                    float value = density - _maxAmp;
+                    float value = density - _maxAmp - _verticalOffset;
 
                     VoxelType type;
-                    if (y < Chunk.Size / 2.5) type = VoxelType.Rock;
-                    else if (y < Chunk.Size / 2) type = VoxelType.GrassRock;
-                    else type = VoxelType.Grass;
+                    if (y < _middleLevel) type = VoxelType.Bottom;
+                    else if (y < _topLevel) type = VoxelType.Middle;
+                    else type = VoxelType.Top;
 
                     scalarField[x - position.X, y - position.Y, z - position.Z] = new Voxel(value, type);
                 }
@@ -98,6 +99,86 @@ public class ScalarFieldGenerator
         }
 
         return maxAmp;
+    }
+
+    private void GetTerrainSettings(int seed)
+    {
+        var index = seed % 5;
+        if (index == 0) // Volcanic
+            GetVolcanic();
+        else if (index == 1) // Dessert
+            GetDessert();
+        else if (index == 2) // Forrest
+            GetForrest();
+        else if (index == 3) // Toxic
+            GetToxic();
+        else // Jungle
+            GetJungle();
+    }
+    
+    private void GetVolcanic()
+    {
+        _octaves = 4;
+        _initialFreq = 0.30f;
+        _initialAmp = 20f;
+        _freqMul = 2f;
+        _ampMul = 0.5f;
+        
+        _verticalOffset = 0;
+        _middleLevel = 15;
+        _topLevel = 23;
+    }
+    
+    private void GetDessert()
+    {
+        _octaves = 2;
+        _initialFreq = 0.27f;
+        _initialAmp = 17f;
+        _freqMul = 2f;
+        _ampMul = 0.5f;
+        
+        _verticalOffset = 0;
+        _middleLevel = 10;
+        _topLevel = 14;
+    }
+    
+    private void GetForrest()
+    {
+        _octaves = 3;
+        _initialFreq = 0.20f;
+        _initialAmp = 18f;
+        _freqMul = 2f;
+        _ampMul = 0.5f;
+        
+        _verticalOffset = 0;
+        _middleLevel = 10;
+        _topLevel = 18;
+    }
+
+    private void GetJungle()
+    {
+        _octaves = 4;
+        _initialFreq = 0.22f;
+        _initialAmp = 20f;
+        _freqMul = 2f;
+        _ampMul = 0.5f;
+        
+        _verticalOffset = 0;
+        _middleLevel = 10;
+        _topLevel = 18;
+    }
+
+    private void GetToxic()
+    {
+        _octaves = 3;
+        _initialFreq = 0.25f;
+        _initialAmp = 16f;
+        _freqMul = 2f;
+        _ampMul = 0.5f;
+        
+        _verticalOffset = 0;
+        _middleLevel = 10;
+        _topLevel = 18;
     }
 }
 

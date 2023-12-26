@@ -15,7 +15,7 @@ public class SphericalMeshGeneratorTests
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI), 0, 0);
         var sphereCenters = new[] { sphere0Center, sphere1Center };
-        var meshGenerator = new SphericalMeshGenerator(0, sphereCenters);
+        var meshGenerator = new SphericalMeshGenerator(0, sphereCenters, 0);
         var emptyScalarField = new Voxel[1, 1, 1];
         var chunkData = new ChunkData { Voxels = emptyScalarField };
         var chunkPosition = new Vector3i(0, 0, 0);
@@ -34,9 +34,9 @@ public class SphericalMeshGeneratorTests
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI), 0, 0);
         var sphereCenters = new[] { sphere0Center, sphere1Center };
-        var meshGenerator = new SphericalMeshGenerator(10, sphereCenters);
+        var meshGenerator = new SphericalMeshGenerator(10, sphereCenters, 0);
         var scalarField = new Voxel[8, 8, 8];
-        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Grass);
+        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Top);
         var chunkData = new ChunkData { Voxels = scalarField };
         var chunkPosition = new Vector3i(0, 0, 0);
 
@@ -54,9 +54,9 @@ public class SphericalMeshGeneratorTests
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI), 0, 0);
         var sphereCenters = new[] { sphere0Center, sphere1Center };
-        var meshGenerator = new SphericalMeshGenerator(0, sphereCenters);
+        var meshGenerator = new SphericalMeshGenerator(0, sphereCenters, 0);
         var scalarField = new Voxel[8, 8, 8];
-        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Grass);
+        scalarField[1, 3, 1] = new Voxel(-1, VoxelType.Top);
         var chunkData = new ChunkData { Voxels = scalarField };
         var chunkPosition = new Vector3i(0, 0, 0);
 

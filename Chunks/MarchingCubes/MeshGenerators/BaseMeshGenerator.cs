@@ -8,10 +8,17 @@ namespace Chunks.MarchingCubes.MeshGenerators;
 public abstract class BaseMeshGenerator
 {
     public const float IsoLevel = 0;
+    
+    private readonly VoxelHelper _voxelHelper;
+    
+    public BaseMeshGenerator(int seed)
+    {
+        _voxelHelper = new VoxelHelper(seed);
+    }
 
     public abstract Vertex[] GetMesh(Vector3i chunkPosition, ChunkData chunkData);
 
-    protected static List<Vertex> GetTriangles(int x, int y, int z, Voxel[,,] scalarField)
+    protected List<Vertex> GetTriangles(int x, int y, int z, Voxel[,,] scalarField)
     {
         var vertices = new List<Vertex>();
 
@@ -41,7 +48,7 @@ public abstract class BaseMeshGenerator
         return new Vertex(vertexPosition, normal, color);
     }
 
-    private static (float[], Vector3[], Vector3[]) GetCubeValues(int x, int y, int z, Voxel[,,] scalarField)
+    private (float[], Vector3[], Vector3[]) GetCubeValues(int x, int y, int z, Voxel[,,] scalarField)
     {
         float[] cubeValues = new float[8];
         Vector3[] colors = new Vector3[8];
@@ -52,7 +59,7 @@ public abstract class BaseMeshGenerator
             Vector3i offset = MarchingCubesTables.CubeCorners[i];
             Vector3i cubeVertexPos = new Vector3i(x + offset.X, y + offset.Y, z + offset.Z);
             cubeValues[i] = scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Value;
-            colors[i] = VoxelHelper.GetColor(scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
+            colors[i] = _voxelHelper.GetColor(scalarField[cubeVertexPos.X, cubeVertexPos.Y, cubeVertexPos.Z].Type);
 
             normals[i].X = scalarField[cubeVertexPos.X + 1, cubeVertexPos.Y, cubeVertexPos.Z].Value
                            - scalarField[cubeVertexPos.X - 1, cubeVertexPos.Y, cubeVertexPos.Z].Value;

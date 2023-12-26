@@ -23,7 +23,7 @@ public class Controls : SingleChildWidget
         {"Right Mouse", "Alt Use Item"},
         {"Esc", "Show/Hide Menu"},
         {"Tab", "Switch camera"},
-        {"Scroll", "Change FOV"},
+        {"Scroll", "Change curvature"},
         {"0-9", "Select Item"},
         {"C", "Enter Car"},
         {"F", "Flip Car"},

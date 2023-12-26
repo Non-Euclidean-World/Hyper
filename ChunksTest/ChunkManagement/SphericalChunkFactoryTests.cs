@@ -22,7 +22,7 @@ public class SphericalChunkFactoryTests
         var sphere0Center = new Vector3i(0, 0, 0);
         var sphere1Center = new Vector3i((int)(MathF.PI / GlobalScale), 0, 0);
         _sphereCenters = new[] { sphere0Center, sphere1Center };
-        _meshGenerator = new SphericalMeshGenerator(10, _sphereCenters);
+        _meshGenerator = new SphericalMeshGenerator(10, _sphereCenters, 0);
     }
 
     [Test]
