@@ -128,7 +128,7 @@ internal class Camera : IInputSubscriber
 
         Front = FrontTransform(Vector3.Normalize(Front));
 
-        _right = Vector3.Normalize(Vector3.Cross(Front, Sphere == 1 ? -Vector3.UnitY : Vector3.UnitY));
+        _right = Vector3.Normalize(Vector3.Cross(Front, Vector3.UnitY));
         Up = Vector3.Normalize(Vector3.Cross(_right, Front));
     }
 

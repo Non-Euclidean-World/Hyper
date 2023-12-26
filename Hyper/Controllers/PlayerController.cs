@@ -79,12 +79,12 @@ internal class PlayerController : IController, IInputSubscriber
 
             if (context.HeldKeys[Keys.A])
             {
-                movementDirection += new Vector2(-1, 0);
+                movementDirection += mul * new Vector2(-1, 0);
             }
 
             if (context.HeldKeys[Keys.D])
             {
-                movementDirection += new Vector2(1, 0);
+                movementDirection += mul * new Vector2(1, 0);
             }
 
             _scene.Player.UpdateCharacterGoals(_scene.SimulationManager.Simulation, _scene.Camera.Front, (float)e.Time,
@@ -179,7 +179,7 @@ internal class PlayerController : IController, IInputSubscriber
     }
 
     private Vector3 GetThirdPersonCameraOffset(Camera camera)
-        => camera.Up * (camera.Sphere == 0 ? 1f : -1f) - camera.Front * 5f;
+        => camera.Up - camera.Front * 5f;
 
     public void Dispose()
     {

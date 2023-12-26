@@ -25,7 +25,7 @@ public static class Matrices
 
         Matrix4 eyeTranslate = TranslationMatrix(fakeGeomEye, curve);
         Vector4 icp = ic * eyeTranslate;
-        Vector4 jcp = jc * eyeTranslate;
+        Vector4 jcp = (sphere == 0 ? 1 : -1) * jc * eyeTranslate;
         Vector4 kcp = (sphere == 0 ? 1 : -1) * kc * eyeTranslate;
 
         if (MathHelper.Abs(curve) < Constants.Eps)

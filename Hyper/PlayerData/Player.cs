@@ -35,8 +35,7 @@ internal class Player : Humanoid, IRayCaster
 
     public System.Numerics.Vector3 RayDirection
     {
-        get =>
-            Conversions.ToNumericsVector(ViewDirection);
+        get => Conversions.ToNumericsVector(ViewDirection);
     }
 
     public System.Numerics.Vector3 RayOrigin => PhysicalCharacter.Pose.Position

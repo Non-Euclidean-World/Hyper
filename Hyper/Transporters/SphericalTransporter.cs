@@ -87,7 +87,7 @@ internal class SphericalTransporter : ITransporter
         camera.SphereCenter = _sphereCenters[targetSphereId];
 
         if (targetSphereId == 1)
-            camera.FrontTransform = Camera.IdentityTransform;
+            camera.FrontTransform = (f) => ReflectFront(f, _sphereCenters[currentSphereId], exitPoint);
         else
             camera.FrontTransform = Camera.IdentityTransform;
 
@@ -105,7 +105,6 @@ internal class SphericalTransporter : ITransporter
     private static Vector3 ReflectFront(Vector3 front, Vector3 sphereCenter, Vector3 teleportPoint)
     {
         var n = Vector3.Normalize(Vector3.Cross(teleportPoint - sphereCenter, Vector3.UnitY));
-        var n90 = new Vector3(-n.Z, 0, n.X); // 90 degrees flip
-        return Common.GeomPorting.ReflectVector(front, n90);
+        return Common.GeomPorting.ReflectVector(front, n);
     }
 }
