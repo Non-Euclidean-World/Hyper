@@ -13,19 +13,20 @@ public static class Matrices
     /// <param name="up">Camera's up vector in Euclidean space</param>
     /// <param name="curve">If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</param>
     /// <returns></returns>
-    public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve)
+    public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve, int sphere, Vector3 sphereCenter)
     {
         Matrix4 v = Matrix4.LookAt(position, position + front, up);
         Vector4 ic = new Vector4(v.Column0.Xyz, 0);
         Vector4 jc = new Vector4(v.Column1.Xyz, 0);
         Vector4 kc = new Vector4(v.Column2.Xyz, 0);
 
-        Vector4 geomEye = GeomPorting.EucToCurved(position, curve);
+        Vector4 geomEye = GeomPorting.EucToCurved(position, curve, sphere, sphereCenter);
+        Vector4 fakeGeomEye = GeomPorting.EucToCurved(position, curve, 0, sphereCenter);
 
-        Matrix4 eyeTranslate = TranslationMatrix(geomEye, curve);
+        Matrix4 eyeTranslate = TranslationMatrix(fakeGeomEye, curve);
         Vector4 icp = ic * eyeTranslate;
-        Vector4 jcp = jc * eyeTranslate;
-        Vector4 kcp = kc * eyeTranslate;
+        Vector4 jcp = (sphere == 0 ? 1 : -1) * jc * eyeTranslate;
+        Vector4 kcp = (sphere == 0 ? 1 : -1) * kc * eyeTranslate;
 
         if (MathHelper.Abs(curve) < Constants.Eps)
         {

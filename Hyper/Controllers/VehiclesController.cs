@@ -107,24 +107,12 @@ internal class VehiclesController : IController, IInputSubscriber
 
     private void UpdateCamera(Camera camera, FourWheeledCar car)
     {
-        if (camera.Sphere == 0)
-        {
-            camera.ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
-               + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
-               + GetHyperbolicOffset(camera)
-               - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
-        }
-        else
-        {
-            var playerCarPos = Conversions.ToOpenTKVector(car.CarBodyPose.Position);
-            playerCarPos.Y *= -1;
-            camera.ReferencePointPosition = playerCarPos
-                + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
-                + GetHyperbolicOffset(camera)
-                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
-        }
+        camera.ReferencePointPosition = Conversions.ToOpenTKVector(car.CarBodyPose.Position)
+           + (camera.FirstPerson ? GetFirstPersonCameraOffset(camera, car) : GetThirdPersonCameraOffset(camera))
+           + GetHyperbolicOffset(camera)
+           - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
     }
-    
+
     private Vector3 GetHyperbolicOffset(Camera camera)
     {
         if (camera.Curve >= 0)

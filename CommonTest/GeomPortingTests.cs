@@ -13,7 +13,7 @@ public class GeomPortingTests
         var vector = new Vector4(1, 2, 4, 1);
 
         // Act
-        var curved = GeomPorting.EucToCurved(vector, 0);
+        var curved = GeomPorting.EucToCurved(vector, 0, 0, Vector3.Zero);
 
         // Assert
         vector.Should().BeEquivalentTo(curved);
@@ -26,7 +26,7 @@ public class GeomPortingTests
         var vector = new Vector3(68, 420, 100);
 
         // Act
-        var curved = GeomPorting.EucToCurved(vector, 1);
+        var curved = GeomPorting.EucToCurved(vector, 1, 0, Vector3.Zero);
 
         // Assert
         IsOnUnitSphere(curved).Should().BeTrue();
@@ -39,7 +39,7 @@ public class GeomPortingTests
         var vector = new Vector3(3.14f, 3.20f, 1.0f);
 
         // Act
-        var curved = GeomPorting.EucToCurved(vector, -1);
+        var curved = GeomPorting.EucToCurved(vector, -1, 0, Vector3.Zero);
 
         // Assert
         IsOnUnitHyperboloid(curved).Should().BeTrue();

@@ -27,7 +27,7 @@ internal static class ShaderData
         shader.SetInt("numSpotLights", flashLights.Where(x => x.Active).Count());
         shader.SetStructArray("pointLights", GetPointLights(lightSources, camera, globalScale));
         shader.SetStructArray("spotLights", GetSpotLights(flashLights, camera, globalScale));
-        shader.SetVector4("viewPos", GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve));
+        shader.SetVector4("viewPos", GeomPorting.EucToCurved(camera.ViewPosition, camera.Curve, 0, camera.SphereCenter));
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ internal static class ShaderData
                     Position = new Vector4(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), 1),
                     SphereId = x.CurrentSphereId,
                     Color = x.Color,
-                    Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), camera.Curve), camera.Curve),
+                    Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), camera.Curve, camera.Sphere, camera.SphereCenter), camera.Curve),
                     CutOff = x.CutOff,
                     OuterCutOff = x.OuterCutOff,
                     Ambient = x.Ambient,

@@ -69,7 +69,7 @@ public class SphericalChunkFactory
                     }
                 }
 
-                const int heightOffset = 5; // a magic constant that fixes the "disappearing celling" problem
+                const int heightOffset = 7; // a magic constant that fixes the "disappearing celling" problem
                 var sfPos0 = new Vector3i(offset * chunkX, 0, offset * chunkY) + _sphereCenters[0] - new Vector3i(0, (int)_scalarFieldGenerator.AvgElevation - heightOffset, 0);
                 Vertex[] data0 = _meshGenerator.GetMesh(sfPos0, new ChunkData { SphereId = 0, Voxels = averageScalarField0 });
 

@@ -13,8 +13,8 @@ internal class MatricesTest
     {
         // Arrange
         float curve = 1;
-        Vector4 q = GeomPorting.EucToCurved(new Vector3(4, 5, -2), curve);
-        Vector4 p = GeomPorting.EucToCurved(new Vector3(1, 2, 3), curve);
+        Vector4 q = GeomPorting.EucToCurved(new Vector3(4, 5, -2), curve, 0, Vector3.Zero);
+        Vector4 p = GeomPorting.EucToCurved(new Vector3(1, 2, 3), curve, 0, Vector3.Zero);
 
         // https://link.springer.com/article/10.1007/s00371-021-02303-2#Equ22
         Vector4 expectedTranslatedP
@@ -32,8 +32,8 @@ internal class MatricesTest
     {
         // Arrange
         float curve = -1;
-        Vector4 q = GeomPorting.EucToCurved(new Vector3(0.4f, 1, -0.2f), curve);
-        Vector4 p = GeomPorting.EucToCurved(new Vector3(1, 0.2f, 0.3f), curve);
+        Vector4 q = GeomPorting.EucToCurved(new Vector3(0.4f, 1, -0.2f), curve, 0, Vector3.Zero);
+        Vector4 p = GeomPorting.EucToCurved(new Vector3(1, 0.2f, 0.3f), curve, 0, Vector3.Zero);
 
         // https://link.springer.com/article/10.1007/s00371-021-02303-2#Equ22
         Vector4 expectedTranslatedP
@@ -58,7 +58,7 @@ internal class MatricesTest
         Vector4 ic = new Vector4(Vector3.Cross(front, up), 0);
         Vector4 jc = new Vector4(up, 0);
         Vector4 kc = new Vector4(-front, 0);
-        Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve);
+        Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve, 0, Vector3.Zero);
 
         Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve);
         Vector4 icp = ic * eyeTranslate;
@@ -66,7 +66,7 @@ internal class MatricesTest
         Vector4 kcp = kc * eyeTranslate;
 
         // Act
-        Matrix4 view = Matrices.ViewMatrix(cameraPosition, front, up, curve);
+        Matrix4 view = Matrices.ViewMatrix(cameraPosition, front, up, curve, 0, Vector3.Zero);
 
         // Assert
         // https://link.springer.com/article/10.1007/s00371-021-02303-2#Equ27
@@ -88,7 +88,7 @@ internal class MatricesTest
         Vector4 ic = new Vector4(Vector3.Cross(front, up), 0);
         Vector4 jc = new Vector4(up, 0);
         Vector4 kc = new Vector4(-front, 0);
-        Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve);
+        Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve, 0, Vector3.Zero);
 
         Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve);
         Vector4 icp = ic * eyeTranslate;
@@ -96,7 +96,7 @@ internal class MatricesTest
         Vector4 kcp = kc * eyeTranslate;
 
         // Act
-        Matrix4 view = Matrices.ViewMatrix(cameraPosition, front, up, curve);
+        Matrix4 view = Matrices.ViewMatrix(cameraPosition, front, up, curve, 0, Vector3.Zero);
 
         // Assert
         // https://link.springer.com/article/10.1007/s00371-021-02303-2#Equ27

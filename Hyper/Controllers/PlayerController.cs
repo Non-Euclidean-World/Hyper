@@ -65,6 +65,7 @@ internal class PlayerController : IController, IInputSubscriber
             if (_scene.PlayersCar != null)
                 return;
 
+            int mul = _scene.Camera.Sphere == 0 ? 1 : -1;
             Vector2 movementDirection = default;
             if (context.HeldKeys[Keys.W])
             {
@@ -78,18 +79,12 @@ internal class PlayerController : IController, IInputSubscriber
 
             if (context.HeldKeys[Keys.A])
             {
-                if (_scene.Player.CurrentSphereId == 0)
-                    movementDirection += new Vector2(-1, 0);
-                else
-                    movementDirection -= new Vector2(-1, 0);
+                movementDirection += mul * new Vector2(-1, 0);
             }
 
             if (context.HeldKeys[Keys.D])
             {
-                if (_scene.Player.CurrentSphereId == 0)
-                    movementDirection += new Vector2(1, 0);
-                else
-                    movementDirection -= new Vector2(1, 0);
+                movementDirection += mul * new Vector2(1, 0);
             }
 
             _scene.Player.UpdateCharacterGoals(_scene.SimulationManager.Simulation, _scene.Camera.Front, (float)e.Time,
@@ -170,22 +165,10 @@ internal class PlayerController : IController, IInputSubscriber
 
     private void UpdateCamera(Camera camera, Player player)
     {
-        if (camera.Sphere == 0)
-        {
-            camera.ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
-                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
-                + GetHyperbolicOffset(camera)
-                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
-        }
-        else
-        {
-            var playerPos = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position);
-            playerPos.Y *= -1;
-            camera.ReferencePointPosition = playerPos
-                + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
-                + GetHyperbolicOffset(camera)
-                - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
-        }
+        camera.ReferencePointPosition = Conversions.ToOpenTKVector(player.PhysicalCharacter.Pose.Position)
+            + (camera.FirstPerson ? Vector3.Zero : GetThirdPersonCameraOffset(camera))
+            + GetHyperbolicOffset(camera)
+            - (camera.Curve > 0 ? camera.SphereCenter : Vector3.Zero);
     }
 
     private Vector3 GetHyperbolicOffset(Camera camera)
@@ -196,7 +179,7 @@ internal class PlayerController : IController, IInputSubscriber
     }
 
     private Vector3 GetThirdPersonCameraOffset(Camera camera)
-        => camera.Up * 1f - camera.Front * 5f;
+        => camera.Up - camera.Front * 5f;
 
     public void Dispose()
     {

@@ -74,6 +74,8 @@ internal abstract class Pickaxe : Item
         if (!chunkWorker.IsProcessingBatch)
         {
             var location = scene.Player.GetRayEndpoint(in scene.SimulationManager.RayCastingResults[scene.Player.RayId]);
+            if (scene.Camera.Curve > 0 && location.Y <= 0)
+                return;
             Vector3? otherSphereLocation = null;
             if (scene.Camera.Curve > 0)
             {
