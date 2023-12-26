@@ -15,11 +15,14 @@ internal class PositionPrinter : IHudElement
 
     public bool Visible { get; set; }
 
-    public PositionPrinter(Camera camera, IWindowHelper windowHelper)
+    private readonly float _globalScale;
+
+    public PositionPrinter(Camera camera, float globalScale, IWindowHelper windowHelper)
     {
         _camera = camera;
         _windowHelper = windowHelper;
         Visible = true;
+        _globalScale = globalScale;
     }
 
     public void Render(Shader shader)
@@ -30,20 +33,40 @@ internal class PositionPrinter : IHudElement
 
     private string GetPositionString()
     {
+        var position = _camera.ReferencePointPosition * _globalScale;
         if (MathF.Abs(_camera.Curve) < Constants.Eps)
         {
-            var position = _camera.ReferencePointPosition;
-            return $"X:{Math.Round(position.X, 1)}" +
-                   $"\nY:{Math.Round(position.Y, 1)}" +
-                   $"\nZ:{Math.Round(position.Z, 1)}";
+            return GetCoordinateString('x', position.X) +
+                   GetCoordinateString('y', position.Y) +
+                   GetCoordinateString('z', position.Z);
         }
 
-        var positionNonEuc = GeomPorting.EucToCurved(_camera.ViewPosition, _camera.Curve, _camera.Sphere, _camera.SphereCenter);
-        return $"X:{Math.Round(positionNonEuc.X, 1)}" +
-               $"\nY:{Math.Round(positionNonEuc.Y, 1)}" +
-               $"\nZ:{Math.Round(positionNonEuc.Z, 1)}" +
-               $"\nW:{Math.Round(positionNonEuc.W, 1)}" +
-               $"\nD = {Math.Round(GeomPorting.DotProduct(positionNonEuc, positionNonEuc, _camera.Curve), 1)}";
+        float d = position.LengthFast;
+        if (_camera.Curve > 0 || d <= 3)
+        {
+            var positionNonEuc = GeomPorting.EucToCurved(position, _camera.Curve, _camera.Sphere, _camera.SphereCenter);
+            return GetCoordinateString('x', positionNonEuc.X) +
+                   GetCoordinateString('y', positionNonEuc.Y) +
+                   GetCoordinateString('z', positionNonEuc.Z) +
+                   GetCoordinateString('w', positionNonEuc.W);
+        }
+
+        Vector3 mul = position / d * 0.5f;
+        return GetCoordinateString('x', $"{mul.X:0.0}*exp({d:0.0})") +
+               GetCoordinateString('y', $"{mul.Y:0.0}*exp({d:0.0})") +
+               GetCoordinateString('z', $"{mul.Z:0.0}*exp({d:0.0})") +
+               GetCoordinateString('w', $"0.5*exp({d:0.0})");
+
+    }
+
+    private static string GetCoordinateString(char coordinate, float value)
+    {
+        return $"{coordinate} = {value:0.0}\n";
+    }
+
+    private static string GetCoordinateString(char coordinate, string value)
+    {
+        return $"{coordinate} = {value}\n";
     }
 
     public void Dispose()

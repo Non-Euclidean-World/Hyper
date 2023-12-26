@@ -30,7 +30,7 @@ internal class HudController : IController
             new Crosshair(),
             new FpsCounter(windowHelper),
             new InventoryHudManager(windowHelper, _scene.Player.Inventory, context),
-            new PositionPrinter(_scene.Camera, windowHelper),
+            new PositionPrinter(_scene.Camera, _scene.GlobalScale, windowHelper),
 #if DEBUG
             new HPCounter(windowHelper, _scene.Player),
 #endif
