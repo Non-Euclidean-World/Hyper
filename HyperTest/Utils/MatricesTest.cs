@@ -21,7 +21,7 @@ internal class MatricesTest
             = p + 2 * p.W * q - (curve * GeomPorting.DotProduct(p, q, curve) + p.W) / (q.W + 1) * (q + GeomPorting.GeometryOrigin);
 
         // Act
-        Vector4 actualTranslatedP = p * Matrices.TranslationMatrix(q, curve);
+        Vector4 actualTranslatedP = p * Matrices.TranslationMatrix(q, curve, 0);
 
         // Assert
         AreVectorsEqual(expectedTranslatedP, actualTranslatedP).Should().BeTrue();
@@ -40,7 +40,7 @@ internal class MatricesTest
             = p + 2 * p.W * q - (curve * GeomPorting.DotProduct(p, q, curve) + p.W) / (q.W + 1) * (q + GeomPorting.GeometryOrigin);
 
         // Act
-        Vector4 actualTranslatedP = p * Matrices.TranslationMatrix(q, curve);
+        Vector4 actualTranslatedP = p * Matrices.TranslationMatrix(q, curve, 0);
 
         // Assert
         AreVectorsEqual(expectedTranslatedP, actualTranslatedP).Should().BeTrue();
@@ -60,7 +60,7 @@ internal class MatricesTest
         Vector4 kc = new Vector4(-front, 0);
         Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve, 0, Vector3.Zero);
 
-        Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve);
+        Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve, 0);
         Vector4 icp = ic * eyeTranslate;
         Vector4 jcp = jc * eyeTranslate;
         Vector4 kcp = kc * eyeTranslate;
@@ -90,7 +90,7 @@ internal class MatricesTest
         Vector4 kc = new Vector4(-front, 0);
         Vector4 geomEye = GeomPorting.EucToCurved(cameraPosition, curve, 0, Vector3.Zero);
 
-        Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve);
+        Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve, 0);
         Vector4 icp = ic * eyeTranslate;
         Vector4 jcp = jc * eyeTranslate;
         Vector4 kcp = kc * eyeTranslate;

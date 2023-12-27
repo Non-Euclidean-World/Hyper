@@ -192,7 +192,7 @@ public class Window : GameWindow
 
     private bool IsGameReady()
     {
-        return true;
+        return _sinceGameStartStopwatch.ElapsedMilliseconds > 1000;
     }
 
     private static string DefaultSaveName()
