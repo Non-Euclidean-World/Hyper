@@ -15,9 +15,9 @@ public class Window : GameWindow
     private Game? _game;
 
     private bool _isGameRunning;
-    
+
     private readonly Stopwatch _sinceGameStartStopwatch = new();
-    
+
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)
         : base(gameWindowSettings, nativeWindowSettings)
     {

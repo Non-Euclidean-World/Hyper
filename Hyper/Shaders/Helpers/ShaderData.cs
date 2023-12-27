@@ -71,7 +71,7 @@ internal static class ShaderData
                     Position = new Vector4(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), 1),
                     SphereId = x.CurrentSphereId,
                     Color = x.Color,
-                    Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), camera.Curve, camera.Sphere, camera.SphereCenter), camera.Curve),
+                    Direction = new Vector4(x.Direction, 0) * Matrices.TranslationMatrix(GeomPorting.EucToCurved(GeomPorting.CreateTranslationTarget(x.Position, camera.ReferencePointPosition, camera.Curve, globalScale), camera.Curve, camera.Sphere, camera.SphereCenter), camera.Curve, camera.Sphere),
                     CutOff = x.CutOff,
                     OuterCutOff = x.OuterCutOff,
                     Ambient = x.Ambient,

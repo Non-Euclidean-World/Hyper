@@ -15,18 +15,27 @@ public static class Matrices
     /// <returns></returns>
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve, int sphere, Vector3 sphereCenter)
     {
+        if (sphere == 1) // yea...
+        {
+            front.X *= -1;
+            front.Z *= -1;
+        }
         Matrix4 v = Matrix4.LookAt(position, position + front, up);
         Vector4 ic = new Vector4(v.Column0.Xyz, 0);
         Vector4 jc = new Vector4(v.Column1.Xyz, 0);
+        if (jc.Y < 0) // what does it do? comment this out, go to the second sphere and look up ;) what? why? i sure would like to know
+        {
+            jc *= -1;
+            ic *= -1;
+        }
         Vector4 kc = new Vector4(v.Column2.Xyz, 0);
 
         Vector4 geomEye = GeomPorting.EucToCurved(position, curve, sphere, sphereCenter);
-        Vector4 fakeGeomEye = GeomPorting.EucToCurved(position, curve, 0, sphereCenter);
 
-        Matrix4 eyeTranslate = TranslationMatrix(fakeGeomEye, curve);
-        Vector4 icp = ic * eyeTranslate;
-        Vector4 jcp = (sphere == 0 ? 1 : -1) * jc * eyeTranslate;
-        Vector4 kcp = (sphere == 0 ? 1 : -1) * kc * eyeTranslate;
+        Matrix4 eyeTranslate = TranslationMatrix(geomEye, curve, sphere);
+        Vector4 icp = (sphere == 0 ? 1 : -1) * ic * eyeTranslate;
+        Vector4 jcp = jc * eyeTranslate;
+        Vector4 kcp = kc * eyeTranslate;
 
         if (MathHelper.Abs(curve) < Constants.Eps)
         {
@@ -48,7 +57,7 @@ public static class Matrices
     /// <param name="to">Translation point</param>
     /// <param name="curve">Curvature</param>
     /// <returns>If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in hyperbolic space and if greater than 0 in spherical.</returns>
-    public static Matrix4 TranslationMatrix(Vector4 to, float curve)
+    public static Matrix4 TranslationMatrix(Vector4 to, float curve, int sphere)
     {
         Matrix4 t;
         if (MathHelper.Abs(curve) < Constants.Eps)
@@ -61,12 +70,24 @@ public static class Matrices
         }
         else
         {
-            float denom = 1 + to.W;
-            t = new Matrix4(
-            1 - curve * to.X * to.X / denom, -curve * to.X * to.Y / denom, -curve * to.X * to.Z / denom, -curve * to.X,
-            -curve * to.Y * to.X / denom, 1 - curve * to.Y * to.Y / denom, -curve * to.Y * to.Z / denom, -curve * to.Y,
-            -curve * to.Z * to.X / denom, -curve * to.Z * to.Y / denom, 1 - curve * to.Z * to.Z / denom, -curve * to.Z,
-            to.X, to.Y, to.Z, to.W);
+            if (sphere == 0)
+            {
+                float denom = 1 + to.W;
+                t = new Matrix4(
+                1 - curve * to.X * to.X / denom, -curve * to.X * to.Y / denom, -curve * to.X * to.Z / denom, -curve * to.X,
+                -curve * to.Y * to.X / denom, 1 - curve * to.Y * to.Y / denom, -curve * to.Y * to.Z / denom, -curve * to.Y,
+                -curve * to.Z * to.X / denom, -curve * to.Z * to.Y / denom, 1 - curve * to.Z * to.Z / denom, -curve * to.Z,
+                to.X, to.Y, to.Z, to.W);
+            }
+            else
+            {
+                float denom = 1 - to.W;
+                t = new Matrix4(
+                1 - curve * to.X * to.X / denom, -curve * to.X * to.Y / denom, -curve * to.X * to.Z / denom, curve * to.X,
+                -curve * to.Y * to.X / denom, 1 - curve * to.Y * to.Y / denom, -curve * to.Y * to.Z / denom, curve * to.Y,
+                -curve * to.Z * to.X / denom, -curve * to.Z * to.Y / denom, 1 - curve * to.Z * to.Z / denom, curve * to.Z,
+                -to.X, -to.Y, -to.Z, -to.W);
+            }
         }
         return t;
     }

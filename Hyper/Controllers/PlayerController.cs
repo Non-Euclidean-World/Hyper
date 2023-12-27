@@ -99,9 +99,6 @@ internal class PlayerController : IController, IInputSubscriber
             if (_transporter.TryTeleportTo(targetSphereId, _scene.Player, _scene.SimulationManager.Simulation, out var exitPoint))
             {
                 _transporter.UpdateCamera(targetSphereId, _scene.Camera, exitPoint);
-                _objectShader.SetInt("characterSphere", targetSphereId);
-                _modelShader.SetInt("characterSphere", targetSphereId);
-                _rayMarkerShader.SetInt("characterSphere", targetSphereId);
                 _scene.Player.FlashLight.CurrentSphereId = targetSphereId;
             }
         });

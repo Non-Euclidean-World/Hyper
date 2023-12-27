@@ -111,16 +111,9 @@ internal class Camera : IInputSubscriber
         return Matrices.ProjectionMatrix(_fov, _near, _far, AspectRatio, Curve);
     }
 
-    public Matrix4 GetTranslationMatrix(Vector4 to)
-    {
-        return Matrices.TranslationMatrix(to, Curve);
-    }
-
     public void UpdateVectors()
     {
-        float adjustedPitch = _pitch;
-        float adjustedYaw = _yaw;
-        Front = new Vector3(MathF.Cos(adjustedPitch) * MathF.Cos(adjustedYaw), MathF.Sin(adjustedPitch), MathF.Cos(adjustedPitch) * MathF.Sin(adjustedYaw));
+        Front = new Vector3(MathF.Cos(_pitch) * MathF.Cos(_yaw), MathF.Sin(_pitch), MathF.Cos(_pitch) * MathF.Sin(_yaw));
 
 
         Front = FrontTransform(Vector3.Normalize(Front));
