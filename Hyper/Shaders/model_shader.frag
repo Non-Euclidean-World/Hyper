@@ -133,10 +133,6 @@ vec3 flipXZ(vec3 v) {
     return vec3(-v.x, v.y, -v.z);
 }
 
-vec3 flipY(vec3 v) {
-    return vec3(v.x, -v.y, v.z);
-}
-
 vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
 vec3 CalcDirLight(DirectionalLight light, vec4 normal, vec4 viewDir, vec3 color);
 vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir);
