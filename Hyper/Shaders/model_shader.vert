@@ -21,7 +21,6 @@ uniform mat4 normalRotation;
 uniform mat4 boneTransforms[MAX_BONES];
 uniform int sphere; // 0 for upper, 1 for lower
 uniform vec3 lowerSphereCenter;
-uniform int characterSphere;
 
 uniform bool isAnimated = true;
 
@@ -35,34 +34,17 @@ vec4 port(vec4 ePoint)
 	if(d < 0.0001 || curv == 0) return ePoint;
 	if(curv > 0)
     {
-        if(characterSphere == 0)
-        {
-            if(sphere == 0)
-            {
-                d = length(p);
-                return vec4(p / d * sin(d), cos(d));
-            }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipXZ(p) / d * sin(d), -cos(d));
-            }
+		if(sphere == 0)
+		{
+			d = length(p);   
+			return vec4(p / d * sin(d), cos(d));
         }
-        else
-        {
-            if(sphere == 0)
-            {
-                d = length(p);   
-                return vec4(p / d * sin(d), cos(d));
-            }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipXZ(p) / d * sin(d), -cos(d));
-            }
-        }
+		else
+		{
+			p = p - lowerSphereCenter;
+			d = length(p);
+			return vec4(flipXZ(p) / d * sin(d), -cos(d));
+		}
     }
 
     return vec4(p / d * sinh(d), cosh(d));

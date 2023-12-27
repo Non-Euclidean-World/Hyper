@@ -73,7 +73,6 @@ uniform float shininess;
 uniform sampler2D texture0;
 
 uniform vec3 lowerSphereCenter;
-uniform int characterSphere;
 
 uniform float curv;
 
@@ -114,33 +113,16 @@ vec4 port(vec4 ePoint, int sphere)
         return ePoint;
     if(curv > 0)
     {
-        if(characterSphere == 0)
+        if(sphere == 0)
         {
-            if(sphere == 0)
-            {
-                d = length(p);
-                return vec4(p / d * sin(d), cos(d));
-            }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipXZ(p) / d * sin(d), -cos(d));
-            }
+            d = length(p);   
+            return vec4(p / d * sin(d), cos(d));
         }
         else
         {
-            if(sphere == 0)
-            {
-                d = length(p);   
-                return vec4(flipY(p) / d * sin(d), cos(d));
-            }
-            if(sphere == 1)
-            {
-                p = p - lowerSphereCenter;
-                d = length(p);
-                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
-            }
+            p = p - lowerSphereCenter;
+            d = length(p);
+            return vec4(flipXZ(p) / d * sin(d), -cos(d));
         }
     }
 

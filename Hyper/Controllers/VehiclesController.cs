@@ -85,9 +85,6 @@ internal class VehiclesController : IController, IInputSubscriber
                 if (_transporter.TryTeleportCarTo(targetSphereId, _scene.PlayersCar, _scene.SimulationManager.Simulation, out var exitPoint))
                 {
                     _transporter.UpdateCamera(targetSphereId, _scene.Camera, exitPoint);
-                    _objectShader.SetInt("characterSphere", targetSphereId);
-                    _modelShader.SetInt("characterSphere", targetSphereId);
-                    _lightSourceShader.SetInt("characterSphere", targetSphereId);
                     _scene.PlayersCar.Lights.ForEach(x => x.CurrentSphereId = targetSphereId);
                 }
             }
