@@ -52,7 +52,7 @@ public static class Matrices
     /// <param name="to">Translation point</param>
     /// <param name="curve">Curvature</param>
     /// <returns>If curve is equal 0 we get the matrix in Euclidean space. If its smaller than 0 in hyperbolic space and if greater than 0 in spherical.</returns>
-    public static Matrix4 TranslationMatrix(Vector4 to, float curve, int sphere = 0)
+    public static Matrix4 TranslationMatrix(Vector4 to, float curve, int sphere)
     {
         Matrix4 t;
         if (MathHelper.Abs(curve) < Constants.Eps)
@@ -83,7 +83,6 @@ public static class Matrices
                 -curve * to.Z * to.X / denom, -curve * to.Z * to.Y / denom, 1 - curve * to.Z * to.Z / denom, curve * to.Z,
                 -to.X, -to.Y, -to.Z, -to.W);
             }
-
         }
         return t;
     }
