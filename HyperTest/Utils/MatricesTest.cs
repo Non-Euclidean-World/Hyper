@@ -106,6 +106,31 @@ internal class MatricesTest
         AreVectorsEqual(geomEye * view, GeomPorting.GeometryOrigin).Should().BeTrue();
     }
 
+    [Test]
+    public void Xd()
+    {
+        // Arrange
+        float curve = 1;
+        Vector3 cameraPosition = new Vector3(0, 0, MathF.PI / 2);
+
+        Vector4 ic = new Vector4(1, 0, 0, 0);
+        Vector4 jc = new Vector4(0, 1, 0, 0);
+        Vector4 kc = new Vector4(0, 0, 1, 0);
+        Vector4 geomEye = new Vector4(0.36387637f, 0.28882682f, -0.86384636f, 0.19478858f);
+
+        Matrix4 eyeTranslate = Matrices.TranslationMatrix(geomEye, curve);
+        Vector4 icp = ic * eyeTranslate;
+        Vector4 jcp = jc * eyeTranslate;
+        Vector4 kcp = kc * eyeTranslate;
+
+        // Act
+        Vector4 geomEye2 = new Vector4(0.36387637f, 0.28882682f, -0.86384636f, -0.19478858f); //GeomPorting.EucToCurved(cameraPosition, curve, 1, Vector3.Zero);
+        Matrix4 eyeTranslate2 = Matrices.TranslationMatrix(geomEye2, curve, 1);
+        Vector4 icp2 = ic * eyeTranslate2;
+        Vector4 jcp2 = jc * eyeTranslate2;
+        Vector4 kcp2 = kc * eyeTranslate2;
+    }
+
     private static bool AreScalarsEqual(float a, float b, float eps = 0.001f)
     {
         return MathF.Abs(a - b) < eps;

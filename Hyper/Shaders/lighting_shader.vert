@@ -47,13 +47,13 @@ vec4 port(vec4 ePoint)
             if(sphere == 0)
             {
                 d = length(p);   
-                return vec4(flipY(p) / d * sin(d), cos(d));
+                return vec4(p / d * sin(d), cos(d));
             }
             if(sphere == 1)
             {
                 p = p - lowerSphereCenter;
                 d = length(p);
-                return vec4(flipY(flipXZ(p)) / d * sin(d), -cos(d));
+                return vec4(flipXZ(p) / d * sin(d), -cos(d));
             }
         }
     }
@@ -63,10 +63,6 @@ vec4 port(vec4 ePoint)
 
 vec3 flipXZ(vec3 v) {
     return vec3(-v.x, v.y, -v.z);
-}
-
-vec3 flipY(vec3 v) {
-    return vec3(v.x, -v.y, v.z);
 }
 
 mat4 TranslateMatrix(vec4 to)
