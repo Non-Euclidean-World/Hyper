@@ -15,7 +15,7 @@ public static class Matrices
     /// <returns></returns>
     public static Matrix4 ViewMatrix(Vector3 position, Vector3 front, Vector3 up, float curve, int sphere, Vector3 sphereCenter)
     {
-        if (sphere == 1)
+        if (sphere == 1) // yea...
         {
             front.X *= -1;
             front.Z *= -1;
@@ -23,6 +23,11 @@ public static class Matrices
         Matrix4 v = Matrix4.LookAt(position, position + front, up);
         Vector4 ic = new Vector4(v.Column0.Xyz, 0);
         Vector4 jc = new Vector4(v.Column1.Xyz, 0);
+        if (jc.Y < 0) // what does it do? comment this out, go to the second sphere and look up ;) what? why? i sure would like to know
+        {
+            jc *= -1;
+            ic *= -1;
+        }
         Vector4 kc = new Vector4(v.Column2.Xyz, 0);
 
         Vector4 geomEye = GeomPorting.EucToCurved(position, curve, sphere, sphereCenter);
