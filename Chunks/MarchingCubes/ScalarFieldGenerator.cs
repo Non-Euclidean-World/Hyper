@@ -30,7 +30,7 @@ public class ScalarFieldGenerator
     public ScalarFieldGenerator(int seed)
     {
         _seed = seed;
-        GetToxic();
+        GetTerrainSettings(seed);
         _maxAmp = AvgElevation = GetMaxAmp();
     }
 
@@ -104,15 +104,15 @@ public class ScalarFieldGenerator
     private void GetTerrainSettings(int seed)
     {
         var index = seed % 5;
-        if (index == 0) // Volcanic
+        if (index == 0)
             GetVolcanic();
-        else if (index == 1) // Dessert
+        else if (index == 1)
             GetDessert();
-        else if (index == 2) // Forrest
+        else if (index == 2)
             GetForrest();
-        else if (index == 3) // Toxic
+        else if (index == 3)
             GetToxic();
-        else // Jungle
+        else
             GetJungle();
     }
     
