@@ -102,6 +102,16 @@ vec4 direction(vec4 from, vec4 to)
     return normalize(to - from);
 }
 
+float dist(vec4 a, vec4 b)
+{
+    if(curv > 0)
+        return acos(dotProduct(a, b));
+    if(curv < 0)
+        return acosh(-dotProduct(a, b));
+
+    return distance(a, b);
+}
+
 vec3 flipXZ(vec3 v);
 vec3 flipY(vec3);
 
@@ -194,7 +204,7 @@ vec3 CalcPointLight(PointLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec;
 
-    float dist = sqrt(dotProduct(pos - FragPos, pos - FragPos));
+    float dist = dist(pos, FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
     ambient *= attenuation;
@@ -217,7 +227,7 @@ vec3 CalcSpotLight(SpotLight light, vec4 normal, vec4 fragPos, vec4 viewDir)
     float spec = pow(max(dotProduct(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = light.specular * spec * light.color;
 
-    float dist = sqrt(dotProduct(pos - FragPos, pos - FragPos));
+    float dist = dist(pos, FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
     float theta = dotProduct(lightDir, normalize(-light.direction));
