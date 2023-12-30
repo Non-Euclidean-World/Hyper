@@ -22,15 +22,15 @@ public class Controls : SingleChildWidget
         {"Left Mouse", "Use Item"},
         {"Right Mouse", "Alt Use Item"},
         {"Esc", "Show/Hide Menu"},
-        {"Tab", "Switch camera"},
-        {"Scroll", "Change curvature"},
+        {"Tab", "Switch Camera"},
+        {"Scroll", "Change Curvature"},
         {"0-9", "Select Item"},
         {"C", "Enter Car"},
         {"F", "Flip Car"},
         {"L", "Leave Car"},
         {"Y", "Toggle Flashlight"},
-        {"F1", "Cinematic mode" },
-        {"F3", "Show hitboxes" },
+        {"F1", "Cinematic Mode" },
+        {"F3", "Show Hitboxes" },
     };
 
     public Controls()
