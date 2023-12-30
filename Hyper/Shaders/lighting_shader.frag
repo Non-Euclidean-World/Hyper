@@ -135,7 +135,7 @@ vec4 direction(vec4 from, vec4 to)
 float dist(vec4 a, vec4 b)
 {
     if(curv > 0)
-        return acos(dotProduct(a, b));
+        return acos(abs(dotProduct(a, b)));
     if(curv < 0)
         return acosh(-dotProduct(a, b));
 

@@ -7,10 +7,11 @@ using Hyper.PlayerData;
 using Hyper.PlayerData.InventorySystem.InventoryRendering;
 using Hyper.PlayerData.InventorySystem.Items.Pickaxes;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.Controllers;
 
-internal class HudController : IController
+internal class HudController : IController, IInputSubscriber
 {
     private readonly Scene _scene;
 
@@ -19,6 +20,8 @@ internal class HudController : IController
     private readonly IWindowHelper _windowHelper;
 
     private readonly IHudElement[] _hudElements;
+
+    private bool _visible = true;
 
     public HudController(Scene scene, IWindowHelper windowHelper, HudShader shader, Context context)
     {
@@ -35,10 +38,15 @@ internal class HudController : IController
             new HPCounter(windowHelper, _scene.Player),
 #endif
         };
+
+        RegisterCallbacks(context);
     }
 
     public void Render()
     {
+        if (!_visible)
+            return;
+
         GL.Disable(EnableCap.DepthTest);
         _shader.SetUp(_windowHelper.GetAspectRatio());
 
@@ -61,5 +69,11 @@ internal class HudController : IController
         {
             element.Dispose();
         }
+    }
+
+    public void RegisterCallbacks(Context context)
+    {
+        context.RegisterKeys(new List<Keys> { Keys.F1 });
+        context.RegisterKeyDownCallback(Keys.F1, () => _visible = !_visible);
     }
 }

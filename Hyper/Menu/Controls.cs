@@ -22,13 +22,15 @@ public class Controls : SingleChildWidget
         {"Left Mouse", "Use Item"},
         {"Right Mouse", "Alt Use Item"},
         {"Esc", "Show/Hide Menu"},
-        {"Tab", "Switch camera"},
-        {"Scroll", "Change curvature"},
+        {"Tab", "Switch Camera"},
+        {"Scroll", "Change Curvature"},
         {"0-9", "Select Item"},
         {"C", "Enter Car"},
         {"F", "Flip Car"},
         {"L", "Leave Car"},
         {"Y", "Toggle Flashlight"},
+        {"F1", "Cinematic Mode" },
+        {"F3", "Show Hitboxes" },
     };
 
     public Controls()
@@ -57,11 +59,11 @@ public class Controls : SingleChildWidget
     private Widget GetKeyWidget(KeyValuePair<string, string> keyMapping)
     {
         const float width = 0.6f;
-        const float height = 0.1f;
+        const float height = 0.095f;
         var padding = new Vector2(0.03f);
 
         return new Padding(
-            size: 0.01f,
+            size: 0.006f,
             child: new SizeBox(
                 size: new Vector2(width, height),
                 child: new Background(

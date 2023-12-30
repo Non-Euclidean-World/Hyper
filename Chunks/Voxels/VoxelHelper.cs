@@ -6,11 +6,11 @@ namespace Chunks.Voxels;
 public class VoxelHelper
 {
     private readonly Vector3 _topColor;
-    
+
     private readonly Vector3 _middleRockColor;
-    
+
     private readonly Vector3 _bottomColor;
-    
+
     public VoxelHelper(int seed)
     {
         var index = seed % 5;
@@ -20,7 +20,7 @@ public class VoxelHelper
             _middleRockColor = new Vector3(0.3f, 0.3f, 0.3f);
             _bottomColor = new Vector3(1.0f, 0.3f, 0.0f);
         }
-        else if (index == 1) // Dessert
+        else if (index == 1) // Desert
         {
             _topColor = new Vector3(0.9f, 0.85f, 0.7f);
             _middleRockColor = new Vector3(0.7f, 0.6f, 0.5f);
@@ -45,7 +45,7 @@ public class VoxelHelper
             _bottomColor = new Vector3(0.3f, 0.25f, 0.2f);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector3 GetColor(VoxelType type)
     {

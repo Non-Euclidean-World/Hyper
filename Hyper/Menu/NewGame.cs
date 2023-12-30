@@ -35,7 +35,7 @@ public class NewGame : SingleChildWidget
                     {
                         _gameNameInput,
                         new HyperButton(
-                            text: "Start Hyper",
+                            text: "Start Hyperbolic",
                             action: () => StartGame(SelectedGeometryType.Hyperbolic),
                             size: size
                             ),
