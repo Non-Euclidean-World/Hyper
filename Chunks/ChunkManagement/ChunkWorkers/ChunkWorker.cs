@@ -35,6 +35,8 @@ public class ChunkWorker : IChunkWorker
 
     private readonly ConcurrentQueue<(Chunk, int)> _updatedChunks = new();
 
+    private readonly ConcurrentHashSet<Vector3i> _chunksToLoadHashSet = new();
+
     private readonly SimulationManager<PoseIntegratorCallbacks> _simulationManager;
 
     private readonly ChunkFactory _chunkFactory;
@@ -132,6 +134,7 @@ public class ChunkWorker : IChunkWorker
             _chunkFactory.GenerateChunk(position * Chunk.Size, false);
 
         _loadedChunks.Enqueue(chunk);
+        _chunksToLoadHashSet.Remove(position);
     }
 
     private void SaveChunks()
@@ -224,12 +227,13 @@ public class ChunkWorker : IChunkWorker
                 for (int z = -_renderDistance; z <= _renderDistance; z++)
                 {
                     var chunk = new Vector3i(currentChunk.X + x, currentChunk.Y + y, currentChunk.Z + z);
-                    if (_existingChunks.Contains(chunk))
+                    if (_existingChunks.Contains(chunk) || _chunksToLoadHashSet.Contains(chunk))
                         continue;
 
                     _existingChunks.Add(chunk);
                     _chunksToLoad.Enqueue(chunk);
                     _jobs.Add(JobType.Load);
+                    _chunksToLoadHashSet.Add(chunk);
                 }
             }
         }
