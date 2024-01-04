@@ -1,7 +1,6 @@
 using Common.UserInput;
 using Hyper.PlayerData.Utils;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Hyper.PlayerData;
 
@@ -130,12 +129,6 @@ internal class Camera : IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys>() {
-            Keys.Tab
-        });
-
-        context.RegisterKeyDownCallback(Keys.Tab, () => FirstPerson = !FirstPerson);
-
         context.RegisterMouseMoveCallback((e) => Turn(e.Delta));
     }
 }

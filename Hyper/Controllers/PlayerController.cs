@@ -59,7 +59,7 @@ internal class PlayerController : IController, IInputSubscriber
 
     public void RegisterCallbacks(Context context)
     {
-        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F, Keys.Y });
+        context.RegisterKeys(new List<Keys> { Keys.LeftShift, Keys.Space, Keys.W, Keys.S, Keys.A, Keys.D, Keys.C, Keys.F, Keys.Y, Keys.Tab });
         context.RegisterUpdateFrameCallback((e) =>
         {
             if (_scene.PlayersCar != null)
@@ -158,6 +158,13 @@ internal class PlayerController : IController, IInputSubscriber
         });
         context.RegisterKeyDownCallback(Keys.Y, () =>
             _scene.Player.FlashLight.Active = !_scene.Player.FlashLight.Active);
+
+        context.RegisterKeyDownCallback(Keys.Tab, () =>
+        {
+            if (_scene.Player.Hidden)
+                return;
+            _scene.Camera.FirstPerson = !_scene.Camera.FirstPerson;
+        });
     }
 
     private void UpdateCamera(Camera camera, Player player)
