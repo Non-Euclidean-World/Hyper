@@ -90,6 +90,7 @@ internal class Scene : IInputSubscriber
                     SimulationMembers.Remove(Player);
                     FlashLights.Remove(Player.FlashLight);
                     FlashLights.AddRange(PlayersCar.Lights);
+                    Camera.FirstPerson = false;
                 }
                 return true;
             }
