@@ -22,7 +22,6 @@ https://www.youtube.com/watch?v=f3Cr8Yx3GGA \
 https://www.youtube.com/watch?v=DiIoWrOlIRw
 
 ### Assets Used
-<a href="https://www.flaticon.com/free-icons/hammer" title="hammer icons">Hammer icons created by srip - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/idea" title="idea icons">Idea icons created by Good Ware - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/pistol" title="pistol icons">Pistol icons created by Vector Stall - Flaticon</a> \
 <a href="https://www.flaticon.com/free-icons/bullet" title="bullet icons">Bullet icons created by Smashicons - Flaticon</a>
