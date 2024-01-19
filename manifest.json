@@ -1,0 +1,1770 @@
+{
+  "source_base_path": "D:/a/Hyper/Hyper/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Animator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Animator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Characters.AstronautBotResources.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Characters.AstronautBotResources.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Characters.AstronautResources.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Characters.AstronautResources.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Characters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Characters.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.LightSources.Lamp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.LightSources.Lamp.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.LightSources.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.LightSources.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Model.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Projectiles.Projectile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Projectiles.Projectile.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Projectiles.ProjectileMesh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Projectiles.ProjectileMesh.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Projectiles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Projectiles.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.CarBodyResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.CarBodyResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.CarWheelResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.CarWheelResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.FourWheeledCar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.FourWheeledCar.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.FourWheeledCarModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.FourWheeledCarModel.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.SpaceMustang.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.SpaceMustang.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.Vehicles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.Vehicles.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Character.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Character.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.Chunk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.Chunk.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkData.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ChunkWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ChunkWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.IChunkWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.IChunkWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ModificationArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ModificationArgs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ModificationType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.ModificationType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.NonGenerativeChunkWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.NonGenerativeChunkWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ChunkWorkers.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.ConcurrentHashSet-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.ConcurrentHashSet-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.SphericalChunkFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.SphericalChunkFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.ChunkManagement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.ChunkManagement.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.MeshGenerators.BaseMeshGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.MeshGenerators.BaseMeshGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.MeshGenerators.MeshGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.MeshGenerators.MeshGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.MeshGenerators.SphericalMeshGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.MeshGenerators.SphericalMeshGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.MeshGenerators.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.MeshGenerators.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.ScalarFieldGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.ScalarFieldGenerator.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.MarchingCubes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.MarchingCubes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.Voxels.Voxel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.Voxels.Voxel.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.Voxels.VoxelHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.Voxels.VoxelHelper.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.Voxels.VoxelType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.Voxels.VoxelType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.Voxels.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.Voxels.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chunks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chunks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.GeomPorting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.GeomPorting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.IWindowHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.IWindowHelper.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.BoxMesh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.BoxMesh.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.CubeMesh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.CubeMesh.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.FlashLight.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.FlashLight.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.Mesh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.Mesh.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.RayEndpointMarker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.RayEndpointMarker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.Vertex.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.Vertex.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Meshes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Meshes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ModelLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ModelLoader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.BoxResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.BoxResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.CapsuleResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.CapsuleResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.CylinderResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.CylinderResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.ModelResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.ModelResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.SphereResource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.SphereResource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.ResourceClasses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.ResourceClasses.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.SelectedGeometryType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.SelectedGeometryType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Settings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Settings.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Shader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Shader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.Texture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.Texture.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.UserInput.Context.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.UserInput.Context.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.UserInput.IInputSubscriber.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.UserInput.IInputSubscriber.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.UserInput.InputType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.UserInput.InputType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.UserInput.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.UserInput.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.WindowHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.WindowHelper.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Common.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.HUDElements.Crosshair.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.HUDElements.Crosshair.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.HUDElements.FpsCounter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.HUDElements.FpsCounter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.HUDElements.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.HUDElements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.IHudElement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.IHudElement.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Printer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Printer.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Shaders.HudShader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Shaders.HudShader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Shaders.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Shaders.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.SharedVao.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.SharedVao.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Sprites.Sprite.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Sprites.Sprite.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Sprites.SpriteRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Sprites.SpriteRenderer.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Sprites.SpriteSheetMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Sprites.SpriteSheetMetadata.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Sprites.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Sprites.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.Colors.Color.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.Colors.Color.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.Colors.ColorGetter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.Colors.ColorGetter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.Colors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.Colors.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.Context.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.Context.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.Alignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.Alignment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.Column.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.Column.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.Grid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.Grid.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.MultipleChildrenWidget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.MultipleChildrenWidget.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.Row.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.Row.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.MultipleChildren.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.MultipleChildren.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.NoChildren.Button.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.NoChildren.Button.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.NoChildren.Empty.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.NoChildren.Empty.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.NoChildren.InputTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.NoChildren.InputTextBox.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.NoChildren.Text.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.NoChildren.Text.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.NoChildren.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.NoChildren.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.Background.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.Background.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.Center.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.Center.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.ClickDetector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.ClickDetector.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.Padding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.Padding.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.SingleChildWidget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.SingleChildWidget.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.SizeBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.SizeBox.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.Visibility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.Visibility.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.SingleChild.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.SingleChild.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.Widget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.Widget.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.Widgets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.Widgets.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hud.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hud.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Controllers.Factories.IControllerFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Controllers.Factories.IControllerFactory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Controllers.Factories.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Controllers.Factories.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Controllers.IController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Controllers.IController.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Controllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Controllers.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Game.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Game.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.GameEntities.AstronautBot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.GameEntities.AstronautBot.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.GameEntities.Humanoid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.GameEntities.Humanoid.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.GameEntities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.GameEntities.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.HyperCameraPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.HyperCameraPosition.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.Common.HyperButton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.Common.HyperButton.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.Common.HyperText.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.Common.HyperText.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.Common.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.Controls.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.Controls.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.MainMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.MainMenu.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.NewGame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.NewGame.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.SaveGrid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.SaveGrid.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Menu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Menu.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.PlayerData.Utils.Constants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.PlayerData.Utils.Constants.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.PlayerData.Utils.Matrices.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.PlayerData.Utils.Matrices.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.PlayerData.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.PlayerData.Utils.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.SaveManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.SaveManager.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.Window.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.Window.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Hyper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Hyper.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Body.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Body.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.BoundingShapes.BoundingBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.BoundingShapes.BoundingBox.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.BoundingShapes.BoundingCapsule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.BoundingShapes.BoundingCapsule.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.BoundingShapes.BoundingCylinder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.BoundingShapes.BoundingCylinder.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.BoundingShapes.ShapesExtractor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.BoundingShapes.ShapesExtractor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.BoundingShapes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.BoundingShapes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.CharacterController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.CharacterController.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.CharacterControllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.CharacterControllers.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.CharacterMotionAccumulatedImpulse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.CharacterMotionAccumulatedImpulse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.DynamicCharacterMotionConstraint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.DynamicCharacterMotionConstraint.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.DynamicCharacterMotionFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.DynamicCharacterMotionFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.DynamicCharacterMotionPrestep.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.DynamicCharacterMotionPrestep.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.DynamicCharacterMotionTypeProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.DynamicCharacterMotionTypeProcessor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.ISimulationMember.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.ISimulationMember.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.NarrowPhaseCallbacks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.NarrowPhaseCallbacks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.PhysicalCharacter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.PhysicalCharacter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.PoseIntegratorCallbacks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.PoseIntegratorCallbacks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.SimpleCar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.SimpleCar.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.SimpleCarController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.SimpleCarController.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.SimulationManager-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.SimulationManager-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.SimulationProperties.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.SimulationProperties.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.StaticCharacterMotionConstraint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.StaticCharacterMotionConstraint.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.StaticCharacterMotionFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.StaticCharacterMotionFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.StaticCharacterMotionPrestep.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.StaticCharacterMotionPrestep.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.StaticCharacterMotionTypeProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.StaticCharacterMotionTypeProcessor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.SubgroupCollisionFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.SubgroupCollisionFilter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.WheelHandles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.WheelHandles.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.Collisions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.Collisions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.ContactCallbacks.ContactEvents.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.ContactCallbacks.ContactEvents.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.ContactCallbacks.ContactInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.ContactCallbacks.ContactInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.ContactCallbacks.IContactEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.ContactCallbacks.IContactEventHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.ContactCallbacks.IContactEventListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.ContactCallbacks.IContactEventListener.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.ContactCallbacks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.ContactCallbacks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.RayCasting.HitHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.RayCasting.HitHandler.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.RayCasting.IRayCaster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.RayCasting.IRayCaster.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.RayCasting.RayHit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.RayCasting.RayHit.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.RayCasting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.RayCasting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.SimulationMembers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.SimulationMembers.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.TypingUtils.Conversions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.TypingUtils.Conversions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.TypingUtils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.TypingUtils.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Physics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Physics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

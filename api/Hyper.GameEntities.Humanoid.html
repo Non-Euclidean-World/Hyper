@@ -1,0 +1,779 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Humanoid
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Humanoid
+ ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Hyper_GameEntities_Humanoid.md&amp;value=---%0Auid%3A%20Hyper.GameEntities.Humanoid%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Hyper.GameEntities.Humanoid">
+
+
+
+  <h1 id="Hyper_GameEntities_Humanoid" data-uid="Hyper.GameEntities.Humanoid" class="text-break">
+    Class Humanoid
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Hyper.html">Hyper</a>.<a class="xref" href="Hyper.GameEntities.html">GameEntities</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Hyper.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class Humanoid : ISimulationMember, IContactEventListener, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Humanoid</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Physics.Collisions.ISimulationMember.html">ISimulationMember</a></div>
+      <div><a class="xref" href="Physics.ContactCallbacks.IContactEventListener.html">IContactEventListener</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Hyper.GameEntities.AstronautBot.html">AstronautBot</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Hyper_GameEntities_Humanoid__ctor_" data-uid="Hyper.GameEntities.Humanoid.#ctor*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid__ctor_Character_Model_Physics_Collisions_PhysicalCharacter_System_Int32_" data-uid="Hyper.GameEntities.Humanoid.#ctor(Character.Model,Physics.Collisions.PhysicalCharacter,System.Int32)">
+  Humanoid(Model, PhysicalCharacter, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Humanoid(Model character, PhysicalCharacter physicalCharacter, int currentSphereId = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>character</code> <a class="xref" href="Character.Model.html">Model</a></dt>
+    <dd></dd>
+    <dt><code>physicalCharacter</code> <a class="xref" href="Physics.Collisions.PhysicalCharacter.html">PhysicalCharacter</a></dt>
+    <dd></dd>
+    <dt><code>currentSphereId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_DeathTime" data-uid="Hyper.GameEntities.Humanoid.DeathTime">
+  DeathTime
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime DeathTime</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_EpsTime" data-uid="Hyper.GameEntities.Humanoid.EpsTime">
+  EpsTime
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected static readonly TimeSpan EpsTime</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_Hp" data-uid="Hyper.GameEntities.Humanoid.Hp">
+  Hp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected int Hp</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_LastContactBody" data-uid="Hyper.GameEntities.Humanoid.LastContactBody">
+  LastContactBody
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected BodyHandle? LastContactBody</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">BodyHandle</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_LastContactTime" data-uid="Hyper.GameEntities.Humanoid.LastContactTime">
+  LastContactTime
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected DateTime LastContactTime</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Hyper_GameEntities_Humanoid_ViewDirection" data-uid="Hyper.GameEntities.Humanoid.ViewDirection">
+  ViewDirection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Vector3 ViewDirection</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Hyper_GameEntities_Humanoid_BodyHandle_" data-uid="Hyper.GameEntities.Humanoid.BodyHandle*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_BodyHandle" data-uid="Hyper.GameEntities.Humanoid.BodyHandle">
+  BodyHandle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BodyHandle BodyHandle { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">BodyHandle</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_BodyHandles_" data-uid="Hyper.GameEntities.Humanoid.BodyHandles*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_BodyHandles" data-uid="Hyper.GameEntities.Humanoid.BodyHandles">
+  BodyHandles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>List of all body handles used by the simulation member.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;BodyHandle&gt; BodyHandles { get; protected set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<span class="xref">BodyHandle</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_Character_" data-uid="Hyper.GameEntities.Humanoid.Character*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_Character" data-uid="Hyper.GameEntities.Humanoid.Character">
+  Character
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Model Character { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Character.Model.html">Model</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_CurrentSphereId_" data-uid="Hyper.GameEntities.Humanoid.CurrentSphereId*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_CurrentSphereId" data-uid="Hyper.GameEntities.Humanoid.CurrentSphereId">
+  CurrentSphereId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>ID of the hypersphere the simulation member is currently in.
+Attains two values: 0 for the upper hypersphere, 1 for the lower hypersphere.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CurrentSphereId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_IsAlive_" data-uid="Hyper.GameEntities.Humanoid.IsAlive*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_IsAlive" data-uid="Hyper.GameEntities.Humanoid.IsAlive">
+  IsAlive
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsAlive { get; protected set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_PhysicalCharacter_" data-uid="Hyper.GameEntities.Humanoid.PhysicalCharacter*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_PhysicalCharacter" data-uid="Hyper.GameEntities.Humanoid.PhysicalCharacter">
+  PhysicalCharacter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PhysicalCharacter PhysicalCharacter { get; protected set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.PhysicalCharacter.html">PhysicalCharacter</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Hyper_GameEntities_Humanoid_ContactCallback_" data-uid="Hyper.GameEntities.Humanoid.ContactCallback*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_ContactCallback_Physics_ContactCallbacks_ContactInfo_Physics_SimulationMembers_" data-uid="Hyper.GameEntities.Humanoid.ContactCallback(Physics.ContactCallbacks.ContactInfo,Physics.SimulationMembers)">
+  ContactCallback(ContactInfo, SimulationMembers)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Action taken by an object when it comes into contact with another object</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void ContactCallback(ContactInfo collisionInfo, SimulationMembers simulationMembers)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collisionInfo</code> <a class="xref" href="Physics.ContactCallbacks.ContactInfo.html">ContactInfo</a></dt>
+    <dd><p>Information about the contact</p>
+</dd>
+    <dt><code>simulationMembers</code> <a class="xref" href="Physics.SimulationMembers.html">SimulationMembers</a></dt>
+    <dd><p>Objects present in the simulation</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_CreatePhysicalCharacter_" data-uid="Hyper.GameEntities.Humanoid.CreatePhysicalCharacter*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_CreatePhysicalCharacter_OpenTK_Mathematics_Vector3_Physics_Collisions_SimulationManager_Physics_Collisions_PoseIntegratorCallbacks__" data-uid="Hyper.GameEntities.Humanoid.CreatePhysicalCharacter(OpenTK.Mathematics.Vector3,Physics.Collisions.SimulationManager{Physics.Collisions.PoseIntegratorCallbacks})">
+  CreatePhysicalCharacter(Vector3, SimulationManager&lt;PoseIntegratorCallbacks&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PhysicalCharacter CreatePhysicalCharacter(Vector3 position, SimulationManager&lt;PoseIntegratorCallbacks&gt; simulationManager)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+    <dt><code>simulationManager</code> <a class="xref" href="Physics.Collisions.SimulationManager-1.html">SimulationManager</a>&lt;<a class="xref" href="Physics.Collisions.PoseIntegratorCallbacks.html">PoseIntegratorCallbacks</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.PhysicalCharacter.html">PhysicalCharacter</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_Dispose_" data-uid="Hyper.GameEntities.Humanoid.Dispose*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_Dispose" data-uid="Hyper.GameEntities.Humanoid.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_Render_" data-uid="Hyper.GameEntities.Humanoid.Render*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_Render_Common_Shader_System_Single_System_Single_OpenTK_Mathematics_Vector3_" data-uid="Hyper.GameEntities.Humanoid.Render(Common.Shader,System.Single,System.Single,OpenTK.Mathematics.Vector3)">
+  Render(Shader, float, float, Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shader</code> <a class="xref" href="Common.Shader.html">Shader</a></dt>
+    <dd></dd>
+    <dt><code>scale</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>cameraPosition</code> <span class="xref">Vector3</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_GameEntities_Humanoid_UpdateCharacterGoals_" data-uid="Hyper.GameEntities.Humanoid.UpdateCharacterGoals*"></a>
+
+  <h3 id="Hyper_GameEntities_Humanoid_UpdateCharacterGoals_BepuPhysics_Simulation_System_Single_" data-uid="Hyper.GameEntities.Humanoid.UpdateCharacterGoals(BepuPhysics.Simulation,System.Single)">
+  UpdateCharacterGoals(Simulation, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void UpdateCharacterGoals(Simulation simulation, float time)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd></dd>
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/GameEntities/Humanoid.cs/#L13" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

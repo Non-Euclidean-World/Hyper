@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class GeomPorting
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class GeomPorting
+ ">
+      
+      <meta name="description" content="Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Common_GeomPorting.md&amp;value=---%0Auid%3A%20Common.GeomPorting%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Common.GeomPorting">
+
+
+
+  <h1 id="Common_GeomPorting" data-uid="Common.GeomPorting" class="text-break">
+    Class GeomPorting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L8"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Common.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class GeomPorting</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">GeomPorting</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Common_GeomPorting_GeometryOrigin" data-uid="Common.GeomPorting.GeometryOrigin">
+  GeometryOrigin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents the geometry origin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly Vector4 GeometryOrigin</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector4</span></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Common_GeomPorting_CreateTranslationTarget_" data-uid="Common.GeomPorting.CreateTranslationTarget*"></a>
+
+  <h3 id="Common_GeomPorting_CreateTranslationTarget_OpenTK_Mathematics_Vector3_OpenTK_Mathematics_Vector3_System_Single_System_Single_" data-uid="Common.GeomPorting.CreateTranslationTarget(OpenTK.Mathematics.Vector3,OpenTK.Mathematics.Vector3,System.Single,System.Single)">
+  CreateTranslationTarget(Vector3, Vector3, float, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates translation target valid in all geometries.
+Since in the hyperbolic geometry the camera is fixed, any request to change camera position must be reflected in changing the object's position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Vector3 CreateTranslationTarget(Vector3 to, Vector3 referencePoint, float curve, float scale)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>to</code> <span class="xref">Vector3</span></dt>
+    <dd><p>World-space coordinates of the translation target.</p>
+</dd>
+    <dt><code>referencePoint</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Reference point of the camera.</p>
+</dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>Geometry curvature.</p>
+</dd>
+    <dt><code>scale</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>The translation target position.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_GeomPorting_DotProduct_" data-uid="Common.GeomPorting.DotProduct*"></a>
+
+  <h3 id="Common_GeomPorting_DotProduct_OpenTK_Mathematics_Vector4_OpenTK_Mathematics_Vector4_System_Single_" data-uid="Common.GeomPorting.DotProduct(OpenTK.Mathematics.Vector4,OpenTK.Mathematics.Vector4,System.Single)">
+  DotProduct(Vector4, Vector4, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Calculates the generalized dot product</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static float DotProduct(Vector4 u, Vector4 v, float curve)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>u</code> <span class="xref">Vector4</span></dt>
+    <dd><p>First vector.</p>
+</dd>
+    <dt><code>v</code> <span class="xref">Vector4</span></dt>
+    <dd><p>Second vector.</p>
+</dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>Curvature.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The result of the dot product calculation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_GeomPorting_EucToCurved_" data-uid="Common.GeomPorting.EucToCurved*"></a>
+
+  <h3 id="Common_GeomPorting_EucToCurved_OpenTK_Mathematics_Vector3_System_Single_System_Int32_OpenTK_Mathematics_Vector3_" data-uid="Common.GeomPorting.EucToCurved(OpenTK.Mathematics.Vector3,System.Single,System.Int32,OpenTK.Mathematics.Vector3)">
+  EucToCurved(Vector3, float, int, Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ports a point in Euclidean space to non-Euclidean space.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Vector4 EucToCurved(Vector3 eucPoint, float curve, int sphere, Vector3 sphereCenter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eucPoint</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Point in Euclidean space.</p>
+</dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</p>
+</dd>
+    <dt><code>sphere</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+    <dt><code>sphereCenter</code> <span class="xref">Vector3</span></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector4</span></dt>
+    <dd><p>The point in the specified non-Euclidean space.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_GeomPorting_EucToCurved_" data-uid="Common.GeomPorting.EucToCurved*"></a>
+
+  <h3 id="Common_GeomPorting_EucToCurved_OpenTK_Mathematics_Vector4_System_Single_System_Int32_OpenTK_Mathematics_Vector3_" data-uid="Common.GeomPorting.EucToCurved(OpenTK.Mathematics.Vector4,System.Single,System.Int32,OpenTK.Mathematics.Vector3)">
+  EucToCurved(Vector4, float, int, Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ports a point in non-Euclidean space to Euclidean space.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Vector4 EucToCurved(Vector4 eucPoint, float curve, int sphere, Vector3 sphereCenter)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eucPoint</code> <span class="xref">Vector4</span></dt>
+    <dd><p>Point in Euclidean space.</p>
+</dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>If curve is equal 0 we get the matrix in Euclidean space. If it's less than 0 in hyperbolic space and if greater than 0 in spherical.</p>
+</dd>
+    <dt><code>sphere</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+    <dt><code>sphereCenter</code> <span class="xref">Vector3</span></dt>
+    <dd>Provides methods for porting points from Euclidean to non-Euclidean spaces, reflecting vectors, and calculating generalized dot products.</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector4</span></dt>
+    <dd><p>The point in the specified non-Euclidean space.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_GeomPorting_ReflectVector_" data-uid="Common.GeomPorting.ReflectVector*"></a>
+
+  <h3 id="Common_GeomPorting_ReflectVector_OpenTK_Mathematics_Vector3_OpenTK_Mathematics_Vector3_" data-uid="Common.GeomPorting.ReflectVector(OpenTK.Mathematics.Vector3,OpenTK.Mathematics.Vector3)">
+  ReflectVector(Vector3, Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reflects a vector through a plane.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Vector3 ReflectVector(Vector3 v, Vector3 surfaceNormal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>v</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Vector to be reflected.</p>
+</dd>
+    <dt><code>surfaceNormal</code> <span class="xref">Vector3</span></dt>
+    <dd><p>Normal vector of the reflection plane.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd><p>The reflected vector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/GeomPorting.cs/#L8" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

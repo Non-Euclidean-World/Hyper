@@ -1,0 +1,927 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Context
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Context
+ ">
+      
+      <meta name="description" content="Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Common_UserInput_Context.md&amp;value=---%0Auid%3A%20Common.UserInput.Context%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Common.UserInput.Context">
+
+
+
+  <h1 id="Common_UserInput_Context" data-uid="Common.UserInput.Context" class="text-break">
+    Class Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Common.html">Common</a>.<a class="xref" href="Common.UserInput.html">UserInput</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Common.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Context</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Context</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Common_UserInput_Context_ButtonDownCallbacks" data-uid="Common.UserInput.Context.ButtonDownCallbacks">
+  ButtonDownCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;MouseButton, List&lt;Action&gt;&gt; ButtonDownCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">MouseButton</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_ButtonHeldCallbacks" data-uid="Common.UserInput.Context.ButtonHeldCallbacks">
+  ButtonHeldCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;MouseButton, List&lt;Action&lt;FrameEventArgs&gt;&gt;&gt; ButtonHeldCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">MouseButton</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_ButtonUpCallbacks" data-uid="Common.UserInput.Context.ButtonUpCallbacks">
+  ButtonUpCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;MouseButton, List&lt;Action&gt;&gt; ButtonUpCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">MouseButton</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_FrameUpdateCallbacks" data-uid="Common.UserInput.Context.FrameUpdateCallbacks">
+  FrameUpdateCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;Action&lt;FrameEventArgs&gt;&gt; FrameUpdateCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_HeldButtons" data-uid="Common.UserInput.Context.HeldButtons">
+  HeldButtons
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;MouseButton, bool&gt; HeldButtons</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">MouseButton</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_HeldKeys" data-uid="Common.UserInput.Context.HeldKeys">
+  HeldKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;Keys, bool&gt; HeldKeys</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">Keys</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_KeyDownCallbacks" data-uid="Common.UserInput.Context.KeyDownCallbacks">
+  KeyDownCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;Keys, List&lt;Action&gt;&gt; KeyDownCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">Keys</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_KeyHeldCallbacks" data-uid="Common.UserInput.Context.KeyHeldCallbacks">
+  KeyHeldCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;Keys, List&lt;Action&lt;FrameEventArgs&gt;&gt;&gt; KeyHeldCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">Keys</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_KeyUpCallbacks" data-uid="Common.UserInput.Context.KeyUpCallbacks">
+  KeyUpCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;Keys, List&lt;Action&gt;&gt; KeyUpCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<span class="xref">Keys</span>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_MouseMoveCallbacks" data-uid="Common.UserInput.Context.MouseMoveCallbacks">
+  MouseMoveCallbacks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;Action&lt;MouseMoveEventArgs&gt;&gt; MouseMoveCallbacks</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">MouseMoveEventArgs</span>&gt;&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_UsedKeys" data-uid="Common.UserInput.Context.UsedKeys">
+  UsedKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HashSet&lt;Keys&gt; UsedKeys</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet</a>&lt;<span class="xref">Keys</span>&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Common_UserInput_Context_UsedMouseButtons" data-uid="Common.UserInput.Context.UsedMouseButtons">
+  UsedMouseButtons
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HashSet&lt;MouseButton&gt; UsedMouseButtons</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet</a>&lt;<span class="xref">MouseButton</span>&gt;</dt>
+    <dd>Manages callbacks for handling user inputs such as keyboard keys, mouse buttons, and frame updates.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Common_UserInput_Context_ExecuteAllHeldCallbacks_" data-uid="Common.UserInput.Context.ExecuteAllHeldCallbacks*"></a>
+
+  <h3 id="Common_UserInput_Context_ExecuteAllHeldCallbacks_Common_UserInput_InputType_OpenTK_Windowing_Common_FrameEventArgs_" data-uid="Common.UserInput.Context.ExecuteAllHeldCallbacks(Common.UserInput.InputType,OpenTK.Windowing.Common.FrameEventArgs)">
+  ExecuteAllHeldCallbacks(InputType, FrameEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes all callbacks that should be called when the input is held down.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ExecuteAllHeldCallbacks(InputType inputType, FrameEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inputType</code> <a class="xref" href="Common.UserInput.InputType.html">InputType</a></dt>
+    <dd><p>Type of the input.</p>
+</dd>
+    <dt><code>e</code> <span class="xref">FrameEventArgs</span></dt>
+    <dd><p>Arguments for frame event.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterKeyDownCallback_" data-uid="Common.UserInput.Context.RegisterKeyDownCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterKeyDownCallback_OpenTK_Windowing_GraphicsLibraryFramework_Keys_System_Action_" data-uid="Common.UserInput.Context.RegisterKeyDownCallback(OpenTK.Windowing.GraphicsLibraryFramework.Keys,System.Action)">
+  RegisterKeyDownCallback(Keys, Action)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a key is pressed down.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterKeyDownCallback(Keys key, Action callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">Keys</span></dt>
+    <dd><p>Key to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterKeyHeldCallback_" data-uid="Common.UserInput.Context.RegisterKeyHeldCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterKeyHeldCallback_OpenTK_Windowing_GraphicsLibraryFramework_Keys_System_Action_OpenTK_Windowing_Common_FrameEventArgs__" data-uid="Common.UserInput.Context.RegisterKeyHeldCallback(OpenTK.Windowing.GraphicsLibraryFramework.Keys,System.Action{OpenTK.Windowing.Common.FrameEventArgs})">
+  RegisterKeyHeldCallback(Keys, Action&lt;FrameEventArgs&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a key is held.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterKeyHeldCallback(Keys key, Action&lt;FrameEventArgs&gt; callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">Keys</span></dt>
+    <dd><p>Key to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;</dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterKeyUpCallback_" data-uid="Common.UserInput.Context.RegisterKeyUpCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterKeyUpCallback_OpenTK_Windowing_GraphicsLibraryFramework_Keys_System_Action_" data-uid="Common.UserInput.Context.RegisterKeyUpCallback(OpenTK.Windowing.GraphicsLibraryFramework.Keys,System.Action)">
+  RegisterKeyUpCallback(Keys, Action)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a key is released.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterKeyUpCallback(Keys key, Action callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">Keys</span></dt>
+    <dd><p>Key to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterKeys_" data-uid="Common.UserInput.Context.RegisterKeys*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterKeys_System_Collections_Generic_ICollection_OpenTK_Windowing_GraphicsLibraryFramework_Keys__" data-uid="Common.UserInput.Context.RegisterKeys(System.Collections.Generic.ICollection{OpenTK.Windowing.GraphicsLibraryFramework.Keys})">
+  RegisterKeys(ICollection&lt;Keys&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers keys to be handled</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterKeys(ICollection&lt;Keys&gt; keys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>keys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<span class="xref">Keys</span>&gt;</dt>
+    <dd><p>The collection of keys to register.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterMouseButtonDownCallback_" data-uid="Common.UserInput.Context.RegisterMouseButtonDownCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterMouseButtonDownCallback_OpenTK_Windowing_GraphicsLibraryFramework_MouseButton_System_Action_" data-uid="Common.UserInput.Context.RegisterMouseButtonDownCallback(OpenTK.Windowing.GraphicsLibraryFramework.MouseButton,System.Action)">
+  RegisterMouseButtonDownCallback(MouseButton, Action)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a mouse button is pressed down.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterMouseButtonDownCallback(MouseButton button, Action callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <span class="xref">MouseButton</span></dt>
+    <dd><p>Mouse button to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterMouseButtonHeldCallback_" data-uid="Common.UserInput.Context.RegisterMouseButtonHeldCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterMouseButtonHeldCallback_OpenTK_Windowing_GraphicsLibraryFramework_MouseButton_System_Action_OpenTK_Windowing_Common_FrameEventArgs__" data-uid="Common.UserInput.Context.RegisterMouseButtonHeldCallback(OpenTK.Windowing.GraphicsLibraryFramework.MouseButton,System.Action{OpenTK.Windowing.Common.FrameEventArgs})">
+  RegisterMouseButtonHeldCallback(MouseButton, Action&lt;FrameEventArgs&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a mouse button is held down.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterMouseButtonHeldCallback(MouseButton button, Action&lt;FrameEventArgs&gt; callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <span class="xref">MouseButton</span></dt>
+    <dd><p>Mouse button to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;</dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterMouseButtonUpCallback_" data-uid="Common.UserInput.Context.RegisterMouseButtonUpCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterMouseButtonUpCallback_OpenTK_Windowing_GraphicsLibraryFramework_MouseButton_System_Action_" data-uid="Common.UserInput.Context.RegisterMouseButtonUpCallback(OpenTK.Windowing.GraphicsLibraryFramework.MouseButton,System.Action)">
+  RegisterMouseButtonUpCallback(MouseButton, Action)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a mouse button is released.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterMouseButtonUpCallback(MouseButton button, Action callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>button</code> <span class="xref">MouseButton</span></dt>
+    <dd><p>Mouse button to associate the action with.</p>
+</dd>
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action">Action</a></dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterMouseButtons_" data-uid="Common.UserInput.Context.RegisterMouseButtons*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterMouseButtons_System_Collections_Generic_ICollection_OpenTK_Windowing_GraphicsLibraryFramework_MouseButton__" data-uid="Common.UserInput.Context.RegisterMouseButtons(System.Collections.Generic.ICollection{OpenTK.Windowing.GraphicsLibraryFramework.MouseButton})">
+  RegisterMouseButtons(ICollection&lt;MouseButton&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers mouse buttons to be handled</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterMouseButtons(ICollection&lt;MouseButton&gt; mouseButtons)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mouseButtons</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<span class="xref">MouseButton</span>&gt;</dt>
+    <dd><p>The collection of mouse buttons to register.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterMouseMoveCallback_" data-uid="Common.UserInput.Context.RegisterMouseMoveCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterMouseMoveCallback_System_Action_OpenTK_Windowing_Common_MouseMoveEventArgs__" data-uid="Common.UserInput.Context.RegisterMouseMoveCallback(System.Action{OpenTK.Windowing.Common.MouseMoveEventArgs})">
+  RegisterMouseMoveCallback(Action&lt;MouseMoveEventArgs&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when the mouse is moved.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterMouseMoveCallback(Action&lt;MouseMoveEventArgs&gt; callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">MouseMoveEventArgs</span>&gt;</dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Common_UserInput_Context_RegisterUpdateFrameCallback_" data-uid="Common.UserInput.Context.RegisterUpdateFrameCallback*"></a>
+
+  <h3 id="Common_UserInput_Context_RegisterUpdateFrameCallback_System_Action_OpenTK_Windowing_Common_FrameEventArgs__" data-uid="Common.UserInput.Context.RegisterUpdateFrameCallback(System.Action{OpenTK.Windowing.Common.FrameEventArgs})">
+  RegisterUpdateFrameCallback(Action&lt;FrameEventArgs&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Register a callback action that will be performed when a new frame is rendered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterUpdateFrameCallback(Action&lt;FrameEventArgs&gt; callback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>callback</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<span class="xref">FrameEventArgs</span>&gt;</dt>
+    <dd><p>Action that will be performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Common/UserInput/Context.cs/#L9" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

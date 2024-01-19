@@ -1,0 +1,604 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Lamp
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Lamp
+ ">
+      
+      <meta name="description" content="Class representing a point light source.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Character_LightSources_Lamp.md&amp;value=---%0Auid%3A%20Character.LightSources.Lamp%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Character.LightSources.Lamp">
+
+
+
+  <h1 id="Character_LightSources_Lamp" data-uid="Character.LightSources.Lamp" class="text-break">
+    Class Lamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Character.html">Character</a>.<a class="xref" href="Character.LightSources.html">LightSources</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Characters.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Class representing a point light source.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Lamp : ISimulationMember</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Lamp</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Physics.Collisions.ISimulationMember.html">ISimulationMember</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Character_LightSources_Lamp_Position" data-uid="Character.LightSources.Lamp.Position">
+  Position
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Position</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Character_LightSources_Lamp_Ambient_" data-uid="Character.LightSources.Lamp.Ambient*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Ambient" data-uid="Character.LightSources.Lamp.Ambient">
+  Ambient
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ambient color of the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Ambient { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_BodyHandles_" data-uid="Character.LightSources.Lamp.BodyHandles*"></a>
+
+  <h3 id="Character_LightSources_Lamp_BodyHandles" data-uid="Character.LightSources.Lamp.BodyHandles">
+  BodyHandles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>List of body handles of the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;BodyHandle&gt; BodyHandles { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<span class="xref">BodyHandle</span>&gt;</dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>This should not be used. It's only because <a class="xref" href="Character.LightSources.Lamp.html">Lamp</a> implements <a class="xref" href="Physics.Collisions.ISimulationMember.html">ISimulationMember</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Character_LightSources_Lamp_Color_" data-uid="Character.LightSources.Lamp.Color*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Color" data-uid="Character.LightSources.Lamp.Color">
+  Color
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Color of the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Color { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Constant_" data-uid="Character.LightSources.Lamp.Constant*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Constant" data-uid="Character.LightSources.Lamp.Constant">
+  Constant
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The constant attenuation factor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Constant { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_CurrentSphereId_" data-uid="Character.LightSources.Lamp.CurrentSphereId*"></a>
+
+  <h3 id="Character_LightSources_Lamp_CurrentSphereId" data-uid="Character.LightSources.Lamp.CurrentSphereId">
+  CurrentSphereId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The id of the sphere the lamp is in.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CurrentSphereId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Diffuse_" data-uid="Character.LightSources.Lamp.Diffuse*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Diffuse" data-uid="Character.LightSources.Lamp.Diffuse">
+  Diffuse
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Diffuse color of the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Diffuse { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Linear_" data-uid="Character.LightSources.Lamp.Linear*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Linear" data-uid="Character.LightSources.Lamp.Linear">
+  Linear
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The linear attenuation factor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Linear { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Quadratic_" data-uid="Character.LightSources.Lamp.Quadratic*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Quadratic" data-uid="Character.LightSources.Lamp.Quadratic">
+  Quadratic
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The quadratic attenuation factor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Quadratic { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Specular_" data-uid="Character.LightSources.Lamp.Specular*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Specular" data-uid="Character.LightSources.Lamp.Specular">
+  Specular
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Specular color of the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Specular { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Vector3</span></dt>
+    <dd>Class representing a point light source.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Character_LightSources_Lamp_CreateStandardLamp_" data-uid="Character.LightSources.Lamp.CreateStandardLamp*"></a>
+
+  <h3 id="Character_LightSources_Lamp_CreateStandardLamp_OpenTK_Mathematics_Vector3_OpenTK_Mathematics_Vector3_System_Int32_" data-uid="Character.LightSources.Lamp.CreateStandardLamp(OpenTK.Mathematics.Vector3,OpenTK.Mathematics.Vector3,System.Int32)">
+  CreateStandardLamp(Vector3, Vector3, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a lamp (a glowing cube).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Lamp CreateStandardLamp(Vector3 position, Vector3 color, int sphereId = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <span class="xref">Vector3</span></dt>
+    <dd><p>The position of the lamp.</p>
+</dd>
+    <dt><code>color</code> <span class="xref">Vector3</span></dt>
+    <dd><p>The color of the lamp.</p>
+</dd>
+    <dt><code>sphereId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The id of the sphere the lamp is in.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Character.LightSources.Lamp.html">Lamp</a></dt>
+    <dd><p>An instance of the <a class="xref" href="Character.LightSources.Lamp.html">Lamp</a> class.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Character_LightSources_Lamp_Render_" data-uid="Character.LightSources.Lamp.Render*"></a>
+
+  <h3 id="Character_LightSources_Lamp_Render_Common_Shader_System_Single_System_Single_OpenTK_Mathematics_Vector3_" data-uid="Character.LightSources.Lamp.Render(Common.Shader,System.Single,System.Single,OpenTK.Mathematics.Vector3)">
+  Render(Shader, float, float, Vector3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renders the lamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Render(Shader shader, float scale, float curve, Vector3 cameraPosition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shader</code> <a class="xref" href="Common.Shader.html">Shader</a></dt>
+    <dd><p>The shader used for rendering.</p>
+</dd>
+    <dt><code>scale</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The scale of the scene.</p>
+</dd>
+    <dt><code>curve</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The curvature of the scene.</p>
+</dd>
+    <dt><code>cameraPosition</code> <span class="xref">Vector3</span></dt>
+    <dd><p>The camera position in the scene.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Characters/LightSources/Lamp.cs/#L14" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,604 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ContactEvents
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ContactEvents
+ ">
+      
+      <meta name="description" content="Watches a set of bodies and statics for contact changes and reports events.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Physics_ContactCallbacks_ContactEvents.md&amp;value=---%0Auid%3A%20Physics.ContactCallbacks.ContactEvents%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Physics.ContactCallbacks.ContactEvents">
+
+
+
+  <h1 id="Physics_ContactCallbacks_ContactEvents" data-uid="Physics.ContactCallbacks.ContactEvents" class="text-break">
+    Class ContactEvents
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Physics.html">Physics</a>.<a class="xref" href="Physics.ContactCallbacks.html">ContactCallbacks</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Physics.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Watches a set of bodies and statics for contact changes and reports events.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ContactEvents : IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ContactEvents</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents__ctor_" data-uid="Physics.ContactCallbacks.ContactEvents.#ctor*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents__ctor_BepuUtilities_IThreadDispatcher_BepuUtilities_Memory_BufferPool_System_Int32_" data-uid="Physics.ContactCallbacks.ContactEvents.#ctor(BepuUtilities.IThreadDispatcher,BepuUtilities.Memory.BufferPool,System.Int32)">
+  ContactEvents(IThreadDispatcher, BufferPool, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new contact events stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ContactEvents(IThreadDispatcher threadDispatcher = null, BufferPool pool = null, int initialListenerCapacity = 64)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>threadDispatcher</code> <span class="xref">IThreadDispatcher</span></dt>
+    <dd><p>Thread dispatcher to pull per-thread buffer pools from, if any.</p>
+</dd>
+    <dt><code>pool</code> <span class="xref">BufferPool</span></dt>
+    <dd><p>Buffer pool used to manage resources internally. If null, the simulation's pool will be used.</p>
+</dd>
+    <dt><code>initialListenerCapacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Number of listeners to allocate space for initially.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Dispose_" data-uid="Physics.ContactCallbacks.ContactEvents.Dispose*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Dispose" data-uid="Physics.ContactCallbacks.ContactEvents.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L451"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Flush_" data-uid="Physics.ContactCallbacks.ContactEvents.Flush*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Flush" data-uid="Physics.ContactCallbacks.ContactEvents.Flush">
+  Flush()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L389"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Flush()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_HandleManifold_" data-uid="Physics.ContactCallbacks.ContactEvents.HandleManifold*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_HandleManifold__1_System_Int32_BepuPhysics_CollisionDetection_CollidablePair___0__" data-uid="Physics.ContactCallbacks.ContactEvents.HandleManifold``1(System.Int32,BepuPhysics.CollisionDetection.CollidablePair,``0@)">
+  HandleManifold&lt;TManifold&gt;(int, CollidablePair, ref TManifold)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L368"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void HandleManifold&lt;TManifold&gt;(int workerIndex, CollidablePair pair, ref TManifold manifold) where TManifold : unmanaged, IContactManifold&lt;TManifold&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>workerIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd>Watches a set of bodies and statics for contact changes and reports events.</dd>
+    <dt><code>pair</code> <span class="xref">CollidablePair</span></dt>
+    <dd>Watches a set of bodies and statics for contact changes and reports events.</dd>
+    <dt><code>manifold</code> <span class="xref">TManifold</span></dt>
+    <dd>Watches a set of bodies and statics for contact changes and reports events.</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TManifold</code></dt>
+    <dd>Watches a set of bodies and statics for contact changes and reports events.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Initialize_" data-uid="Physics.ContactCallbacks.ContactEvents.Initialize*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Initialize_BepuPhysics_Simulation_" data-uid="Physics.ContactCallbacks.ContactEvents.Initialize(BepuPhysics.Simulation)">
+  Initialize(Simulation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes the contact events system with a simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Initialize(Simulation simulation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd><p>Simulation to use with the contact events demo.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Physics_ContactCallbacks_ContactEvents_Initialize_BepuPhysics_Simulation__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The constructor and initialization are split because of how this class is expected to be used.
+It will be passed into a simulation's constructor as a part of its contact callbacks, so there is no simulation available at the time of construction.</p>
+</div>
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_IsListener_" data-uid="Physics.ContactCallbacks.ContactEvents.IsListener*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_IsListener_BepuPhysics_Collidables_CollidableReference_" data-uid="Physics.ContactCallbacks.ContactEvents.IsListener(BepuPhysics.Collidables.CollidableReference)">
+  IsListener(CollidableReference)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a collidable is registered as a listener.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsListener(CollidableReference collidable)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collidable</code> <span class="xref">CollidableReference</span></dt>
+    <dd><p>Collidable to check.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>True if the collidable has been registered as a listener, false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Register_" data-uid="Physics.ContactCallbacks.ContactEvents.Register*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Register_BepuPhysics_BodyHandle_Physics_ContactCallbacks_IContactEventHandler_" data-uid="Physics.ContactCallbacks.ContactEvents.Register(BepuPhysics.BodyHandle,Physics.ContactCallbacks.IContactEventHandler)">
+  Register(BodyHandle, IContactEventHandler)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins listening for events related to the given body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Register(BodyHandle body, IContactEventHandler handler)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>body</code> <span class="xref">BodyHandle</span></dt>
+    <dd><p>Body to monitor for events.</p>
+</dd>
+    <dt><code>handler</code> <a class="xref" href="Physics.ContactCallbacks.IContactEventHandler.html">IContactEventHandler</a></dt>
+    <dd><p>Handlers to use for the body.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Register_" data-uid="Physics.ContactCallbacks.ContactEvents.Register*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Register_BepuPhysics_Collidables_CollidableReference_Physics_ContactCallbacks_IContactEventHandler_" data-uid="Physics.ContactCallbacks.ContactEvents.Register(BepuPhysics.Collidables.CollidableReference,Physics.ContactCallbacks.IContactEventHandler)">
+  Register(CollidableReference, IContactEventHandler)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins listening for events related to the given collidable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Register(CollidableReference collidable, IContactEventHandler handler)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collidable</code> <span class="xref">CollidableReference</span></dt>
+    <dd><p>Collidable to monitor for events.</p>
+</dd>
+    <dt><code>handler</code> <a class="xref" href="Physics.ContactCallbacks.IContactEventHandler.html">IContactEventHandler</a></dt>
+    <dd><p>Handlers to use for the collidable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Register_" data-uid="Physics.ContactCallbacks.ContactEvents.Register*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Register_BepuPhysics_StaticHandle_Physics_ContactCallbacks_IContactEventHandler_" data-uid="Physics.ContactCallbacks.ContactEvents.Register(BepuPhysics.StaticHandle,Physics.ContactCallbacks.IContactEventHandler)">
+  Register(StaticHandle, IContactEventHandler)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins listening for events related to the given static.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Register(StaticHandle staticHandle, IContactEventHandler handler)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>staticHandle</code> <span class="xref">StaticHandle</span></dt>
+    <dd><p>Static to monitor for events.</p>
+</dd>
+    <dt><code>handler</code> <a class="xref" href="Physics.ContactCallbacks.IContactEventHandler.html">IContactEventHandler</a></dt>
+    <dd><p>Handlers to use for the static.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Unregister_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Unregister_BepuPhysics_BodyHandle_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister(BepuPhysics.BodyHandle)">
+  Unregister(BodyHandle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops listening for events related to the given body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Unregister(BodyHandle body)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>body</code> <span class="xref">BodyHandle</span></dt>
+    <dd><p>Body to stop listening for.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Unregister_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Unregister_BepuPhysics_Collidables_CollidableReference_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister(BepuPhysics.Collidables.CollidableReference)">
+  Unregister(CollidableReference)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops listening for events related to the given collidable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Unregister(CollidableReference collidable)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collidable</code> <span class="xref">CollidableReference</span></dt>
+    <dd><p>Collidable to stop listening for.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_ContactCallbacks_ContactEvents_Unregister_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister*"></a>
+
+  <h3 id="Physics_ContactCallbacks_ContactEvents_Unregister_BepuPhysics_StaticHandle_" data-uid="Physics.ContactCallbacks.ContactEvents.Unregister(BepuPhysics.StaticHandle)">
+  Unregister(StaticHandle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops listening for events related to the given static.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Unregister(StaticHandle staticHandle)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>staticHandle</code> <span class="xref">StaticHandle</span></dt>
+    <dd><p>Static to stop listening for.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/ContactCallbacks/ContactEvents.cs/#L19" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

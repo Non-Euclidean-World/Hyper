@@ -1,0 +1,913 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Window
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Window
+ ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Hyper_Window.md&amp;value=---%0Auid%3A%20Hyper.Window%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Hyper.Window">
+
+
+
+  <h1 id="Hyper_Window" data-uid="Hyper.Window" class="text-break">
+    Class Window
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Hyper.html">Hyper</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Hyper.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Window : GameWindow, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NativeWindow</span></div>
+      <div><span class="xref">GameWindow</span></div>
+      <div><span class="xref">Window</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <span class="xref">GameWindow.Run()</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.SwapBuffers()</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.OnRenderThreadStarted()</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.OnLoad()</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.OnUnload()</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.IsRunningSlowly</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.IsMultiThreaded</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.RenderFrequency</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.RenderTime</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.UpdateTime</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.UpdateFrequency</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.Load</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.Unload</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.UpdateFrame</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.RenderThreadStarted</span>
+    </div>
+    <div>
+      <span class="xref">GameWindow.RenderFrame</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Focus()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MakeCurrent()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">NativeWindow.ProcessEvents(double)</a>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.ProcessEvents()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">NativeWindow.ProcessWindowEvents(bool)</a>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.ProcessInputEvents()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.PointToClient(Vector2i)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.PointToScreen(Vector2i)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsKeyDown(Keys)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsKeyPressed(Keys)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsKeyReleased(Keys)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsMouseButtonDown(MouseButton)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsMouseButtonPressed(MouseButton)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsMouseButtonReleased(MouseButton)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.FindMonitor()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">NativeWindow.TryGetCurrentMonitorScale(out float, out float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">NativeWindow.TryGetCurrentMonitorDpi(out float, out float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">NativeWindow.TryGetCurrentMonitorDpiRaw(out float, out float)</a>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMove(WindowPositionEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnRefresh()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.componentmodel.canceleventargs">NativeWindow.OnClosing(CancelEventArgs)</a>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnClosed()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnJoystickConnected(JoystickEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnTextInput(TextInputEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMonitorConnected(MonitorEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMouseLeave()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMouseEnter()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMinimized(MinimizedEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnMaximized(MaximizedEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.OnFileDrop(FileDropEventArgs)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">NativeWindow.Dispose(bool)</a>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Dispose()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CenterWindow()</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CenterWindow(Vector2i)</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.WindowPtr</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.KeyboardState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.LastKeyboardState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.JoystickStates</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.LastJoystickStates</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MousePosition</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseDelta</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.LastMouseState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsAnyKeyDown</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsAnyMouseButtonDown</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.VSync</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Icon</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsEventDriven</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.ClipboardString</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Title</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.API</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Profile</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Flags</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.APIVersion</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Context</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CurrentMonitor</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsFocused</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsVisible</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Exists</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsExiting</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.WindowState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.WindowBorder</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Bounds</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Location</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Size</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MinimumSize</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MaximumSize</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.AspectRatio</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.ClientRectangle</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.ClientSize</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.IsFullscreen</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Cursor</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CursorState</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CursorVisible</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.CursorGrabbed</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Move</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Resize</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Refresh</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Closing</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Closed</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Minimized</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.Maximized</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.JoystickConnected</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.FocusedChanged</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.KeyDown</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.TextInput</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.KeyUp</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MonitorConnected</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseLeave</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseEnter</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseDown</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseUp</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseMove</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.MouseWheel</span>
+    </div>
+    <div>
+      <span class="xref">NativeWindow.FileDrop</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Hyper_Window__ctor_" data-uid="Hyper.Window.#ctor*"></a>
+
+  <h3 id="Hyper_Window__ctor_OpenTK_Windowing_Desktop_GameWindowSettings_OpenTK_Windowing_Desktop_NativeWindowSettings_Common_SelectedGeometryType_" data-uid="Hyper.Window.#ctor(OpenTK.Windowing.Desktop.GameWindowSettings,OpenTK.Windowing.Desktop.NativeWindowSettings,Common.SelectedGeometryType)">
+  Window(GameWindowSettings, NativeWindowSettings, SelectedGeometryType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, SelectedGeometryType selectedGeometryType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>gameWindowSettings</code> <span class="xref">GameWindowSettings</span></dt>
+    <dd></dd>
+    <dt><code>nativeWindowSettings</code> <span class="xref">NativeWindowSettings</span></dt>
+    <dd></dd>
+    <dt><code>selectedGeometryType</code> <a class="xref" href="Common.SelectedGeometryType.html">SelectedGeometryType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Hyper_Window_Close_" data-uid="Hyper.Window.Close*"></a>
+
+  <h3 id="Hyper_Window_Close" data-uid="Hyper.Window.Close">
+  Close()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Closes this window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Close()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnFocusedChanged_" data-uid="Hyper.Window.OnFocusedChanged*"></a>
+
+  <h3 id="Hyper_Window_OnFocusedChanged_OpenTK_Windowing_Common_FocusedChangedEventArgs_" data-uid="Hyper.Window.OnFocusedChanged(OpenTK.Windowing.Common.FocusedChangedEventArgs)">
+  OnFocusedChanged(FocusedChangedEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L184"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.FocusedChanged</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnFocusedChanged(FocusedChangedEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">FocusedChangedEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.FocusedChangedEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnKeyDown_" data-uid="Hyper.Window.OnKeyDown*"></a>
+
+  <h3 id="Hyper_Window_OnKeyDown_OpenTK_Windowing_Common_KeyboardKeyEventArgs_" data-uid="Hyper.Window.OnKeyDown(OpenTK.Windowing.Common.KeyboardKeyEventArgs)">
+  OnKeyDown(KeyboardKeyEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.KeyDown</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnKeyDown(KeyboardKeyEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">KeyboardKeyEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.KeyboardKeyEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnKeyUp_" data-uid="Hyper.Window.OnKeyUp*"></a>
+
+  <h3 id="Hyper_Window_OnKeyUp_OpenTK_Windowing_Common_KeyboardKeyEventArgs_" data-uid="Hyper.Window.OnKeyUp(OpenTK.Windowing.Common.KeyboardKeyEventArgs)">
+  OnKeyUp(KeyboardKeyEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.KeyUp</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnKeyUp(KeyboardKeyEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">KeyboardKeyEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.KeyboardKeyEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnMouseDown_" data-uid="Hyper.Window.OnMouseDown*"></a>
+
+  <h3 id="Hyper_Window_OnMouseDown_OpenTK_Windowing_Common_MouseButtonEventArgs_" data-uid="Hyper.Window.OnMouseDown(OpenTK.Windowing.Common.MouseButtonEventArgs)">
+  OnMouseDown(MouseButtonEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.MouseDown</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnMouseDown(MouseButtonEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">MouseButtonEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.MouseButtonEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnMouseMove_" data-uid="Hyper.Window.OnMouseMove*"></a>
+
+  <h3 id="Hyper_Window_OnMouseMove_OpenTK_Windowing_Common_MouseMoveEventArgs_" data-uid="Hyper.Window.OnMouseMove(OpenTK.Windowing.Common.MouseMoveEventArgs)">
+  OnMouseMove(MouseMoveEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.MouseMove</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnMouseMove(MouseMoveEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">MouseMoveEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.MouseMoveEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnMouseUp_" data-uid="Hyper.Window.OnMouseUp*"></a>
+
+  <h3 id="Hyper_Window_OnMouseUp_OpenTK_Windowing_Common_MouseButtonEventArgs_" data-uid="Hyper.Window.OnMouseUp(OpenTK.Windowing.Common.MouseButtonEventArgs)">
+  OnMouseUp(MouseButtonEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.MouseUp</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnMouseUp(MouseButtonEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">MouseButtonEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.MouseButtonEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnMouseWheel_" data-uid="Hyper.Window.OnMouseWheel*"></a>
+
+  <h3 id="Hyper_Window_OnMouseWheel_OpenTK_Windowing_Common_MouseWheelEventArgs_" data-uid="Hyper.Window.OnMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs)">
+  OnMouseWheel(MouseWheelEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.MouseWheel</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnMouseWheel(MouseWheelEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">MouseWheelEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.MouseWheelEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnRenderFrame_" data-uid="Hyper.Window.OnRenderFrame*"></a>
+
+  <h3 id="Hyper_Window_OnRenderFrame_OpenTK_Windowing_Common_FrameEventArgs_" data-uid="Hyper.Window.OnRenderFrame(OpenTK.Windowing.Common.FrameEventArgs)">
+  OnRenderFrame(FrameEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Run when the window is ready to update.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnRenderFrame(FrameEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">FrameEventArgs</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnResize_" data-uid="Hyper.Window.OnResize*"></a>
+
+  <h3 id="Hyper_Window_OnResize_OpenTK_Windowing_Common_ResizeEventArgs_" data-uid="Hyper.Window.OnResize(OpenTK.Windowing.Common.ResizeEventArgs)">
+  OnResize(ResizeEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises the <span class="xref">OpenTK.Windowing.Desktop.NativeWindow.Resize</span> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnResize(ResizeEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">ResizeEventArgs</span></dt>
+    <dd><p>A <span class="xref">OpenTK.Windowing.Common.ResizeEventArgs</span> that contains the event data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Hyper_Window_OnUpdateFrame_" data-uid="Hyper.Window.OnUpdateFrame*"></a>
+
+  <h3 id="Hyper_Window_OnUpdateFrame_OpenTK_Windowing_Common_FrameEventArgs_" data-uid="Hyper.Window.OnUpdateFrame(OpenTK.Windowing.Common.FrameEventArgs)">
+  OnUpdateFrame(FrameEventArgs)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Run when the window is ready to update.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnUpdateFrame(FrameEventArgs e)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>e</code> <span class="xref">FrameEventArgs</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Hyper/Window.cs/#L11" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

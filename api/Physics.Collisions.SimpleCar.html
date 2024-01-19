@@ -1,0 +1,620 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class SimpleCar
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class SimpleCar
+ ">
+      
+      <meta name="description" content="Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Non-Euclidean-World/Hyper/new/main/apiSpec/new?filename=Physics_Collisions_SimpleCar.md&amp;value=---%0Auid%3A%20Physics.Collisions.SimpleCar%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Physics.Collisions.SimpleCar">
+
+
+
+  <h1 id="Physics_Collisions_SimpleCar" data-uid="Physics.Collisions.SimpleCar" class="text-break">
+    Class SimpleCar
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Physics.html">Physics</a>.<a class="xref" href="Physics.Collisions.html">Collisions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Physics.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class SimpleCar : IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">SimpleCar</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Physics_Collisions_SimpleCar_BackLeftWheel_" data-uid="Physics.Collisions.SimpleCar.BackLeftWheel*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_BackLeftWheel" data-uid="Physics.Collisions.SimpleCar.BackLeftWheel">
+  BackLeftWheel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the handle of the body associated with the back left wheel in the physics simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WheelHandles BackLeftWheel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_BackRightWheel_" data-uid="Physics.Collisions.SimpleCar.BackRightWheel*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_BackRightWheel" data-uid="Physics.Collisions.SimpleCar.BackRightWheel">
+  BackRightWheel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the handle of the body associated with the back right wheel in the physics simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WheelHandles BackRightWheel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_BodyHandle_" data-uid="Physics.Collisions.SimpleCar.BodyHandle*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_BodyHandle" data-uid="Physics.Collisions.SimpleCar.BodyHandle">
+  BodyHandle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the handle of the body associated with the car in the physics simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BodyHandle BodyHandle { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">BodyHandle</span></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_CarBodyPose_" data-uid="Physics.Collisions.SimpleCar.CarBodyPose*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_CarBodyPose" data-uid="Physics.Collisions.SimpleCar.CarBodyPose">
+  CarBodyPose
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Position and orientation of the car.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RigidPose CarBodyPose { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">RigidPose</span></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_FrontLeftWheel_" data-uid="Physics.Collisions.SimpleCar.FrontLeftWheel*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_FrontLeftWheel" data-uid="Physics.Collisions.SimpleCar.FrontLeftWheel">
+  FrontLeftWheel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the handle of the body associated with the front left wheel in the physics simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WheelHandles FrontLeftWheel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_FrontRightWheel_" data-uid="Physics.Collisions.SimpleCar.FrontRightWheel*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_FrontRightWheel" data-uid="Physics.Collisions.SimpleCar.FrontRightWheel">
+  FrontRightWheel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the handle of the body associated with the front right wheel in the physics simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WheelHandles FrontRightWheel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_Lights_" data-uid="Physics.Collisions.SimpleCar.Lights*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_Lights" data-uid="Physics.Collisions.SimpleCar.Lights">
+  Lights
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Positions of car's lights in the car's local space.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3[] Lights { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector3">Vector3</a>[]</dt>
+    <dd>Represents a simple car in a physics simulation, with methods for steering, setting speed, and creating car instances.</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Physics_Collisions_SimpleCar_CreateStandardCar_" data-uid="Physics.Collisions.SimpleCar.CreateStandardCar*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_CreateStandardCar_BepuPhysics_Simulation_BepuUtilities_Memory_BufferPool_BepuPhysics_CollidableProperty_Physics_Collisions_SimulationProperties__BepuPhysics_RigidPose__System_Single_" data-uid="Physics.Collisions.SimpleCar.CreateStandardCar(BepuPhysics.Simulation,BepuUtilities.Memory.BufferPool,BepuPhysics.CollidableProperty{Physics.Collisions.SimulationProperties},BepuPhysics.RigidPose@,System.Single)">
+  CreateStandardCar(Simulation, BufferPool, CollidableProperty&lt;SimulationProperties&gt;, in RigidPose, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a physical vehicle corresponding to the Ford Mustang model with specific parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SimpleCar CreateStandardCar(Simulation simulation, BufferPool bufferPool, CollidableProperty&lt;SimulationProperties&gt; properties, in RigidPose initialPose, float scale = 2)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd><p>The physics simulation where the car will be placed.</p>
+</dd>
+    <dt><code>bufferPool</code> <span class="xref">BufferPool</span></dt>
+    <dd><p>The buffer pool used for computations.</p>
+</dd>
+    <dt><code>properties</code> <span class="xref">CollidableProperty</span>&lt;<a class="xref" href="Physics.Collisions.SimulationProperties.html">SimulationProperties</a>&gt;</dt>
+    <dd><p>Collidable properties of the simulation.</p>
+</dd>
+    <dt><code>initialPose</code> <span class="xref">RigidPose</span></dt>
+    <dd><p>The initial pose of the car in the simulation.</p>
+</dd>
+    <dt><code>scale</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The scaling factor applied to the car's dimensions (default: 2).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Physics.Collisions.SimpleCar.html">SimpleCar</a></dt>
+    <dd><p>A new instance of the SimpleCar class representing the Ford Mustang model with specified parameters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_Dispose_" data-uid="Physics.Collisions.SimpleCar.Dispose*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_Dispose" data-uid="Physics.Collisions.SimpleCar.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_SetSpeed_" data-uid="Physics.Collisions.SimpleCar.SetSpeed*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_SetSpeed_BepuPhysics_Simulation_Physics_Collisions_WheelHandles__System_Single_System_Single_" data-uid="Physics.Collisions.SimpleCar.SetSpeed(BepuPhysics.Simulation,Physics.Collisions.WheelHandles@,System.Single,System.Single)">
+  SetSpeed(Simulation, in WheelHandles, float, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the speed for a specific wheel of the car in the simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetSpeed(Simulation simulation, in WheelHandles wheel, float speed, float maximumForce)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd><p>The physics simulation.</p>
+</dd>
+    <dt><code>wheel</code> <a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd><p>The wheel to set the speed for.</p>
+</dd>
+    <dt><code>speed</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The speed to set.</p>
+</dd>
+    <dt><code>maximumForce</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The maximum force for the wheel.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_Steer_" data-uid="Physics.Collisions.SimpleCar.Steer*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_Steer_BepuPhysics_Simulation_Physics_Collisions_WheelHandles__System_Single_" data-uid="Physics.Collisions.SimpleCar.Steer(BepuPhysics.Simulation,Physics.Collisions.WheelHandles@,System.Single)">
+  Steer(Simulation, in WheelHandles, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Steers a specific wheel of the car in the simulation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Steer(Simulation simulation, in WheelHandles wheel, float angle)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd><p>The physics simulation.</p>
+</dd>
+    <dt><code>wheel</code> <a class="xref" href="Physics.Collisions.WheelHandles.html">WheelHandles</a></dt>
+    <dd><p>The wheel to steer.</p>
+</dd>
+    <dt><code>angle</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The angle to steer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Physics_Collisions_SimpleCar_Update_" data-uid="Physics.Collisions.SimpleCar.Update*"></a>
+
+  <h3 id="Physics_Collisions_SimpleCar_Update_BepuPhysics_Simulation_System_Single_System_Single_System_Single_System_Boolean_System_Boolean_" data-uid="Physics.Collisions.SimpleCar.Update(BepuPhysics.Simulation,System.Single,System.Single,System.Single,System.Boolean,System.Boolean)">
+  Update(Simulation, float, float, float, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L265"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the state of the car based on various input parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Update(Simulation simulation, float dt, float targetSteeringAngle, float targetSpeedFraction, bool zoom, bool brake)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>simulation</code> <span class="xref">Simulation</span></dt>
+    <dd><p>The physics simulation associated with the car.</p>
+</dd>
+    <dt><code>dt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The time elapsed since the last update.</p>
+</dd>
+    <dt><code>targetSteeringAngle</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The desired steering angle for the car.</p>
+</dd>
+    <dt><code>targetSpeedFraction</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd><p>The target speed fraction for the car.</p>
+</dd>
+    <dt><code>zoom</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A boolean indicating whether the car is in &quot;turbo mode&quot; (i.e. moving faster than usual).</p>
+</dd>
+    <dt><code>brake</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>A boolean indicating whether the brake is applied.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Non-Euclidean-World/Hyper/blob/main/Physics/Collisions/SimpleCar.cs/#L17" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
