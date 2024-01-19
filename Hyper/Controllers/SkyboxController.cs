@@ -62,7 +62,7 @@ internal class SkyboxController : IController
     private readonly Phase _dayStart = new()
     {
         SkytopColor = new Vector4(0.34f, 0.55f, 0.85f, 1f), // https://www.wolframalpha.com/input?i=%23568CD8
-        HorizonColor = new Vector4(0.51f, 0.7f, 0.91f, 1.0f), // https://www.wolframalpha.com/input?i=%2382B2E8
+        HorizonColor = new Vector4(0.8f, 0.85f, 0.95f, 1.0f), // https://www.wolframalpha.com/input?i=rgb%280.8%2C+0.85%2C+0.95%29
         SunglareColor = Vector4.One,
         StarsVisibility = 0.05f,
     };
@@ -108,16 +108,16 @@ internal class SkyboxController : IController
         _initTimeSeconds = _settings.TimeInSeconds;
         _sunLight = new DirectionalLight
         {
-            Ambient = 0.1f,
-            Diffuse = 0.8f,
+            Ambient = 0.25f,
+            Diffuse = 0.9f,
             Specular = 0.1f,
             Direction = new Vector4(_initialSunVector, 0)
         };
 
         _moonLight = new DirectionalLight
         {
-            Ambient = 0.05f,
-            Diffuse = 0.2f,
+            Ambient = 0.15f,
+            Diffuse = 0.25f,
             Specular = 0.05f,
             Direction = new Vector4(_initialMoonVector, 0)
         };
