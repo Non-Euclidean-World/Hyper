@@ -23,8 +23,8 @@ internal class SphericalSkyboxController : IController
     {
         DirectionalLight sunLight = new DirectionalLight
         {
-            Ambient = 0.1f,
-            Diffuse = 0.65f,
+            Ambient = 0.15f,
+            Diffuse = 0.8f,
             Specular = 0.1f,
             Direction = new Vector4(Vector3.UnitY, 0)
         };
